@@ -73,7 +73,7 @@ compelling as a first step:
         provided string as-is.
 
 *   **TrustedURL**: This type would be used to represent a trusted URL that could be used to load
-    resources or navigate a frame.
+    non-scripting resources or navigate a frame.
 
     ```
     interface TrustedURL {
@@ -92,6 +92,21 @@ compelling as a first step:
     *   The static `unsafelyCreate` method would produce a `TrustedURL` object that accepted the
         provided string as-is, producing a URL by resolving the given string against the document's
         base URL.
+        
+*   **TrustedScriptURL**: This type would be used to represent a URL that could be used to load 
+    resources that may result in script execution in the current document.
+  
+    ```
+    interface TrustedScriptURL {
+      static TrustedScriptURL unsafelyCreate(DOMString url);
+      
+      stringifier;
+    }
+    ```  
+    
+    *   The static `unsafelyCreate` method would produce a `TrustedScriptURL` object that accepted 
+        the provided string as-is, producing a URL by resolving the given string against the 
+        document's base URL.
 
 *   **TrustedTODO**: TODO(koto@)
 
@@ -158,8 +173,8 @@ compelling as a first step:
 
     ```
     // A few element types go here. `HTMLSourceElement`, `HTMLImageElement`,
-    // `HTMLIFrameElement`, `HTMLEmbedElement`, `HTMLTrackElement`,
-    // `HTMLMediaElement`, `HTMLInputElement`, `HTMLScriptElement`, `HTMLFrameElement`
+    // `HTMLIFrameElement`, `HTMLTrackElement`, `HTMLMediaElement`, 
+    // `HTMLInputElement`,  `HTMLFrameElement`
     // from a quick skim through HTML.
     //
     // The same applies to their SVG variants.
@@ -187,13 +202,28 @@ compelling as a first step:
         void open(URLString location);
     };
     ```
-
+    
+* **Script URL Context**: Given something like `typedef (USVString or TrustedScriptURL) ScriptURLString`, 
+    we'd poke at a number of methods and attribute setters to accept the new type:
+    
     ```
     partial interface WorkerGlobalScope {
-        void importScripts(URLString... urls);
+        void importScripts(ScriptURLString... urls);
     };
     ```
 
+    ```
+    // A few element types go here. `HTMLEmbedElement`, `HTMLScriptElement`
+    // from a quick skim through HTML.
+    //
+    // The same applies to their SVG variants.
+    partial interface HTMLXXXElement : HTMLElement {
+        attribute ScriptURLString src;
+    };
+    ```
+
+    TODO(slekies) - sinks enumeration.
+    
 *   **JavaScript Contexts**: Replace `DOMString` in the following with something
     reasonable.
 
@@ -221,6 +251,6 @@ compelling as a first step:
 2.  Artur and Koto suggest that we'll need something more granular than the global flag, however
     we spell it, in order to deal with piecemeal migrations.
 
-3.  Define more types.
+3.  Define more types. Figure out how to treat `iframe.src`.
 
 4.  Document more sinks.
