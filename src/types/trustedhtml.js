@@ -31,8 +31,8 @@ trustedtypes.types.TrustedHTML = function TrustedHTML(inner) {
 // Workaround for Closure Compiler clearing the function name.
 Object.defineProperty(trustedtypes.types.TrustedHTML, 'name', {
   get: function() {
-return 'TrustedHTML';
-},
+    return 'TrustedHTML';
+  },
 });
 
 /**
