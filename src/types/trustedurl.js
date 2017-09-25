@@ -15,7 +15,6 @@ limitations under the License.
 */
 goog.provide('trustedtypes.types.TrustedURL');
 
-
 /**
  * A type to represent a trusted URL.
  * @param {string} url The trusted URL.
@@ -24,9 +23,9 @@ goog.provide('trustedtypes.types.TrustedURL');
 trustedtypes.types.TrustedURL = function TrustedURL(url) {
   /**
    * The trusted URL.
-   * @param {string}
+   * @private {string}
    */
-  this.url = url;
+  this.url_ = url;
 };
 
 // Workaround for Closure Compiler clearing the function name.
@@ -67,13 +66,13 @@ trustedtypes.types.TrustedURL.createHttpUrl = function(url) {
  * @return {!HTMLAnchorElement} An anchor element containing the url.
  */
 trustedtypes.types.TrustedURL.parse_ = function(url) {
-  let aTag = document.createElement('a');
+  let aTag = /** @type !HTMLAnchorElement */ (document.createElement('a'));
   aTag.href = url;
   return aTag;
 };
 
 trustedtypes.types.TrustedURL.prototype.toString = function() {
-  return this.url;
+  return this.url_;
 };
 
 if (typeof window.TrustedURL === 'undefined') {
