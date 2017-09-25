@@ -254,3 +254,7 @@ compelling as a first step:
 3.  Define more types. Figure out how to treat `iframe.src`.
 
 4.  Document more sinks.
+
+## Caveats
+
+This is not an official Google product.

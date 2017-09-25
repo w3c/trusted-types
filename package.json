@@ -1,0 +1,38 @@
+{
+  "name": "trusted-types",
+  "version": "1.0.0",
+  "description": "This is not an official Google product.",
+  "main": "",
+  "directories": {
+    "test": "tests"
+  },
+  "contributors": [
+    "Krzysztof Kotowicz <koto@google.com>",
+    "Sebastian Lekies <slekies@google.com>"
+  ],
+  "scripts": {
+    "lint": "eslint src/ tests/",
+    "fix": "eslint --fix src/ tests/",
+    "test": "karma start --single-run",
+    "karma": "karma start --browsers ChromeHeadless",
+    "build": "gulp build"
+  },
+  "author": "Google Inc.",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "eslint": "^4.7.2",
+    "eslint-config-google": "^0.9.1",
+    "gulp": "^3.9.1",
+    "gulp-closure-compiler": "^0.4.0",
+    "jasmine": "^2.8.0",
+    "jasmine-core": "^2.8.0",
+    "karma": "^1.7.1",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-closure": "^0.1.1",
+    "karma-firefox-launcher": "^1.0.1",
+    "karma-jasmine": "^1.1.0"
+  },
+  "dependencies": {
+    "google-closure-library": "^20170910.0.0"
+  }
+}
