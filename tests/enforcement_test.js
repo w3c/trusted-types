@@ -20,6 +20,8 @@ goog.require('trustedtypes.types.TrustedHTML');
 describe('TrustedTypesEnforcer', function() {
   let TEST_HTML = '<b>html</b>';
 
+  let TEST_URL = 'http://example.com/script';
+
   let ENFORCING_CONFIG = new trustedtypes.data.TrustedTypeConfig(
           /* isLoggingEnabled */ false,
           /* isEnforcementEnabled */ true);
@@ -161,6 +163,19 @@ describe('TrustedTypesEnforcer', function() {
           TrustedHTML.unsafelyCreate(TEST_HTML));
       el.insertAdjacentHTML('afterbegin', TrustedHTML.unsafelyCreate('foo'));
       expect(el.innerHTML).toEqual('foo' + TEST_HTML);
+    });
+
+    it('HTMLScriptElement.src', function() {
+      let el = document.createElement('script');
+
+      expect(function() {
+        el.src = TEST_URL;
+      }).toThrow();
+
+      expect(el.src).toEqual('');
+
+      el.src = TrustedScriptURL.unsafelyCreate(TEST_URL);
+      expect(el.src).toEqual(TEST_URL);
     });
   });
 });

@@ -18,6 +18,8 @@ goog.provide('trustedtypes.TrustedTypesEnforcer');
 
 goog.require('trustedtypes.data.TrustedTypeConfig');
 goog.require('trustedtypes.types.TrustedHTML');
+goog.require('trustedtypes.types.TrustedURL');
+goog.require('trustedtypes.types.TrustedScriptURL');
 goog.require('trustedtypes.utils.wrapper');
 
 /**
@@ -46,6 +48,7 @@ trustedtypes.TrustedTypesEnforcer.prototype.install = function() {
   this.wrapSetter_(Element.prototype, 'innerHTML', window.TrustedHTML);
   this.wrapSetter_(Element.prototype, 'outerHTML', window.TrustedHTML);
   this.wrapSetter_(HTMLIFrameElement.prototype, 'srcdoc', window.TrustedHTML);
+  this.wrapSetter_(HTMLScriptElement.prototype, 'src', window.TrustedScriptURL);
   this.wrapFunction_(Range.prototype, 'createContextualFragment',
       window.TrustedHTML, 0);
   this.wrapFunction_(Element.prototype, 'insertAdjacentHTML',
@@ -59,6 +62,8 @@ trustedtypes.TrustedTypesEnforcer.prototype.uninstall = function() {
   this.restoreSetter_(Element.prototype, 'innerHTML');
   this.restoreSetter_(Element.prototype, 'outerHTML');
   this.restoreSetter_(HTMLIFrameElement.prototype, 'srcdoc');
+  this.restoreSetter_(HTMLScriptElement.prototype, 'src',
+      window.TrustedScriptURL);
   this.restoreFunction_(Range.prototype, 'createContextualFragment');
   this.restoreFunction_(Element.prototype, 'insertAdjacentHTML');
 };
