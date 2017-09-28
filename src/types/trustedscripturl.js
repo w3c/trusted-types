@@ -40,7 +40,7 @@ Object.defineProperty(trustedtypes.types.TrustedScriptURL, 'name', {
  * @param {string} url The unsafe string.
  * @return {!trustedtypes.types.TrustedScriptURL}
  */
-trustedtypes.types.TrustedScriptURL.unsafelyCreate = function(url) {
+trustedtypes.types.TrustedScriptURL['unsafelyCreate'] = function(url) {
   let parsedUrl = trustedtypes.types.TrustedScriptURL.parse_(url);
   return new trustedtypes.types.TrustedScriptURL(parsedUrl.href);
 };
@@ -51,7 +51,7 @@ trustedtypes.types.TrustedScriptURL.unsafelyCreate = function(url) {
  * @param {string} url The an absolute url.
  * @return {!trustedtypes.types.TrustedScriptURL}
  */
-trustedtypes.types.TrustedScriptURL.createHttpUrl = function(url) {
+trustedtypes.types.TrustedScriptURL['createHttpUrl'] = function(url) {
   let parsedUrl = trustedtypes.types.TrustedScriptURL.parse_(url);
   if (parsedUrl.protocol != 'http' && parsedUrl.protocol != 'https:') {
     parsedUrl.protocol = 'unsafe_' + parsedUrl.protocol;
@@ -71,10 +71,10 @@ trustedtypes.types.TrustedScriptURL.parse_ = function(url) {
   return aTag;
 };
 
-trustedtypes.types.TrustedScriptURL.prototype.toString = function() {
+trustedtypes.types.TrustedScriptURL.prototype['toString'] = function() {
   return this.url_;
 };
 
-if (typeof window.TrustedScriptURL === 'undefined') {
-  window.TrustedScriptURL = trustedtypes.types.TrustedScriptURL;
+if (typeof window['TrustedScriptURL'] === 'undefined') {
+  window['TrustedScriptURL'] = trustedtypes.types.TrustedScriptURL;
 }
