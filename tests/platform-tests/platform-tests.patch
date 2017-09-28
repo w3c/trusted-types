@@ -15,3 +15,20 @@ index 087dbf4ff0..9ecc5e290c 100644
          } catch (e) {
              log.appendChild(document.createElementNS(xhtml_ns, "p"))
                 .textContent = "Setting innerHTML for the log threw an exception.";
+diff --git a/resources/testharness.js b/resources/testharness.js
+index 087dbf4ff0..14828cf383 100644
+--- a/resources/testharness.js
++++ b/resources/testharness.js
+@@ -2314,7 +2314,11 @@ policies and contribution forms [3].
+         if (harness_url !== undefined) {
+             var stylesheet = output_document.createElementNS(xhtml_ns, "link");
+             stylesheet.setAttribute("rel", "stylesheet");
+-            stylesheet.setAttribute("href", harness_url + "testharness.css");
++            if (TrustedScriptURL) {
++                stylesheet.setAttribute("href", TrustedScriptURL.unsafelyCreate(harness_url + "testharness.css"));
++            } else {
++                stylesheet.setAttribute("href", harness_url + "testharness.css");
++            }
+             var heads = output_document.getElementsByTagName("head");
+             if (heads.length) {
+                 heads[0].appendChild(stylesheet);

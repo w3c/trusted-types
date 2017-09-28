@@ -162,6 +162,33 @@ describe('TrustedTypesEnforcer', function() {
     });
   });
 
+  describe('setAttributeWrapper', function() {
+    let enforcer;
+
+    beforeEach(function() {
+      enforcer = new trustedtypes.TrustedTypesEnforcer(ENFORCING_CONFIG);
+      enforcer.install();
+    });
+
+    afterEach(function() {
+      enforcer.uninstall();
+    });
+
+    it('passes through inert attributes', function() {
+      let a = document.createElement('link');
+      a.setAttribute('rel', 'stylesheet');
+      expect(a.getAttribute('rel')).toEqual('stylesheet');
+      expect(a.rel).toEqual('stylesheet');
+    });
+
+    it('passes through inert elements', function() {
+      let a = document.createElement('section');
+      a.setAttribute('id', 'foo');
+      expect(a.getAttribute('id')).toEqual('foo');
+      expect(a.id).toEqual('foo');
+    });
+  });
+
   describe('enforcement allows type-based assignments', function() {
     beforeEach(function() {
       enforcer = new trustedtypes.TrustedTypesEnforcer(ENFORCING_CONFIG);

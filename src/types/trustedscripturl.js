@@ -46,21 +46,6 @@ trustedtypes.types.TrustedScriptURL.unsafelyCreate = function(url) {
 };
 
 /**
- * Returns a TrustedScriptURL type. The TrustedScriptURL prepends "unsafe_"
- * to all non HTTP(s) schemes.
- * @param {string} url The an absolute url.
- * @return {!trustedtypes.types.TrustedScriptURL}
- */
-trustedtypes.types.TrustedScriptURL.createHttpUrl = function(url) {
-  let parsedUrl = trustedtypes.types.TrustedScriptURL.parse_(url);
-  if (parsedUrl.protocol != 'http' && parsedUrl.protocol != 'https:') {
-    parsedUrl.protocol = 'unsafe_' + parsedUrl.protocol;
-  }
-
-  return new trustedtypes.types.TrustedScriptURL(parsedUrl.href);
-};
-
-/**
  * Returns a parsed URL.
  * @param {string} url The url to parse.
  * @return {!HTMLAnchorElement} An anchor element containing the url.
@@ -81,6 +66,4 @@ if (typeof window['TrustedScriptURL'] === 'undefined') {
       trustedtypes.types.TrustedScriptURL);
   goog.exportProperty(window['TrustedScriptURL'], 'unsafelyCreate',
       trustedtypes.types.TrustedScriptURL.unsafelyCreate);
-  goog.exportProperty(window['TrustedScriptURL'], 'createHttpUrl',
-      trustedtypes.types.TrustedScriptURL.createHttpUrl);
 }
