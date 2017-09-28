@@ -30,9 +30,15 @@
     "karma-chrome-launcher": "^2.2.0",
     "karma-closure": "^0.1.1",
     "karma-firefox-launcher": "^1.0.1",
-    "karma-jasmine": "^1.1.0"
+    "karma-jasmine": "^1.1.0",
+    "pre-commit": "^1.2.2"
   },
   "dependencies": {
     "google-closure-library": "^20170910.0.0"
-  }
+  },
+  "pre-commit": [
+    "lint",
+    "build",
+    "test"
+  ]
 }
