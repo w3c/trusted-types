@@ -51,9 +51,9 @@ trustedtypes.TrustedTypesEnforcer.prototype.install = function() {
       window['TrustedHTML']);
   this.wrapSetter_(HTMLScriptElement.prototype, 'src',
       window['TrustedScriptURL']);
-  this.wrapFunction_(Range.prototype, 'createContextualFragment',
+  this.wrapWithEnforceFunction_(Range.prototype, 'createContextualFragment',
       window['TrustedHTML'], 0);
-  this.wrapFunction_(Element.prototype, 'insertAdjacentHTML',
+  this.wrapWithEnforceFunction_(Element.prototype, 'insertAdjacentHTML',
       window['TrustedHTML'], 1);
 };
 

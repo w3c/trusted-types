@@ -40,7 +40,7 @@ Object.defineProperty(trustedtypes.types.TrustedURL, 'name', {
  * @param {string} url The unsafe string.
  * @return {!trustedtypes.types.TrustedURL}
  */
-trustedtypes.types.TrustedURL['unsafelyCreate'] = function(url) {
+trustedtypes.types.TrustedURL.unsafelyCreate = function(url) {
   let parsedUrl = trustedtypes.types.TrustedURL.parse_(url);
   return new trustedtypes.types.TrustedURL(parsedUrl.href);
 };
@@ -51,7 +51,7 @@ trustedtypes.types.TrustedURL['unsafelyCreate'] = function(url) {
  * @param {string} url The an absolute url.
  * @return {!trustedtypes.types.TrustedURL}
  */
-trustedtypes.types.TrustedURL['createHttpUrl'] = function(url) {
+trustedtypes.types.TrustedURL.createHttpUrl = function(url) {
   let parsedUrl = trustedtypes.types.TrustedURL.parse_(url);
   if (parsedUrl.protocol != 'http' && parsedUrl.protocol != 'https:') {
     parsedUrl.protocol = 'unsafe_' + parsedUrl.protocol;
@@ -71,10 +71,15 @@ trustedtypes.types.TrustedURL.parse_ = function(url) {
   return aTag;
 };
 
-trustedtypes.types.TrustedURL.prototype['toString'] = function() {
+trustedtypes.types.TrustedURL.prototype.toString = function() {
   return this.url_;
 };
 
+// Make sure Closure compiler exposes the names.
 if (typeof window['TrustedURL'] === 'undefined') {
-  window['TrustedURL'] = trustedtypes.types.TrustedURL;
+  goog.exportProperty(window, 'TrustedURL', trustedtypes.types.TrustedURL);
+  goog.exportProperty(window['TrustedURL'], 'unsafelyCreate',
+      trustedtypes.types.TrustedURL.unsafelyCreate);
+  goog.exportProperty(window['TrustedURL'], 'createHttpUrl',
+      trustedtypes.types.TrustedURL.createHttpUrl);
 }
