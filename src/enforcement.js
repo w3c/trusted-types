@@ -49,10 +49,10 @@ trustedtypes.TrustedTypesEnforcer.prototype.install = function() {
   this.wrapSetter_(Element.prototype, 'outerHTML', window.TrustedHTML);
   this.wrapSetter_(HTMLIFrameElement.prototype, 'srcdoc', window.TrustedHTML);
   this.wrapSetter_(HTMLScriptElement.prototype, 'src', window.TrustedScriptURL);
-  this.wrapFunction_(Range.prototype, 'createContextualFragment',
-      window.TrustedHTML, 0);
-  this.wrapFunction_(Element.prototype, 'insertAdjacentHTML',
-      window.TrustedHTML, 1);
+  this.wrapWithEnforceFunction_(
+      Range.prototype, 'createContextualFragment', window.TrustedHTML, 0);
+  this.wrapWithEnforceFunction_(
+      Element.prototype, 'insertAdjacentHTML', window.TrustedHTML, 1);
 };
 
 /**
@@ -62,11 +62,11 @@ trustedtypes.TrustedTypesEnforcer.prototype.uninstall = function() {
   this.restoreSetter_(Element.prototype, 'innerHTML');
   this.restoreSetter_(Element.prototype, 'outerHTML');
   this.restoreSetter_(HTMLIFrameElement.prototype, 'srcdoc');
-  this.restoreSetter_(HTMLScriptElement.prototype, 'src',
-      window.TrustedScriptURL);
+  this.restoreSetter_(HTMLScriptElement.prototype, 'src');
   this.restoreFunction_(Range.prototype, 'createContextualFragment');
   this.restoreFunction_(Element.prototype, 'insertAdjacentHTML');
 };
+
 
 /**
  * Wraps a setter with the enforcement wrapper.
@@ -76,22 +76,44 @@ trustedtypes.TrustedTypesEnforcer.prototype.uninstall = function() {
  * @param {number} argNumber Number of the argument to enforce the type of.
  * @private
  */
-trustedtypes.TrustedTypesEnforcer.prototype.wrapFunction_ =
+trustedtypes.TrustedTypesEnforcer.prototype.wrapWithEnforceFunction_ =
     function(object, name, type, argNumber) {
+  let that = this;
+  this.wrapFunction_(
+      object,
+      name,
+      function(originalFn, ...args) {
+        return that.enforce_.call(that, this, name, type, originalFn, argNumber,
+            args);
+      });
+};
+
+
+/** 
+ * Wraps an existing function with a given function body and stores the original
+ * function.
+ * @param {!Object} object The object of the to-be-wrapped property.
+ * @param {string} name The name of the property.
+ * @param {!Function<!Function, *>} functionBody The wrapper function.
+ */
+trustedtypes.TrustedTypesEnforcer.prototype.wrapFunction_ =
+    function(object, name, functionBody) {
   let originalFn = /** @type function(*):* */ (
       Object.getOwnPropertyDescriptor(object, name).value);
+
+  if (!(originalFn instanceof Function)) {
+    throw new TypeError(
+        'Property ' + name + ' on object' + object + ' is not a function');
+  }
+
   let key = this.getKey_(object, name);
   if (this.originalSetters_[key]) {
     throw new Error('TrustedTypesEnforcer: Double installation detected');
   }
-  let that = this;
   trustedtypes.utils.wrapper.installFunction(
-      object,
-      name,
-      function(...args) {
-        return that.enforce_.call(that, this, name, type, originalFn, argNumber,
-            args);
-      });
+      object, name, function(...args) {
+ functionBody.call(this, originalFn, args);
+});
   this.originalSetters_[key] = originalFn;
 };
 
