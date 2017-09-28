@@ -153,6 +153,15 @@ describe('TrustedTypesEnforcer', function() {
   });
 
   describe('enforcement allows type-based assignments', function() {
+    beforeEach(function() {
+      enforcer = new trustedtypes.TrustedTypesEnforcer(ENFORCING_CONFIG);
+      enforcer.install();
+    });
+
+    afterEach(function() {
+      enforcer.uninstall();
+    });
+
     it('on innerHTML', function() {
       let el = document.createElement('div');
 

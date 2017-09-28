@@ -114,7 +114,7 @@ trustedtypes.TrustedTypesEnforcer.prototype.wrapFunction_ =
   }
   trustedtypes.utils.wrapper.installFunction(
       object, name, function(...args) {
- functionBody.call(this, originalFn, args);
+  return functionBody.bind(this, originalFn).apply(this, args);
 });
   this.originalSetters_[key] = originalFn;
 };
