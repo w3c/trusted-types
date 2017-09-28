@@ -16,33 +16,6 @@ limitations under the License.
 goog.require('trustedtypes.types.TrustedScriptURL');
 
 describe('TrustedScriptURL', function() {
-  describe('createHttpUrl', function() {
-    it('prepends "unsafe_" to non HTTP URLs', function() {
-      let url1 = TrustedScriptURL.createHttpUrl('javascript:alert(1)');
-      let url2 = TrustedScriptURL.createHttpUrl('data:text/html,Hi');
-      let url3 = TrustedScriptURL.createHttpUrl('fooo:bar');
-
-      expect('' + url1).toEqual('javascript:alert(1)');
-      expect('' + url2).toEqual('data:text/html,Hi');
-      expect('' + url3).toEqual('fooo:bar');
-    });
-
-    it('does not prepend "unsafe_" to HTTP URLs', function() {
-      let url1 = TrustedScriptURL.createHttpUrl('http://example.org/');
-      let url2 = TrustedScriptURL.createHttpUrl('https://example.org/');
-
-      expect('' + url1).toEqual('http://example.org/');
-      expect('' + url2).toEqual('https://example.org/');
-    });
-
-    it('resolves relative URL', function() {
-      let url = TrustedScriptURL.createHttpUrl('/relative/path');
-      let protocol = document.location.protocol;
-      let host = document.location.host;
-      expect('' + url).toEqual(protocol + '//' + host + '/relative/path');
-    });
-  });
-
   describe('unsafelyCreate', function() {
     it('doesn\'t alter absolute url', function() {
       let url = TrustedScriptURL.unsafelyCreate(

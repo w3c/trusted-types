@@ -51,10 +51,10 @@ trustedtypes.types.TrustedURL.unsafelyCreate = function(url) {
  * @param {string} url The an absolute url.
  * @return {!trustedtypes.types.TrustedURL}
  */
-trustedtypes.types.TrustedURL.createHttpUrl = function(url) {
+trustedtypes.types.TrustedURL.create = function(url) {
   let parsedUrl = trustedtypes.types.TrustedURL.parse_(url);
-  if (parsedUrl.protocol != 'http' && parsedUrl.protocol != 'https:') {
-    parsedUrl.protocol = 'unsafe_' + parsedUrl.protocol;
+  if (parsedUrl.protocol !== 'http:' && parsedUrl.protocol !== 'https:') {
+    return new trustedtypes.types.TrustedURL('about:invalid');
   }
 
   return new trustedtypes.types.TrustedURL(parsedUrl.href);
@@ -80,6 +80,6 @@ if (typeof window['TrustedURL'] === 'undefined') {
   goog.exportProperty(window, 'TrustedURL', trustedtypes.types.TrustedURL);
   goog.exportProperty(window['TrustedURL'], 'unsafelyCreate',
       trustedtypes.types.TrustedURL.unsafelyCreate);
-  goog.exportProperty(window['TrustedURL'], 'createHttpUrl',
-      trustedtypes.types.TrustedURL.createHttpUrl);
+  goog.exportProperty(window['TrustedURL'], 'create',
+      trustedtypes.types.TrustedURL.create);
 }

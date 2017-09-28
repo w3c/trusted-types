@@ -134,9 +134,9 @@ trustedtypes.TrustedTypesEnforcer.prototype.wrapSetAttribute_ =
       Element.prototype,
       'setAttribute',
       function(originalFn, ...args) {
-        that.setAttributeWrapper_
+        return that.setAttributeWrapper_
             .bind(that, this, originalFn)
-            .apply(that, args);
+              .apply(that, args);
       });
 };
 
@@ -158,12 +158,18 @@ trustedtypes.TrustedTypesEnforcer.prototype.setAttributeWrapper_ =
   }
 
   let name = args[0];
-  let type =
-    trustedtypes.TrustedTypesEnforcer.SET_ATTRIBUTE_TYPE_MAP[
+  let type = context.constructor && context.constructor.name &&
+      trustedtypes.TrustedTypesEnforcer.SET_ATTRIBUTE_TYPE_MAP[
+      context.constructor.name] &&
+      trustedtypes.TrustedTypesEnforcer.SET_ATTRIBUTE_TYPE_MAP[
         context.constructor.name][name];
 
-  return this.enforce_
-      .call(this, context, 'setAttribute', type, originalFn, 1, args);
+  if (type instanceof Function) {
+    return this.enforce_
+        .call(this, context, 'setAttribute', type, originalFn, 1, args);
+  }
+
+  return originalFn.apply(context, args);
 };
 
 

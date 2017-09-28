@@ -16,27 +16,27 @@ limitations under the License.
 goog.require('trustedtypes.types.TrustedURL');
 
 describe('TrustedURL', function() {
-  describe('createHttpUrl', function() {
-    it('prepends "unsafe_" to non HTTP URLs', function() {
-      let url1 = TrustedURL.createHttpUrl('javascript:alert(1)');
-      let url2 = TrustedURL.createHttpUrl('data:text/html,Hi');
-      let url3 = TrustedURL.createHttpUrl('fooo:bar');
+  describe('create', function() {
+    it('creates about:invalid for non-HTTP URLs', function() {
+      let url1 = TrustedURL.create('javascript:alert(1)');
+      let url2 = TrustedURL.create('data:text/html,Hi');
+      let url3 = TrustedURL.create('fooo:bar');
 
-      expect('' + url1).toEqual('javascript:alert(1)');
-      expect('' + url2).toEqual('data:text/html,Hi');
-      expect('' + url3).toEqual('fooo:bar');
+      expect('' + url1).toEqual('about:invalid');
+      expect('' + url2).toEqual('about:invalid');
+      expect('' + url3).toEqual('about:invalid');
     });
 
-    it('does not prepend "unsafe_" to HTTP URLs', function() {
-      let url1 = TrustedURL.createHttpUrl('http://example.org/');
-      let url2 = TrustedURL.createHttpUrl('https://example.org/');
+    it('leaves HTTP URLs intact', function() {
+      let url1 = TrustedURL.create('http://example.org/');
+      let url2 = TrustedURL.create('https://example.org/');
 
       expect('' + url1).toEqual('http://example.org/');
       expect('' + url2).toEqual('https://example.org/');
     });
 
     it('resolves relative URL', function() {
-      let url = TrustedURL.createHttpUrl('/relative/path');
+      let url = TrustedURL.create('/relative/path');
       let protocol = document.location.protocol;
       let host = document.location.host;
       expect('' + url).toEqual(protocol + '//' + host + '/relative/path');
