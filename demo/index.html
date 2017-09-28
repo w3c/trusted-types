@@ -90,6 +90,16 @@ limitations under the License.
   runTest(['Element.inertAdjacentHTML', 'TrustedHTML'], function(el) {
     el.insertAdjacentHTML('afterbegin', trustedValue);
   }, false);
+  runTest(['HTMLScriptElement.src', 'TrustedScriptURL'], function(el) {
+    el.appendChild(document.createElement('script')).src = 'data:,';
+  }, true);
+  runTest(['HTMLScriptElement.src', 'TrustedScriptURL'], function(el) {
+    var script = el.appendChild(document.createElement('script'));
+    script.src = TrustedScriptURL.unsafelyCreate('data:,');
+    if (script.src !== 'data:,') {
+      throw new Error('URL changed.');
+    }
+  }, false);
 
   </script>
 </body>
