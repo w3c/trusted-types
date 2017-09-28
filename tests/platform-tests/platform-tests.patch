@@ -1,0 +1,17 @@
+diff --git a/resources/testharness.js b/resources/testharness.js
+index 087dbf4ff0..9ecc5e290c 100644
+--- a/resources/testharness.js
++++ b/resources/testharness.js
+@@ -2472,7 +2472,11 @@ policies and contribution forms [3].
+         }
+         html += "</tbody></table>";
+         try {
+-            log.lastChild.innerHTML = html;
++            if (window.TrustedHTML) {
++                log.lastChild.innerHTML = TrustedHTML.unsafelyCreate(html);
++            } else {
++                log.lastChild.innerHTML = html;
++            }
+         } catch (e) {
+             log.appendChild(document.createElementNS(xhtml_ns, "p"))
+                .textContent = "Setting innerHTML for the log threw an exception.";
