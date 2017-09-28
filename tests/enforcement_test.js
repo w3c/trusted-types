@@ -150,6 +150,16 @@ describe('TrustedTypesEnforcer', function() {
 
       expect(el.src).toEqual('');
     });
+
+    it('on Element.prototype.setAttribute', function() {
+      let el = document.createElement('iframe');
+
+      expect(function() {
+        el.setAttribute('src', TEST_URL);
+      }).toThrow();
+
+      expect(el.src).toEqual('');
+    });
   });
 
   describe('enforcement allows type-based assignments', function() {
@@ -213,6 +223,14 @@ describe('TrustedTypesEnforcer', function() {
       let el = document.createElement('script');
 
       el.src = TrustedScriptURL.unsafelyCreate(TEST_URL);
+
+      expect(el.src).toEqual(TEST_URL);
+    });
+
+    it('on Element.prototype.setAttribute', function() {
+      let el = document.createElement('iframe');
+
+      el.setAttribute('src', TrustedURL.unsafelyCreate(TEST_URL));
 
       expect(el.src).toEqual(TEST_URL);
     });
