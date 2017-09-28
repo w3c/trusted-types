@@ -41,6 +41,61 @@ trustedtypes.TrustedTypesEnforcer = function(config) {
 };
 
 /**
+ * A map of attribute names to allowed types.
+ * @type {Object<string, Object<string, !Function>>}
+ */
+trustedtypes.TrustedTypesEnforcer.SET_ATTRIBUTE_TYPE_MAP = {
+    // TODO(slekies): Add event handlers
+    // TODO(slekies): add SVG Elements here
+    'HTMLAnchorElement': {
+        'href': window['TrustedURL'],
+    },
+    'HTMLAreaElement': {
+        'href': window['TrustedURL'],
+    },
+    'HTMLBaseElement': {
+        'href': window['TrustedURL'],
+    },
+    'HTMLSourceElement': {
+        'src': window['TrustedURL'],
+    },
+    'HTMLImageElement': {
+        'src': window['TrustedURL'],
+        // TODO(slekies): add special handling for srcset
+    },
+    'HTMLTrackElement': {
+        'src': window['TrustedURL'],
+    },
+    'HTMLMediaElement': {
+        'src': window['TrustedURL'],
+    },
+    'HTMLInputElement': {
+        'src': window['TrustedURL'],
+    },
+    'HTMLFrameElement': {
+        'src': window['TrustedURL'],
+    },
+    'HTMLIFrameElement': {
+        'src': window['TrustedURL'],
+        'srcdoc': window['TrustedHTML'],
+    },
+    'HTMLLinkElement': {
+        'href': window['TrustedScriptURL'],
+    },
+    'HTMLObjectElement': {
+        'data': window['TrustedScriptURL'],
+        'codebase': window['TrustedScriptURL'],
+    },
+    'HTMLEmbedElement': {
+        'src': window['TrustedScriptURL'],
+    },
+    'HTMLScriptElement': {
+        'src': window['TrustedScriptURL'],
+    },
+};
+
+
+/**
  * Wraps HTML sinks with an enforcement setter, which will enforce trusted types
  * and do logging, if enabled.
  */
@@ -55,6 +110,7 @@ trustedtypes.TrustedTypesEnforcer.prototype.install = function() {
       window['TrustedHTML'], 0);
   this.wrapWithEnforceFunction_(Element.prototype, 'insertAdjacentHTML',
       window['TrustedHTML'], 1);
+  this.wrapSetAttribute_();
 };
 
 /**
@@ -67,6 +123,47 @@ trustedtypes.TrustedTypesEnforcer.prototype.uninstall = function() {
   this.restoreSetter_(HTMLScriptElement.prototype, 'src');
   this.restoreFunction_(Range.prototype, 'createContextualFragment');
   this.restoreFunction_(Element.prototype, 'insertAdjacentHTML');
+  this.restoreFunction_(Element.prototype, 'setAttribute');
+};
+
+/** Wraps set attribute with an enforcement function. */
+trustedtypes.TrustedTypesEnforcer.prototype.wrapSetAttribute_ =
+    function() {
+  let that = this;
+  this.wrapFunction_(
+      Element.prototype,
+      'setAttribute',
+      function(originalFn, ...args) {
+        that.setAttributeWrapper_
+            .bind(that, this, originalFn)
+            .apply(that, args);
+      });
+};
+
+/**
+ * Enforces type checking for Element.prototype.setAttribute.
+ * @param {!Object} context The context for the call to the original function.
+ * @param {!Function} originalFn The original setAttribute function.
+ * @return {*}
+ */
+trustedtypes.TrustedTypesEnforcer.prototype.setAttributeWrapper_ =
+    function(context, originalFn, ...args) {
+  // Note(slekies): In a normal application constructor should never be null.
+  // However, there are no guarantees. If the constructor is null, we cannot
+  // determine whether a special type is required. In order to not break the
+  // application, we will not do any further type checks and pass the call
+  // to setAttribute.
+  if (context.constructor === null) {
+    return originalFn.apply(context, args);
+  }
+
+  let name = args[0];
+  let type =
+    trustedtypes.TrustedTypesEnforcer.SET_ATTRIBUTE_TYPE_MAP[
+        context.constructor.name][name];
+
+  return this.enforce_
+      .call(this, context, 'setAttribute', type, originalFn, 1, args);
 };
 
 

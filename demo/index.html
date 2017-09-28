@@ -76,6 +76,9 @@ limitations under the License.
   runTest(['iframe.srcdoc', 'setAttribute', 'string'], function(el) {
     el.appendChild(document.createElement('iframe')).setAttribute('srcdoc', 'throw');
   }, true);
+  runTest(['iframe.srcdoc', 'setAttribute', 'TrustedHTML'], function(el) {
+    el.appendChild(document.createElement('iframe')).setAttribute('srcdoc', trustedValue);
+  }, false);
   runTest(['Range.createContextualFragment', 'string'], function(el) {
     el.appendChild(
       document.createRange().createContextualFragment('<b>a</b>'));
