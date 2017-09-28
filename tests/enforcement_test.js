@@ -27,184 +27,185 @@ describe('TrustedTypesEnforcer', function() {
       /* isEnforcementEnabled */ true);
 
   it('requires calling install to enforce', function() {
-  let enforcer = new trustedtypes.TrustedTypesEnforcer(ENFORCING_CONFIG);
-  let el = document.createElement('div');
+    let enforcer = new trustedtypes.TrustedTypesEnforcer(ENFORCING_CONFIG);
+    let el = document.createElement('div');
 
-  expect(function() {
-    el.innerHTML = TEST_HTML;
-  }).not.toThrow();
+    expect(function() {
+      el.innerHTML = TEST_HTML;
+    }).not.toThrow();
 
-  enforcer.install();
-  expect(function() {
-    el.innerHTML = TEST_HTML;
-  }).toThrowError(TypeError);
+    enforcer.install();
+    expect(function() {
+      el.innerHTML = TEST_HTML;
+    }).toThrowError(TypeError);
 
-  enforcer.uninstall();
+    enforcer.uninstall();
   });
 
   it('allows for uninstalling policies', function() {
-  let enforcer = new trustedtypes.TrustedTypesEnforcer(ENFORCING_CONFIG);
-  let el = document.createElement('div');
-  enforcer.install();
+    let enforcer = new trustedtypes.TrustedTypesEnforcer(ENFORCING_CONFIG);
+    let el = document.createElement('div');
+    enforcer.install();
 
-  expect(function() {
-    el.innerHTML = TEST_HTML;
-  }).toThrow();
+    expect(function() {
+      el.innerHTML = TEST_HTML;
+    }).toThrow();
 
-  expect(function() {
-    el.insertAdjacentHTML('afterbegin', TEST_HTML);
-  }).toThrow();
+    expect(function() {
+      el.insertAdjacentHTML('afterbegin', TEST_HTML);
+    }).toThrow();
 
-  enforcer.uninstall();
+    enforcer.uninstall();
 
-  expect(function() {
-    el.innerHTML = TEST_HTML;
-  }).not.toThrowError(TypeError);
+    expect(function() {
+      el.innerHTML = TEST_HTML;
+    }).not.toThrowError(TypeError);
 
-  expect(function() {
-    el.insertAdjacentHTML('afterbegin', TEST_HTML);
-  }).not.toThrowError(TypeError);
+    expect(function() {
+      el.insertAdjacentHTML('afterbegin', TEST_HTML);
+    }).not.toThrowError(TypeError);
   });
 
   it('prevents double installation', function() {
-  let enforcer = new trustedtypes.TrustedTypesEnforcer(ENFORCING_CONFIG);
-  enforcer.install();
-
-  expect(function() {
+    let enforcer = new trustedtypes.TrustedTypesEnforcer(ENFORCING_CONFIG);
     enforcer.install();
-  }).toThrow();
 
-  enforcer.uninstall();
+    expect(function() {
+      enforcer.install();
+    }).toThrow();
+
+    enforcer.uninstall();
   });
 
   it('prevents double uninstallation', function() {
-  let enforcer = new trustedtypes.TrustedTypesEnforcer(ENFORCING_CONFIG);
-  enforcer.install();
-  enforcer.uninstall();
-  expect(function() {
+    let enforcer = new trustedtypes.TrustedTypesEnforcer(ENFORCING_CONFIG);
+    enforcer.install();
     enforcer.uninstall();
-  }).toThrow();
+    expect(function() {
+      enforcer.uninstall();
+    }).toThrow();
   });
 
   describe('enforcement disables string assignments', function() {
-  let enforcer;
+    let enforcer;
 
-  beforeEach(function() {
-    enforcer = new trustedtypes.TrustedTypesEnforcer(ENFORCING_CONFIG);
-    enforcer.install();
-  });
+    beforeEach(function() {
+      enforcer = new trustedtypes.TrustedTypesEnforcer(ENFORCING_CONFIG);
+      enforcer.install();
+    });
 
-  afterEach(function() {
-    enforcer.uninstall();
-  });
+    afterEach(function() {
+      enforcer.uninstall();
+    });
 
-  it('on innerHTML', function() {
-    let el = document.createElement('div');
+    it('on innerHTML', function() {
+      let el = document.createElement('div');
 
-    expect(function() {
-    el.innerHTML = TEST_HTML;
-    }).toThrow();
-  });
+      expect(function() {
+        el.innerHTML = TEST_HTML;
+      }).toThrow();
+    });
 
-  it('on outerHTML', function() {
-    let wrap = document.createElement('div');
-    let el = document.createElement('div');
-    wrap.appendChild(el);
+    it('on outerHTML', function() {
+      let wrap = document.createElement('div');
+      let el = document.createElement('div');
+      wrap.appendChild(el);
 
-    expect(function() {
-    el.outerHTML = TEST_HTML;
-    }).toThrow();
-  });
+      expect(function() {
+        el.outerHTML = TEST_HTML;
+      }).toThrow();
+    });
 
-  it('on iframe srcdoc', function() {
-    let el = document.createElement('iframe');
+    it('on iframe srcdoc', function() {
+      let el = document.createElement('iframe');
 
-    expect(function() {
-    el.srcdoc = TEST_HTML;
-    }).toThrow();
-  });
+      expect(function() {
+        el.srcdoc = TEST_HTML;
+      }).toThrow();
+    });
 
-  it('on Range.createContextualFragment', function() {
-    let range = document.createRange();
+    it('on Range.createContextualFragment', function() {
+      let range = document.createRange();
 
-    expect(function() {
-    range.createContextualFragment(TEST_HTML);
-    }).toThrow();
-  });
+      expect(function() {
+        range.createContextualFragment(TEST_HTML);
+      }).toThrow();
+    });
 
-  it('on Element.insertAdjacentHTML', function() {
-    let el = document.createElement('div');
+    it('on Element.insertAdjacentHTML', function() {
+      let el = document.createElement('div');
 
-    expect(function() {
-    el.insertAdjacentHTML('afterbegin', TEST_HTML);
-    }).toThrow();
-    expect(el.innerHTML).toEqual('');
-  });
+      expect(function() {
+        el.insertAdjacentHTML('afterbegin', TEST_HTML);
+      }).toThrow();
+      expect(el.innerHTML).toEqual('');
+    });
 
-  it('on HTMLScriptElement.src', function() {
-    let el = document.createElement('script');
+    it('on HTMLScriptElement.src', function() {
+      let el = document.createElement('script');
 
-    expect(function() {
-      el.src = TEST_URL;
-    }).toThrow();
+      expect(function() {
+        el.src = TEST_URL;
+      }).toThrow();
 
-    expect(el.src).toEqual('');
-  });
+      expect(el.src).toEqual('');
+    });
   });
 
   describe('enforcement allows type-based assignments', function() {
-  it('on innerHTML', function() {
-    let el = document.createElement('div');
+    it('on innerHTML', function() {
+      let el = document.createElement('div');
 
-    el.innerHTML = TrustedHTML.unsafelyCreate(TEST_HTML);
+      el.innerHTML = TrustedHTML.unsafelyCreate(TEST_HTML);
 
-    expect(el.innerHTML).toEqual(TEST_HTML);
-  });
+      expect(el.innerHTML).toEqual(TEST_HTML);
+    });
 
-  it('on outerHTML', function() {
-    let wrap = document.createElement('div');
-    let el = document.createElement('div');
-    wrap.appendChild(el);
+    it('on outerHTML', function() {
+      let wrap = document.createElement('div');
+      let el = document.createElement('div');
+      wrap.appendChild(el);
 
-    expect(function() {
-    el.outerHTML = TrustedHTML.unsafelyCreate(TEST_HTML);
-    }).not.toThrow();
-  });
+      expect(function() {
+        el.outerHTML = TrustedHTML.unsafelyCreate(TEST_HTML);
+      }).not.toThrow();
+    });
 
-  it('on iframe srcdoc', function() {
-    let el = document.createElement('iframe');
+    it('on iframe srcdoc', function() {
+      let el = document.createElement('iframe');
 
-    expect(function() {
-    el.srcdoc = TrustedHTML.unsafelyCreate(TEST_HTML);
-    }).not.toThrow();
+      expect(function() {
+        el.srcdoc = TrustedHTML.unsafelyCreate(TEST_HTML);
+      }).not.toThrow();
 
-    expect(el.srcdoc).toEqual(TEST_HTML);
-  });
+      expect(el.srcdoc).toEqual(TEST_HTML);
+    });
 
-  it('on Range.createContextualFragment', function() {
-    let range = document.createRange();
+    it('on Range.createContextualFragment', function() {
+      let range = document.createRange();
 
-    let fragment = range.createContextualFragment(
-      TrustedHTML.unsafelyCreate(TEST_HTML));
+      let fragment = range.createContextualFragment(
+          TrustedHTML.unsafelyCreate(TEST_HTML));
 
-    expect(fragment.children[0].outerHTML).toEqual(TEST_HTML);
-  });
+      expect(fragment.children[0].outerHTML).toEqual(TEST_HTML);
+    });
 
 
-  it('on Element.insertAdjacentHTML', function() {
-    let el = document.createElement('div');
+    it('on Element.insertAdjacentHTML', function() {
+      let el = document.createElement('div');
 
-    el.insertAdjacentHTML('afterbegin', TrustedHTML.unsafelyCreate('bar'));
-    el.insertAdjacentHTML('afterbegin', TrustedHTML.unsafelyCreate('foo'));
-    expect(el.innerHTML).toEqual('foo' + 'bar');
-  });
+      el.insertAdjacentHTML('afterbegin', TrustedHTML.unsafelyCreate('bar'));
+      el.insertAdjacentHTML('afterbegin', TrustedHTML.unsafelyCreate('foo'));
 
-  it('on HTMLScriptElement.src', function() {
-    let el = document.createElement('script');
+      expect(el.innerHTML).toEqual('foo' + 'bar');
+    });
 
-    el.src = TrustedScriptURL.unsafelyCreate(TEST_URL);
+    it('on HTMLScriptElement.src', function() {
+      let el = document.createElement('script');
 
-    expect(el.src).toEqual(TEST_URL);
-  });
+      el.src = TrustedScriptURL.unsafelyCreate(TEST_URL);
+
+      expect(el.src).toEqual(TEST_URL);
+    });
   });
 });
