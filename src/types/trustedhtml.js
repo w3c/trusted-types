@@ -40,7 +40,7 @@ Object.defineProperty(trustedtypes.types.TrustedHTML, 'name', {
  * @param {string} html The string to escape.
  * @return {!trustedtypes.types.TrustedHTML}
  */
-trustedtypes.types.TrustedHTML.escape = function(html) {
+trustedtypes.types.TrustedHTML['escape'] = function(html) {
   let escaped = html.replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
@@ -55,7 +55,7 @@ trustedtypes.types.TrustedHTML.escape = function(html) {
  * @param {string} html The unsafe string.
  * @return {!trustedtypes.types.TrustedHTML}
  */
-trustedtypes.types.TrustedHTML.unsafelyCreate = function(html) {
+trustedtypes.types.TrustedHTML['unsafelyCreate'] = function(html) {
   return new trustedtypes.types.TrustedHTML(html);
 };
 
@@ -63,10 +63,10 @@ trustedtypes.types.TrustedHTML.unsafelyCreate = function(html) {
  * Returns the HTML as a string.
  * @return {string}
  */
-trustedtypes.types.TrustedHTML.prototype.toString = function() {
+trustedtypes.types.TrustedHTML.prototype['toString'] = function() {
   return '' + this.inner_;
 };
 
-if (typeof window.TrustedHTML === 'undefined') {
-  window.TrustedHTML = trustedtypes.types.TrustedHTML;
+if (typeof window['TrustedHTML'] === 'undefined') {
+  window['TrustedHTML'] = trustedtypes.types.TrustedHTML;
 }

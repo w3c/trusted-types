@@ -45,14 +45,16 @@ trustedtypes.TrustedTypesEnforcer = function(config) {
  * and do logging, if enabled.
  */
 trustedtypes.TrustedTypesEnforcer.prototype.install = function() {
-  this.wrapSetter_(Element.prototype, 'innerHTML', window.TrustedHTML);
-  this.wrapSetter_(Element.prototype, 'outerHTML', window.TrustedHTML);
-  this.wrapSetter_(HTMLIFrameElement.prototype, 'srcdoc', window.TrustedHTML);
-  this.wrapSetter_(HTMLScriptElement.prototype, 'src', window.TrustedScriptURL);
+  this.wrapSetter_(Element.prototype, 'innerHTML', window['TrustedHTML']);
+  this.wrapSetter_(Element.prototype, 'outerHTML', window['TrustedHTML']);
+  this.wrapSetter_(HTMLIFrameElement.prototype, 'srcdoc',
+      window['TrustedHTML']);
+  this.wrapSetter_(HTMLScriptElement.prototype, 'src',
+      window['TrustedScriptURL']);
   this.wrapFunction_(Range.prototype, 'createContextualFragment',
-      window.TrustedHTML, 0);
+      window['TrustedHTML'], 0);
   this.wrapFunction_(Element.prototype, 'insertAdjacentHTML',
-      window.TrustedHTML, 1);
+      window['TrustedHTML'], 1);
 };
 
 /**
@@ -62,8 +64,7 @@ trustedtypes.TrustedTypesEnforcer.prototype.uninstall = function() {
   this.restoreSetter_(Element.prototype, 'innerHTML');
   this.restoreSetter_(Element.prototype, 'outerHTML');
   this.restoreSetter_(HTMLIFrameElement.prototype, 'srcdoc');
-  this.restoreSetter_(HTMLScriptElement.prototype, 'src',
-      window.TrustedScriptURL);
+  this.restoreSetter_(HTMLScriptElement.prototype, 'src');
   this.restoreFunction_(Range.prototype, 'createContextualFragment');
   this.restoreFunction_(Element.prototype, 'insertAdjacentHTML');
 };
