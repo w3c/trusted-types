@@ -75,6 +75,12 @@ trustedtypes.types.TrustedScriptURL.prototype.toString = function() {
   return this.url_;
 };
 
-if (typeof window.TrustedScriptURL === 'undefined') {
-  window.TrustedScriptURL = trustedtypes.types.TrustedScriptURL;
+// Make sure Closure compiler exposes the names.
+if (typeof window['TrustedScriptURL'] === 'undefined') {
+  goog.exportProperty(window, 'TrustedScriptURL',
+      trustedtypes.types.TrustedScriptURL);
+  goog.exportProperty(window['TrustedScriptURL'], 'unsafelyCreate',
+      trustedtypes.types.TrustedScriptURL.unsafelyCreate);
+  goog.exportProperty(window['TrustedScriptURL'], 'createHttpUrl',
+      trustedtypes.types.TrustedScriptURL.createHttpUrl);
 }

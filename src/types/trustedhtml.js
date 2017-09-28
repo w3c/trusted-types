@@ -67,6 +67,12 @@ trustedtypes.types.TrustedHTML.prototype.toString = function() {
   return '' + this.inner_;
 };
 
-if (typeof window.TrustedHTML === 'undefined') {
-  window.TrustedHTML = trustedtypes.types.TrustedHTML;
+// Make sure Closure compiler exposes the names.
+if (typeof window['TrustedHTML'] === 'undefined') {
+  goog.exportProperty(window, 'TrustedHTML',
+      trustedtypes.types.TrustedHTML);
+  goog.exportProperty(window['TrustedHTML'], 'escape',
+      trustedtypes.types.TrustedHTML.escape);
+  goog.exportProperty(window['TrustedHTML'], 'unsafelyCreate',
+      trustedtypes.types.TrustedHTML.unsafelyCreate);
 }

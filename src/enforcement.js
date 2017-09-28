@@ -45,14 +45,16 @@ trustedtypes.TrustedTypesEnforcer = function(config) {
  * and do logging, if enabled.
  */
 trustedtypes.TrustedTypesEnforcer.prototype.install = function() {
-  this.wrapSetter_(Element.prototype, 'innerHTML', window.TrustedHTML);
-  this.wrapSetter_(Element.prototype, 'outerHTML', window.TrustedHTML);
-  this.wrapSetter_(HTMLIFrameElement.prototype, 'srcdoc', window.TrustedHTML);
-  this.wrapSetter_(HTMLScriptElement.prototype, 'src', window.TrustedScriptURL);
-  this.wrapWithEnforceFunction_(
-      Range.prototype, 'createContextualFragment', window.TrustedHTML, 0);
-  this.wrapWithEnforceFunction_(
-      Element.prototype, 'insertAdjacentHTML', window.TrustedHTML, 1);
+  this.wrapSetter_(Element.prototype, 'innerHTML', window['TrustedHTML']);
+  this.wrapSetter_(Element.prototype, 'outerHTML', window['TrustedHTML']);
+  this.wrapSetter_(HTMLIFrameElement.prototype, 'srcdoc',
+      window['TrustedHTML']);
+  this.wrapSetter_(HTMLScriptElement.prototype, 'src',
+      window['TrustedScriptURL']);
+  this.wrapWithEnforceFunction_(Range.prototype, 'createContextualFragment',
+      window['TrustedHTML'], 0);
+  this.wrapWithEnforceFunction_(Element.prototype, 'insertAdjacentHTML',
+      window['TrustedHTML'], 1);
 };
 
 /**
@@ -89,7 +91,7 @@ trustedtypes.TrustedTypesEnforcer.prototype.wrapWithEnforceFunction_ =
 };
 
 
-/** 
+/**
  * Wraps an existing function with a given function body and stores the original
  * function.
  * @param {!Object} object The object of the to-be-wrapped property.

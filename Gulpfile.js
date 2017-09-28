@@ -21,13 +21,15 @@ gulp.task('default', ['build']);
 
 gulp.task('build', function() {
   return gulp.src([
-      'src/**/*.js'
+      'src/**/*.js',
+      './node_modules/google-closure-library/closure/goog/base.js',
     ])
     .pipe(closureCompiler({
       compilerPath: './node_modules/google-closure-compiler/compiler.jar',
       fileName: 'trustedtypes.build.js',
       compilerFlags: {
-        compilation_level: 'SIMPLE_OPTIMIZATIONS',
+        closure_entry_point: 'trustedtypes.bootstrap',
+        compilation_level: 'ADVANCED_OPTIMIZATIONS',
         language_in: 'ECMASCRIPT6',
         language_out: 'ECMASCRIPT5',
         output_wrapper: '(function(){%output%}).call(window);',
