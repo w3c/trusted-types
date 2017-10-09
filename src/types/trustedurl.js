@@ -46,8 +46,8 @@ trustedtypes.types.TrustedURL.unsafelyCreate = function(url) {
 };
 
 /**
- * Returns a TrustedURL type. The TrustedURL prepends "unsafe_" to all non
- * HTTP(s) schemes.
+ * Returns a TrustedURL type. The TrustedURL changes all non HTTP(s) URLs to
+ * "about:invalid".
  * @param {string} url The an absolute url.
  * @return {!trustedtypes.types.TrustedURL}
  */
