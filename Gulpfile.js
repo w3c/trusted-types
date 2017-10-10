@@ -28,7 +28,6 @@ gulp.task('build', function() {
       compilerPath: './node_modules/google-closure-compiler/compiler.jar',
       fileName: 'trustedtypes.build.js',
       compilerFlags: {
-        entry_point: './src/bootstrap',
         compilation_level: 'ADVANCED_OPTIMIZATIONS',
         language_in: 'ECMASCRIPT6',
         language_out: 'ECMASCRIPT5',
