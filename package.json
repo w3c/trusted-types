@@ -38,8 +38,7 @@
     "pre-commit": "^1.2.2",
     "watchify": "^3.9.0"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "pre-commit": [
     "lint",
     "build",
