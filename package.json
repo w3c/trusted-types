@@ -20,21 +20,25 @@
   "author": "Google Inc.",
   "license": "Apache-2.0",
   "devDependencies": {
+    "babel-preset-env": "^1.6.0",
+    "babelify": "^7.3.0",
+    "browserify": "^14.4.0",
     "eslint": "^4.7.2",
     "eslint-config-google": "^0.9.1",
+    "google-closure-compiler": "^20170910.0.0",
     "gulp": "^3.9.1",
     "gulp-closure-compiler": "^0.4.0",
     "jasmine": "^2.8.0",
     "jasmine-core": "^2.8.0",
     "karma": "^1.7.1",
+    "karma-browserify": "^5.1.1",
     "karma-chrome-launcher": "^2.2.0",
-    "karma-closure": "^0.1.1",
     "karma-firefox-launcher": "^1.0.1",
     "karma-jasmine": "^1.1.0",
-    "pre-commit": "^1.2.2"
+    "pre-commit": "^1.2.2",
+    "watchify": "^3.9.0"
   },
   "dependencies": {
-    "google-closure-library": "^20170910.0.0"
   },
   "pre-commit": [
     "lint",

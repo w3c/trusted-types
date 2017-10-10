@@ -13,73 +13,78 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-goog.provide('trustedtypes.types.TrustedURL');
 
 /**
  * A type to represent a trusted URL.
- * @param {string} url The trusted URL.
- * @constructor
  */
-trustedtypes.types.TrustedURL = function TrustedURL(url) {
+export class TrustedURL {
   /**
-   * The trusted URL.
-   * @private {string}
+   * @param {string} url The trusted URL.
    */
-  this.url_ = url;
-};
+  constructor(url) {
+    /**
+     * The trusted URL.
+     * @private {string}
+     */
+    this.url_ = url;
+  };
 
-// Workaround for Closure Compiler clearing the function name.
-Object.defineProperty(trustedtypes.types.TrustedURL, 'name', {
-  get: function() {
-    return 'TrustedURL';
-  },
-});
-
-/**
- * Returns a TrustedURL type that contains an unsafe URL string.
- * @param {string} url The unsafe string.
- * @return {!trustedtypes.types.TrustedURL}
- */
-trustedtypes.types.TrustedURL.unsafelyCreate = function(url) {
-  let parsedUrl = trustedtypes.types.TrustedURL.parse_(url);
-  return new trustedtypes.types.TrustedURL(parsedUrl.href);
-};
-
-/**
- * Returns a TrustedURL type. The TrustedURL changes all non HTTP(s) URLs to
- * "about:invalid".
- * @param {string} url The an absolute url.
- * @return {!trustedtypes.types.TrustedURL}
- */
-trustedtypes.types.TrustedURL.create = function(url) {
-  let parsedUrl = trustedtypes.types.TrustedURL.parse_(url);
-  if (parsedUrl.protocol !== 'http:' && parsedUrl.protocol !== 'https:') {
-    return new trustedtypes.types.TrustedURL('about:invalid');
+  /**
+   * Returns a TrustedURL type that contains an unsafe URL string.
+   * @param {string} url The unsafe string.
+   * @return {!TrustedURL}
+   */
+  static unsafelyCreate(url) {
+    let parsedUrl = TrustedURL.parse_(url);
+    return new TrustedURL(parsedUrl.href);
   }
 
-  return new trustedtypes.types.TrustedURL(parsedUrl.href);
-};
+  /**
+   * Returns a TrustedURL type. The TrustedURL changes all non HTTP(s) URLs to
+   * "about:invalid".
+   * @param {string} url The an absolute url.
+   * @return {!TrustedURL}
+   */
+  static create(url) {
+    let parsedUrl = TrustedURL.parse_(url);
+    if (parsedUrl.protocol !== 'http:' && parsedUrl.protocol !== 'https:') {
+      return new TrustedURL('about:invalid');
+    }
 
-/**
- * Returns a parsed URL.
- * @param {string} url The url to parse.
- * @return {!HTMLAnchorElement} An anchor element containing the url.
- */
-trustedtypes.types.TrustedURL.parse_ = function(url) {
-  let aTag = /** @type !HTMLAnchorElement */ (document.createElement('a'));
-  aTag.href = url;
-  return aTag;
-};
+    return new TrustedURL(parsedUrl.href);
+  }
 
-trustedtypes.types.TrustedURL.prototype.toString = function() {
-  return this.url_;
-};
+  /**
+   * Returns a parsed URL.
+   * @param {string} url The url to parse.
+   * @return {!HTMLAnchorElement} An anchor element containing the url.
+   */
+  static parse_(url) {
+    let aTag = /** @type !HTMLAnchorElement */ (document.createElement('a'));
+    aTag.href = url;
+    return aTag;
+  }
+
+  /**
+   * Returns the URL as a string.
+   * @return {string}
+   */
+  toString() {
+    return this.url_;
+  }
+
+  /**
+   * Name property getter.
+   * Required by the enforcer to work with both the polyfilled and native type.
+   */
+  static get name() {
+    return 'TrustedURL';
+  }
+}
 
 // Make sure Closure compiler exposes the names.
 if (typeof window['TrustedURL'] === 'undefined') {
-  goog.exportProperty(window, 'TrustedURL', trustedtypes.types.TrustedURL);
-  goog.exportProperty(window['TrustedURL'], 'unsafelyCreate',
-      trustedtypes.types.TrustedURL.unsafelyCreate);
-  goog.exportProperty(window['TrustedURL'], 'create',
-      trustedtypes.types.TrustedURL.create);
+  window['TrustedURL'] = TrustedURL;
+  window['TrustedURL']['unsafelyCreate'] = TrustedURL.unsafelyCreate;
+  window['TrustedURL']['create'] = TrustedURL.create;
 }

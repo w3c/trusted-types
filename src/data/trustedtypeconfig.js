@@ -13,27 +13,28 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-goog.provide('trustedtypes.data.TrustedTypeConfig');
 
 /**
  * A configuration object for trusted type enforcement.
- * @param {boolean} isLoggingEnabled If true enforcement wrappers will log
- *   warnings to the console.
- * @param {boolean} isEnforcementEnabled If true enforcement is enabled at
- *   runtime.
- * @constructor
  */
-trustedtypes.data.TrustedTypeConfig = function(isLoggingEnabled,
-    isEnforcementEnabled) {
+export class TrustedTypeConfig {
   /**
-    * True if logging is enabled.
-    * @type {boolean}
-    */
-  this.isLoggingEnabled = isLoggingEnabled;
+   * @param {boolean} isLoggingEnabled If true enforcement wrappers will log
+   *   warnings to the console.
+   * @param {boolean} isEnforcementEnabled If true enforcement is enabled at
+   *   runtime.
+   */
+  constructor(isLoggingEnabled, isEnforcementEnabled) {
+    /**
+      * True if logging is enabled.
+      * @type {boolean}
+      */
+    this.isLoggingEnabled = isLoggingEnabled;
 
-  /**
-    * True if enforcement is enabled.
-    * @type {boolean}
-    */
-  this.isEnforcementEnabled = isEnforcementEnabled;
-};
+    /**
+      * True if enforcement is enabled.
+      * @type {boolean}
+      */
+    this.isEnforcementEnabled = isEnforcementEnabled;
+  }
+}

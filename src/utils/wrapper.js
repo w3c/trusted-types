@@ -13,7 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-goog.provide('trustedtypes.utils.wrapper');
 
 /**
  * Installs the setter of a given property.
@@ -21,7 +20,7 @@ goog.provide('trustedtypes.utils.wrapper');
  * @param {string} name The name of the property to wrap.
  * @param {function(*): *|undefined} setter A setter function}
  */
-trustedtypes.utils.wrapper.installSetter = function(object, name, setter) {
+export function installSetter(object, name, setter) {
   Object.defineProperty(object, name, {
     set: setter,
   });
@@ -33,7 +32,7 @@ trustedtypes.utils.wrapper.installSetter = function(object, name, setter) {
  * @param {string} name The name of the property to wrap.
  * @param {function(*): *|undefined} fn A function}
  */
-trustedtypes.utils.wrapper.installFunction = function(object, name, fn) {
+export function installFunction(object, name, fn) {
   Object.defineProperty(object, name, {
     value: fn,
   });

@@ -13,21 +13,24 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-goog.require('trustedtypes.TrustedTypesEnforcer');
-goog.require('trustedtypes.data.TrustedTypeConfig');
-goog.require('trustedtypes.types.TrustedHTML');
+// goog.require('trustedtypes.TrustedTypesEnforcer');
+// goog.require('trustedtypes.data.TrustedTypeConfig');
+// goog.require('trustedtypes.types.TrustedHTML');
+import {TrustedTypeConfig} from '../src/data/trustedtypeconfig.js';
+import {TrustedTypesEnforcer} from '../src/enforcement.js';
+import {TrustedHTML} from '../src/types/trustedhtml.js';
 
 describe('TrustedTypesEnforcer', function() {
   let TEST_HTML = '<b>html</b>';
 
   let TEST_URL = 'http://example.com/script';
 
-  let ENFORCING_CONFIG = new trustedtypes.data.TrustedTypeConfig(
+  let ENFORCING_CONFIG = new TrustedTypeConfig(
       /* isLoggingEnabled */ false,
       /* isEnforcementEnabled */ true);
 
   it('requires calling install to enforce', function() {
-    let enforcer = new trustedtypes.TrustedTypesEnforcer(ENFORCING_CONFIG);
+    let enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
     let el = document.createElement('div');
 
     expect(function() {
@@ -43,7 +46,7 @@ describe('TrustedTypesEnforcer', function() {
   });
 
   it('allows for uninstalling policies', function() {
-    let enforcer = new trustedtypes.TrustedTypesEnforcer(ENFORCING_CONFIG);
+    let enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
     let el = document.createElement('div');
     enforcer.install();
 
@@ -67,7 +70,7 @@ describe('TrustedTypesEnforcer', function() {
   });
 
   it('prevents double installation', function() {
-    let enforcer = new trustedtypes.TrustedTypesEnforcer(ENFORCING_CONFIG);
+    let enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
     enforcer.install();
 
     expect(function() {
@@ -78,7 +81,7 @@ describe('TrustedTypesEnforcer', function() {
   });
 
   it('prevents double uninstallation', function() {
-    let enforcer = new trustedtypes.TrustedTypesEnforcer(ENFORCING_CONFIG);
+    let enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
     enforcer.install();
     enforcer.uninstall();
     expect(function() {
@@ -90,7 +93,7 @@ describe('TrustedTypesEnforcer', function() {
     let enforcer;
 
     beforeEach(function() {
-      enforcer = new trustedtypes.TrustedTypesEnforcer(ENFORCING_CONFIG);
+      enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
       enforcer.install();
     });
 
@@ -166,7 +169,7 @@ describe('TrustedTypesEnforcer', function() {
     let enforcer;
 
     beforeEach(function() {
-      enforcer = new trustedtypes.TrustedTypesEnforcer(ENFORCING_CONFIG);
+      enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
       enforcer.install();
     });
 
@@ -190,8 +193,10 @@ describe('TrustedTypesEnforcer', function() {
   });
 
   describe('enforcement allows type-based assignments', function() {
+    let enforcer;
+
     beforeEach(function() {
-      enforcer = new trustedtypes.TrustedTypesEnforcer(ENFORCING_CONFIG);
+      enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
       enforcer.install();
     });
 

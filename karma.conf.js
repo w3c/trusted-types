@@ -17,14 +17,10 @@ limitations under the License.
 module.exports = function(config) {
   config.set({
     basePath: '',
-    frameworks: ['jasmine', 'closure'],
+    frameworks: ['browserify', 'jasmine'],
 
     files: [
-      { pattern: 'node_modules/google-closure-library/closure/goog/base.js'},
       { pattern: 'tests/**/*_test.js'},
-      { pattern: 'src/**/*.js', included: false },
-      { pattern: 'node_modules/google-closure-library/closure/goog/deps.js', included: false, served: false },
-      { pattern: 'node_modules/google-closure-library/closure/goog/**/*.js', included: false}
     ],
 
     exclude: [
@@ -32,12 +28,15 @@ module.exports = function(config) {
     ],
 
     preprocessors: {
-      // tests are preprocessed for dependencies (closure) and for iits
-      'tests/**/*.js': ['closure', 'closure-iit'],
-      // source files are preprocessed for dependencies
-      'src/**/*.js': ['closure'],
-      // external deps
-      'node_modules/google-closure-library/closure/goog/deps.js': ['closure-deps']
+      'tests/**/*.js': ['browserify'],
+    },
+
+    browserify : {
+            configure: function browserify(bundle) {
+                bundle.once('prebundle', function prebundle() {
+                    bundle.transform('babelify', {presets: ['env']});
+                });
+            }
     },
 
     reporters: ['progress'],
