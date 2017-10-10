@@ -27,7 +27,7 @@ export class TrustedURL {
      * @private {string}
      */
     this.url_ = url;
-  };
+  }
 
   /**
    * Returns a TrustedURL type that contains an unsafe URL string.
