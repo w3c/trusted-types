@@ -22,7 +22,6 @@ gulp.task('default', ['build']);
 gulp.task('build', function() {
   return gulp.src([
       'src/**/*.js',
-      './node_modules/google-closure-library/closure/goog/base.js',
     ])
     .pipe(closureCompiler({
       compilerPath: './node_modules/google-closure-compiler/compiler.jar',
