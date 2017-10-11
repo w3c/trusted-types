@@ -14,9 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 import {TrustedScriptURL} from '../../src/types/trustedscripturl.js';
-// goog.require('trustedtypes.types.TrustedHTML');
-
-// goog.require('trustedtypes.types.TrustedScriptURL');
 
 describe('TrustedScriptURL', function() {
   describe('unsafelyCreate', function() {

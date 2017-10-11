@@ -13,9 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-// goog.require('trustedtypes.TrustedTypesEnforcer');
-// goog.require('trustedtypes.data.TrustedTypeConfig');
-// goog.require('trustedtypes.types.TrustedHTML');
 import {TrustedTypeConfig} from '../src/data/trustedtypeconfig.js';
 import {TrustedTypesEnforcer} from '../src/enforcement.js';
 import {TrustedHTML} from '../src/types/trustedhtml.js';
