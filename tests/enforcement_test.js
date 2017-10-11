@@ -266,4 +266,57 @@ describe('TrustedTypesEnforcer', function() {
       expect(el.src).toEqual(TEST_URL);
     });
   });
+
+  describe('template literal interpolation', function() {
+    let enforcer;
+
+    beforeEach(function() {
+      enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
+      enforcer.install();
+    });
+
+    afterEach(function() {
+      enforcer.uninstall();
+    });
+
+    it('forbids string assignment for node contents', function() {
+      expect(function() {
+        let one = '1';
+        TrustedHTML.fromTemplateLiteral `<b>${one}</b>`;
+      }).toThrowError(TypeError);
+    });
+
+    it('forbids string assignments for partial node contents', function() {
+      expect(function() {
+        let one = '1';
+        TrustedHTML.fromTemplateLiteral `<b>-${one}-</b>`;
+      }).toThrowError(TypeError);
+    });
+
+    it('allows TrustedHTML assignment for node contents', function() {
+      let one = TrustedHTML.unsafelyCreate('<i>1</i>');
+      expect('' + TrustedHTML.fromTemplateLiteral `<b>${one}</b>`).toEqual(
+          '<b><i>1</i></b>');
+    });
+
+    it('allows TrustedHTML assignment for partial node contents', function() {
+      let one = TrustedHTML.unsafelyCreate('<i>1</i>');
+      expect('' + TrustedHTML.fromTemplateLiteral `<b># of files: ${one}</b>`)
+          .toEqual('<b># of files: <i>1</i></b>');
+    });
+
+    it('forbids string assignment to protected attributes', function() {
+      expect(function() {
+        let src = 'http://bad/';
+        TrustedHTML.fromTemplateLiteral `<script src="${src}"></script>`;
+      }).toThrowError(TypeError);
+    });
+
+    it('allows typed assignments to protected attributes', function() {
+      let src = TrustedScriptURL.unsafelyCreate('http://bad/');
+      // eslint-disable-next-line max-len      
+      expect('' + TrustedHTML.fromTemplateLiteral `<script src="${src}"></script>`)
+          .toEqual('<script src="http://bad/"></script>');
+    });
+  });
 });
