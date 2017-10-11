@@ -27,6 +27,6 @@ export function bootstrap() {
   const trustedTypesEnforcer = new TrustedTypesEnforcer(config);
 
   trustedTypesEnforcer.install();
-};
+}
 
 bootstrap();

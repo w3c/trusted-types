@@ -24,7 +24,7 @@ export function installSetter(object, name, setter) {
   Object.defineProperty(object, name, {
     set: setter,
   });
-};
+}
 
 /**
  * Installs the setter of a given property.
@@ -36,4 +36,4 @@ export function installFunction(object, name, fn) {
   Object.defineProperty(object, name, {
     value: fn,
   });
-};
+}
