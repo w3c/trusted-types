@@ -16,6 +16,8 @@ limitations under the License.
 import {TrustedTypeConfig} from '../src/data/trustedtypeconfig.js';
 import {TrustedTypesEnforcer} from '../src/enforcement.js';
 import {TrustedHTML} from '../src/types/trustedhtml.js';
+import {TrustedURL} from '../src/types/trustedurl.js';
+import {TrustedScriptURL} from '../src/types/trustedscripturl.js';
 
 describe('TrustedTypesEnforcer', function() {
   let TEST_HTML = '<b>html</b>';

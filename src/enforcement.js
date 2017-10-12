@@ -143,7 +143,7 @@ export class TrustedTypesEnforcer {
               .bind(that, this, originalFn)
                 .apply(that, args);
         });
-  };
+  }
 
   /**
    * Enforces type checking for Element.prototype.setAttribute.
@@ -325,6 +325,7 @@ export class TrustedTypesEnforcer {
           ': This document requires `' + (typeToEnforce.name) + '` assignment.';
 
       if (this.config_.isLoggingEnabled) {
+        // eslint-disable-next-line no-console
         console.warn(message, propertyName, context, typeToEnforce, value);
       }
 

@@ -48,7 +48,7 @@ export class TrustedHTML {
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#39;')
-      .replace(/\x00/g, '&#0;');
+      .replace(/\x00/g, '&#0;'); // eslint-disable-line no-control-regex
     return new TrustedHTML(escaped);
   }
 
