@@ -13,57 +13,63 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-goog.provide('trustedtypes.types.TrustedScriptURL');
 
 /**
  * A type to represent a trusted URL.
- * @param {string} url The trusted URL.
- * @constructor
  */
-trustedtypes.types.TrustedScriptURL = function TrustedScriptURL(url) {
+export class TrustedScriptURL {
   /**
-   * The trusted URL.
-   * @private {string}
+   * @param {string} url The trusted URL.
+   */  
+  constructor(url) {
+    /**
+     * The trusted URL.
+     * @private {string}
+     */
+    this.url_ = url;
+  }
+
+  /**
+   * Returns a trusted Script URL type that contains an unsafe URL.
+   * @param {string} url The unsafe URL.
+   * @return {!TrustedScriptURL}
    */
-  this.url_ = url;
-};
+  static unsafelyCreate(url) {
+    let parsedUrl = TrustedScriptURL.parse_(url);
+    return new TrustedScriptURL(parsedUrl.href);
+  }
 
-// Workaround for Closure Compiler clearing the function name.
-Object.defineProperty(trustedtypes.types.TrustedScriptURL, 'name', {
-  get: function() {
+  /**
+   * Returns a parsed URL.
+   * @param {string} url The url to parse.
+   * @return {!HTMLAnchorElement} An anchor element containing the url.
+   */
+  static parse_(url) {
+    let aTag = /** @type !HTMLAnchorElement */ (document.createElement('a'));
+    aTag.href = url;
+    return aTag;
+  }
+
+  /**
+   * Returns the script URL as a string.
+   * @return {string}
+   */
+  toString() {
+    return this.url_;
+  }
+
+  /**
+   * Name property getter.
+   * Required by the enforcer to work with both the polyfilled and native type.
+   */
+  static get name() {
     return 'TrustedScriptURL';
-  },
-});
-
-/**
- * Returns a TrustedScriptURL type that contains an unsafe URL string.
- * @param {string} url The unsafe string.
- * @return {!trustedtypes.types.TrustedScriptURL}
- */
-trustedtypes.types.TrustedScriptURL.unsafelyCreate = function(url) {
-  let parsedUrl = trustedtypes.types.TrustedScriptURL.parse_(url);
-  return new trustedtypes.types.TrustedScriptURL(parsedUrl.href);
-};
-
-/**
- * Returns a parsed URL.
- * @param {string} url The url to parse.
- * @return {!HTMLAnchorElement} An anchor element containing the url.
- */
-trustedtypes.types.TrustedScriptURL.parse_ = function(url) {
-  let aTag = /** @type !HTMLAnchorElement */ (document.createElement('a'));
-  aTag.href = url;
-  return aTag;
-};
-
-trustedtypes.types.TrustedScriptURL.prototype.toString = function() {
-  return this.url_;
-};
+  }
+}
 
 // Make sure Closure compiler exposes the names.
 if (typeof window['TrustedScriptURL'] === 'undefined') {
-  goog.exportProperty(window, 'TrustedScriptURL',
-      trustedtypes.types.TrustedScriptURL);
-  goog.exportProperty(window['TrustedScriptURL'], 'unsafelyCreate',
-      trustedtypes.types.TrustedScriptURL.unsafelyCreate);
+  window['TrustedScriptURL'] = TrustedScriptURL;
+  window['TrustedScriptURL']['unsafelyCreate'] =
+      TrustedScriptURL.unsafelyCreate;
 }

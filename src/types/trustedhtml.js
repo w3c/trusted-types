@@ -13,66 +13,66 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-goog.provide('trustedtypes.types.TrustedHTML');
 
 /**
  * A type to represent trusted HTML.
- * @param {string} inner A piece of trusted html.
- * @constructor
  */
-trustedtypes.types.TrustedHTML = function TrustedHTML(inner) {
+export class TrustedHTML {
   /**
-   * A piece of trusted HTML.
-   * @private {string}
+   * @param {string} inner A piece of trusted html.
    */
-  this.inner_ = inner;
-};
+  constructor(inner) {
+    /**
+     * A piece of trusted HTML.
+     * @private {string}
+     */
+    this.inner_ = inner;
+  }
 
-// Workaround for Closure Compiler clearing the function name.
-Object.defineProperty(trustedtypes.types.TrustedHTML, 'name', {
-  get: function() {
+  /**
+   * Returns the HTML as a string.
+   * @return {string}
+   */
+  toString() {
+    return '' + this.inner_;
+  }
+
+  /**
+   * Creates a TrustedHTML instance by HTML-escaping a given string.
+   * @param {string} html
+   * @return {!TrustedHTML}
+   */
+  static escape(html) {
+    let escaped = html.replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;')
+      .replace(/\x00/g, '&#0;');
+    return new TrustedHTML(escaped);
+  }
+
+  /**
+   * Returns a trusted HTML type that contains an unsafe HTML string.
+   * @param {string} html The unsafe string.
+   * @return {!TrustedHTML}
+   */
+  static unsafelyCreate(html) {
+    return new TrustedHTML(html);
+  }
+
+  /**
+   * Name property getter.
+   * Required by the enforcer to work with both the polyfilled and native type.
+   */
+  static get name() {
     return 'TrustedHTML';
-  },
-});
-
-/**
- * Returns a trusted HTML type that contains the HTML escaped string.
- * @param {string} html The string to escape.
- * @return {!trustedtypes.types.TrustedHTML}
- */
-trustedtypes.types.TrustedHTML.escape = function(html) {
-  let escaped = html.replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;')
-    .replace(/\x00/g, '&#0;');
-  return new trustedtypes.types.TrustedHTML(escaped);
-};
-
-/**
- * Returns a trusted HTML type that contains an unsafe HTML string.
- * @param {string} html The unsafe string.
- * @return {!trustedtypes.types.TrustedHTML}
- */
-trustedtypes.types.TrustedHTML.unsafelyCreate = function(html) {
-  return new trustedtypes.types.TrustedHTML(html);
-};
-
-/**
- * Returns the HTML as a string.
- * @return {string}
- */
-trustedtypes.types.TrustedHTML.prototype.toString = function() {
-  return '' + this.inner_;
-};
+  }
+}
 
 // Make sure Closure compiler exposes the names.
 if (typeof window['TrustedHTML'] === 'undefined') {
-  goog.exportProperty(window, 'TrustedHTML',
-      trustedtypes.types.TrustedHTML);
-  goog.exportProperty(window['TrustedHTML'], 'escape',
-      trustedtypes.types.TrustedHTML.escape);
-  goog.exportProperty(window['TrustedHTML'], 'unsafelyCreate',
-      trustedtypes.types.TrustedHTML.unsafelyCreate);
+  window['TrustedHTML'] = TrustedHTML;
+  window['TrustedHTML']['escape'] = TrustedHTML.escape;
+  window['TrustedHTML']['unsafelyCreate'] = TrustedHTML.unsafelyCreate;
 }

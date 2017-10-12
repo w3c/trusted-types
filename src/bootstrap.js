@@ -13,19 +13,20 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-goog.provide('trustedtypes.bootstrap');
+import {TrustedTypesEnforcer} from './enforcement.js';
+import {TrustedTypeConfig} from './data/trustedtypeconfig.js';
 
-goog.require('trustedtypes.TrustedTypesEnforcer');
-goog.require('trustedtypes.data.TrustedTypeConfig');
-
-trustedtypes.bootstrap = function() {
-  const config = new trustedtypes.data.TrustedTypeConfig(
+/**
+ * Bootstraps all trusted types polyfill and their enforcement.
+ */
+export function bootstrap() {
+  const config = new TrustedTypeConfig(
     /* isLoggingEnabled */ true,
     /* isEnforcementEnabled */ true);
 
-  const trustedTypesEnforcer = new trustedtypes.TrustedTypesEnforcer(config);
+  const trustedTypesEnforcer = new TrustedTypesEnforcer(config);
 
   trustedTypesEnforcer.install();
 };
 
-trustedtypes.bootstrap();
+bootstrap();
