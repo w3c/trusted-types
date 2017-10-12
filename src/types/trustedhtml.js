@@ -14,7 +14,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-const INTERPOLATION_REGEXP_LAX_ = /\$\$\$(\d+)\$\$\$/g;
+/**
+ * Regular expression for matching template expression placeholders.
+ * @private {!RegExp}
+ */
+const INTERPOLATION_REGEXP_TEXT_ = /\$\$\$(\d+)\$\$\$/g;
+
+/**
+ * Regular expression for matching template expression placeholders in
+ * attributes.
+ * @private {!RegExp}
+ */
+const INTERPOLATION_REGEXP_ATTR_ = /\$\$\$(\d+)\$\$\$/;
 
 /**
  * A type to represent trusted HTML.
@@ -22,9 +33,9 @@ const INTERPOLATION_REGEXP_LAX_ = /\$\$\$(\d+)\$\$\$/g;
 export class TrustedHTML {
   /**
    * @param {string} inner A piece of trusted html.
-   * @param {Array<string>=} optStrings List of strings when initialized as a 
+   * @param {Array<string>=} optStrings List of strings when initialized as a
    *   template literal.
-   * @param {Array<*>=} optExpressionResults List of expression results when 
+   * @param {Array<*>=} optExpressionResults List of expression results when
    *   initialized as a template literal.
    */
   constructor(inner, optStrings, optExpressionResults) {
@@ -82,7 +93,7 @@ export class TrustedHTML {
 
   /**
    * Interpolates the expressions coming from the template literal.
-   * @private 
+   * @private
    */
   interpolate_() {
     let replaced = '';
@@ -119,7 +130,7 @@ export class TrustedHTML {
    * @param {!Node} node
    * @return {boolean}
    * @private
-   */  
+   */
   isLeafElementNode_(node) {
     return node.nodeType == Node.ELEMENT_NODE &&
         node.childNodes.length == 1 &&
@@ -127,14 +138,14 @@ export class TrustedHTML {
   }
 
   /**
-   * Processes the node, replacing the placeholders with their 
+   * Processes the node, replacing the placeholders with their
    * typed equivalents.
    * @param {!Node} node
    */
   processNode_(node) {
     if (node instanceof Element) {
       [].slice.call(node.attributes).forEach((attr) => {
-        let match = attr.value.match(/\$\$\$(\d+)\$\$\$/);
+        let match = attr.value.match(INTERPOLATION_REGEXP_ATTR_);
         if (match) {
           // TODO(koto): Consider relaxing for inert attributes.
           node.setAttribute(attr.name,
@@ -144,10 +155,10 @@ export class TrustedHTML {
     }
 
     if (this.isLeafElementNode_(node)) {
-      let match = node.innerHTML.match(INTERPOLATION_REGEXP_LAX_);
+      let match = node.innerHTML.match(INTERPOLATION_REGEXP_TEXT_);
       if (match) {
         node.innerHTML = new TrustedHTML(
-          node.innerHTML.replace(INTERPOLATION_REGEXP_LAX_,
+          node.innerHTML.replace(INTERPOLATION_REGEXP_TEXT_,
             (_, partId) => {
               let value = this.templateExpressionResults_[Number(partId)];
               if (!(value instanceof window['TrustedHTML'])) {
@@ -161,9 +172,9 @@ export class TrustedHTML {
     }
 
     if (node.nodeType == Node.TEXT_NODE) {
-      if (node.nodeValue.match(INTERPOLATION_REGEXP_LAX_)) {
+      if (node.nodeValue.match(INTERPOLATION_REGEXP_TEXT_)) {
         node.nodeValue = node.nodeValue.replace(
-          INTERPOLATION_REGEXP_LAX_,
+          INTERPOLATION_REGEXP_TEXT_,
           this.replaceWithExpressionResult_.bind(this)
           );
       }
@@ -172,7 +183,7 @@ export class TrustedHTML {
 
   /**
    * Creates a TrustedHTML object from a template literal.
-   * Usage: 
+   * Usage:
    * TrustedHTML.fromTemplateLiteral `<div id="${id}">${interpolated} foo</div>`
    * @param {!Array<string>} strings
    * @param {...*} expressions
