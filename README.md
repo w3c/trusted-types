@@ -108,7 +108,7 @@ compelling as a first step:
         the provided string as-is, producing a URL by resolving the given string against the 
         document's base URL.
 
-*   **TrustedTODO**: TODO(koto@)
+*   **TrustedJavascript**: This type would be used to represent a trusted JavaScript code block i.e. something that is trusted by the author to be executed by adding it to a `<script>` element content or passing to an `eval` function.
 
 ### DOM Sinks
 
@@ -254,6 +254,31 @@ compelling as a first step:
 3.  Define more types. Figure out how to treat `iframe.src`.
 
 4.  Document more sinks.
+
+## Polyfill
+
+This repository contains a polyfill implementation. To build the polyfill (Java required):
+
+```
+$ git clone https://github.com/mikewest/trusted-types/
+$ cd trusted-types
+$ npm install
+$ npm run build
+```
+
+To see the polyfill in action, visit the [demo page](demo/index.html) - either using the file:// protocol or a web server of your choice: 
+```
+$ python -m SimpleHTTPServer
+Serving HTTP on 0.0.0.0 port 8000 ...
+# See http://127.0.0.1:8000/demo/index.html
+```
+
+It can be tested by running:
+```
+$ npm test
+```
+The polyfill can also be run against the [web platform test suite](https://github.com/w3c/web-platform-tests), but that requires small patches to the suite - see [tests/platform-tests/platform-tests-runner.sh](tests/platform-tests/platform-tests-runner.sh).
+
 
 ## Caveats
 
