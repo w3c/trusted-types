@@ -126,6 +126,24 @@ describe('TrustedTypesEnforcer', function() {
       }).toThrow();
     });
 
+    it('on a href', function() {
+      let el = document.createElement('a');
+
+      expect(function() {
+        el.href = TEST_URL;
+      }).toThrow();
+    });
+
+    it('on object codebase', function() {
+      let el = document.createElement('object');
+
+      expect(function() {
+        el.setAttribute('codebase', TEST_URL);
+      }).toThrow();
+
+      expect(el.codeBase).toBe('');
+    });
+
     it('on Range.createContextualFragment', function() {
       let range = document.createRange();
 
@@ -158,6 +176,16 @@ describe('TrustedTypesEnforcer', function() {
 
       expect(function() {
         el.setAttribute('src', TEST_URL);
+      }).toThrow();
+
+      expect(el.src).toEqual('');
+    });
+
+    it('on non-lowercase Element.prototype.setAttribute', function() {
+      let el = document.createElement('iframe');
+
+      expect(function() {
+        el.setAttribute('SrC', TEST_URL);
       }).toThrow();
 
       expect(el.src).toEqual('');
@@ -264,6 +292,15 @@ describe('TrustedTypesEnforcer', function() {
       el.setAttribute('src', TrustedURL.unsafelyCreate(TEST_URL));
 
       expect(el.src).toEqual(TEST_URL);
+    });
+
+    it('on object codebase', function() {
+      let el = document.createElement('object');
+
+      el.setAttribute('codebase', TrustedScriptURL.unsafelyCreate(TEST_URL));
+
+      expect(el.codeBase).toBe(TEST_URL);
+      expect(el.codebase).toBe(undefined);
     });
   });
 });

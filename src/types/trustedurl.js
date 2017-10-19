@@ -35,7 +35,7 @@ export class TrustedURL {
    * @return {!TrustedURL}
    */
   static unsafelyCreate(url) {
-    let parsedUrl = TrustedURL.parse_(url);
+    let parsedUrl = new URL(url, window.document.baseURI || undefined);
     return new TrustedURL(parsedUrl.href);
   }
 
@@ -46,23 +46,12 @@ export class TrustedURL {
    * @return {!TrustedURL}
    */
   static create(url) {
-    let parsedUrl = TrustedURL.parse_(url);
+    let parsedUrl = new URL(url, window.document.baseURI || undefined);
     if (parsedUrl.protocol !== 'http:' && parsedUrl.protocol !== 'https:') {
       return new TrustedURL('about:invalid');
     }
 
     return new TrustedURL(parsedUrl.href);
-  }
-
-  /**
-   * Returns a parsed URL.
-   * @param {string} url The url to parse.
-   * @return {!HTMLAnchorElement} An anchor element containing the url.
-   */
-  static parse_(url) {
-    let aTag = /** @type !HTMLAnchorElement */ (document.createElement('a'));
-    aTag.href = url;
-    return aTag;
   }
 
   /**

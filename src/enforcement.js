@@ -77,6 +77,14 @@ const SET_ATTRIBUTE_TYPE_MAP = {
 };
 
 /**
+ * A map of HTML attribute to element property names.
+ * @type {Object<string, string>}
+ */
+const ATTR_PROPERTY_MAP = {
+  'codebase': 'codeBase',
+};
+
+/**
  * An object for enabling trusted type enforcement.
  */
 export class TrustedTypesEnforcer {
@@ -97,21 +105,18 @@ export class TrustedTypesEnforcer {
   }
 
   /**
-   * Wraps HTML sinks with an enforcement setter, which will enforce 
+   * Wraps HTML sinks with an enforcement setter, which will enforce
    * trusted types and do logging, if enabled.
    */
   install() {
     this.wrapSetter_(Element.prototype, 'innerHTML', window['TrustedHTML']);
     this.wrapSetter_(Element.prototype, 'outerHTML', window['TrustedHTML']);
-    this.wrapSetter_(HTMLIFrameElement.prototype, 'srcdoc',
-        window['TrustedHTML']);
-    this.wrapSetter_(HTMLScriptElement.prototype, 'src',
-        window['TrustedScriptURL']);
     this.wrapWithEnforceFunction_(Range.prototype, 'createContextualFragment',
         window['TrustedHTML'], 0);
     this.wrapWithEnforceFunction_(Element.prototype, 'insertAdjacentHTML',
         window['TrustedHTML'], 1);
     this.wrapSetAttribute_();
+    this.installPropertySetWrappers_();
   }
 
   /**
@@ -120,11 +125,43 @@ export class TrustedTypesEnforcer {
   uninstall() {
     this.restoreSetter_(Element.prototype, 'innerHTML');
     this.restoreSetter_(Element.prototype, 'outerHTML');
-    this.restoreSetter_(HTMLIFrameElement.prototype, 'srcdoc');
-    this.restoreSetter_(HTMLScriptElement.prototype, 'src');
     this.restoreFunction_(Range.prototype, 'createContextualFragment');
     this.restoreFunction_(Element.prototype, 'insertAdjacentHTML');
     this.restoreFunction_(Element.prototype, 'setAttribute');
+    this.uninstallPropertySetWrappers_();
+  }
+
+  /**
+   * Installs wrappers for directly setting properties
+   * based on SET_ATTRIBUTE_TYPE_MAP.
+   * @private
+   */
+  installPropertySetWrappers_() {
+    /* eslint-disable guard-for-in */
+    for (let type in SET_ATTRIBUTE_TYPE_MAP) {
+      for (let attribute in SET_ATTRIBUTE_TYPE_MAP[type]) {
+        const property = attribute in ATTR_PROPERTY_MAP ?
+              ATTR_PROPERTY_MAP[attribute] : attribute;
+        this.wrapSetter_(window[type].prototype, property,
+                         SET_ATTRIBUTE_TYPE_MAP[type][attribute]);
+      }
+    }
+  }
+
+  /**
+   * Uninstalls wrappers for directly setting properties
+   * based on SET_ATTRIBUTE_TYPE_MAP.
+   * @private
+   */
+  uninstallPropertySetWrappers_() {
+    /* eslint-disable guard-for-in */
+    for (let type in SET_ATTRIBUTE_TYPE_MAP) {
+      for (let attribute in SET_ATTRIBUTE_TYPE_MAP[type]) {
+        const property = attribute in ATTR_PROPERTY_MAP ?
+              ATTR_PROPERTY_MAP[attribute] : attribute;
+        this.restoreSetter_(window[type].prototype, property);
+      }
+    }
   }
 
   /** Wraps set attribute with an enforcement function. */
@@ -133,10 +170,10 @@ export class TrustedTypesEnforcer {
     this.wrapFunction_(
         Element.prototype,
         'setAttribute',
-        /** 
+        /**
          * @this {TrustedTypesEnforcer}
          * @param {!Function<!Function, *>} originalFn
-         * @return {*} 
+         * @return {*}
          */
         function(originalFn, ...args) {
           return that.setAttributeWrapper_
@@ -161,10 +198,10 @@ export class TrustedTypesEnforcer {
       return originalFn.apply(context, args);
     }
 
-    let name = args[0];
+    let attrName = args[0].toLowerCase();
     let type = context.constructor && context.constructor.name &&
         SET_ATTRIBUTE_TYPE_MAP[context.constructor.name] &&
-        SET_ATTRIBUTE_TYPE_MAP[context.constructor.name][name];
+        SET_ATTRIBUTE_TYPE_MAP[context.constructor.name][attrName];
 
     if (type instanceof Function) {
       return this.enforce_
@@ -188,11 +225,11 @@ export class TrustedTypesEnforcer {
     this.wrapFunction_(
         object,
         name,
-        /** 
+        /**
          * @this {TrustedTypesEnforcer}
          * @param {!Function<!Function, *>} originalFn
-         * @return {*} 
-         */        
+         * @return {*}
+         */
         function(originalFn, ...args) {
           return that.enforce_.call(that, this, name, type, originalFn,
                                     argNumber, args);
@@ -201,7 +238,7 @@ export class TrustedTypesEnforcer {
 
 
   /**
-   * Wraps an existing function with a given function body and stores the 
+   * Wraps an existing function with a given function body and stores the
    * original function.
    * @param {!Object} object The object of the to-be-wrapped property.
    * @param {string} name The name of the property.
@@ -250,10 +287,10 @@ export class TrustedTypesEnforcer {
     installSetter(
         object,
         name,
-        /** 
+        /**
          * @this {TrustedTypesEnforcer}
          * @param {*} value
-         */        
+         */
         function(value) {
           that.enforce_.call(that, this, name, type, originalSetter, 0,
                              [value]);
