@@ -20,7 +20,7 @@ limitations under the License.
 export class TrustedScriptURL {
   /**
    * @param {string} url The trusted URL.
-   */  
+   */
   constructor(url) {
     /**
      * The trusted URL.
@@ -35,19 +35,8 @@ export class TrustedScriptURL {
    * @return {!TrustedScriptURL}
    */
   static unsafelyCreate(url) {
-    let parsedUrl = TrustedScriptURL.parse_(url);
+    let parsedUrl = new URL(url, window.document.baseURI || undefined);
     return new TrustedScriptURL(parsedUrl.href);
-  }
-
-  /**
-   * Returns a parsed URL.
-   * @param {string} url The url to parse.
-   * @return {!HTMLAnchorElement} An anchor element containing the url.
-   */
-  static parse_(url) {
-    let aTag = /** @type !HTMLAnchorElement */ (document.createElement('a'));
-    aTag.href = url;
-    return aTag;
   }
 
   /**
