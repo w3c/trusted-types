@@ -1,5 +1,7 @@
 # Explainer: Trusted Types for DOM Manipulation                                                                                    
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/WICG/trusted-types.svg)](https://greenkeeper.io/)
+
 ## The Problem
 
 As described in Christoph Kern's "[Securing the Tangled Web](https://research.google.com/pubs/pub42934.html)",
