@@ -108,7 +108,7 @@ compelling as a first step:
         the provided string as-is, producing a URL by resolving the given string against the 
         document's base URL.
 
-*   **TrustedJavascript**: This type would be used to represent a trusted JavaScript code block i.e. something that is trusted by the author to be executed by adding it to a `<script>` element content or passing to an `eval` function.
+*   **TrustedJavaScript**: This type would be used to represent a trusted JavaScript code block i.e. something that is trusted by the author to be executed by adding it to a `<script>` element content or passing to an `eval` function.
 
 ### DOM Sinks
 
