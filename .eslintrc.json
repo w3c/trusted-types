@@ -1,11 +1,12 @@
 {
     "extends": ["eslint:recommended", "google"],
     "parserOptions": {
-        "sourceType": "module",    	
+        "sourceType": "module",
         "ecmaVersion": 6
     },
     "env": {
         "browser": true,
-        "jasmine": true
-    }    
+        "jasmine": true,
+        "es6": true
+    }
 }
