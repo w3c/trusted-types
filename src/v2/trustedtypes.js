@@ -260,7 +260,7 @@ export const TrustedTypes = (function() {
     const policy = wrapPolicy(pName, innerPolicy);
 
     if (innerPolicy.expose) {
-      exposedPolicies.set(name, policy);
+      exposedPolicies.set(pName, policy);
     }
 
     return policy;
@@ -268,7 +268,7 @@ export const TrustedTypes = (function() {
 
   // TODO: Figure out if it's safe to return an instance of a typed object
   // to make testing easier.
-  return ({
+  return (Object.freeze({
 
     // Types definition, for convenience of instanceof checks
     TrustedHTML,
@@ -294,5 +294,5 @@ export const TrustedTypes = (function() {
     getExposedPolicy,
 
     getPolicyNames,
-  });
+  }));
 })();
