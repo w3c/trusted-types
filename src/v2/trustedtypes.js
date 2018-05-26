@@ -146,18 +146,20 @@ export const TrustedTypes = (function() {
 
   /**
    * Function generating a type checker.
-   * @param  {function}  type The type to check against.
-   * @return {boolean}
+   * @template T
+   * @param  {T} type The type to check against.
+   * @return {function(*):boolean}
    */
   function isTrustedTypeChecker(type) {
-    return (obj) => obj instanceof type && privateMap.has(obj);
+    return (obj) => (obj instanceof type) && privateMap.has(obj);
   }
 
   /**
    * Function building a type from exposed policy
-   * @param  {function} type        The type to build
+   * @template T
+   * @param  {T} type        The type to build
    * @param  {string} functionName Function name to call in a policy.
-   * @return {?} The type
+   * @return {function(string,string):T} The type
    */
   function buildTypeFromExposedPolicy(type, functionName) {
     return function(policyName, value) {
@@ -259,7 +261,7 @@ export const TrustedTypes = (function() {
 
     const policy = wrapPolicy(pName, innerPolicy);
 
-    if (innerPolicy.expose) {
+    if (innerPolicy['expose']) {
       exposedPolicies.set(pName, policy);
     }
 
