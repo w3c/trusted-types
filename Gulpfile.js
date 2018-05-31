@@ -19,91 +19,66 @@ var closureCompiler = require('gulp-closure-compiler');
 
 gulp.task('default', ['build']);
 
-gulp.task('build', function() {
+var flags = {
+  dependency_mode: 'STRICT',
+  compilation_level: 'ADVANCED_OPTIMIZATIONS',
+  language_in: 'ECMASCRIPT6_STRICT',
+  language_out: 'ECMASCRIPT5',
+  output_wrapper: '(function(){%output%}).call(window);',
+  jscomp_warning: ["missingProperties", "visibility"],
+  jscomp_error: [
+    "missingProvide",
+    "missingRequire",
+    "accessControls",
+    "ambiguousFunctionDecl",
+    "checkDebuggerStatement",
+    "checkTypes",
+    "checkVars",
+    "const",
+    "constantProperty",
+    "duplicate",
+    "externsValidation",
+    "es5Strict",
+    "fileoverviewTags",
+    "globalThis",
+    "invalidCasts",
+    "missingProperties",
+    "nonStandardJsDocs",
+    "strictModuleDepCheck",
+    "suspiciousCode",
+    "undefinedNames",
+    "undefinedVars",
+    "unknownDefines",
+    "uselessCode",
+    "visibility",
+  ]
+};
+
+gulp.task('build', ['build.full', 'build.api']);
+
+gulp.task('build.full', function() {
   return gulp.src([
       'src/**/*.js',
-      '!src/v2/**',
     ])
     .pipe(closureCompiler({
       compilerPath: './node_modules/google-closure-compiler/compiler.jar',
-      fileName: 'trustedtypes.build.js',
-      compilerFlags: {
-        compilation_level: 'ADVANCED_OPTIMIZATIONS',
-        language_in: 'ECMASCRIPT6',
-        language_out: 'ECMASCRIPT5',
-        output_wrapper: '(function(){%output%}).call(window);',
-        jscomp_warning: ["missingProperties", "visibility"],
-        jscomp_error: [
-          "missingProvide",
-          "missingRequire",
-          "accessControls",
-          "ambiguousFunctionDecl",
-          "checkDebuggerStatement",
-          "checkTypes",
-          "checkVars",
-          "const",
-          "constantProperty",
-          "duplicate",
-          "externsValidation",
-          "es5Strict",
-          "fileoverviewTags",
-          "globalThis",
-          "invalidCasts",
-          "missingProperties",
-          "nonStandardJsDocs",
-          "strictModuleDepCheck",
-          "suspiciousCode",
-          "undefinedNames",
-          "undefinedVars",
-          "unknownDefines",
-          "uselessCode",
-          "visibility",
-        ]
-      }
+      fileName: 'trustedtypes.api_only.build.js',
+      compilerFlags: Object.assign({}, flags,
+        {entry_point: 'src/polyfill/api_only.js'})
     }))
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('v2', function() {
+gulp.task('build.api', function() {
   return gulp.src([
-      'src/v2/*.js',
+      'src/**/*.js',
     ])
     .pipe(closureCompiler({
       compilerPath: './node_modules/google-closure-compiler/compiler.jar',
-      fileName: 'trustedtypes.v2.build.js',
-      compilerFlags: {
-        compilation_level: 'ADVANCED_OPTIMIZATIONS',
-        language_in: 'ECMASCRIPT6',
-        language_out: 'ECMASCRIPT5',
-        output_wrapper: '(function(){%output%}).call(window);',
-        jscomp_warning: ["missingProperties", "visibility"],
-        jscomp_error: [
-          "missingProvide",
-          "missingRequire",
-          "accessControls",
-          "ambiguousFunctionDecl",
-          "checkDebuggerStatement",
-          "checkTypes",
-          "checkVars",
-          "const",
-          "constantProperty",
-          "duplicate",
-          "externsValidation",
-          "es5Strict",
-          "fileoverviewTags",
-          "globalThis",
-          "invalidCasts",
-          "missingProperties",
-          "nonStandardJsDocs",
-          "strictModuleDepCheck",
-          "suspiciousCode",
-          "undefinedNames",
-          "undefinedVars",
-          "unknownDefines",
-          "uselessCode",
-          "visibility",
-        ]
-      }
+      fileName: 'trustedtypes.build.js',
+      compilerFlags: Object.assign({}, flags,
+        {entry_point: 'src/polyfill/full.js'})
     }))
     .pipe(gulp.dest('dist'));
 });
+

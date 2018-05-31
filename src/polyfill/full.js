@@ -13,8 +13,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import {TrustedTypesEnforcer} from './enforcement.js';
-import {TrustedTypeConfig} from './data/trustedtypeconfig.js';
+
+/**
+ * @fileoverview Entry point for a polyfill that enforces the types.
+ */
+import {TrustedTypesEnforcer} from '../enforcer.js';
+import {TrustedTypeConfig} from '../data/trustedtypeconfig.js';
+/* eslint-disable no-unused-vars */
+import {TrustedTypes} from './api_only.js';
+
+/* eslint-enable no-unused-vars */
 
 /**
  * Bootstraps all trusted types polyfill and their enforcement.

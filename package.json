@@ -15,8 +15,7 @@
     "fix": "eslint --fix src/ tests/",
     "test": "karma start --single-run",
     "karma": "karma start --browsers ChromeHeadless",
-    "build": "gulp build",
-    "v2": "gulp v2"
+    "build": "gulp build"
   },
   "author": "Google Inc.",
   "license": "Apache-2.0",
@@ -43,7 +42,6 @@
   "pre-commit": [
     "lint",
     "build",
-    "v2",
     "test"
   ]
 }

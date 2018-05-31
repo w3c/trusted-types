@@ -14,10 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 import {TrustedTypeConfig} from '../src/data/trustedtypeconfig.js';
-import {TrustedTypesEnforcer} from '../src/enforcement.js';
-import {TrustedHTML} from '../src/types/trustedhtml.js';
-import {TrustedURL} from '../src/types/trustedurl.js';
-import {TrustedScriptURL} from '../src/types/trustedscripturl.js';
+import {TrustedTypesEnforcer} from '../src/enforcer.js';
+import {TrustedTypes} from '../src/trustedtypes.js';
 
 describe('TrustedTypesEnforcer', function() {
   let TEST_HTML = '<b>html</b>';
@@ -221,10 +219,14 @@ describe('TrustedTypesEnforcer', function() {
 
   describe('enforcement allows type-based assignments', function() {
     let enforcer;
+    let policy;
 
     beforeEach(function() {
       enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
       enforcer.install();
+      policy = TrustedTypes.createPolicy(Math.random(), (p) => {
+        p.expose = true;
+      });
     });
 
     afterEach(function() {
@@ -233,8 +235,7 @@ describe('TrustedTypesEnforcer', function() {
 
     it('on innerHTML', function() {
       let el = document.createElement('div');
-
-      el.innerHTML = TrustedHTML.unsafelyCreate(TEST_HTML);
+      el.innerHTML = policy.createHTML(TEST_HTML);
 
       expect(el.innerHTML).toEqual(TEST_HTML);
     });
@@ -245,7 +246,7 @@ describe('TrustedTypesEnforcer', function() {
       wrap.appendChild(el);
 
       expect(function() {
-        el.outerHTML = TrustedHTML.unsafelyCreate(TEST_HTML);
+        el.outerHTML = policy.createHTML(TEST_HTML);
       }).not.toThrow();
     });
 
@@ -253,7 +254,7 @@ describe('TrustedTypesEnforcer', function() {
       let el = document.createElement('iframe');
 
       expect(function() {
-        el.srcdoc = TrustedHTML.unsafelyCreate(TEST_HTML);
+        el.srcdoc = policy.createHTML(TEST_HTML);
       }).not.toThrow();
 
       expect(el.srcdoc).toEqual(TEST_HTML);
@@ -263,7 +264,7 @@ describe('TrustedTypesEnforcer', function() {
       let range = document.createRange();
 
       let fragment = range.createContextualFragment(
-          TrustedHTML.unsafelyCreate(TEST_HTML));
+          policy.createHTML(TEST_HTML));
 
       expect(fragment.children[0].outerHTML).toEqual(TEST_HTML);
     });
@@ -272,8 +273,8 @@ describe('TrustedTypesEnforcer', function() {
     it('on Element.insertAdjacentHTML', function() {
       let el = document.createElement('div');
 
-      el.insertAdjacentHTML('afterbegin', TrustedHTML.unsafelyCreate('bar'));
-      el.insertAdjacentHTML('afterbegin', TrustedHTML.unsafelyCreate('foo'));
+      el.insertAdjacentHTML('afterbegin', policy.createHTML('bar'));
+      el.insertAdjacentHTML('afterbegin', policy.createHTML('foo'));
 
       expect(el.innerHTML).toEqual('foo' + 'bar');
     });
@@ -281,7 +282,7 @@ describe('TrustedTypesEnforcer', function() {
     it('on HTMLScriptElement.src', function() {
       let el = document.createElement('script');
 
-      el.src = TrustedScriptURL.unsafelyCreate(TEST_URL);
+      el.src = policy.createScriptURL(TEST_URL);
 
       expect(el.src).toEqual(TEST_URL);
     });
@@ -289,7 +290,7 @@ describe('TrustedTypesEnforcer', function() {
     it('on Element.prototype.setAttribute', function() {
       let el = document.createElement('iframe');
 
-      el.setAttribute('src', TrustedURL.unsafelyCreate(TEST_URL));
+      el.setAttribute('src', policy.createURL(TEST_URL));
 
       expect(el.src).toEqual(TEST_URL);
     });
@@ -297,10 +298,82 @@ describe('TrustedTypesEnforcer', function() {
     it('on object codebase', function() {
       let el = document.createElement('object');
 
-      el.setAttribute('codebase', TrustedScriptURL.unsafelyCreate(TEST_URL));
+      el.setAttribute('codebase', policy.createScriptURL(TEST_URL));
 
       expect(el.codeBase).toBe(TEST_URL);
       expect(el.codebase).toBe(undefined);
+    });
+  });
+
+  describe('enforcement does not mix the types', function() {
+    let enforcer;
+    let policy;
+
+    beforeEach(function() {
+      enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
+      enforcer.install();
+      policy = TrustedTypes.createPolicy(Math.random(), (p) => {
+        p.expose = true;
+      });
+    });
+
+    afterEach(function() {
+      enforcer.uninstall();
+    });
+
+    it('on innerHTML', function() {
+      let el = document.createElement('div');
+
+      expect(() => {
+        el.innerHTML = policy.createURL(TEST_URL);
+      }).toThrow();
+
+      expect(() => {
+        el.innerHTML = policy.createScriptURL(TEST_URL);
+      }).toThrow();
+      expect(el.innerHTML).toEqual('');
+    });
+
+    it('on Element.insertAdjacentHTML', function() {
+      let el = document.createElement('div');
+
+      expect(() => {
+        el.insertAdjacentHTML('afterbegin', policy.createURL('bar'));
+      }).toThrow();
+
+      expect(() => {
+        el.insertAdjacentHTML('afterbegin', policy.createScriptURL('foo'));
+      }).toThrow();
+
+      expect(el.innerHTML).toEqual('');
+    });
+
+    it('on HTMLScriptElement.src', function() {
+      let el = document.createElement('script');
+
+      expect(() => {
+       el.src = policy.createHTML(TEST_URL);
+      }).toThrow();
+
+      expect(() => {
+       el.src = policy.createURL(TEST_URL);
+      }).toThrow();
+
+      expect(el.src).toEqual('');
+    });
+
+    it('on Element.prototype.setAttribute', function() {
+      let el = document.createElement('iframe');
+
+      expect(() => {
+       el.src = policy.createHTML(TEST_URL);
+      }).toThrow();
+
+      expect(() => {
+       el.src = policy.createScriptURL(TEST_URL);
+      }).toThrow();
+
+      expect(el.src).toEqual('');
     });
   });
 });

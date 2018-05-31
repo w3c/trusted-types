@@ -72,77 +72,118 @@ export const TrustedTypes = (function() {
   const exposedPolicies = new Map();
 
   /**
-   * Trusted Type object wrapping a string that can only be created from a
+   * Trusted URL object wrapping a string that can only be created from a
    * TT policy.
-   * @param {symbol} s creatorSymbol
-   * @param {string} policyName The name of the policy this object was
-   *   created by.
-   * @constructor
    */
-  function TrustedURL(s, policyName) {
-    // TODO: Figure out if symbol is needed, if the value is in privateMap.
-    if (s != creatorSymbol) {
-      throw new Error('cannot call the constructor');
+  class TrustedURL {
+    /**
+     * Constructor for TrustedURL. Only allowed to be called from within a
+     * policy.
+     * @param {symbol} s creatorSymbol
+     * @param {string} policyName The name of the policy this object was
+     *   created by.
+     */
+    constructor(s, policyName) {
+      // TODO: Figure out if symbol is needed, if the value is in privateMap.
+      if (s != creatorSymbol) {
+        throw new Error('cannot call the constructor');
+      }
+      this.policyName = '' + policyName;
     }
-    this.policyName = '' + policyName;
+
+    /**
+     * Returns the wrapped string value of the object.
+     * @return {string}
+     */
+    toString() {
+      return privates(this).value;
+    }
+
+    /**
+     * Name property getter.
+     * Required by the enforcer to work with both the polyfilled and native
+     * type.
+     */
+    static get name() {
+      return 'TrustedURL';
+    }
   }
 
   /**
-   * Returns the wrapped string value of the object.
-   * @return {string}
-   */
-  TrustedURL.prototype.toString = function() {
-    return privates(this).value;
-  };
-
-  /**
-   * Trusted Type object wrapping a string that can only be created from a
+   * Trusted Script URL object wrapping a string that can only be created from a
    * TT policy.
-   * @param {symbol} s creatorSymbol
-   * @param {string} policyName The name of the policy this object was
-   *   created by.
-   * @constructor
    */
-  function TrustedScriptURL(s, policyName) {
-    // TODO: Figure out if symbol is needed, if the value is in privateMap.
-    // If the symbol is not needed, we can externalize the types definition
-    // outside of IIFE.
-    if (s != creatorSymbol) {
-      throw new Error('cannot call the constructor');
+  class TrustedScriptURL {
+    /**
+     * Constructor for TrustedScriptURL. Only allowed to be called from within a
+     * policy.
+     * @param {symbol} s creatorSymbol
+     * @param {string} policyName The name of the policy this object was
+     *   created by.
+     */
+    constructor(s, policyName) {
+      // TODO: Figure out if symbol is needed, if the value is in privateMap.
+      if (s != creatorSymbol) {
+        throw new Error('cannot call the constructor');
+      }
+      this.policyName = '' + policyName;
     }
-    this.policyName = '' + policyName;
+
+    /**
+     * Returns the wrapped string value of the object.
+     * @return {string}
+     */
+    toString() {
+      return privates(this).value;
+    }
+
+    /**
+     * Name property getter.
+     * Required by the enforcer to work with both the polyfilled and native
+     * type.
+     */
+    static get name() {
+      return 'TrustedScriptURL';
+    }
   }
 
   /**
-   * Returns the wrapped string value of the object.
-   * @return {string}
-   */
-  TrustedScriptURL.prototype.toString = function() {
-    return privates(this).value;
-  };
-
-  /**
-   * Trusted Type object wrapping a string that can only be created from a
+   * Trusted HTML object wrapping a string that can only be created from a
    * TT policy.
-   * @param {symbol} s creatorSymbol
-   * @param {string} policyName The name of the policy this object was
-   *   created by.
-   * @constructor
    */
-  function TrustedHTML(s, policyName) {
-    if (s != creatorSymbol) {
-      throw new Error('cannot call the constructor');
+  class TrustedHTML {
+    /**
+     * Constructor for TrustedHTML. Only allowed to be called from within a
+     * policy.
+     * @param {symbol} s creatorSymbol
+     * @param {string} policyName The name of the policy this object was
+     *   created by.
+     */
+    constructor(s, policyName) {
+      // TODO: Figure out if symbol is needed, if the value is in privateMap.
+      if (s != creatorSymbol) {
+        throw new Error('cannot call the constructor');
+      }
+      this.policyName = '' + policyName;
     }
-    this.policyName = '' + policyName;
-  }
 
-  /**
-   * Returns the wrapped string value of the object.
-   * @return {string}
-   */
-  TrustedHTML.prototype.toString = function() {
-    return privates(this).value;
-  };
+    /**
+     * Returns the wrapped string value of the object.
+     * @return {string}
+     */
+    toString() {
+      return privates(this).value;
+    }
+
+    /**
+     * Name property getter.
+     * Required by the enforcer to work with both the polyfilled and native
+     * type.
+     */
+    static get name() {
+      return 'TrustedHTML';
+    }
+  }
 
   /**
    * Function generating a type checker.
