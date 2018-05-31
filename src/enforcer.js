@@ -16,9 +16,8 @@ limitations under the License.
 
 /* eslint-disable no-unused-vars */
 import {TrustedTypeConfig} from './data/trustedtypeconfig.js';
-import {TrustedHTML} from './types/trustedhtml.js';
-import {TrustedScriptURL} from './types/trustedscripturl.js';
-import {TrustedURL} from './types/trustedurl.js';
+import {TrustedTypes} from './trustedtypes.js';
+
 /* eslint-enable no-unused-vars */
 import {installFunction, installSetter} from './utils/wrapper.js';
 
@@ -30,50 +29,60 @@ const SET_ATTRIBUTE_TYPE_MAP = {
     // TODO(slekies): Add event handlers
     // TODO(slekies): add SVG Elements here
     'HTMLAnchorElement': {
-        'href': window['TrustedURL'],
+        'href': TrustedTypes.TrustedURL,
     },
     'HTMLAreaElement': {
-        'href': window['TrustedURL'],
+        'href': TrustedTypes.TrustedURL,
     },
     'HTMLBaseElement': {
-        'href': window['TrustedURL'],
+        'href': TrustedTypes.TrustedURL,
     },
     'HTMLSourceElement': {
-        'src': window['TrustedURL'],
+        'src': TrustedTypes.TrustedURL,
     },
     'HTMLImageElement': {
-        'src': window['TrustedURL'],
+        'src': TrustedTypes.TrustedURL,
         // TODO(slekies): add special handling for srcset
     },
     'HTMLTrackElement': {
-        'src': window['TrustedURL'],
+        'src': TrustedTypes.TrustedURL,
     },
     'HTMLMediaElement': {
-        'src': window['TrustedURL'],
+        'src': TrustedTypes.TrustedURL,
     },
     'HTMLInputElement': {
-        'src': window['TrustedURL'],
+        'src': TrustedTypes.TrustedURL,
     },
     'HTMLFrameElement': {
-        'src': window['TrustedURL'],
+        'src': TrustedTypes.TrustedURL,
     },
     'HTMLIFrameElement': {
-        'src': window['TrustedURL'],
-        'srcdoc': window['TrustedHTML'],
+        'src': TrustedTypes.TrustedURL,
+        'srcdoc': TrustedTypes.TrustedHTML,
     },
     'HTMLLinkElement': {
-        'href': window['TrustedScriptURL'],
+        'href': TrustedTypes.TrustedScriptURL,
     },
     'HTMLObjectElement': {
-        'data': window['TrustedScriptURL'],
-        'codebase': window['TrustedScriptURL'],
+        'data': TrustedTypes.TrustedScriptURL,
+        'codebase': TrustedTypes.TrustedScriptURL,
     },
     'HTMLEmbedElement': {
-        'src': window['TrustedScriptURL'],
+        'src': TrustedTypes.TrustedScriptURL,
     },
     'HTMLScriptElement': {
-        'src': window['TrustedScriptURL'],
+        'src': TrustedTypes.TrustedScriptURL,
     },
+};
+
+/**
+ * Map of type names to type checking function.
+ * @type {Object<string,!Function>}
+ */
+const TYPE_CHECKER_MAP = {
+  'TrustedHTML': TrustedTypes.isHTML,
+  'TrustedURL': TrustedTypes.isURL,
+  'TrustedScriptURL': TrustedTypes.isScriptURL,
 };
 
 /**
@@ -109,12 +118,12 @@ export class TrustedTypesEnforcer {
    * trusted types and do logging, if enabled.
    */
   install() {
-    this.wrapSetter_(Element.prototype, 'innerHTML', window['TrustedHTML']);
-    this.wrapSetter_(Element.prototype, 'outerHTML', window['TrustedHTML']);
+    this.wrapSetter_(Element.prototype, 'innerHTML', TrustedTypes.TrustedHTML);
+    this.wrapSetter_(Element.prototype, 'outerHTML', TrustedTypes.TrustedHTML);
     this.wrapWithEnforceFunction_(Range.prototype, 'createContextualFragment',
-        window['TrustedHTML'], 0);
+        TrustedTypes.TrustedHTML, 0);
     this.wrapWithEnforceFunction_(Element.prototype, 'insertAdjacentHTML',
-        window['TrustedHTML'], 1);
+        TrustedTypes.TrustedHTML, 1);
     this.wrapSetAttribute_();
     this.installPropertySetWrappers_();
   }
@@ -356,7 +365,9 @@ export class TrustedTypesEnforcer {
   enforce_(context, propertyName, typeToEnforce, originalSetter, argNumber,
                args) {
     let value = args[argNumber];
-    if (!(value instanceof typeToEnforce)) {
+    const typeName = '' + typeToEnforce.name;
+    if (!TYPE_CHECKER_MAP.hasOwnProperty(typeName) ||
+        !TYPE_CHECKER_MAP[typeName](value)) {
       let message = 'Failed to set ' + propertyName + ' property on ' +
           ('' + context || context.constructor.name) +
           ': This document requires `' + (typeToEnforce.name) + '` assignment.';
