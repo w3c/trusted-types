@@ -22,68 +22,103 @@ describe('TrustedTypesEnforcer', function() {
 
   let TEST_URL = 'http://example.com/script';
 
+  let EVIL_URL = 'http://evil.example.com/script';
+
   let ENFORCING_CONFIG = new TrustedTypeConfig(
       /* isLoggingEnabled */ false,
       /* isEnforcementEnabled */ true);
 
-  it('requires calling install to enforce', function() {
-    let enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
-    let el = document.createElement('div');
+  describe('installation', function() {
+    let enforcer;
 
-    expect(function() {
-      el.innerHTML = TEST_HTML;
-    }).not.toThrow();
+    afterEach(function() {
+      if (enforcer) {
+        let testCleanedUp = false;
+        try {
+          enforcer.uninstall();
+        } catch (ex) {
+          // Test cleaned up after itself.
+          testCleanedUp = true;
+        }
+        enforcer = undefined;
+        if (!testCleanedUp) {
+          throw new Error('Test did not clean up enforcer');
+        }
+      }
+    });
 
-    enforcer.install();
-    expect(function() {
-      el.innerHTML = TEST_HTML;
-    }).toThrowError(TypeError);
+    it('requires calling install to enforce', function() {
+      enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
+      let el = document.createElement('div');
 
-    enforcer.uninstall();
-  });
+      expect(function() {
+        el.innerHTML = TEST_HTML;
+      }).not.toThrow();
 
-  it('allows for uninstalling policies', function() {
-    let enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
-    let el = document.createElement('div');
-    enforcer.install();
-
-    expect(function() {
-      el.innerHTML = TEST_HTML;
-    }).toThrow();
-
-    expect(function() {
-      el.insertAdjacentHTML('afterbegin', TEST_HTML);
-    }).toThrow();
-
-    enforcer.uninstall();
-
-    expect(function() {
-      el.innerHTML = TEST_HTML;
-    }).not.toThrowError(TypeError);
-
-    expect(function() {
-      el.insertAdjacentHTML('afterbegin', TEST_HTML);
-    }).not.toThrowError(TypeError);
-  });
-
-  it('prevents double installation', function() {
-    let enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
-    enforcer.install();
-
-    expect(function() {
       enforcer.install();
-    }).toThrow();
+      expect(function() {
+        el.innerHTML = TEST_HTML;
+      }).toThrowError(TypeError);
 
-    enforcer.uninstall();
-  });
-
-  it('prevents double uninstallation', function() {
-    let enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
-    enforcer.install();
-    enforcer.uninstall();
-    expect(function() {
+      // TODO(msamuel): move to after test action.
       enforcer.uninstall();
-    }).toThrow();
+    });
+
+    it('allows for uninstalling policies', function() {
+      enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
+      let el = document.createElement('div');
+      enforcer.install();
+
+      expect(function() {
+        el.innerHTML = TEST_HTML;
+      }).toThrow();
+      expect(el.innerHTML).toEqual(''); // Side effect did not happen.
+      // TODO: should template elements allow innerHTML assignment?
+
+      expect(function() {
+        el.insertAdjacentHTML('afterbegin', TEST_HTML);
+      }).toThrow();
+      expect(el.innerHTML).toEqual('');
+
+      enforcer.uninstall();
+
+      expect(function() {
+        el.innerHTML = TEST_HTML;
+      }).not.toThrowError(TypeError);
+      // TODO(msamuel): why check error type but not when expecting error above?
+      expect(el.innerHTML).toEqual(TEST_HTML); // Roughly
+
+      expect(function() {
+        el.insertAdjacentHTML('afterbegin', TEST_HTML);
+      }).not.toThrowError(TypeError);
+      expect(el.innerHTML).toEqual(`${TEST_HTML}${TEST_HTML}`); // Roughly
+    });
+
+    it('prevents double installation', function() {
+      enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
+      enforcer.install();
+
+      expect(function() {
+        enforcer.install();
+      }).toThrow();
+
+      enforcer.uninstall();
+
+      // Attempted double installation does not leave us in a state
+      // where two uninstalls are necessary/allowed.
+      expect(function() {
+        enforcer.uninstall();
+      }).toThrow();
+    });
+
+    it('prevents double uninstallation', function() {
+      enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
+      enforcer.install();
+      enforcer.uninstall();
+      expect(function() {
+        enforcer.uninstall();
+      }).toThrow();
+    });
   });
 
   describe('enforcement disables string assignments', function() {
@@ -104,6 +139,7 @@ describe('TrustedTypesEnforcer', function() {
       expect(function() {
         el.innerHTML = TEST_HTML;
       }).toThrow();
+      expect(el.innerHTML).toEqual('');
     });
 
     it('on outerHTML', function() {
@@ -114,6 +150,7 @@ describe('TrustedTypesEnforcer', function() {
       expect(function() {
         el.outerHTML = TEST_HTML;
       }).toThrow();
+      expect(el.outerHTML).toEqual('<div></div>');
     });
 
     it('on iframe srcdoc', function() {
@@ -122,6 +159,7 @@ describe('TrustedTypesEnforcer', function() {
       expect(function() {
         el.srcdoc = TEST_HTML;
       }).toThrow();
+      expect(!el.srcdoc).toEqual(true);
     });
 
     it('on a href', function() {
@@ -130,6 +168,7 @@ describe('TrustedTypesEnforcer', function() {
       expect(function() {
         el.href = TEST_URL;
       }).toThrow();
+      expect(!el.srcdoc).toEqual(true);
     });
 
     it('on object codebase', function() {
@@ -179,6 +218,43 @@ describe('TrustedTypesEnforcer', function() {
       expect(el.src).toEqual('');
     });
 
+    it('on Element.prototype.setAttributeNS', function() {
+      let el = document.createElement('iframe');
+
+      expect(function() {
+        el.setAttribute('http://www.w3.org/1999/xhtml', 'src', TEST_URL);
+      }).toThrow();
+
+      expect(el.src).toEqual('');
+    });
+
+    it('on copy attribute crossing types', function() {
+      let div = document.createElement('div');
+      let img = document.createElement('img');
+
+      div.setAttribute('src', TEST_URL);
+      let attr = div.getAttributeNode('src');
+      div.removeAttributeNode(attr);
+
+      expect(function() {
+        img.setAttributeNode(attr);
+      }).toThrow();
+
+      expect(img.src).toEqual('');
+    });
+
+    it('on copy innocuous attribute', function() {
+      let div = document.createElement('div');
+      let span = document.createElement('span');
+
+      div.setAttribute('src', TEST_URL);
+      let attr = div.getAttributeNode('src');
+      div.removeAttributeNode(attr);
+      span.setAttributeNode(attr);
+
+      expect(span.src).toEqual(TEST_URL);
+    });
+
     it('on non-lowercase Element.prototype.setAttribute', function() {
       let el = document.createElement('iframe');
 
@@ -187,6 +263,10 @@ describe('TrustedTypesEnforcer', function() {
       }).toThrow();
 
       expect(el.src).toEqual('');
+    });
+
+    it('on DOMParser.parseFromString', function() {
+      // TODO(msamuel): do we care about explicit invocations of DOMParser?
     });
   });
 
@@ -203,17 +283,17 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('passes through inert attributes', function() {
-      let a = document.createElement('link');
-      a.setAttribute('rel', 'stylesheet');
-      expect(a.getAttribute('rel')).toEqual('stylesheet');
-      expect(a.rel).toEqual('stylesheet');
+      let el = document.createElement('link');
+      el.setAttribute('rel', 'stylesheet');
+      expect(el.getAttribute('rel')).toEqual('stylesheet');
+      expect(el.rel).toEqual('stylesheet');
     });
 
     it('passes through inert elements', function() {
-      let a = document.createElement('section');
-      a.setAttribute('id', 'foo');
-      expect(a.getAttribute('id')).toEqual('foo');
-      expect(a.id).toEqual('foo');
+      let el = document.createElement('section');
+      el.setAttribute('id', 'foo');
+      expect(el.getAttribute('id')).toEqual('foo');
+      expect(el.id).toEqual('foo');
     });
   });
 
@@ -248,6 +328,7 @@ describe('TrustedTypesEnforcer', function() {
       expect(function() {
         el.outerHTML = policy.createHTML(TEST_HTML);
       }).not.toThrow();
+      expect(el.outerHTML).toEqual(`<div>${TEST_HTML}</div>`);
     });
 
     it('on iframe srcdoc', function() {
@@ -287,10 +368,66 @@ describe('TrustedTypesEnforcer', function() {
       expect(el.src).toEqual(TEST_URL);
     });
 
+    it('independent of String(...)', function() {
+      let el = document.createElement('script');
+
+      // String(...) is a common, confusable idiom for converting to a
+      // string.
+      let originalString = String;
+      try {
+        try {
+          // eslint-disable-next-line no-global-assign
+          String = () => EVIL_URL;
+        } catch (ex) {
+          // Ok if assignment to String fails.
+        }
+        el.src = policy.createScriptURL(TEST_URL);
+      } finally {
+        if (String !== originalString) {
+          // eslint-disable-next-line no-global-assign
+          String = originalString;
+        }
+      }
+
+      expect(el.src).toEqual(TEST_URL);
+    });
+
+    it('independent of valueOf()', function() {
+      let el = document.createElement('script');
+
+      // The idiom ('' + obj) actually invokes valueOf first, not toString.
+      let originalValueOf = Object.prototype.valueOf;
+      try {
+        try {
+          // eslint-disable-next-line no-extend-native
+          Object.prototype.valueOf = () => EVIL_URL;
+        } catch (ex) {
+          // Ok if assignment to Object.prototype fails.
+        }
+        el.src = policy.createScriptURL(TEST_URL);
+      } finally {
+        if (Object.prototype.valueOf !== originalValueOf) {
+          // eslint-disable-next-line no-extend-native
+          Object.prototype.valueOf = originalValueOf;
+        }
+      }
+
+      expect(el.src).toEqual(TEST_URL);
+    });
+
     it('on Element.prototype.setAttribute', function() {
       let el = document.createElement('iframe');
 
       el.setAttribute('src', policy.createURL(TEST_URL));
+
+      expect(el.src).toEqual(TEST_URL);
+    });
+
+    it('on Element.prototype.setAttributeNS', function() {
+      let el = document.createElement('iframe');
+
+      el.setAttributeNS('http://www.w3.org/1999/xhtml', 'src',
+                        policy.createURL(TEST_URL));
 
       expect(el.src).toEqual(TEST_URL);
     });
@@ -374,6 +511,16 @@ describe('TrustedTypesEnforcer', function() {
       }).toThrow();
 
       expect(el.src).toEqual('');
+    });
+
+    it('on HTMLElement innocuous attribute', function() {
+      let el = document.createElement('div');
+
+      el.title = policy.createHTML(TEST_URL);
+      expect(el.title).toEqual(TEST_URL);
+
+      el.title = policy.createURL(TEST_HTML);
+      expect(el.title).toEqual(TEST_HTML);
     });
   });
 });

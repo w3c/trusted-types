@@ -21,58 +21,61 @@ import {TrustedTypes} from './trustedtypes.js';
 /* eslint-enable no-unused-vars */
 import {installFunction, installSetter} from './utils/wrapper.js';
 
+const {apply} = Reflect;
+const {getOwnPropertyNames, hasOwnProperty} = Object;
+
 /**
  * A map of attribute names to allowed types.
  * @type {Object<string, Object<string, !Function>>}
  */
 const SET_ATTRIBUTE_TYPE_MAP = {
-    // TODO(slekies): Add event handlers
-    // TODO(slekies): add SVG Elements here
-    'HTMLAnchorElement': {
-        'href': TrustedTypes.TrustedURL,
-    },
-    'HTMLAreaElement': {
-        'href': TrustedTypes.TrustedURL,
-    },
-    'HTMLBaseElement': {
-        'href': TrustedTypes.TrustedURL,
-    },
-    'HTMLSourceElement': {
-        'src': TrustedTypes.TrustedURL,
-    },
-    'HTMLImageElement': {
-        'src': TrustedTypes.TrustedURL,
-        // TODO(slekies): add special handling for srcset
-    },
-    'HTMLTrackElement': {
-        'src': TrustedTypes.TrustedURL,
-    },
-    'HTMLMediaElement': {
-        'src': TrustedTypes.TrustedURL,
-    },
-    'HTMLInputElement': {
-        'src': TrustedTypes.TrustedURL,
-    },
-    'HTMLFrameElement': {
-        'src': TrustedTypes.TrustedURL,
-    },
-    'HTMLIFrameElement': {
-        'src': TrustedTypes.TrustedURL,
-        'srcdoc': TrustedTypes.TrustedHTML,
-    },
-    'HTMLLinkElement': {
-        'href': TrustedTypes.TrustedScriptURL,
-    },
-    'HTMLObjectElement': {
-        'data': TrustedTypes.TrustedScriptURL,
-        'codebase': TrustedTypes.TrustedScriptURL,
-    },
-    'HTMLEmbedElement': {
-        'src': TrustedTypes.TrustedScriptURL,
-    },
-    'HTMLScriptElement': {
-        'src': TrustedTypes.TrustedScriptURL,
-    },
+  // TODO(slekies): Add event handlers
+  // TODO(slekies): Add SVG Elements here
+  'HTMLAnchorElement': {
+    'href': TrustedTypes.TrustedURL,
+  },
+  'HTMLAreaElement': {
+    'href': TrustedTypes.TrustedURL,
+  },
+  'HTMLBaseElement': {
+    'href': TrustedTypes.TrustedURL,
+  },
+  'HTMLSourceElement': {
+    'src': TrustedTypes.TrustedURL,
+  },
+  'HTMLImageElement': {
+    'src': TrustedTypes.TrustedURL,
+    // TODO(slekies): add special handling for srcset
+  },
+  'HTMLTrackElement': {
+    'src': TrustedTypes.TrustedURL,
+  },
+  'HTMLMediaElement': {
+    'src': TrustedTypes.TrustedURL,
+  },
+  'HTMLInputElement': {
+    'src': TrustedTypes.TrustedURL,
+  },
+  'HTMLFrameElement': {
+    'src': TrustedTypes.TrustedURL,
+  },
+  'HTMLIFrameElement': {
+    'src': TrustedTypes.TrustedURL,
+    'srcdoc': TrustedTypes.TrustedHTML,
+  },
+  'HTMLLinkElement': {
+    'href': TrustedTypes.TrustedScriptURL,
+  },
+  'HTMLObjectElement': {
+    'data': TrustedTypes.TrustedScriptURL,
+    'codebase': TrustedTypes.TrustedScriptURL,
+  },
+  'HTMLEmbedElement': {
+    'src': TrustedTypes.TrustedScriptURL,
+  },
+  'HTMLScriptElement': {
+    'src': TrustedTypes.TrustedScriptURL,
+  },
 };
 
 /**
@@ -147,9 +150,9 @@ export class TrustedTypesEnforcer {
    */
   installPropertySetWrappers_() {
     /* eslint-disable guard-for-in */
-    for (let type in SET_ATTRIBUTE_TYPE_MAP) {
-      for (let attribute in SET_ATTRIBUTE_TYPE_MAP[type]) {
-        const property = attribute in ATTR_PROPERTY_MAP ?
+    for (let type of getOwnPropertyNames(SET_ATTRIBUTE_TYPE_MAP)) {
+      for (let attribute of getOwnPropertyNames(SET_ATTRIBUTE_TYPE_MAP[type])) {
+        const property = apply(hasOwnProperty, ATTR_PROPERTY_MAP, [attribute]) ?
               ATTR_PROPERTY_MAP[attribute] : attribute;
         this.wrapSetter_(window[type].prototype, property,
                          SET_ATTRIBUTE_TYPE_MAP[type][attribute]);
@@ -164,8 +167,8 @@ export class TrustedTypesEnforcer {
    */
   uninstallPropertySetWrappers_() {
     /* eslint-disable guard-for-in */
-    for (let type in SET_ATTRIBUTE_TYPE_MAP) {
-      for (let attribute in SET_ATTRIBUTE_TYPE_MAP[type]) {
+    for (let type of getOwnPropertyNames(SET_ATTRIBUTE_TYPE_MAP)) {
+      for (let attribute of getOwnPropertyNames(SET_ATTRIBUTE_TYPE_MAP[type])) {
         const property = attribute in ATTR_PROPERTY_MAP ?
               ATTR_PROPERTY_MAP[attribute] : attribute;
         this.restoreSetter_(window[type].prototype, property);
@@ -189,6 +192,7 @@ export class TrustedTypesEnforcer {
               .bind(that, this, originalFn)
                 .apply(that, args);
         });
+    // TODO(msamuel): setAttributeNS, setAttributeNode
   }
 
   /**
@@ -348,6 +352,9 @@ export class TrustedTypesEnforcer {
    * @private
    */
   getKey_(object, name) {
+    // TODO(msamuel): Can we use Object.prototype.toString.call(object)
+    // to get an unspoofable string here?
+    // TODO(msamuel): fail on '-' in object.constructor.name?
     return '' + object.constructor.name + '-' + name;
   }
 
@@ -362,12 +369,12 @@ export class TrustedTypesEnforcer {
    * @return {*}
    * @private
    */
-  enforce_(context, propertyName, typeToEnforce, originalSetter, argNumber,
-               args) {
+  enforce_(
+      context, propertyName, typeToEnforce, originalSetter, argNumber, args) {
     let value = args[argNumber];
     const typeName = '' + typeToEnforce.name;
-    if (!TYPE_CHECKER_MAP.hasOwnProperty(typeName) ||
-        !TYPE_CHECKER_MAP[typeName](value)) {
+    if (!apply(hasOwnProperty, TYPE_CHECKER_MAP, [typeName]) ||
+        !(0, TYPE_CHECKER_MAP[typeName])(value)) {
       let message = 'Failed to set ' + propertyName + ' property on ' +
           ('' + context || context.constructor.name) +
           ': This document requires `' + (typeToEnforce.name) + '` assignment.';
@@ -381,6 +388,6 @@ export class TrustedTypesEnforcer {
         throw new TypeError(message);
       }
     }
-    return originalSetter.apply(context, args);
+    return apply(originalSetter, context, args);
   }
 }
