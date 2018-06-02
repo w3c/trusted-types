@@ -60,12 +60,13 @@ export const TrustedTypes = (function() {
    * Called before attacker-controlled code on an internal collections,
    * copies prototype members onto the instance directly, so that later
    * changes to prototypes cannot expose collection internals.
-   * @param {!Object} collection
-   * @return {!Object} collection
+   * @param {!T} collection
+   * @return {!T} collection
+   * @template T
    */
   function selfContained(collection) {
     const proto = getPrototypeOf(collection);
-    if (getPrototypeOf(proto) !== ObjectPrototype) {
+    if (proto == null || getPrototypeOf(proto) !== ObjectPrototype) {
       throw new Error(); // Loop below is insufficient.
     }
     for (let key of getOwnPropertyNames(proto)) {
@@ -285,10 +286,10 @@ export const TrustedTypes = (function() {
    */
   function wrapPolicy(policyName, innerPolicy) {
     /**
-     * @param {!Function} Ctor a trusted type constructor
+     * @template T
+     * @param {!function(new:T, symbol, string)} Ctor a trusted type constructor
      * @param {string} methodName the policy factory method name
-     * @return {!function(string):T} a factory that produces instances of Ctor.
-     * // TODO: parameterize properly
+     * @return {!function(string):!T} a factory that produces instances of Ctor.
      */
     function creator(Ctor, methodName) {
       // This causes thisValue to be null when called below.
