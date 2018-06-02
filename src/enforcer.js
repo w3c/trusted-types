@@ -26,7 +26,7 @@ const {getOwnPropertyNames, hasOwnProperty} = Object;
 
 /**
  * A map of attribute names to allowed types.
- * @type {Object<string, Object<string, !Function>>}
+ * @type {!Object<string, !Object<string, !Function>>}
  */
 const SET_ATTRIBUTE_TYPE_MAP = {
   // TODO(slekies): Add event handlers
@@ -80,7 +80,7 @@ const SET_ATTRIBUTE_TYPE_MAP = {
 
 /**
  * Map of type names to type checking function.
- * @type {Object<string,!Function>}
+ * @type {!Object<string,!Function>}
  */
 const TYPE_CHECKER_MAP = {
   'TrustedHTML': TrustedTypes.isHTML,
@@ -90,7 +90,7 @@ const TYPE_CHECKER_MAP = {
 
 /**
  * A map of HTML attribute to element property names.
- * @type {Object<string, string>}
+ * @type {!Object<string, string>}
  */
 const ATTR_PROPERTY_MAP = {
   'codebase': 'codeBase',
@@ -140,6 +140,7 @@ export class TrustedTypesEnforcer {
     this.restoreFunction_(Range.prototype, 'createContextualFragment');
     this.restoreFunction_(Element.prototype, 'insertAdjacentHTML');
     this.restoreFunction_(Element.prototype, 'setAttribute');
+    this.restoreFunction_(Element.prototype, 'setAttributeNS');
     this.uninstallPropertySetWrappers_();
   }
 
@@ -190,9 +191,21 @@ export class TrustedTypesEnforcer {
         function(originalFn, ...args) {
           return that.setAttributeWrapper_
               .bind(that, this, originalFn)
-                .apply(that, args);
+              .apply(that, args);
         });
-    // TODO(msamuel): setAttributeNS, setAttributeNode
+    this.wrapFunction_(
+      Element.prototype,
+      'setAttributeNS',
+      /**
+         * @this {TrustedTypesEnforcer}
+         * @param {!Function<!Function, *>} originalFn
+         * @return {*}
+         */
+        function(originalFn, ...args) {
+          return that.setAttributeNSWrapper_
+              .bind(that, this, originalFn)
+              .apply(that, args);
+        });
   }
 
   /**
@@ -207,18 +220,50 @@ export class TrustedTypesEnforcer {
     // determine whether a special type is required. In order to not break the
     // application, we will not do any further type checks and pass the call
     // to setAttribute.
-    if (context.constructor === null) {
-      return originalFn.apply(context, args);
+    if (context.constructor !== null) {
+      let attrName = (args[0] = String(args[0])).toLowerCase();
+      let type = context.constructor && context.constructor.name &&
+          SET_ATTRIBUTE_TYPE_MAP[context.constructor.name] &&
+          SET_ATTRIBUTE_TYPE_MAP[context.constructor.name][attrName];
+
+      if (type instanceof Function) {
+        return this.enforce_(
+          context, 'setAttribute', type, originalFn, 1, args);
+      }
     }
 
-    let attrName = args[0].toLowerCase();
-    let type = context.constructor && context.constructor.name &&
-        SET_ATTRIBUTE_TYPE_MAP[context.constructor.name] &&
-        SET_ATTRIBUTE_TYPE_MAP[context.constructor.name][attrName];
+    return originalFn.apply(context, args);
+  }
 
-    if (type instanceof Function) {
-      return this.enforce_
-          .call(this, context, 'setAttribute', type, originalFn, 1, args);
+  /**
+   * Enforces type checking for Element.prototype.setAttributeNS.
+   * @param {!Object} context The context for the call to the original function.
+   * @param {!Function} originalFn The original setAttributeNS function.
+   * @return {*}
+   */
+  setAttributeNSWrapper_(context, originalFn, ...args) {
+    /**
+     * @param {string} ns the namespace URL.
+     * @return {boolean} true iff the given argument is an HTML namespace.
+     */
+    function isHtmlNamespace(ns) {
+      return true; // TODO(msamuel): implement me
+    }
+    // See the note from setAttributeWrapper_ above.
+    if (context.constructor !== null) {
+      let ns = (args[0] = String(args[0])).toLowerCase();
+      let attrName = (args[1] = String(args[1])).toLowerCase();
+      if (isHtmlNamespace(ns)) {
+        let type = context.constructor && context.constructor.name &&
+            SET_ATTRIBUTE_TYPE_MAP[context.constructor.name] &&
+            SET_ATTRIBUTE_TYPE_MAP[context.constructor.name][attrName];
+
+        if (type instanceof Function) {
+          return this.enforce_(
+            context, 'setAttributeNS', type, originalFn, 2, args);
+        }
+      }
+      // TODO(msamuel): handle SVG namespace.  See TODO(slekies) above.
     }
 
     return originalFn.apply(context, args);
@@ -291,7 +336,8 @@ export class TrustedTypesEnforcer {
    * @private
    */
   wrapSetter_(object, name, type) {
-    let originalSetter = Object.getOwnPropertyDescriptor(object, name).set;
+    let originalSetter = /** @type {!Function} */
+        (Object.getOwnPropertyDescriptor(object, name).set);
     let key = this.getKey_(object, name);
     if (this.originalSetters_[key]) {
       throw new Error('TrustedTypesEnforcer: Double installation detected');
@@ -360,21 +406,22 @@ export class TrustedTypesEnforcer {
 
   /**
    * Logs and enforces TrustedTypes depending on the given configuration.
+   * @template T
    * @param {!Object} context The object that the setter is called for.
    * @param {string} propertyName The name of the property.
    * @param {!Function} typeToEnforce The type to enforce.
-   * @param {!function(*): *|undefined} originalSetter Original setter.
+   * @param {!function(*):T} originalSetter Original setter.
    * @param {number} argNumber Number of argument to enforce the type of.
    * @param {Array} args Arguments.
-   * @return {*}
+   * @return {T}
    * @private
    */
-  enforce_(
-      context, propertyName, typeToEnforce, originalSetter, argNumber, args) {
+  enforce_(context, propertyName, typeToEnforce, originalSetter, argNumber,
+           args) {
     let value = args[argNumber];
     const typeName = '' + typeToEnforce.name;
     if (!apply(hasOwnProperty, TYPE_CHECKER_MAP, [typeName]) ||
-        !(0, TYPE_CHECKER_MAP[typeName])(value)) {
+        !TYPE_CHECKER_MAP[typeName](value)) {
       let message = 'Failed to set ' + propertyName + ' property on ' +
           ('' + context || context.constructor.name) +
           ': This document requires `' + (typeToEnforce.name) + '` assignment.';

@@ -222,10 +222,10 @@ describe('TrustedTypesEnforcer', function() {
       let el = document.createElement('iframe');
 
       expect(function() {
-        el.setAttribute('http://www.w3.org/1999/xhtml', 'src', TEST_URL);
+        el.setAttributeNS('http://www.w3.org/1999/xhtml', 'src', TEST_URL);
       }).toThrow();
 
-      expect(el.src).toEqual('');
+      expect(el.getAttributeNS('http://www.w3.org/1999/xhtml', 'src')).toEqual(null);
     });
 
     it('on copy attribute crossing types', function() {
@@ -252,7 +252,7 @@ describe('TrustedTypesEnforcer', function() {
       div.removeAttributeNode(attr);
       span.setAttributeNode(attr);
 
-      expect(span.src).toEqual(TEST_URL);
+      expect(span.getAttribute('src')).toEqual(TEST_URL);
     });
 
     it('on non-lowercase Element.prototype.setAttribute', function() {
@@ -328,7 +328,6 @@ describe('TrustedTypesEnforcer', function() {
       expect(function() {
         el.outerHTML = policy.createHTML(TEST_HTML);
       }).not.toThrow();
-      expect(el.outerHTML).toEqual(`<div>${TEST_HTML}</div>`);
     });
 
     it('on iframe srcdoc', function() {
@@ -424,12 +423,13 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('on Element.prototype.setAttributeNS', function() {
-      let el = document.createElement('iframe');
+      let el = document.createElement('img');
 
-      el.setAttributeNS('http://www.w3.org/1999/xhtml', 'src',
-                        policy.createURL(TEST_URL));
+      // TODO: what about 'http://www.w3.org/1999/xhtml'?
+      el.setAttributeNS('http://www.w3.org/1999/xhtml', 'src', policy.createURL(TEST_URL));
 
-      expect(el.src).toEqual(TEST_URL);
+      expect(el.getAttributeNS('http://www.w3.org/1999/xhtml', 'src')).toEqual(TEST_URL);
+      expect(el.getAttribute('src')).toEqual(TEST_URL);
     });
 
     it('on object codebase', function() {
