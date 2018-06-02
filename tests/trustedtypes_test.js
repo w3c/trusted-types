@@ -106,7 +106,7 @@ describe('v2 TrustedTypes', () => {
 
     it('cannot be redefined', () => {
       expect(() => TrustedTypes.isHTML = () => true).toThrow();
-      expect(TrustedTypes.isHtml({})).toBe(false);
+      expect(TrustedTypes.isHTML({})).toBe(false);
     });
   });
 
@@ -197,7 +197,7 @@ describe('v2 TrustedTypes', () => {
             }
           },
         });
-        expect(proxyHtml.toString() !== 'foo' && TrustedTypes.isHtml(proxyHtml))
+        expect(proxyHtml.toString() !== 'foo' && TrustedTypes.isHTML(proxyHtml))
           .toBe(false);
 
         // Check that the attacks above don't succeed and throw.
