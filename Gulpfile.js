@@ -19,16 +19,19 @@ var closureCompiler = require('gulp-closure-compiler');
 
 gulp.task('default', ['build']);
 
-function compileSettings(entryPoint, destDir, fileName) {
+function compileSettings(entryPoint, destDir, fileName, languageOut) {
   return {
     compilerPath: './node_modules/google-closure-compiler/compiler.jar',
     fileName: fileName,
     compilerFlags: Object.assign({}, flags, {
+      language_out: languageOut,
       entry_point: entryPoint,
       create_source_map: destDir + '/' + fileName + '.map',
       source_map_include_content: null,
       output_wrapper: '(function(){%output%}).call(window);//# sourceMappingURL=' + fileName + '.map'
-    })
+    }),
+    // Newer languages produce warnings due to missing support of certain passes.
+    continueWithWarnings: languageOut == 'ECMASCRIPT5' ? false : true
   }
 }
 
@@ -36,7 +39,6 @@ var flags = {
   dependency_mode: 'STRICT',
   compilation_level: 'ADVANCED_OPTIMIZATIONS',
   language_in: 'ECMASCRIPT6_STRICT',
-  language_out: 'ECMASCRIPT5',
   jscomp_warning: ["missingProperties", "visibility"],
   jscomp_error: [
     "missingProvide",
@@ -67,6 +69,7 @@ var flags = {
 };
 
 gulp.task('build', ['build.full', 'build.api']);
+gulp.task('es6', ['es6.full', 'es6.api']);
 
 gulp.task('build.api', function() {
   return gulp.src([
@@ -76,7 +79,8 @@ gulp.task('build.api', function() {
       compileSettings(
         'src/polyfill/api_only.js',
         'dist',
-        'trustedtypes.api_only.build.js')))
+        'trustedtypes.api_only.build.js',
+        'ECMASCRIPT5')))
     .pipe(gulp.dest('dist'));
 });
 
@@ -88,6 +92,33 @@ gulp.task('build.full', function() {
       compileSettings(
         'src/polyfill/full.js',
         'dist',
-        'trustedtypes.build.js')))
+        'trustedtypes.build.js',
+        'ECMASCRIPT5')))
     .pipe(gulp.dest('dist'));
+});
+
+gulp.task('es6.api', function() {
+  return gulp.src([
+      'src/**/*.js',
+    ])
+    .pipe(closureCompiler(
+      compileSettings(
+        'src/polyfill/api_only.js',
+        'dist/es6',
+        'trustedtypes.api_only.build.js',
+        'ECMASCRIPT_2017')))
+    .pipe(gulp.dest('dist/es6'));
+});
+
+gulp.task('es6.full', function() {
+  return gulp.src([
+      'src/**/*.js',
+    ])
+    .pipe(closureCompiler(
+      compileSettings(
+        'src/polyfill/full.js',
+        'dist/es6',
+        'trustedtypes.build.js',
+        'ECMASCRIPT_2017')))
+    .pipe(gulp.dest('dist/es6'));
 });
