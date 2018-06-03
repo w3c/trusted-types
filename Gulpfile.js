@@ -56,7 +56,7 @@ var flags = {
 
 gulp.task('build', ['build.full', 'build.api']);
 
-gulp.task('build.full', function() {
+gulp.task('build.api', function() {
   return gulp.src([
       'src/**/*.js',
     ])
@@ -69,7 +69,7 @@ gulp.task('build.full', function() {
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('build.api', function() {
+gulp.task('build.full', function() {
   return gulp.src([
       'src/**/*.js',
     ])
