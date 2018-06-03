@@ -15,35 +15,34 @@
     "fix": "eslint --fix src/ tests/",
     "test": "karma start --single-run",
     "karma": "karma start --browsers ChromeHeadless",
-    "build": "gulp build",
-    "v2": "gulp v2"
+    "build": "gulp build"
   },
   "author": "Google Inc.",
   "license": "Apache-2.0",
   "devDependencies": {
-    "babel-preset-env": "^1.6.0",
-    "babelify": "^7.3.0",
-    "browserify": "^14.4.0",
-    "eslint": "^4.7.2",
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
+    "babelify": "^8.0.0",
+    "browserify": "^16.2.2",
+    "eslint": "^4.19.1",
     "eslint-config-google": "^0.9.1",
-    "google-closure-compiler": "^20170910.0.0",
+    "google-closure-compiler": "^20180506.0.0",
     "gulp": "^3.9.1",
     "gulp-closure-compiler": "^0.4.0",
-    "jasmine": "^2.8.0",
-    "jasmine-core": "^2.8.0",
-    "karma": "^1.7.1",
-    "karma-browserify": "^5.1.1",
+    "jasmine": "^3.1.0",
+    "jasmine-core": "^3.1.0",
+    "karma": "^2.0.2",
+    "karma-browserify": "^5.2.0",
     "karma-chrome-launcher": "^2.2.0",
-    "karma-firefox-launcher": "^1.0.1",
-    "karma-jasmine": "^1.1.0",
+    "karma-firefox-launcher": "^1.1.0",
+    "karma-jasmine": "^1.1.2",
     "pre-commit": "^1.2.2",
-    "watchify": "^3.9.0"
+    "watchify": "^3.11.0"
   },
   "dependencies": {},
   "pre-commit": [
     "lint",
     "build",
-    "v2",
     "test"
   ]
 }
