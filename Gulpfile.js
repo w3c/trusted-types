@@ -19,12 +19,24 @@ var closureCompiler = require('gulp-closure-compiler');
 
 gulp.task('default', ['build']);
 
+function compileSettings(entryPoint, destDir, fileName) {
+  return {
+    compilerPath: './node_modules/google-closure-compiler/compiler.jar',
+    fileName: fileName,
+    compilerFlags: Object.assign({}, flags, {
+      entry_point: entryPoint,
+      create_source_map: destDir + '/' + fileName + '.map',
+      source_map_include_content: null,
+      output_wrapper: '(function(){%output%}).call(window);//# sourceMappingURL=' + fileName + '.map'
+    })
+  }
+}
+
 var flags = {
   dependency_mode: 'STRICT',
   compilation_level: 'ADVANCED_OPTIMIZATIONS',
   language_in: 'ECMASCRIPT6_STRICT',
   language_out: 'ECMASCRIPT5',
-  output_wrapper: '(function(){%output%}).call(window);',
   jscomp_warning: ["missingProperties", "visibility"],
   jscomp_error: [
     "missingProvide",
@@ -60,12 +72,11 @@ gulp.task('build.api', function() {
   return gulp.src([
       'src/**/*.js',
     ])
-    .pipe(closureCompiler({
-      compilerPath: './node_modules/google-closure-compiler/compiler.jar',
-      fileName: 'trustedtypes.api_only.build.js',
-      compilerFlags: Object.assign({}, flags,
-        {entry_point: 'src/polyfill/api_only.js'})
-    }))
+    .pipe(closureCompiler(
+      compileSettings(
+        'src/polyfill/api_only.js',
+        'dist',
+        'trustedtypes.api_only.build.js')))
     .pipe(gulp.dest('dist'));
 });
 
@@ -73,12 +84,10 @@ gulp.task('build.full', function() {
   return gulp.src([
       'src/**/*.js',
     ])
-    .pipe(closureCompiler({
-      compilerPath: './node_modules/google-closure-compiler/compiler.jar',
-      fileName: 'trustedtypes.build.js',
-      compilerFlags: Object.assign({}, flags,
-        {entry_point: 'src/polyfill/full.js'})
-    }))
+    .pipe(closureCompiler(
+      compileSettings(
+        'src/polyfill/full.js',
+        'dist',
+        'trustedtypes.build.js')))
     .pipe(gulp.dest('dist'));
 });
-
