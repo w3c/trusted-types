@@ -86,6 +86,16 @@ const TYPE_CHECKER_MAP = {
 };
 
 /**
+ * Map of type names to type producing function.
+ * @type {Object<string,!Function>}
+ */
+const TYPE_PRODUCER_MAP = {
+  'TrustedHTML': TrustedTypes.createHTML,
+  'TrustedURL': TrustedTypes.createURL,
+  'TrustedScriptURL': TrustedTypes.createScriptURL,
+};
+
+/**
  * A map of HTML attribute to element property names.
  * @type {Object<string, string>}
  */
@@ -366,21 +376,32 @@ export class TrustedTypesEnforcer {
                args) {
     let value = args[argNumber];
     const typeName = '' + typeToEnforce.name;
-    if (!TYPE_CHECKER_MAP.hasOwnProperty(typeName) ||
-        !TYPE_CHECKER_MAP[typeName](value)) {
-      let message = 'Failed to set ' + propertyName + ' property on ' +
-          ('' + context || context.constructor.name) +
-          ': This document requires `' + (typeToEnforce.name) + '` assignment.';
+    if (TYPE_CHECKER_MAP.hasOwnProperty(typeName) &&
+        TYPE_CHECKER_MAP[typeName](value)) {
+      return originalSetter.apply(context, args);
+    }
 
-      if (this.config_.isLoggingEnabled) {
-        // eslint-disable-next-line no-console
-        console.warn(message, propertyName, context, typeToEnforce, value);
-      }
-
-      if (this.config_.isEnforcementEnabled) {
-        throw new TypeError(message);
+    const fallback = this.config_.fallbackPolicyName;
+    if (fallback && TrustedTypes.getPolicyNames().includes(fallback)) {
+      let fallbackValue = TYPE_PRODUCER_MAP[typeName](fallback, value);
+      if (TYPE_CHECKER_MAP.hasOwnProperty(typeName) &&
+          TYPE_CHECKER_MAP[typeName](fallbackValue)) {
+        args[argNumber] = fallbackValue;
+        return originalSetter.apply(context, args);
       }
     }
-    return originalSetter.apply(context, args);
+
+    let message = 'Failed to set ' + propertyName + ' property on ' +
+        ('' + context || context.constructor.name) +
+        ': This document requires `' + (typeToEnforce.name) + '` assignment.';
+
+    if (this.config_.isLoggingEnabled) {
+      // eslint-disable-next-line no-console
+      console.warn(message, propertyName, context, typeToEnforce, value);
+    }
+
+    if (this.config_.isEnforcementEnabled) {
+      throw new TypeError(message);
+    }
   }
 }

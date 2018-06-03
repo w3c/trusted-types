@@ -23,8 +23,10 @@ export class TrustedTypeConfig {
    *   warnings to the console.
    * @param {boolean} isEnforcementEnabled If true enforcement is enabled at
    *   runtime.
+   * @param {?string} fallbackPolicyName If present, direct DOM sink usage
+   *   will be passed throught this policy (has to be exposed).
    */
-  constructor(isLoggingEnabled, isEnforcementEnabled) {
+  constructor(isLoggingEnabled, isEnforcementEnabled, fallbackPolicyName) {
     /**
       * True if logging is enabled.
       * @type {boolean}
@@ -36,5 +38,11 @@ export class TrustedTypeConfig {
       * @type {boolean}
       */
     this.isEnforcementEnabled = isEnforcementEnabled;
+
+    /**
+     * Fallback policy name
+     * @type {?string}
+     */
+    this.fallbackPolicyName = fallbackPolicyName;
   }
 }
