@@ -30,7 +30,8 @@ import {TrustedTypes} from './api_only.js';
 export function bootstrap() {
   const config = new TrustedTypeConfig(
     /* isLoggingEnabled */ true,
-    /* isEnforcementEnabled */ true);
+    /* isEnforcementEnabled */ true,
+    /* fallbackPolicyName */ null);
 
   const trustedTypesEnforcer = new TrustedTypesEnforcer(config);
 
