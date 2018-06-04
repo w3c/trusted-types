@@ -41,7 +41,7 @@ first step:
     support them natively.
 
 2.  Enumerate all the XSS sinks we wish to protect, and overload each of them with a variant that
-    accepts the maching type. For example, `Element.innerHTML`'s setter could accept `(DOMString or TrustedHTML)`,
+    accepts the matching type. For example, `Element.innerHTML`'s setter could accept `(DOMString or TrustedHTML)`,
     and we could overload `document.write(DOMString)` with `document.write(TrustedHTML)`.
 
     As above, this mechanism should be polyfillable; the polyfilled types define stringifiers which 
@@ -96,6 +96,7 @@ typed value construction in the application is a potential DOM XSS. Consider the
 snippet from the previous version of the API:
 
 ```
+// DEPRECATED.
 node.innerHTML = TrustedHTML.unsafelyCreate(variable)
 ```
 
@@ -118,7 +119,7 @@ interact with DOM.
 For example: the application author trusts the Foo library not to cause DOM XSS (it's known 
 to have a very robust HTML sanitizer, was already security reviewed and is well-maintained), so it
 may initialize Foo with a no-op policy. At the same time, a 3rd party chat widget, or an Analytics 
-script should only be trusted to create `<div>` and `<img>` elements, so it's initalized with a 
+script should only be trusted to create `<div>` and `<img>` elements, so it's initialized with a 
 policy that only allows for that, and escapes (or removes) any other content.
 
 Such API allows the website to specify a set of *policies* that guard the typed objects creation.
@@ -173,7 +174,7 @@ Content-Security-Policy: trusted-types https://example.com#foo https://example.c
 ```
 
 That will assure that no additional policies are created at runtime. Creating a policy with a name
-that was laredy created, or was not specified in the CSP throws, so introduction of non-reviewed 
+that was alredy created, or was not specified in the CSP throws, so introduction of non-reviewed 
 policies breaks the application functionally.
 
 ### DOM Sinks
