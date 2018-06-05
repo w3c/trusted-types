@@ -314,15 +314,7 @@ policies breaks the application functionally.
 
 ## Open Questions
 
-1.  Sebastian doesn't like `Content-Security-Policy`, so maybe we should spell the flag in #3 above
-    differently. He proposed `Disable-Unsafe-APIs: True`.
-
-2.  Artur and Koto suggest that we'll need something more granular than the global flag, however
-    we spell it, in order to deal with piecemeal migrations.
-
-3.  Define more types. Figure out how to treat `iframe.src`.
-
-4.  Document more sinks.
+Some details have still not been sketched out - see [issues](https://github.com/WICG/trusted-types/issues).
 
 ## Polyfill
 
