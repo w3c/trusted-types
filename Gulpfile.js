@@ -30,8 +30,8 @@ function compileSettings(entryPoint, destDir, fileName, languageOut) {
       source_map_include_content: null,
       output_wrapper: '(function(){%output%}).call(window);//# sourceMappingURL=' + fileName + '.map'
     }),
-    // Newer languages produce warnings due to missing support of certain passes.
-    continueWithWarnings: languageOut == 'ECMASCRIPT5' ? false : true
+    // gulp plugin for the closure-compiler considers any output as a warning, including debug info.
+    continueWithWarnings: true
   }
 }
 
