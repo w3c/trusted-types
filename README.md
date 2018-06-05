@@ -89,13 +89,13 @@ first step:
 
 ### Policies
 
-Exposing raw Trusted Types constructors to the web authors presents a significant problem, in that 
-it only marginally improves the situation: while it allows the libraries to produce and use typed 
-values in place of strings, it also encourages constructing the types at will (see https://github.com/WICG/trusted-types/issues/31), and every 
+Introducing and requiring typed objects is, sadly, not sufficient: Exposing raw Trusted Types constructors to the web authors presents a significant problem, in that 
+it only marginally improves the situation: while it allows certain libraries to produce and use typed 
+values in place of strings, it also allows constructing the types at will (see https://github.com/WICG/trusted-types/issues/31), and every 
 typed value construction in the application is a potential DOM XSS. Consider the following code 
 snippet from the previous version of the API:
 
-```
+```javascript
 // DEPRECATED.
 node.innerHTML = TrustedHTML.unsafelyCreate(variable)
 ```
@@ -104,13 +104,12 @@ Reasoning about DOM XSS susceptibility of an application riddled with the statem
 is just as hard, as it was in the original DOM API. Therefore we propose the concept of *policies* 
 (not to be confused with CSP).
 
-Raw typed object constructors from a string are forbidden. Instead, we propose a programmatic 
+Raw typed object constructors from a string are forbidden. Instead, we introduce a programmatic 
 JavaScript API, allowing web authors to specify how the aforementioned objects can be created. 
-An application can create multiple policies for a document. Typed objects can be created from a 
+An application can create multiple named policies for a document. Typed objects can be constructed from a 
 string only by invoking one of those policies.
 
-For example, an application may define a policy, in which `TrustedScriptURL` should only ever be 
-created if the value is a same-origin URL or the domain is from a whitelisted domain list. A 
+For example, an application may define a policy, in which `TrustedScriptURL` is a same-origin URL or the domain is from a whitelisted domain list. A 
 separate policy may pass a string through a custom HTML sanitization function before producing a 
 `TrustedHTML` object. As authors may create multiple policies with different rules, application may 
 hand over certain policies to separate submodules of its codebase, guarding how those submodules can 
@@ -122,8 +121,8 @@ may initialize Foo with a no-op policy. At the same time, a 3rd party chat widge
 script should only be trusted to create `<div>` and `<img>` elements, so it's initialized with a 
 policy that only allows for that, and escapes (or removes) any other content.
 
-Such API allows the website to specify a set of *policies* that guard the typed objects creation.
-As trusted types must be passed through a policy, those policies alone form the **trusted codebase in regards to DOM XSS**, reducing the attack and review surface considerably.
+Such API allows the authors to specify a set of policies that guard the typed objects creation.
+As valid trusted type objects must originate from a policy, those policies alone form the **trusted codebase in regards to DOM XSS**, reducing the attack and security review surface considerably.
 
 #### Policies API
 
@@ -147,17 +146,20 @@ interface InnerPolicy {
 
 Policy (with a unique name) can be created like this:
 
-```
+```javascript
 const myPolicy = document.policies.createPolicy('https://example.com#mypolicy', (innerPolicy) => {
     innerPolicy.createHTML = (s) => { return customSanitize(s) };
     innerPolicy.createURL = (s) => { /* parse and validate the url. throw if non-conformant */ };
-    innerPolicy.expose = true;
 })
 ```
 
-It can be used directly to create typed values that conform to its rules:
+The policy object is returned, and can be used as a capability to create typed objects i.e. code parts without a reference to the policy object cannot use it. 
 
-```
+Optionally, the policy may be exposed globally by setting its `expose` property to `true` in the builder, which makes it possible to retrieve it via `document.policies.getExposedPolicy`. This mode is recommended only for the strict, sanitizing, "last resort" type of policies.
+
+The polocy object can be used directly to create typed values that conform to its rules:
+
+```javascript
  const trustedHtml = myPolicy.createHTML('<p>ok<script>not ok</script>')
  document.body.innerHTML = trustedHtml // does not throw.
  trustedHtml.toString() // <p>ok</p>, as the customSanitize removed the script.
