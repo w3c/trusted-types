@@ -36,8 +36,8 @@ let InnerPolicy = {};
 export const TrustedTypes = (function() {
   // Capture common names early.
   const {
-    assign, create, defineProperty, freeze, getOwnPropertyNames, getPrototypeOf,
-    prototype: ObjectPrototype,
+    assign, create, defineProperty, freeze, getOwnPropertyDescriptor,
+    getOwnPropertyNames, getPrototypeOf, prototype: ObjectPrototype,
   } = Object;
 
   const creatorSymbol = Symbol();
@@ -95,142 +95,82 @@ export const TrustedTypes = (function() {
    */
   const exposedPolicies = selfContained(new Map());
 
-  // TODO(msamuel): common base class for Trusted*?
+  /**
+   * A value that is trusted to have certain security-relevant properties
+   * because the sources of such values are controlled.
+   */
+  class TrustedType {
+    /**
+     * Constructor for TrustedType. Only allowed to be called from within a
+     * policy.
+     * @param {symbol} s creatorSymbol
+     * @param {string} policyName The name of the policy this object was
+     *   created by.
+     */
+    constructor(s, policyName) {
+      // TODO: Figure out if symbol is needed, if the value is in privateMap.
+      if (s !== creatorSymbol) {
+        throw new Error('cannot call the constructor');
+      }
+      defineProperty(this, 'policyName',
+                     {value: '' + policyName, enumerable: true});
+    }
+
+    /**
+     * Returns the wrapped string value of the object.
+     * @return {string}
+     */
+    toString() {
+      return privates(this).value;
+    }
+
+    /**
+     * Returns the wrapped string value of the object.
+     * @return {string}
+     */
+    valueOf() {
+      return privates(this).value;
+    }
+  }
+
+  /**
+   * @param {!function(new:TrustedType, symbol, string)} SubClass
+   */
+  function lockdownTrustedType(SubClass) {
+    freeze(SubClass.prototype);
+    // The name property is relied upon by the enforcer to work with both the
+    // polyfilled and native type.
+    const namePropDesc = getOwnPropertyDescriptor(SubClass, 'name');
+    namePropDesc.configurable = namePropDesc.writable = false;
+    delete SubClass.name;
+    defineProperty(SubClass, 'name', namePropDesc);
+  }
 
   /**
    * Trusted URL object wrapping a string that can only be created from a
    * TT policy.
    */
-  class TrustedURL {
-    /**
-     * Constructor for TrustedURL. Only allowed to be called from within a
-     * policy.
-     * @param {symbol} s creatorSymbol
-     * @param {string} policyName The name of the policy this object was
-     *   created by.
-     */
-    constructor(s, policyName) {
-      // TODO: Figure out if symbol is needed, if the value is in privateMap.
-      if (s !== creatorSymbol) {
-        throw new Error('cannot call the constructor');
-      }
-      defineProperty(this, 'policyName',
-                     {value: '' + policyName, enumerable: true});
-    }
-
-    /**
-     * Returns the wrapped string value of the object.
-     * @return {string}
-     */
-    toString() {
-      return privates(this).value;
-    }
-
-    /**
-     * Returns the wrapped string value of the object.
-     * @return {string}
-     */
-    valueOf() {
-      return privates(this).value;
-    }
+  class TrustedURL extends TrustedType {
   }
-  /**
-   * Name property.
-   * Required by the enforcer to work with both the polyfilled and native type.
-   */
-  defineProperty(
-    TrustedURL, 'name', {value: 'TrustedURL', enumerable: true});
-  freeze(TrustedURL.prototype);
+  lockdownTrustedType(TrustedURL);
 
   /**
    * Trusted Script URL object wrapping a string that can only be created from a
    * TT policy.
    */
-  class TrustedScriptURL {
-    /**
-     * Constructor for TrustedScriptURL. Only allowed to be called from within a
-     * policy.
-     * @param {symbol} s creatorSymbol
-     * @param {string} policyName The name of the policy this object was
-     *   created by.
-     */
-    constructor(s, policyName) {
-      // TODO: Figure out if symbol is needed, if the value is in privateMap.
-      if (s !== creatorSymbol) {
-        throw new Error('cannot call the constructor');
-      }
-      defineProperty(this, 'policyName',
-                     {value: '' + policyName, enumerable: true});
-    }
-
-    /**
-     * Returns the wrapped string value of the object.
-     * @return {string}
-     */
-    toString() {
-      return privates(this).value;
-    }
-
-    /**
-     * Returns the wrapped string value of the object.
-     * @return {string}
-     */
-    valueOf() {
-      return privates(this).value;
-    }
+  class TrustedScriptURL extends TrustedType {
   }
-  /**
-   * Name property.
-   * Required by the enforcer to work with both the polyfilled and native type.
-   */
-  defineProperty(
-    TrustedScriptURL, 'name', {value: 'TrustedScriptURL', enumerable: true});
-  freeze(TrustedScriptURL.prototype);
+  lockdownTrustedType(TrustedScriptURL);
 
   /**
    * Trusted HTML object wrapping a string that can only be created from a
    * TT policy.
    */
-  class TrustedHTML {
-    /**
-     * Constructor for TrustedHTML. Only allowed to be called from within a
-     * policy.
-     * @param {symbol} s creatorSymbol
-     * @param {string} policyName The name of the policy this object was
-     *   created by.
-     */
-    constructor(s, policyName) {
-      // TODO: Figure out if symbol is needed, if the value is in privateMap.
-      if (s !== creatorSymbol) {
-        throw new Error('cannot call the constructor');
-      }
-      defineProperty(this, 'policyName',
-                     {value: '' + policyName, enumerable: true});
-    }
-
-    /**
-     * Returns the wrapped string value of the object.
-     * @return {string}
-     */
-    toString() {
-      return privates(this).value;
-    }
-
-    /**
-     * Returns the wrapped string value of the object.
-     * @return {string}
-     */
-    valueOf() {
-      return privates(this).value;
-    }
+  class TrustedHTML extends TrustedType {
   }
-  /**
-   * Name property.
-   * Required by the enforcer to work with both the polyfilled and native type.
-   */
-  defineProperty(
-    TrustedHTML, 'name', {value: 'TrustedHTML', enumerable: true});
-  freeze(TrustedHTML.prototype);
+  lockdownTrustedType(TrustedHTML);
+
+  lockdownTrustedType(TrustedType);
 
   /**
    * Function generating a type checker.
