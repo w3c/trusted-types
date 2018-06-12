@@ -40,8 +40,8 @@ const {hasOwnProperty} = Object.prototype;
 export const TrustedTypes = (function() {
   // Capture common names early.
   const {
-    assign, create, defineProperty, freeze, getOwnPropertyDescriptor,
-    getOwnPropertyNames, getPrototypeOf, prototype: ObjectPrototype,
+    assign, create, defineProperty, freeze, getOwnPropertyNames,
+    getPrototypeOf, prototype: ObjectPrototype,
   } = Object;
 
   const creatorSymbol = Symbol();
@@ -139,15 +139,14 @@ export const TrustedTypes = (function() {
 
   /**
    * @param {!function(new:TrustedType, symbol, string)} SubClass
+   * @param {string} canonName The class name which should be independent of
+   *     any renaming pass and which is relied upon by the enforcer and for
+   *     native type interop.
    */
-  function lockdownTrustedType(SubClass) {
+  function lockdownTrustedType(SubClass, canonName) {
     freeze(SubClass.prototype);
-    // The name property is relied upon by the enforcer to work with both the
-    // polyfilled and native type.
-    const namePropDesc = getOwnPropertyDescriptor(SubClass, 'name');
-    namePropDesc.configurable = namePropDesc.writable = false;
     delete SubClass.name;
-    defineProperty(SubClass, 'name', namePropDesc);
+    defineProperty(SubClass, 'name', {value: canonName});
   }
 
   /**
@@ -156,7 +155,7 @@ export const TrustedTypes = (function() {
    */
   class TrustedURL extends TrustedType {
   }
-  lockdownTrustedType(TrustedURL);
+  lockdownTrustedType(TrustedURL, 'TrustedURL');
 
   /**
    * Trusted Script URL object wrapping a string that can only be created from a
@@ -164,7 +163,7 @@ export const TrustedTypes = (function() {
    */
   class TrustedScriptURL extends TrustedType {
   }
-  lockdownTrustedType(TrustedScriptURL);
+  lockdownTrustedType(TrustedScriptURL, 'TrustedScriptURL');
 
   /**
    * Trusted HTML object wrapping a string that can only be created from a
@@ -172,9 +171,9 @@ export const TrustedTypes = (function() {
    */
   class TrustedHTML extends TrustedType {
   }
-  lockdownTrustedType(TrustedHTML);
+  lockdownTrustedType(TrustedHTML, 'TrustedHTML');
 
-  lockdownTrustedType(TrustedType);
+  lockdownTrustedType(TrustedType, 'TrustedType');
 
   /**
    * Function generating a type checker.
