@@ -34,7 +34,16 @@ let InnerPolicy = {};
 /* eslint-enable no-unused-vars */
 
 
+const {apply} = Reflect;
+const {hasOwnProperty} = Object.prototype;
+
 export const TrustedTypes = (function() {
+  // Capture common names early.
+  const {
+    assign, create, defineProperty, freeze, getOwnPropertyNames,
+    getPrototypeOf, prototype: ObjectPrototype,
+  } = Object;
+
   const creatorSymbol = Symbol();
 
   /**
@@ -45,11 +54,30 @@ export const TrustedTypes = (function() {
   const privates = function(obj) {
     let v = privateMap.get(obj);
     if (v === undefined) {
-      v = Object.create({}); // initialize the private storage.
+      v = create(null); // initialize the private storage.
       privateMap.set(obj, v);
     }
     return v;
   };
+
+  /**
+   * Called before attacker-controlled code on an internal collections,
+   * copies prototype members onto the instance directly, so that later
+   * changes to prototypes cannot expose collection internals.
+   * @param {!T} collection
+   * @return {!T} collection
+   * @template T
+   */
+  function selfContained(collection) {
+    const proto = getPrototypeOf(collection);
+    if (proto == null || getPrototypeOf(proto) !== ObjectPrototype) {
+      throw new Error(); // Loop below is insufficient.
+    }
+    for (let key of getOwnPropertyNames(proto)) {
+      defineProperty(collection, key, {value: collection[key]});
+    }
+    return collection;
+  }
 
   /**
    * Map for private properties of Trusted Types object.
@@ -57,133 +85,95 @@ export const TrustedTypes = (function() {
    * the ability to create typed values.
    * @type {WeakMap}
    */
-  const privateMap = new WeakMap();
+  const privateMap = selfContained(new WeakMap());
 
   /**
    * List of all configured policy names.
    * @type {Array<string>}
    */
-  const policyNames = [];
+  const policyNames = selfContained([]);
 
   /**
    * Map of all exposed policies, keyed by policy name.
    * @type {Map<string,Object>}
    */
-  const exposedPolicies = new Map();
+  const exposedPolicies = selfContained(new Map());
+
+  /**
+   * A value that is trusted to have certain security-relevant properties
+   * because the sources of such values are controlled.
+   */
+  class TrustedType {
+    /**
+     * Constructor for TrustedType. Only allowed to be called from within a
+     * policy.
+     * @param {symbol} s creatorSymbol
+     * @param {string} policyName The name of the policy this object was
+     *   created by.
+     */
+    constructor(s, policyName) {
+      // TODO: Figure out if symbol is needed, if the value is in privateMap.
+      if (s !== creatorSymbol) {
+        throw new Error('cannot call the constructor');
+      }
+      defineProperty(this, 'policyName',
+                     {value: '' + policyName, enumerable: true});
+    }
+
+    /**
+     * Returns the wrapped string value of the object.
+     * @return {string}
+     */
+    toString() {
+      return privates(this).value;
+    }
+
+    /**
+     * Returns the wrapped string value of the object.
+     * @return {string}
+     */
+    valueOf() {
+      return privates(this).value;
+    }
+  }
+
+  /**
+   * @param {!function(new:TrustedType, symbol, string)} SubClass
+   * @param {string} canonName The class name which should be independent of
+   *     any renaming pass and which is relied upon by the enforcer and for
+   *     native type interop.
+   */
+  function lockdownTrustedType(SubClass, canonName) {
+    freeze(SubClass.prototype);
+    delete SubClass.name;
+    defineProperty(SubClass, 'name', {value: canonName});
+  }
 
   /**
    * Trusted URL object wrapping a string that can only be created from a
    * TT policy.
    */
-  class TrustedURL {
-    /**
-     * Constructor for TrustedURL. Only allowed to be called from within a
-     * policy.
-     * @param {symbol} s creatorSymbol
-     * @param {string} policyName The name of the policy this object was
-     *   created by.
-     */
-    constructor(s, policyName) {
-      // TODO: Figure out if symbol is needed, if the value is in privateMap.
-      if (s != creatorSymbol) {
-        throw new Error('cannot call the constructor');
-      }
-      this.policyName = '' + policyName;
-    }
-
-    /**
-     * Returns the wrapped string value of the object.
-     * @return {string}
-     */
-    toString() {
-      return privates(this).value;
-    }
-
-    /**
-     * Name property getter.
-     * Required by the enforcer to work with both the polyfilled and native
-     * type.
-     */
-    static get name() {
-      return 'TrustedURL';
-    }
+  class TrustedURL extends TrustedType {
   }
+  lockdownTrustedType(TrustedURL, 'TrustedURL');
 
   /**
    * Trusted Script URL object wrapping a string that can only be created from a
    * TT policy.
    */
-  class TrustedScriptURL {
-    /**
-     * Constructor for TrustedScriptURL. Only allowed to be called from within a
-     * policy.
-     * @param {symbol} s creatorSymbol
-     * @param {string} policyName The name of the policy this object was
-     *   created by.
-     */
-    constructor(s, policyName) {
-      // TODO: Figure out if symbol is needed, if the value is in privateMap.
-      if (s != creatorSymbol) {
-        throw new Error('cannot call the constructor');
-      }
-      this.policyName = '' + policyName;
-    }
-
-    /**
-     * Returns the wrapped string value of the object.
-     * @return {string}
-     */
-    toString() {
-      return privates(this).value;
-    }
-
-    /**
-     * Name property getter.
-     * Required by the enforcer to work with both the polyfilled and native
-     * type.
-     */
-    static get name() {
-      return 'TrustedScriptURL';
-    }
+  class TrustedScriptURL extends TrustedType {
   }
+  lockdownTrustedType(TrustedScriptURL, 'TrustedScriptURL');
 
   /**
    * Trusted HTML object wrapping a string that can only be created from a
    * TT policy.
    */
-  class TrustedHTML {
-    /**
-     * Constructor for TrustedHTML. Only allowed to be called from within a
-     * policy.
-     * @param {symbol} s creatorSymbol
-     * @param {string} policyName The name of the policy this object was
-     *   created by.
-     */
-    constructor(s, policyName) {
-      // TODO: Figure out if symbol is needed, if the value is in privateMap.
-      if (s != creatorSymbol) {
-        throw new Error('cannot call the constructor');
-      }
-      this.policyName = '' + policyName;
-    }
-
-    /**
-     * Returns the wrapped string value of the object.
-     * @return {string}
-     */
-    toString() {
-      return privates(this).value;
-    }
-
-    /**
-     * Name property getter.
-     * Required by the enforcer to work with both the polyfilled and native
-     * type.
-     */
-    static get name() {
-      return 'TrustedHTML';
-    }
+  class TrustedHTML extends TrustedType {
   }
+  lockdownTrustedType(TrustedHTML, 'TrustedHTML');
+
+  lockdownTrustedType(TrustedType, 'TrustedType');
 
   /**
    * Function generating a type checker.
@@ -205,10 +195,11 @@ export const TrustedTypes = (function() {
   function buildTypeFromExposedPolicy(type, functionName) {
     return function(policyName, value) {
       const policy = getExposedPolicy(policyName);
-      if (!policy) {
+      if (!(policy && apply(hasOwnProperty, policy, [functionName]))) {
         throw new Error('Policy not found');
       }
-      return policy[functionName](value);
+      const policyFn = policy[functionName];
+      return policyFn(value);
     };
   }
 
@@ -232,27 +223,30 @@ export const TrustedTypes = (function() {
    * @return {Policy} Frozen policy object
    */
   function wrapPolicy(policyName, innerPolicy) {
-    const newHTML = Object.freeze(new TrustedHTML(creatorSymbol, policyName));
-    const newURL = Object.freeze(new TrustedURL(creatorSymbol, policyName));
-    const newScriptURL = Object.freeze(
-        new TrustedScriptURL(creatorSymbol, policyName));
+    /**
+     * @template T
+     * @param {!function(new:T, symbol, string)} Ctor a trusted type constructor
+     * @param {string} methodName the policy factory method name
+     * @return {!function(string):!T} a factory that produces instances of Ctor.
+     */
+    function creator(Ctor, methodName) {
+      // This causes thisValue to be null when called below.
+      const method = innerPolicy[methodName];
+      const policySpecificType = freeze(new Ctor(creatorSymbol, policyName));
+      const factory = {
+        [methodName](s) { // Trick to get methodName to show in stacktrace.
+          const o = freeze(create(policySpecificType));
+          privates(o).value = '' + method(s);
+          return o;
+        },
+      }[methodName];
+      return freeze(factory);
+    }
 
-    return Object.freeze({
-      'createHTML': (s) => {
-        const o = Object.create(newHTML);
-        privates(o).value = '' + innerPolicy['createHTML'](s);
-        return Object.freeze(o);
-      },
-      'createURL': (s) => {
-        const o = Object.create(newURL);
-        privates(o).value = '' + innerPolicy['createURL'](s);
-        return Object.freeze(o);
-      },
-      'createScriptURL': (s) => {
-        const o = Object.create(newScriptURL);
-        privates(o).value = '' + innerPolicy['createScriptURL'](s);
-        return Object.freeze(o);
-      },
+    return freeze({
+      'createHTML': creator(TrustedHTML, 'createHTML'),
+      'createScriptURL': creator(TrustedScriptURL, 'createScriptURL'),
+      'createURL': creator(TrustedURL, 'createURL'),
     });
   }
 
@@ -271,6 +265,10 @@ export const TrustedTypes = (function() {
    * @return {!Array<string>}
    */
   function getPolicyNames() {
+    // TODO(msamuel): Should we sort policyNames to avoid leaking or
+    // encouraging dependency on the order in which policy names are
+    // registered?  I think JavaScript builtin sorts are efficient for
+    // almost-sorted lists so the amortized cost is close to O(n).
     return policyNames.slice();
   }
 
@@ -294,11 +292,14 @@ export const TrustedTypes = (function() {
     if (policyNames.includes(pName)) {
       throw new Error('Policy ' + pName + ' exists');
     }
-
-    let innerPolicy = Object.assign({}, initialBuilder);
-    builder(innerPolicy);
-
+    // Register the name early so that if builder unwisely calls
+    // across protection domains to code that reenters this function,
+    // builder's author still has rights to the name.
     policyNames.push(pName);
+
+    const innerPolicy = assign(create(null), initialBuilder);
+    builder(innerPolicy);
+    freeze(innerPolicy);
 
     const policy = wrapPolicy(pName, innerPolicy);
 
@@ -311,7 +312,7 @@ export const TrustedTypes = (function() {
 
   // TODO: Figure out if it's safe to return an instance of a typed object
   // to make testing easier.
-  return (Object.freeze({
+  return freeze({
 
     // Types definition, for convenience of instanceof checks
     TrustedHTML,
@@ -337,5 +338,5 @@ export const TrustedTypes = (function() {
     getExposedPolicy,
 
     getPolicyNames,
-  }));
+  });
 })();

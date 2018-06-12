@@ -106,6 +106,31 @@ describe('v2 TrustedTypes', () => {
 
     it('cannot be redefined', () => {
       expect(() => TrustedTypes.isHTML = () => true).toThrow();
+      expect(TrustedTypes.isHTML({})).toBe(false);
+    });
+  });
+
+  describe('proto attacks', () => {
+    it('WeakMap.prototype.has', () => {
+      const originalHas = WeakMap.prototype.has;
+      let poisonedProto = false;
+      try {
+        try {
+          // eslint-disable-next-line no-extend-native
+          WeakMap.prototype.has = () => true;
+        } catch (ex) {
+          // Ok if poisoning doesn't work.
+        }
+        poisonedProto = WeakMap.prototype.has !== originalHas;
+
+        // Assumes .has is used in isHTML.
+        expect(TrustedTypes.isHTML({})).toBe(false);
+      } finally {
+        if (poisonedProto) {
+          // eslint-disable-next-line no-extend-native
+          WeakMap.prototype.has = originalHas;
+        }
+      }
     });
   });
 
@@ -158,6 +183,27 @@ describe('v2 TrustedTypes', () => {
         expect(() => html.toString = () => 'fake').toThrow();
         expect(() => html.__proto__ = {toString: () => 'fake'}).toThrow();
         expect(() => html.__proto__.toString = () => 'fake').toThrow();
+
+        // Prevent sanitizer that passes javascript:... from masquerading.
+        expect(
+          () => Object.setPrototypeOf(html, TrustedTypes.TrustedURL.prototype))
+          .toThrow();
+
+        // Proxy that traps get of toString.
+        let proxyHtml = new Proxy(html, {
+          get: (target, key, receiver) => {
+            if (key === 'toString') {
+              return () => 'fake';
+            }
+          },
+        });
+        expect(proxyHtml.toString() !== 'foo' && TrustedTypes.isHTML(proxyHtml))
+          .toBe(false);
+
+        // Check that the attacks above don't succeed and throw.
+        expect(TrustedTypes.isHTML(html)).toBe(true);
+        expect(TrustedTypes.isURL(html)).toBe(false);
+        expect(String(html)).toEqual('foo');
       });
     });
   });
@@ -166,8 +212,8 @@ describe('v2 TrustedTypes', () => {
     it('support creating from exposed policies', () => {
       const name = 'p' + id++;
       const exposed = TrustedTypes.createPolicy(name, (p) => {
- p.expose = true;
-});
+        p.expose = true;
+      });
       const html = exposed.createHTML('foo');
       const html2 = TrustedTypes.createHTML(name, 'foo');
       expect(html.policyName).toEqual(html2.policyName);
