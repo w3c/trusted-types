@@ -33,6 +33,10 @@ let Policy = {};
 let InnerPolicy = {};
 /* eslint-enable no-unused-vars */
 
+
+const {apply} = Reflect;
+const {hasOwnProperty} = Object.prototype;
+
 export const TrustedTypes = (function() {
   // Capture common names early.
   const {
@@ -192,16 +196,11 @@ export const TrustedTypes = (function() {
   function buildTypeFromExposedPolicy(type, functionName) {
     return function(policyName, value) {
       const policy = getExposedPolicy(policyName);
-      if (!policy) {
+      if (!(policy && apply(hasOwnProperty, policy, [functionName]))) {
         throw new Error('Policy not found');
       }
-      // TODO(msamuel): can we require that functionName
-      // is an own property name in policy?
-      // TODO(msamuel): can we avoid doing this as a method call,
-      // a la (0, policy)[functionName](value)?  I don't think
-      // it matters if policy[functionName] is an attacker-controlled
-      // function that gets policy as the this-value.
-      return policy[functionName](value);
+      const policyFn = policy[functionName];
+      return policyFn(value);
     };
   }
 
