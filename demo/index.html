@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <head>
-  <meta http-equiv="Content-Security-Policy" content="require-trusted-types">
+  <meta http-equiv="Content-Security-Policy" content="tbd">
   <script src="../dist/trustedtypes.build.js"></script>
   <style>
     table {display: block; border-collapse: collapse;}
@@ -40,6 +40,32 @@ limitations under the License.
   </tbody>
   </table>
   <script>
+  var trustedValue; 
+
+  (function() {
+    // Create an unsafe policy - it can only be used on a trusted input, 
+    // inside of this function. 
+    var policy = TrustedTypes.createPolicy('unsafe', function(policy) {
+      policy.createHTML = function(unsafe) {
+        return unsafe;
+      };
+    });
+    trustedValue = policy.createHTML('<b>trusted input</b>');
+  })();
+
+  // Create escaping policy
+  TrustedTypes.createPolicy('escape', function(policy) {
+    policy.createHTML = function(unsafe) {
+      return unsafe
+           .replace(/&/g, "&amp;")
+           .replace(/</g, "&lt;")
+           .replace(/>/g, "&gt;")
+           .replace(/"/g, "&quot;")
+           .replace(/'/g, "&#039;");
+    };
+    policy.expose = true; // Make it available globally
+  });
+
   var testNumber = 0;
 
   function runTest(names, fn, shouldThrow) {
@@ -57,16 +83,16 @@ limitations under the License.
     };
   };
 
-  var trustedValue = TrustedHTML.unsafelyCreate('<b>totally safe</b>');
-  var escapedValue = TrustedHTML.escape('<b>escape me</b>');
+  // Use the escaping policy.
+  var escapedValue = TrustedTypes.createHTML('escape', '<b>escape me</b>');
 
   function setHtml(value, el) {
     el.innerHTML = value;
   }
 
-  runTest(['innerHTML', 'TrustedHTML.unsafelyCreate'], setHtml.bind(this, trustedValue), false);
+  runTest(['innerHTML', 'TrustedHTML (unsafe policy)'], setHtml.bind(this, trustedValue), false);
   runTest(['innerHTML', 'string'], setHtml.bind(this, 'string'), true);
-  runTest(['innerHTML', 'TrustedHTML.escape'], setHtml.bind(this, trustedValue), false);
+  runTest(['innerHTML', 'TrustedHTML (escape policy)'], setHtml.bind(this, escapedValue), false);
   runTest(['iframe.srcdoc', 'string'], function(el) {
     el.appendChild(document.createElement('iframe')).srcdoc = 'throw';
   }, true);
@@ -96,13 +122,5 @@ limitations under the License.
   runTest(['HTMLScriptElement.src', 'TrustedScriptURL'], function(el) {
     el.appendChild(document.createElement('script')).src = 'data:,';
   }, true);
-  runTest(['HTMLScriptElement.src', 'TrustedScriptURL'], function(el) {
-    var script = el.appendChild(document.createElement('script'));
-    script.src = TrustedScriptURL.unsafelyCreate('data:,');
-    if (script.src !== 'data:,') {
-      throw new Error('URL changed.');
-    }
-  }, false);
-
   </script>
 </body>

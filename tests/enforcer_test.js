@@ -26,7 +26,8 @@ describe('TrustedTypesEnforcer', function() {
 
   let ENFORCING_CONFIG = new TrustedTypeConfig(
       /* isLoggingEnabled */ false,
-      /* isEnforcementEnabled */ true);
+      /* isEnforcementEnabled */ true,
+      /* fallbackPolicy */ null);
 
   describe('installation', function() {
     let enforcer;
@@ -436,6 +437,73 @@ describe('TrustedTypesEnforcer', function() {
 
       expect(el.codeBase).toBe(TEST_URL);
       expect(el.codebase).toBe(undefined);
+    });
+  });
+
+  describe('enforcement fallback policy', function() {
+    let enforcer;
+
+    afterEach(function() {
+      enforcer.uninstall();
+    });
+
+    it('is used on strings', function() {
+      enforcer = new TrustedTypesEnforcer(new TrustedTypeConfig(
+      /* isLoggingEnabled */ false,
+      /* isEnforcementEnabled */ true,
+      'fallback1'));
+      enforcer.install();
+      TrustedTypes.createPolicy('fallback1', (p) => {
+        p.createHTML = (s) => 'fallback:' + s;
+        p.expose = true;
+      });
+      let el = document.createElement('div');
+      el.innerHTML = TEST_HTML;
+
+      expect(el.innerHTML).toEqual('fallback:' + TEST_HTML);
+    });
+
+    it('has to be exposed', function() {
+      enforcer = new TrustedTypesEnforcer(new TrustedTypeConfig(
+      /* isLoggingEnabled */ false,
+      /* isEnforcementEnabled */ true,
+      'fallback10'));
+      enforcer.install();
+      TrustedTypes.createPolicy('fallback10', (p) => {
+        p.createHTML = (s) => 'fallback:' + s;
+      });
+      let el = document.createElement('div');
+      expect(() => el.innerHTML = TEST_HTML).toThrow();
+      expect(el.innerHTML).toEqual('');
+    });
+
+    it('is not used on typed values', function() {
+      enforcer = new TrustedTypesEnforcer(new TrustedTypeConfig(
+      /* isLoggingEnabled */ false,
+      /* isEnforcementEnabled */ true,
+      'fallback2'));
+      enforcer.install();
+      TrustedTypes.createPolicy('fallback2', (p) => {
+        p.createHTML = (s) => 'fallback:' + s;
+        p.expose = true;
+      });
+      const policy = TrustedTypes.createPolicy(Math.random(), (p) => {});
+      let el = document.createElement('div');
+      el.innerHTML = policy.createHTML(TEST_HTML);
+
+      expect(el.innerHTML).toEqual(TEST_HTML);
+    });
+
+    it('fails when fallback is not installed', function() {
+      enforcer = new TrustedTypesEnforcer(new TrustedTypeConfig(
+      /* isLoggingEnabled */ false,
+      /* isEnforcementEnabled */ true,
+      'fallback3'));
+      enforcer.install();
+      TrustedTypes.createPolicy(Math.random(), (p) => {});
+      let el = document.createElement('div');
+      expect(() => el.innerHTML = TEST_HTML).toThrowError(TypeError);
+      expect(el.innerHTML).toEqual('');
     });
   });
 

@@ -22,19 +22,20 @@ import {TrustedTypes as tt} from '../trustedtypes.js';
 
 // Make sure Closure compiler exposes the names.
 if (typeof window['TrustedTypes'] === 'undefined') {
-  window['TrustedTypes'] = {};
-  window['TrustedTypes']['TrustedHTML'] = tt.TrustedHTML;
-  window['TrustedTypes']['TrustedURL'] = tt.TrustedURL;
-  window['TrustedTypes']['TrustedScriptURL'] = tt.TrustedScriptURL;
-  window['TrustedTypes']['isHTML'] = tt.isHTML;
-  window['TrustedTypes']['isURL'] = tt.isURL;
-  window['TrustedTypes']['isScriptURL'] = tt.isScriptURL;
-  window['TrustedTypes']['createHTML'] = tt.createHTML;
-  window['TrustedTypes']['createURL'] = tt.createURL;
-  window['TrustedTypes']['createScriptURL'] = tt.createScriptURL;
-  window['TrustedTypes']['createPolicy'] = tt.createPolicy;
-  window['TrustedTypes']['getExposedPolicy'] = tt.getExposedPolicy;
-  window['TrustedTypes']['getPolicyNames'] = tt.getPolicyNames;
+  window['TrustedTypes'] = {
+    'TrustedHTML': tt.TrustedHTML,
+    'TrustedURL': tt.TrustedURL,
+    'TrustedScriptURL': tt.TrustedScriptURL,
+    'isHTML': tt.isHTML,
+    'isURL': tt.isURL,
+    'isScriptURL': tt.isScriptURL,
+    'createHTML': tt.createHTML,
+    'createURL': tt.createURL,
+    'createScriptURL': tt.createScriptURL,
+    'createPolicy': tt.createPolicy,
+    'getExposedPolicy': tt.getExposedPolicy,
+    'getPolicyNames': tt.getPolicyNames,
+  };
 }
 
 export const TrustedTypes = tt;
