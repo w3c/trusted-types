@@ -288,18 +288,6 @@ export const TrustedTypes = (function() {
    * @todo Figure out if the return value (and the builder) can be typed.
    */
   function createPolicy(name, builder) {
-    // TODO(msamuel): could we also allow symbol names for non-exposed policies?
-    // That would simplify a lot of collision avoidance stuff in client code.
-    // For example,
-    // function toPolicyName(name) {
-    //   if ('symbol' === typeof name) {
-    //     if (getPrototypeOf(name) !== Symbol.prototype) {
-    //       throw new Error('Symbols from other Realms cannot be policy names')
-    //     }
-    //     return name;
-    //   }
-    //   return '' + name;  // Require a string.
-    // }
     const pName = '' + name; // Assert it's a string
 
     if (policyNames.includes(pName)) {
