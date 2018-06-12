@@ -228,7 +228,8 @@ describe('TrustedTypesEnforcer', function() {
       expect(el.getAttributeNS('http://www.w3.org/1999/xhtml', 'src')).toEqual(null);
     });
 
-    it('on copy attribute crossing types', function() {
+    // TODO: fix #47
+    xit('on copy attribute crossing types', function() {
       let div = document.createElement('div');
       let img = document.createElement('img');
 
@@ -263,10 +264,6 @@ describe('TrustedTypesEnforcer', function() {
       }).toThrow();
 
       expect(el.src).toEqual('');
-    });
-
-    it('on DOMParser.parseFromString', function() {
-      // TODO(msamuel): do we care about explicit invocations of DOMParser?
     });
   });
 

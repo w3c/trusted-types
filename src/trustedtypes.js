@@ -311,13 +311,9 @@ export const TrustedTypes = (function() {
     // builder's author still has rights to the name.
     policyNames.push(pName);
 
-    // TODO(msamuel): can the innerPolicy make do with a null prototype?
-    // That might make leaks via thisValue less likely.
-    const innerPolicy = assign({}, initialBuilder);
+    const innerPolicy = assign(create(null), initialBuilder);
     builder(innerPolicy);
-    // TODO(msamuel): can we freeze the inner policy post build, so that
-    // it doesn't matter as much if it leaks via thisValue?
-    // TODO(msamuel): if so, should we await in case builder is async?
+    freeze(innerPolicy);
 
     const policy = wrapPolicy(pName, innerPolicy);
 
