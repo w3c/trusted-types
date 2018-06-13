@@ -15,8 +15,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <head>
-  <meta http-equiv="Content-Security-Policy" content="tbd">
+  <meta http-equiv="Content-Security-Policy" content="trusted-types unsafe escape">
   <script src="../dist/trustedtypes.build.js"></script>
+
   <style>
     table {display: block; border-collapse: collapse;}
     td {border: 1px solid #888; padding: 0.5em;}
@@ -122,5 +123,9 @@ limitations under the License.
   runTest(['HTMLScriptElement.src', 'TrustedScriptURL'], function(el) {
     el.appendChild(document.createElement('script')).src = 'data:,';
   }, true);
+  runTest(['creating policy from outside whitelist'], function(el) {
+    TrustedTypes.createPolicy('foo', function() {});
+  }, true);
+
   </script>
 </body>

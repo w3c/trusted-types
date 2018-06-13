@@ -13,7 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import {TrustedTypes} from '../src/trustedtypes.js';
+import {TrustedTypes, trustedTypesBuilderTestOnly}
+  from '../src/trustedtypes.js';
 
 describe('v2 TrustedTypes', () => {
   let id = 0;
@@ -224,6 +225,31 @@ describe('v2 TrustedTypes', () => {
       const name = 'p' + id++;
       TrustedTypes.createPolicy(name, (p) => {});
       expect(() => TrustedTypes.createHTML(name, 'foo')).toThrow();
+    });
+  });
+
+  describe('setAllowedPolicyNames', () => {
+    let TrustedTypes;
+
+    beforeEach(() => {
+      // We need separate instances.
+       TrustedTypes = trustedTypesBuilderTestOnly();
+    });
+
+    it('is not applied by default', () => {
+      expect(() => TrustedTypes.createPolicy('foo', (p) => {})).not.toThrow();
+    });
+
+    it('is applied by createPolicy', () => {
+      TrustedTypes.setAllowedPolicyNames(['bar']);
+      expect(() => TrustedTypes.createPolicy('foo', (p) => {})).toThrow();
+      expect(() => TrustedTypes.createPolicy('bar', (p) => {})).not.toThrow();
+    });
+
+    it('supports wildcard', () => {
+      TrustedTypes.setAllowedPolicyNames(['*']);
+      expect(() => TrustedTypes.createPolicy('foo', (p) => {})).not.toThrow();
+      expect(() => TrustedTypes.createPolicy('bar', (p) => {})).not.toThrow();
     });
   });
 });

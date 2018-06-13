@@ -27,7 +27,8 @@ describe('TrustedTypesEnforcer', function() {
   let ENFORCING_CONFIG = new TrustedTypeConfig(
       /* isLoggingEnabled */ false,
       /* isEnforcementEnabled */ true,
-      /* fallbackPolicy */ null);
+      /* fallbackPolicy */ null,
+      /* allowedPolicyNames */ ['*']);
 
   describe('installation', function() {
     let enforcer;
@@ -440,6 +441,29 @@ describe('TrustedTypesEnforcer', function() {
     });
   });
 
+  describe('enforcement allowed policy names', function() {
+    let enforcer;
+
+    afterEach(function() {
+      enforcer.uninstall();
+    });
+
+    it('is respected on createPolicy', function() {
+      enforcer = new TrustedTypesEnforcer(new TrustedTypeConfig(
+      /* isLoggingEnabled */ false,
+      /* isEnforcementEnabled */ true,
+      'fallback1',
+      ['foo']));
+      enforcer.install();
+      expect(() => TrustedTypes.createPolicy('foo', (p) => {
+        p.createHTML = (s) => s;
+      })).not.toThrow();
+      expect(() => TrustedTypes.createPolicy('bar', (p) => {
+        p.createHTML = (s) => s;
+      })).toThrow();
+    });
+  });
+
   describe('enforcement fallback policy', function() {
     let enforcer;
 
@@ -451,7 +475,8 @@ describe('TrustedTypesEnforcer', function() {
       enforcer = new TrustedTypesEnforcer(new TrustedTypeConfig(
       /* isLoggingEnabled */ false,
       /* isEnforcementEnabled */ true,
-      'fallback1'));
+      'fallback1',
+      ['*']));
       enforcer.install();
       TrustedTypes.createPolicy('fallback1', (p) => {
         p.createHTML = (s) => 'fallback:' + s;
@@ -467,7 +492,7 @@ describe('TrustedTypesEnforcer', function() {
       enforcer = new TrustedTypesEnforcer(new TrustedTypeConfig(
       /* isLoggingEnabled */ false,
       /* isEnforcementEnabled */ true,
-      'fallback10'));
+      'fallback10', ['*']));
       enforcer.install();
       TrustedTypes.createPolicy('fallback10', (p) => {
         p.createHTML = (s) => 'fallback:' + s;
@@ -481,7 +506,7 @@ describe('TrustedTypesEnforcer', function() {
       enforcer = new TrustedTypesEnforcer(new TrustedTypeConfig(
       /* isLoggingEnabled */ false,
       /* isEnforcementEnabled */ true,
-      'fallback2'));
+      'fallback2', ['*']));
       enforcer.install();
       TrustedTypes.createPolicy('fallback2', (p) => {
         p.createHTML = (s) => 'fallback:' + s;
@@ -498,7 +523,7 @@ describe('TrustedTypesEnforcer', function() {
       enforcer = new TrustedTypesEnforcer(new TrustedTypeConfig(
       /* isLoggingEnabled */ false,
       /* isEnforcementEnabled */ true,
-      'fallback3'));
+      'fallback3', ['*']));
       enforcer.install();
       TrustedTypes.createPolicy(Math.random(), (p) => {});
       let el = document.createElement('div');

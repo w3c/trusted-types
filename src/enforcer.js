@@ -129,8 +129,10 @@ export class TrustedTypesEnforcer {
   /**
    * Wraps HTML sinks with an enforcement setter, which will enforce
    * trusted types and do logging, if enabled.
+   *
    */
   install() {
+    TrustedTypes.setAllowedPolicyNames(this.config_.allowedPolicyNames);
     this.wrapSetter_(Element.prototype, 'innerHTML', TrustedTypes.TrustedHTML);
     this.wrapSetter_(Element.prototype, 'outerHTML', TrustedTypes.TrustedHTML);
     this.wrapWithEnforceFunction_(Range.prototype, 'createContextualFragment',
@@ -152,6 +154,7 @@ export class TrustedTypesEnforcer {
     this.restoreFunction_(Element.prototype, 'setAttribute');
     this.restoreFunction_(Element.prototype, 'setAttributeNS');
     this.uninstallPropertySetWrappers_();
+    TrustedTypes.setAllowedPolicyNames(['*']);
   }
 
   /**
