@@ -135,6 +135,8 @@ interface PolicyContainer {
     Array<DOMString> getPolicyNames();
 }
 ```
+We propose to expose a `PolicyContainer` implementation under `window.TrustedTypes`. The most important function exposed in a `PolicyContainer` is `createPolicy`.
+
 The builder function will be called with a custom `InnerPolicy`, that is later modified within the builder to define the rules of the policy. Note that the functions operate on strings. The actual type construction is provided by the private API, not exposed to the authors.
 
 ```
@@ -157,7 +159,7 @@ const myPolicy = TrustedTypes.createPolicy('https://example.com#mypolicy', (inne
 
 The policy object is returned, and can be used as a capability to create typed objects i.e. code parts without a reference to the policy object cannot use it.
 
-Optionally, the policy may be exposed globally by setting its `expose` property to `true` in the builder, which makes it possible to retrieve it via `document.policies.getExposedPolicy`. This mode is recommended only for the strict, sanitizing, "last resort" type of policies.
+Optionally, the policy may be exposed globally by setting its `expose` property to `true` in the builder, which makes it possible to retrieve it via `TrustedTypes.getExposedPolicy`. This mode is recommended only for the strict, sanitizing, "last resort" type of policies.
 
 The policy object can be used directly to create typed values that conform to its rules:
 
