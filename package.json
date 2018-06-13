@@ -1,8 +1,8 @@
 {
   "name": "trusted-types",
   "version": "1.0.0",
-  "description": "This is not an official Google product.",
-  "main": "",
+  "description": "Polyfill for the Trusted Types",
+  "main": "dist/cjs/trustedtypes.api_only.js",
   "directories": {
     "test": "tests"
   },
@@ -18,7 +18,8 @@
     "build": "run-p build:cjs build:es6 build:es5",
     "build:cjs": "rollup -c",
     "build:es5": "gulp es5",
-    "build:es6": "gulp es6"
+    "build:es6": "gulp es6",
+    "add_build": "git add ./dist/"
   },
   "author": "Google Inc.",
   "license": "Apache-2.0",
@@ -48,6 +49,14 @@
   "pre-commit": [
     "lint",
     "test",
-    "build"
+    "build",
+    "add_build"
+  ],
+  "files": [
+    "dist",
+    "package.json",
+    "package-lock.json",
+    "LICENSE",
+    "README.md"
   ]
 }
