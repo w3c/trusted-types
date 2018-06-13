@@ -21,7 +21,8 @@ limitations under the License.
 import {TrustedTypes as tt} from '../trustedtypes.js';
 
 // Make sure Closure compiler exposes the names.
-if (typeof window['TrustedTypes'] === 'undefined') {
+if (typeof window !== 'undefined' &&
+    typeof window['TrustedTypes'] === 'undefined') {
   window['TrustedTypes'] = {
     'TrustedHTML': tt.TrustedHTML,
     'TrustedURL': tt.TrustedURL,
@@ -35,4 +36,4 @@ if (typeof window['TrustedTypes'] === 'undefined') {
   };
 }
 
-export const TrustedTypes = tt;
+export default tt;

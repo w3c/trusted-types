@@ -16,7 +16,7 @@ limitations under the License.
 -->
 <head>
   <meta http-equiv="Content-Security-Policy" content="trusted-types unsafe escape">
-  <script src="../dist/trustedtypes.build.js"></script>
+  <script src="../dist/es5/trustedtypes.build.js"></script>
 
   <style>
     table {display: block; border-collapse: collapse;}
@@ -41,11 +41,11 @@ limitations under the License.
   </tbody>
   </table>
   <script>
-  var trustedValue; 
+  var trustedValue;
 
   (function() {
-    // Create an unsafe policy - it can only be used on a trusted input, 
-    // inside of this function. 
+    // Create an unsafe policy - it can only be used on a trusted input,
+    // inside of this function.
     var policy = TrustedTypes.createPolicy('unsafe', function(policy) {
       policy.createHTML = function(unsafe) {
         return unsafe;

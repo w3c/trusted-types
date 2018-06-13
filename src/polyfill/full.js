@@ -20,7 +20,7 @@ limitations under the License.
 import {TrustedTypesEnforcer} from '../enforcer.js';
 import {TrustedTypeConfig} from '../data/trustedtypeconfig.js';
 /* eslint-disable no-unused-vars */
-import {TrustedTypes} from './api_only.js';
+import TrustedTypes from './api_only.js';
 
 /* eslint-enable no-unused-vars */
 
