@@ -15,7 +15,7 @@
     "fix": "eslint --fix src/ tests/",
     "test": "karma start --single-run",
     "karma": "karma start --browsers ChromeHeadless",
-    "build": "gulp build"
+    "build": "gulp build && rollup -c"
   },
   "author": "Google Inc.",
   "license": "Apache-2.0",
@@ -37,6 +37,7 @@
     "karma-firefox-launcher": "^1.1.0",
     "karma-jasmine": "^1.1.2",
     "pre-commit": "^1.2.2",
+    "rollup": "^0.60.4",
     "watchify": "^3.11.0"
   },
   "dependencies": {},
