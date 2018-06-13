@@ -1,19 +1,21 @@
-# Explainer: Trusted Types for DOM Manipulation                                                                                    
+# Explainer: Trusted Types for DOM Manipulation
+
+[![Build Status](https://travis-ci.org/WICG/trusted-types.svg)](https://travis-ci.org/WICG/trusted-types)
 
 ## The Problem
 
 As described in Christoph Kern's "[Securing the Tangled Web](https://research.google.com/pubs/pub42934.html)",
 Google has been fairly successful at combating DOM-based XSS attacks by relying on a set of
 [typed objects](https://github.com/google/safe-html-types/blob/master/doc/index.md) instead of
-strings to represent HTML snippets, URLs, etc. Compilation-time analysis done for JavaScript code 
-ensures that only these types can be used with various DOM APIs that can be used as DOM-based XSS 
-sinks (`el.innerHTML`, `location.href`, `ScriptElement.src` and so on). These types do not obliterate 
-DOM XSS in themselves, as authors may still create an instance of a type with an untrusted value. 
-Instead, it simplifies the security analysis of the application - security reviewers don't need to 
-deeply understand and review each and every usage of a given *sink*, but can instead focus their 
-efforts on the code that *generates* the typed objects. As long as these "trusted" types are always 
-generated from a small, reviewable subset of overall application code - safe templating libraries, 
-sanitizers, and so on, developers can have a high degree of confidence that the risk of DOM-based 
+strings to represent HTML snippets, URLs, etc. Compilation-time analysis done for JavaScript code
+ensures that only these types can be used with various DOM APIs that can be used as DOM-based XSS
+sinks (`el.innerHTML`, `location.href`, `ScriptElement.src` and so on). These types do not obliterate
+DOM XSS in themselves, as authors may still create an instance of a type with an untrusted value.
+Instead, it simplifies the security analysis of the application - security reviewers don't need to
+deeply understand and review each and every usage of a given *sink*, but can instead focus their
+efforts on the code that *generates* the typed objects. As long as these "trusted" types are always
+generated from a small, reviewable subset of overall application code - safe templating libraries,
+sanitizers, and so on, developers can have a high degree of confidence that the risk of DOM-based
 XSS remains low.
 
 Google's internal implementation has a number of bells and whistles (and makes a number of
@@ -29,12 +31,12 @@ improvement over the tight link between the type system and the compiler.
 
 While we could jam all sorts of sanitization functionality into such a system, it seems reasonable
 to start small until we know how existing templating systems and sanitizers will layer any
-primitives we introduce into their existing systems. The following approach seems compelling as a 
+primitives we introduce into their existing systems. The following approach seems compelling as a
 first step:
 
 1.  Introduce a number of types that correspond to the XSS sinks we wish to protect. For example,
     we could define a `TrustedHTML` object that marks it as suitable for using via `innerHTML`
-    (instead of a string). Or a `TrustedScriptURL` object that's suitable to be assigned to a 
+    (instead of a string). Or a `TrustedScriptURL` object that's suitable to be assigned to a
     `ScriptElement.src` attribute.
 
     These types should be pretty minimal in nature, making them polyfillable in browsers that don't
@@ -44,7 +46,7 @@ first step:
     accepts the matching type. For example, `Element.innerHTML`'s setter could accept `(DOMString or TrustedHTML)`,
     and we could overload `document.write(DOMString)` with `document.write(TrustedHTML)`.
 
-    As above, this mechanism should be polyfillable; the polyfilled types define stringifiers which 
+    As above, this mechanism should be polyfillable; the polyfilled types define stringifiers which
     would enable them to be automatically cast into strings when called on existing setters.
 
 3.  Introduce a mechanism for disabling the raw string version of each of the sinks identified
@@ -64,7 +66,7 @@ first step:
       stringifier;
     }
     ```
-    
+
 *   **TrustedURL**: This type would be used to represent a trusted URL that could be used to load
     non-scripting resources or navigate a frame.
 
@@ -73,26 +75,26 @@ first step:
       stringifier;
     }
     ```
-        
-*   **TrustedScriptURL**: This type would be used to represent a URL that could be used to load 
+
+*   **TrustedScriptURL**: This type would be used to represent a URL that could be used to load
     resources that may result in script execution in the current document.
-  
+
     ```
     interface TrustedScriptURL {
       stringifier;
     }
     ```
 
-*   **TrustedJavaScript**: This type would be used to represent a trusted JavaScript code block i.e. 
-    something that is trusted by the author to be executed by adding it to a `<script>` element 
+*   **TrustedJavaScript**: This type would be used to represent a trusted JavaScript code block i.e.
+    something that is trusted by the author to be executed by adding it to a `<script>` element
     content or passing to an `eval` function.
 
 ### Policies
 
-Introducing and requiring typed objects is, sadly, not sufficient: Exposing raw Trusted Types constructors to the web authors presents a significant problem, in that 
-it only marginally improves the situation: while it allows certain libraries to produce and use typed 
-values in place of strings, it also allows constructing the types at will (see https://github.com/WICG/trusted-types/issues/31), and every 
-typed value construction in the application is a potential DOM XSS. Consider the following code 
+Introducing and requiring typed objects is, sadly, not sufficient: Exposing raw Trusted Types constructors to the web authors presents a significant problem, in that
+it only marginally improves the situation: while it allows certain libraries to produce and use typed
+values in place of strings, it also allows constructing the types at will (see https://github.com/WICG/trusted-types/issues/31), and every
+typed value construction in the application is a potential DOM XSS. Consider the following code
 snippet from the previous version of the API:
 
 ```javascript
@@ -101,24 +103,24 @@ node.innerHTML = TrustedHTML.unsafelyCreate(variable)
 ```
 
 Reasoning about DOM XSS susceptibility of an application riddled with the statements like above
-is just as hard, as it was in the original DOM API. Therefore we propose the concept of *policies* 
+is just as hard, as it was in the original DOM API. Therefore we propose the concept of *policies*
 (not to be confused with CSP).
 
-Raw typed object constructors from a string are forbidden. Instead, we introduce a programmatic 
-JavaScript API, allowing web authors to specify how the aforementioned objects can be created. 
-An application can create multiple named policies for a document. Typed objects can be constructed from a 
+Raw typed object constructors from a string are forbidden. Instead, we introduce a programmatic
+JavaScript API, allowing web authors to specify how the aforementioned objects can be created.
+An application can create multiple named policies for a document. Typed objects can be constructed from a
 string only by invoking one of those policies.
 
-For example, an application may define a policy, in which `TrustedScriptURL` is a same-origin URL or the domain is from a whitelisted domain list. A 
-separate policy may pass a string through a custom HTML sanitization function before producing a 
-`TrustedHTML` object. As authors may create multiple policies with different rules, application may 
-hand over certain policies to separate submodules of its codebase, guarding how those submodules can 
-interact with DOM. 
+For example, an application may define a policy, in which `TrustedScriptURL` is a same-origin URL or the domain is from a whitelisted domain list. A
+separate policy may pass a string through a custom HTML sanitization function before producing a
+`TrustedHTML` object. As authors may create multiple policies with different rules, application may
+hand over certain policies to separate submodules of its codebase, guarding how those submodules can
+interact with DOM.
 
-For example: the application author trusts the Foo library not to cause DOM XSS (it's known 
+For example: the application author trusts the Foo library not to cause DOM XSS (it's known
 to have a very robust HTML sanitizer, was already security reviewed and is well-maintained), so it
-may initialize Foo with a no-op policy. At the same time, a 3rd party chat widget, or an Analytics 
-script should only be trusted to create `<div>` and `<img>` elements, so it's initialized with a 
+may initialize Foo with a no-op policy. At the same time, a 3rd party chat widget, or an Analytics
+script should only be trusted to create `<div>` and `<img>` elements, so it's initialized with a
 policy that only allows for that, and escapes (or removes) any other content.
 
 Such API allows the authors to specify a set of policies that guard the typed objects creation.
@@ -153,11 +155,11 @@ const myPolicy = document.policies.createPolicy('https://example.com#mypolicy', 
 })
 ```
 
-The policy object is returned, and can be used as a capability to create typed objects i.e. code parts without a reference to the policy object cannot use it. 
+The policy object is returned, and can be used as a capability to create typed objects i.e. code parts without a reference to the policy object cannot use it.
 
 Optionally, the policy may be exposed globally by setting its `expose` property to `true` in the builder, which makes it possible to retrieve it via `document.policies.getExposedPolicy`. This mode is recommended only for the strict, sanitizing, "last resort" type of policies.
 
-The polocy object can be used directly to create typed values that conform to its rules:
+The policy object can be used directly to create typed values that conform to its rules:
 
 ```javascript
  const trustedHtml = myPolicy.createHTML('<p>ok<script>not ok</script>')
@@ -165,7 +167,7 @@ The polocy object can be used directly to create typed values that conform to it
  trustedHtml.toString() // <p>ok</p>, as the customSanitize removed the script.
 ```
 
-This forms the core of the API, but there are additional features in development, it's best to see 
+This forms the core of the API, but there are additional features in development, it's best to see
 the polyfill code.
 
 #### Limiting policies
@@ -176,7 +178,7 @@ Content-Security-Policy: trusted-types https://example.com#foo https://example.c
 ```
 
 That will assure that no additional policies are created at runtime. Creating a policy with a name
-that was alredy created, or was not specified in the CSP throws, so introduction of non-reviewed 
+that was alredy created, or was not specified in the CSP throws, so introduction of non-reviewed
 policies breaks the application functionally.
 
 ### DOM Sinks
@@ -233,7 +235,7 @@ policies breaks the application functionally.
     ```
 
     ```
-    // A few element types go here. `HTMLBaseElement`, `HTMLLinkElement` 
+    // A few element types go here. `HTMLBaseElement`, `HTMLLinkElement`
     // `HTMLHyperlinkElementUtils` from a quick skim through HTML.
     partial interface HTMLXXXElement : HTMLElement {
         attribute URLString href;
@@ -242,7 +244,7 @@ policies breaks the application functionally.
 
     ```
     // A few element types go here. `HTMLSourceElement`, `HTMLImageElement`,
-    // `HTMLIFrameElement`, `HTMLTrackElement`, `HTMLMediaElement`, 
+    // `HTMLIFrameElement`, `HTMLTrackElement`, `HTMLMediaElement`,
     // `HTMLInputElement`,  `HTMLFrameElement`
     // from a quick skim through HTML.
     //
@@ -271,10 +273,10 @@ policies breaks the application functionally.
         void open(URLString location);
     };
     ```
-    
-* **Script URL Context**: Given something like `typedef (USVString or TrustedScriptURL) ScriptURLString`, 
+
+* **Script URL Context**: Given something like `typedef (USVString or TrustedScriptURL) ScriptURLString`,
     we'd poke at a number of methods and attribute setters to accept the new type:
-    
+
     ```
     partial interface WorkerGlobalScope {
         void importScripts(ScriptURLString... urls);
@@ -292,7 +294,7 @@ policies breaks the application functionally.
     ```
 
     TODO(slekies) - sinks enumeration.
-    
+
 *   **JavaScript Contexts**: Replace `DOMString` in the following with something
     reasonable.
 
@@ -327,7 +329,7 @@ $ npm install
 $ npm run build
 ```
 
-To see the polyfill in action, visit the [demo page](demo/index.html) - either using the file:// protocol or a web server of your choice: 
+To see the polyfill in action, visit the [demo page](demo/index.html) - either using the file:// protocol or a web server of your choice:
 ```
 $ python -m SimpleHTTPServer
 Serving HTTP on 0.0.0.0 port 8000 ...
