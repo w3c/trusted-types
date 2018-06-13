@@ -37,12 +37,16 @@ let InnerPolicy = {};
 const {apply} = Reflect;
 const {hasOwnProperty} = Object.prototype;
 
-export const TrustedTypes = (function() {
+export const trustedTypesBuilderTestOnly = function() {
   // Capture common names early.
   const {
     assign, create, defineProperty, freeze, getOwnPropertyNames,
     getPrototypeOf, prototype: ObjectPrototype,
   } = Object;
+
+  const {
+    forEach, push,
+  } = Array.prototype;
 
   const creatorSymbol = Symbol();
 
@@ -98,6 +102,19 @@ export const TrustedTypes = (function() {
    * @type {Map<string,Object>}
    */
   const exposedPolicies = selfContained(new Map());
+
+  /**
+   * Allowed policy namess for policy names.
+   * @type {Array<string>}
+   */
+  const allowedNames = selfContained([]);
+
+  /**
+   * Whether to enforce allowedNames in createPolicy().
+   * @type {boolean}
+   */
+  let enforceNameWhitelist = false;
+
 
   /**
    * A value that is trusted to have certain security-relevant properties
@@ -289,8 +306,12 @@ export const TrustedTypes = (function() {
   function createPolicy(name, builder) {
     const pName = '' + name; // Assert it's a string
 
+    if (enforceNameWhitelist && !allowedNames.includes(pName)) {
+      throw new Error('Policy ' + pName + ' disallowed.');
+    }
+
     if (policyNames.includes(pName)) {
-      throw new Error('Policy ' + pName + ' exists');
+      throw new Error('Policy ' + pName + ' exists.');
     }
     // Register the name early so that if builder unwisely calls
     // across protection domains to code that reenters this function,
@@ -310,6 +331,22 @@ export const TrustedTypes = (function() {
     return policy;
   }
 
+  /**
+   * Applies the policy name whitelist.
+   * @param {!Array<string>} allowedPolicyNames
+   */
+  function setAllowedPolicyNames(allowedPolicyNames) {
+    if (allowedPolicyNames.includes('*')) { // Any policy name is allowed.
+      enforceNameWhitelist = false;
+    } else {
+      enforceNameWhitelist = true;
+      allowedNames.length = 0;
+      forEach.call(allowedPolicyNames, (el) => {
+        push.call(allowedNames, '' + el);
+      });
+    }
+  }
+
   // TODO: Figure out if it's safe to return an instance of a typed object
   // to make testing easier.
   return freeze({
@@ -318,12 +355,6 @@ export const TrustedTypes = (function() {
     TrustedHTML,
     TrustedURL,
     TrustedScriptURL,
-
-    // Type checkers, also validating the object was initialized through a
-    // policy.
-    isHTML: isTrustedTypeChecker(TrustedHTML),
-    isURL: isTrustedTypeChecker(TrustedURL),
-    isScriptURL: isTrustedTypeChecker(TrustedScriptURL),
 
     // Type builders from exposed policies, for convenience. Consider removing?
     createHTML: buildTypeFromExposedPolicy(TrustedHTML, 'createHTML'),
@@ -338,5 +369,19 @@ export const TrustedTypes = (function() {
     getExposedPolicy,
 
     getPolicyNames,
+
+    // Below methods are not part of the public API and are only needed in the
+    // polyfill.
+
+    // Type checkers, also validating the object was initialized through a
+    // policy.
+    isHTML: isTrustedTypeChecker(TrustedHTML),
+    isURL: isTrustedTypeChecker(TrustedURL),
+    isScriptURL: isTrustedTypeChecker(TrustedScriptURL),
+
+    setAllowedPolicyNames,
   });
-})();
+};
+
+export const TrustedTypes = trustedTypesBuilderTestOnly();
+

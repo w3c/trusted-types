@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 /**
- * @fileoverview Entry point for a polyfill that only uses the types
+ * @fileoverview Entry point for a polyfill that only defines the types
  * (i.e. no enforcement logic).
  */
 import {TrustedTypes as tt} from '../trustedtypes.js';
@@ -26,9 +26,6 @@ if (typeof window['TrustedTypes'] === 'undefined') {
     'TrustedHTML': tt.TrustedHTML,
     'TrustedURL': tt.TrustedURL,
     'TrustedScriptURL': tt.TrustedScriptURL,
-    'isHTML': tt.isHTML,
-    'isURL': tt.isURL,
-    'isScriptURL': tt.isScriptURL,
     'createHTML': tt.createHTML,
     'createURL': tt.createURL,
     'createScriptURL': tt.createScriptURL,
