@@ -17,7 +17,7 @@ limitations under the License.
 var gulp = require('gulp');
 var closureCompiler = require('gulp-closure-compiler');
 
-gulp.task('default', ['build']);
+gulp.task('default', ['es5']);
 
 function compileSettings(entryPoint, destDir, fileName, languageOut) {
   return {
@@ -68,33 +68,33 @@ var flags = {
   ]
 };
 
-gulp.task('build', ['build.full', 'build.api']);
+gulp.task('es5', ['es5.full', 'es5.api']);
 gulp.task('es6', ['es6.full', 'es6.api']);
 
-gulp.task('build.api', function() {
+gulp.task('es5.api', function() {
   return gulp.src([
       'src/**/*.js',
     ])
     .pipe(closureCompiler(
       compileSettings(
         'src/polyfill/api_only.js',
-        'dist',
+        'dist/es5',
         'trustedtypes.api_only.build.js',
         'ECMASCRIPT5')))
-    .pipe(gulp.dest('dist'));
+    .pipe(gulp.dest('dist/es5'));
 });
 
-gulp.task('build.full', function() {
+gulp.task('es5.full', function() {
   return gulp.src([
       'src/**/*.js',
     ])
     .pipe(closureCompiler(
       compileSettings(
         'src/polyfill/full.js',
-        'dist',
+        'dist/es5',
         'trustedtypes.build.js',
         'ECMASCRIPT5')))
-    .pipe(gulp.dest('dist'));
+    .pipe(gulp.dest('dist/es5'));
 });
 
 gulp.task('es6.api', function() {
