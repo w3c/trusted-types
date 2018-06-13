@@ -149,7 +149,7 @@ interface InnerPolicy {
 Policy (with a unique name) can be created like this:
 
 ```javascript
-const myPolicy = document.policies.createPolicy('https://example.com#mypolicy', (innerPolicy) => {
+const myPolicy = TrustedTypes.createPolicy('https://example.com#mypolicy', (innerPolicy) => {
     innerPolicy.createHTML = (s) => { return customSanitize(s) };
     innerPolicy.createURL = (s) => { /* parse and validate the url. throw if non-conformant */ };
 })
@@ -320,7 +320,47 @@ Some details have still not been sketched out - see [issues](https://github.com/
 
 ## Polyfill
 
-This repository contains a polyfill implementation. To build the polyfill (Java required):
+This repository contains a polyfill implementation. The compiled versions are stored in [dist](dist/). 
+
+### Browsers
+The es5/es6 builds can be loaded directly in the browsers:
+
+```html
+<script src="dist/es5/trustedtypes.api_only.build.js"></script>
+<script>
+     const p = TrustedTypes.createPolicy('foo', ...)
+     document.body.innerHTML = p.createHTML('foo'); // works
+     document.body.innerHTML = 'foo'; // but this one works too (no enforcement).
+</script>
+```
+
+There are two variants of the browser polyfill - *api_only* (light) and *full*. The *Api_only* variant defines the API, so you can create policies and types. *Full* version also enables the type enforcement in the DOM, based on the CSP policy it infers from the current document (see [src/polyfill/full.js](src/polyfill/full.js)).
+
+```html
+<script src="dist/es5/trustedtypes.build.js" data-csp="trusted-types foo bar"></script>
+<script>
+    TrustedTypes.createPolicy('foo', ...);
+    TrustedTypes.createPolicy('unknown', ...); // throws
+    document.body.innerHTML = 'foo'; // throws
+</script>
+
+```
+
+### NodeJS
+CommonJS polyfill is published as an npm package [trusted-types](https://www.npmjs.com/package/trusted-types):
+
+```
+$ npm install trusted-types
+```
+
+```javascript
+const tt = require('trusted-types');
+tt.createPolicy(...);
+```
+
+## Building
+
+To build the polyfill yourself (Java required):
 
 ```
 $ git clone https://github.com/mikewest/trusted-types/
@@ -340,7 +380,7 @@ It can be tested by running:
 ```
 $ npm test
 ```
-The polyfill can also be run against the [web platform test suite](https://github.com/w3c/web-platform-tests), but that requires small patches to the suite - see [tests/platform-tests/platform-tests-runner.sh](tests/platform-tests/platform-tests-runner.sh).
+<del>The polyfill can also be run against the [web platform test suite](https://github.com/w3c/web-platform-tests), but that requires small patches to the suite - see [tests/platform-tests/platform-tests-runner.sh](tests/platform-tests/platform-tests-runner.sh).</del>
 
 
 ## Caveats
