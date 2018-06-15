@@ -31,6 +31,8 @@ const {getOwnPropertyNames, hasOwnProperty} = Object;
 const SET_ATTRIBUTE_TYPE_MAP = {
   // TODO(slekies): Add event handlers
   // TODO(slekies): Add SVG Elements here
+  // TODO(koto): Figure out what to to with <link>
+  // TODO(koto): Trusted code for <script> contents
   'HTMLAnchorElement': {
     'href': TrustedTypes.TrustedURL,
   },
@@ -39,6 +41,9 @@ const SET_ATTRIBUTE_TYPE_MAP = {
   },
   'HTMLBaseElement': {
     'href': TrustedTypes.TrustedURL,
+  },
+  'HTMLButtonElement': {
+    'formaction': TrustedTypes.TrustedURL,
   },
   'HTMLSourceElement': {
     'src': TrustedTypes.TrustedURL,
@@ -55,6 +60,7 @@ const SET_ATTRIBUTE_TYPE_MAP = {
   },
   'HTMLInputElement': {
     'src': TrustedTypes.TrustedURL,
+    'formaction': TrustedTypes.TrustedURL,
   },
   'HTMLFrameElement': {
     'src': TrustedTypes.TrustedURL,
@@ -104,6 +110,7 @@ const TYPE_PRODUCER_MAP = {
  */
 const ATTR_PROPERTY_MAP = {
   'codebase': 'codeBase',
+  'formaction': 'formAction',
 };
 
 /**
@@ -139,6 +146,22 @@ export class TrustedTypesEnforcer {
         TrustedTypes.TrustedHTML, 0);
     this.wrapWithEnforceFunction_(Element.prototype, 'insertAdjacentHTML',
         TrustedTypes.TrustedHTML, 1);
+
+    if (Object.getOwnPropertyDescriptor(Document.prototype, 'write')) {
+      // Chrome
+      this.wrapWithEnforceFunction_(Document.prototype, 'write',
+          TrustedTypes.TrustedHTML, 0);
+    } else {
+      // Firefox
+      this.wrapWithEnforceFunction_(HTMLDocument.prototype, 'write',
+        TrustedTypes.TrustedHTML, 0);
+    }
+
+    this.wrapWithEnforceFunction_(window, 'open', TrustedTypes.TrustedURL, 0);
+    if (DOMParser) {
+      this.wrapWithEnforceFunction_(DOMParser.prototype, 'parseFromString',
+          TrustedTypes.TrustedHTML, 0);
+    }
     this.wrapSetAttribute_();
     this.installPropertySetWrappers_();
   }
@@ -153,6 +176,15 @@ export class TrustedTypesEnforcer {
     this.restoreFunction_(Element.prototype, 'insertAdjacentHTML');
     this.restoreFunction_(Element.prototype, 'setAttribute');
     this.restoreFunction_(Element.prototype, 'setAttributeNS');
+    if (Object.getOwnPropertyDescriptor(Document.prototype, 'write')) {
+      this.restoreFunction_(Document.prototype, 'write');
+    } else {
+      this.restoreFunction_(HTMLDocument.prototype, 'write');
+    }
+    this.restoreFunction_(window, 'open');
+    if (DOMParser) {
+      this.restoreFunction_(DOMParser.prototype, 'parseFromString');
+    }
     this.uninstallPropertySetWrappers_();
     TrustedTypes.setAllowedPolicyNames(['*']);
   }
@@ -316,8 +348,9 @@ export class TrustedTypesEnforcer {
    * @param {!Function<!Function, *>} functionBody The wrapper function.
    */
   wrapFunction_(object, name, functionBody) {
+    let descriptor = Object.getOwnPropertyDescriptor(object, name);
     let originalFn = /** @type function(*):* */ (
-        Object.getOwnPropertyDescriptor(object, name).value);
+        descriptor ? descriptor.value : null);
 
     if (!(originalFn instanceof Function)) {
       throw new TypeError(
