@@ -19,6 +19,12 @@ import {TrustedTypes, trustedTypesBuilderTestOnly}
 describe('v2 TrustedTypes', () => {
   let id = 0;
 
+  const noopPolicy = (p) => {
+          p.createHTML = (s) => s;
+          p.createScriptURL = (s) => s;
+          p.createURL = (s) => s;
+  };
+
   it('is frozen', () => {
     expect(Object.isFrozen(TrustedTypes)).toBe(true);
   });
@@ -92,7 +98,7 @@ describe('v2 TrustedTypes', () => {
 
   describe('is* methods', () => {
     it('require the object to be created via policy', () => {
-      const p = TrustedTypes.createPolicy(id++, () => {});
+      const p = TrustedTypes.createPolicy(id++, noopPolicy);
       let html = p.createHTML('test');
       expect(TrustedTypes.isHTML(html)).toEqual(true);
       let html2 = Object.create(html);
@@ -137,9 +143,17 @@ describe('v2 TrustedTypes', () => {
 
   describe('policy', () => {
     describe('create* methods', () => {
-      it('return working values', () => {
+      it('reject by default', () => {
         const name = 'policy' + id++;
         const p = TrustedTypes.createPolicy(name, () => {});
+        expect(() => p.createHTML('foo')).toThrow();
+        expect(() => p.createURL('foo')).toThrow();
+        expect(() => p.createScriptURL('foo')).toThrow();
+      });
+
+      it('return working values', () => {
+        const name = 'policy' + id++;
+        const p = TrustedTypes.createPolicy(name, noopPolicy);
 
         const html = p.createHTML('<foo>');
         const url = p.createURL('http://a');
@@ -177,7 +191,7 @@ describe('v2 TrustedTypes', () => {
 
       it('return frozen values', () => {
         const name = 'policy' + id++;
-        const p = TrustedTypes.createPolicy(name, () => {});
+        const p = TrustedTypes.createPolicy(name, noopPolicy);
 
         let html = p.createHTML('foo');
         expect(Object.isFrozen(html)).toBe(true);
@@ -213,6 +227,7 @@ describe('v2 TrustedTypes', () => {
     it('support creating from exposed policies', () => {
       const name = 'p' + id++;
       const exposed = TrustedTypes.createPolicy(name, (p) => {
+        noopPolicy(p);
         p.expose = true;
       });
       const html = exposed.createHTML('foo');

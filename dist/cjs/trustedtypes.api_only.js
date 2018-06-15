@@ -211,9 +211,15 @@ const trustedTypesBuilderTestOnly = function() {
    * @type {InnerPolicy}
    */
   const initialBuilder = {
-    'createHTML': (s) => s, // or a null function to encourage explicit config
-    'createURL': (s) => s,
-    'createScriptURL': (s) => s,
+    'createHTML': (s) => {
+ throw new Error('undefined conversion');
+},
+    'createURL': (s) => {
+ throw new Error('undefined conversion');
+},
+    'createScriptURL': (s) => {
+ throw new Error('undefined conversion');
+},
     'expose': false, // Don't expose the policy by default.
   };
 
