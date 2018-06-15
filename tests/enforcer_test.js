@@ -236,6 +236,29 @@ describe('TrustedTypesEnforcer', function() {
       expect(el.getAttributeNS('http://www.w3.org/1999/xhtml', 'src')).toEqual(null);
     });
 
+    it('on document.write', function() {
+      expect(function() {
+        document.write('<foo>');
+      }).toThrow();
+      expect(document.body.innerHTML).not.toContain('<foo>');
+    });
+
+    it('on window.open', function() {
+      enforcer.uninstall();
+      const mockOpen = spyOn(window, 'open');
+      enforcer.install();
+      expect(function() {
+        window.open('/');
+      }).toThrow();
+      expect(mockOpen).not.toHaveBeenCalled();
+    });
+
+    it('on DOMParser.parseFromString', function() {
+      expect(function() {
+        new DOMParser().parseFromString('<foo>', 'text/html');
+      }).toThrow();
+    });
+
     // TODO: fix #47
     xit('on copy attribute crossing types', function() {
       let div = document.createElement('div');
@@ -371,6 +394,32 @@ describe('TrustedTypesEnforcer', function() {
       el.src = policy.createScriptURL(TEST_URL);
 
       expect(el.src).toEqual(TEST_URL);
+    });
+
+    it('on document.write', function() {
+      enforcer.uninstall();
+      const mockWrite = spyOn(document, 'write');
+      enforcer.install();
+      const html = policy.createHTML('<foo>');
+      document.write(html);
+      expect(mockWrite).toHaveBeenCalledWith(html);
+    });
+
+    it('on window.open', function() {
+      enforcer.uninstall();
+      const mockOpen = spyOn(window, 'open');
+      enforcer.install();
+      let url = policy.createURL('/');
+      expect(function() {
+        window.open(url, 'foo', 'bar');
+      }).not.toThrow();
+      expect(mockOpen).toHaveBeenCalledWith(url, 'foo', 'bar');
+    });
+
+    it('on DOMParser.parseFromString', function() {
+      const dom = new DOMParser().parseFromString(
+          policy.createHTML('<foo>'), 'text/html');
+      expect(dom.body.innerHTML).toContain('<foo>');
     });
 
     it('independent of String(...)', function() {

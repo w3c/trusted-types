@@ -212,14 +212,14 @@ const trustedTypesBuilderTestOnly = function() {
    */
   const initialBuilder = {
     'createHTML': (s) => {
- throw new Error('undefined conversion');
-},
+      throw new Error('undefined conversion');
+    },
     'createURL': (s) => {
- throw new Error('undefined conversion');
-},
+      throw new Error('undefined conversion');
+    },
     'createScriptURL': (s) => {
- throw new Error('undefined conversion');
-},
+      throw new Error('undefined conversion');
+    },
     'expose': false, // Don't expose the policy by default.
   };
 
