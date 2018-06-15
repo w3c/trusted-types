@@ -13,11 +13,21 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import {TrustedTypes, trustedTypesBuilderTestOnly}
-  from '../src/trustedtypes.js';
+import {trustedTypesBuilderTestOnly} from '../src/trustedtypes.js';
 
 describe('v2 TrustedTypes', () => {
-  let id = 0;
+  let TrustedTypes;
+
+  beforeEach(() => {
+    // We need separate instances.
+     TrustedTypes = trustedTypesBuilderTestOnly();
+  });
+
+  const noopPolicy = (p) => {
+    p.createHTML = (s) => s;
+    p.createScriptURL = (s) => s;
+    p.createURL = (s) => s;
+  };
 
   it('is frozen', () => {
     expect(Object.isFrozen(TrustedTypes)).toBe(true);
@@ -25,8 +35,7 @@ describe('v2 TrustedTypes', () => {
 
   describe('addPolicy', () => {
     it('returns a working policy object', () => {
-      const name = 'policy' + id++;
-      const p = TrustedTypes.createPolicy(name, () => {});
+      const p = TrustedTypes.createPolicy('policy', () => {});
 
       expect(p.createHTML instanceof Function).toBe(true);
       expect(p.createURL instanceof Function).toBe(true);
@@ -34,17 +43,15 @@ describe('v2 TrustedTypes', () => {
     });
 
     it('defaults to a non-exposed policy', () => {
-      const name = id++;
-      TrustedTypes.createPolicy(name, () => {});
+      TrustedTypes.createPolicy('policy', () => {});
       expect(TrustedTypes.getExposedPolicy(name)).toBe(null);
     });
 
     it('supports exposing policy', () => {
-      const name = id++;
-      const p = TrustedTypes.createPolicy(name, (p) => {
+      const p = TrustedTypes.createPolicy('policy', (p) => {
         p.expose = true;
       });
-      expect(TrustedTypes.getExposedPolicy(name)).toBe(p);
+      expect(TrustedTypes.getExposedPolicy('policy')).toBe(p);
     });
 
     it('does not allow for policy name collisions', () => {
@@ -54,7 +61,7 @@ describe('v2 TrustedTypes', () => {
     });
 
     it('returns a frozen policy object', () => {
-      let p = TrustedTypes.createPolicy('frozencheck' + id++, () => {});
+      let p = TrustedTypes.createPolicy('frozencheck', () => {});
       expect(Object.isFrozen(p)).toBe(true);
       expect(() => {
         p.a = 'foo';
@@ -70,21 +77,19 @@ describe('v2 TrustedTypes', () => {
 
   describe('getPolicyNames', () => {
     it('returns all policy names', () => {
-      const idSuffix = id++;
-      TrustedTypes.createPolicy('hidden' + idSuffix, () => {});
-      TrustedTypes.createPolicy('exposed' + idSuffix, (p) => {
+      TrustedTypes.createPolicy('hidden', () => {});
+      TrustedTypes.createPolicy('exposed', (p) => {
         p.expose = true;
       });
 
-      expect(TrustedTypes.getPolicyNames()).toContain('hidden' + idSuffix);
-      expect(TrustedTypes.getPolicyNames()).toContain('exposed' + idSuffix);
+      expect(TrustedTypes.getPolicyNames()).toEqual(['hidden', 'exposed']);
     });
   });
 
   describe('trusted type constructors', () => {
     it('cannot be used directly', () => {
-      const name = 'known' + id++;
-      TrustedTypes.createPolicy(name, () => {});
+      const name = 'known';
+      TrustedTypes.createPolicy(name, noopPolicy);
       expect(() => new TrustedTypes.TrustedHTML()).toThrow();
       expect(() => new TrustedTypes.TrustedHTML(null, name)).toThrow();
     });
@@ -92,7 +97,7 @@ describe('v2 TrustedTypes', () => {
 
   describe('is* methods', () => {
     it('require the object to be created via policy', () => {
-      const p = TrustedTypes.createPolicy(id++, () => {});
+      const p = TrustedTypes.createPolicy('foo', noopPolicy);
       let html = p.createHTML('test');
       expect(TrustedTypes.isHTML(html)).toEqual(true);
       let html2 = Object.create(html);
@@ -137,9 +142,16 @@ describe('v2 TrustedTypes', () => {
 
   describe('policy', () => {
     describe('create* methods', () => {
+      it('reject by default', () => {
+        const p = TrustedTypes.createPolicy('policy', () => {});
+        expect(() => p.createHTML('foo')).toThrow();
+        expect(() => p.createURL('foo')).toThrow();
+        expect(() => p.createScriptURL('foo')).toThrow();
+      });
+
       it('return working values', () => {
-        const name = 'policy' + id++;
-        const p = TrustedTypes.createPolicy(name, () => {});
+        const name = 'policy';
+        const p = TrustedTypes.createPolicy(name, noopPolicy);
 
         const html = p.createHTML('<foo>');
         const url = p.createURL('http://a');
@@ -169,15 +181,14 @@ describe('v2 TrustedTypes', () => {
           p.createURL = (s) => 'createURL:' + s;
           p.createScriptURL = (s) => 'createScriptURL:' + s;
         };
-        const p = TrustedTypes.createPolicy('transform' + id++, policyRules);
+        const p = TrustedTypes.createPolicy('transform', policyRules);
         expect('' + p.createURL('http://b')).toEqual('createURL:http://b');
         expect('' + p.createScriptURL('http://a')).toEqual('createScriptURL:http://a');
         expect('' + p.createHTML('<foo>')).toEqual('createHTML:<foo>');
       });
 
       it('return frozen values', () => {
-        const name = 'policy' + id++;
-        const p = TrustedTypes.createPolicy(name, () => {});
+        const p = TrustedTypes.createPolicy('policy', noopPolicy);
 
         let html = p.createHTML('foo');
         expect(Object.isFrozen(html)).toBe(true);
@@ -211,8 +222,9 @@ describe('v2 TrustedTypes', () => {
 
   describe('create* methods', () => {
     it('support creating from exposed policies', () => {
-      const name = 'p' + id++;
+      const name = 'bar';
       const exposed = TrustedTypes.createPolicy(name, (p) => {
+        noopPolicy(p);
         p.expose = true;
       });
       const html = exposed.createHTML('foo');
@@ -222,20 +234,13 @@ describe('v2 TrustedTypes', () => {
     });
 
     it('do not allow creating from non-exposed policies', () => {
-      const name = 'p' + id++;
+      const name = 'p';
       TrustedTypes.createPolicy(name, (p) => {});
       expect(() => TrustedTypes.createHTML(name, 'foo')).toThrow();
     });
   });
 
   describe('setAllowedPolicyNames', () => {
-    let TrustedTypes;
-
-    beforeEach(() => {
-      // We need separate instances.
-       TrustedTypes = trustedTypesBuilderTestOnly();
-    });
-
     it('is not applied by default', () => {
       expect(() => TrustedTypes.createPolicy('foo', (p) => {})).not.toThrow();
     });

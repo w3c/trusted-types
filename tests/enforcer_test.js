@@ -24,6 +24,12 @@ describe('TrustedTypesEnforcer', function() {
 
   let EVIL_URL = 'http://evil.example.com/script';
 
+  const noopPolicy = (p) => {
+          p.createHTML = (s) => s;
+          p.createScriptURL = (s) => s;
+          p.createURL = (s) => s;
+  };
+
   let ENFORCING_CONFIG = new TrustedTypeConfig(
       /* isLoggingEnabled */ false,
       /* isEnforcementEnabled */ true,
@@ -304,6 +310,7 @@ describe('TrustedTypesEnforcer', function() {
       enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
       enforcer.install();
       policy = TrustedTypes.createPolicy(Math.random(), (p) => {
+        noopPolicy(p);
         p.expose = true;
       });
     });
@@ -512,7 +519,7 @@ describe('TrustedTypesEnforcer', function() {
         p.createHTML = (s) => 'fallback:' + s;
         p.expose = true;
       });
-      const policy = TrustedTypes.createPolicy(Math.random(), (p) => {});
+      const policy = TrustedTypes.createPolicy(Math.random(), noopPolicy);
       let el = document.createElement('div');
       el.innerHTML = policy.createHTML(TEST_HTML);
 
@@ -525,7 +532,7 @@ describe('TrustedTypesEnforcer', function() {
       /* isEnforcementEnabled */ true,
       'fallback3', ['*']));
       enforcer.install();
-      TrustedTypes.createPolicy(Math.random(), (p) => {});
+      TrustedTypes.createPolicy(Math.random(), noopPolicy);
       let el = document.createElement('div');
       expect(() => el.innerHTML = TEST_HTML).toThrowError(TypeError);
       expect(el.innerHTML).toEqual('');
@@ -540,6 +547,7 @@ describe('TrustedTypesEnforcer', function() {
       enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
       enforcer.install();
       policy = TrustedTypes.createPolicy(Math.random(), (p) => {
+        noopPolicy(p);
         p.expose = true;
       });
     });
