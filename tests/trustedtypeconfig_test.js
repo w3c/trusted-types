@@ -39,13 +39,6 @@ describe('TrustedTypeConfig', () => {
       });
     });
 
-    it('makes the values lowercase', () => {
-      const policy = `DEFAult-src 'SELF'`;
-      expect(TrustedTypeConfig.parseCSP(policy)).toEqual({
-        'default-src': [`'self'`],
-      });
-    });
-
     it('ignores whitespace', () => {
       const policy = `\ndefault-src    'self';    \t connect-src\n\thttp://foo.bar  `;
       expect(TrustedTypeConfig.parseCSP(policy)).toEqual({

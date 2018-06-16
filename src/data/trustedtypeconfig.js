@@ -70,9 +70,7 @@ export class TrustedTypeConfig {
         .map((serializedDirective) => serializedDirective.split(WHITESPACE))
         .reduce(function(parsed, directive) {
           if (directive[0]) {
-            parsed[directive[0].toLowerCase()] = directive.slice(1).map(
-                (s) => s.toLowerCase())
-              .sort();
+            parsed[directive[0]] = directive.slice(1).map((s) => s).sort();
           }
           return parsed;
         }, {});
