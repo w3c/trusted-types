@@ -37,7 +37,7 @@ describe('TrustedTypesEnforcer', function() {
       /* fallbackPolicy */ null,
       /* allowedPolicyNames */ ['*']);
 
-  describe('installation', function() {
+  describe('install', function() {
     let enforcer;
 
     afterEach(function() {
@@ -56,7 +56,7 @@ describe('TrustedTypesEnforcer', function() {
       }
     });
 
-    it('requires calling install to enforce', function() {
+    it('starts enforcing only after being called', function() {
       enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
       let el = document.createElement('div');
 
@@ -72,6 +72,27 @@ describe('TrustedTypesEnforcer', function() {
       // TODO(msamuel): move to after test action.
       enforcer.uninstall();
     });
+
+    it('cannot be called twice', function() {
+      enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
+      enforcer.install();
+
+      expect(function() {
+        enforcer.install();
+      }).toThrow();
+
+      enforcer.uninstall();
+
+      // Attempted double installation does not leave us in a state
+      // where two uninstalls are necessary/allowed.
+      expect(function() {
+        enforcer.uninstall();
+      }).toThrow();
+    });
+  });
+
+  describe('uninstall', function() {
+    let enforcer;
 
     it('allows for uninstalling policies', function() {
       enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
@@ -103,24 +124,23 @@ describe('TrustedTypesEnforcer', function() {
       expect(el.innerHTML).toEqual(`${TEST_HTML}${TEST_HTML}`); // Roughly
     });
 
-    it('prevents double installation', function() {
+    it('restores the script getters & setters', function() {
       enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
+      let el = document.createElement('script');
+      el.textContent = 'foo';
+
       enforcer.install();
-
-      expect(function() {
-        enforcer.install();
-      }).toThrow();
-
       enforcer.uninstall();
 
-      // Attempted double installation does not leave us in a state
-      // where two uninstalls are necessary/allowed.
-      expect(function() {
-        enforcer.uninstall();
-      }).toThrow();
+      // Make sure the original setters are called.
+      expect(el.textContent).toEqual('foo');
+      el.innerText = 'bar';
+      expect(el.textContent).toEqual('bar');
+      el.text = 'baz';
+      expect(el.innerText).toEqual('baz');
     });
 
-    it('prevents double uninstallation', function() {
+    it('cannot be called twice', function() {
       enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
       enforcer.install();
       enforcer.uninstall();
@@ -237,7 +257,7 @@ describe('TrustedTypesEnforcer', function() {
       expect(el.onclick).toBe(null);
     });
 
-    xit('on HTMLScriptElement.innerText', function() {
+    it('on HTMLScriptElement.innerText', function() {
       let el = document.createElement('script');
 
       expect(function() {
@@ -245,6 +265,26 @@ describe('TrustedTypesEnforcer', function() {
       }).toThrow();
 
       expect(el.innerText).toEqual('');
+    });
+
+    it('on HTMLScriptElement.text', function() {
+      let el = document.createElement('script');
+
+      expect(function() {
+        el.text = 'console.log(1)';
+      }).toThrow();
+
+      expect(el.text).toEqual('');
+    });
+
+    it('on HTMLScriptElement.textContent', function() {
+      let el = document.createElement('script');
+
+      expect(function() {
+        el.textContent = 'console.log(1)';
+      }).toThrow();
+
+      expect(el.textContent).toEqual('');
     });
 
     it('on Element.prototype.setAttribute', function() {
