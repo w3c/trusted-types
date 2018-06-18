@@ -16,23 +16,23 @@ limitations under the License.
 
 /* eslint-disable no-unused-vars */
 /**
- * @typedef Policy
+ * @typedef {TrustedTypesPolicy}
  * @property {function(string):TrustedHTML} createHTML
  * @property {function(string):TrustedURL} createURL
  * @property {function(string):TrustedScriptURL} createScriptURL
  * @property {function(string):TrustedScript} createScript
  */
-let Policy = {};
+let TrustedTypesPolicy = {};
 
 /**
- * @typedef InnerPolicy
+ * @typedef {TrustedTypesInnerPolicy}
  * @property {function(string):string} createHTML
  * @property {function(string):string} createURL
  * @property {function(string):string} createScriptURL
  * @property {function(string):string} createScript
  * @property {boolean} expose
  */
-let InnerPolicy = {};
+let TrustedTypesInnerPolicy = {};
 /* eslint-enable no-unused-vars */
 
 
@@ -234,7 +234,7 @@ export const trustedTypesBuilderTestOnly = function() {
    * Initial builder object for the policy.
    * Its clone is passed to createPolicy builder function, with the expectation
    * to modify its properties.
-   * @type {InnerPolicy}
+   * @type {TrustedTypesInnerPolicy}
    */
   const initialBuilder = {
     'createHTML': (s) => {
@@ -255,8 +255,8 @@ export const trustedTypesBuilderTestOnly = function() {
   /**
    * Wraps a user-defined policy rules with TT constructor
    * @param  {string} policyName The policy name
-   * @param  {InnerPolicy} innerPolicy InnerPolicy
-   * @return {Policy} Frozen policy object
+   * @param  {TrustedTypesInnerPolicy} innerPolicy InnerPolicy
+   * @return {!TrustedTypesPolicy} Frozen policy object
    */
   function wrapPolicy(policyName, innerPolicy) {
     /**
@@ -290,7 +290,7 @@ export const trustedTypesBuilderTestOnly = function() {
   /**
    * Returns a policy object, if given policy was exposed.
    * @param  {string} name
-   * @return {?Policy}
+   * @return {?TrustedTypesPolicy}
    */
   function getExposedPolicy(name) {
     const pName = '' + name;
@@ -317,10 +317,10 @@ export const trustedTypesBuilderTestOnly = function() {
    * in the builder function.
    *
    * @param  {string} name A unique name of the policy.
-   * @param  {function(InnerPolicy)} builder Function that defines
+   * @param  {function(TrustedTypesInnerPolicy)} builder Function that defines
    *   policy rules by modifying the initial policy object passed.
-   * @return {Policy} The policy that may create TT objects according to the
-   *   rules in the builder.
+   * @return {TrustedTypesPolicy} The policy that may create TT objects
+   *   according to the rules in the builder.
    * @todo Figure out if the return value (and the builder) can be typed.
    */
   function createPolicy(name, builder) {

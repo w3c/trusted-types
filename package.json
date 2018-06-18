@@ -54,6 +54,7 @@
   ],
   "files": [
     "dist",
+    "externs/externs.js",
     "package.json",
     "package-lock.json",
     "LICENSE",

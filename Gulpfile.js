@@ -28,7 +28,7 @@ function compileSettings(entryPoint, destDir, fileName, languageOut) {
       entry_point: entryPoint,
       create_source_map: destDir + '/' + fileName + '.map',
       source_map_include_content: null,
-      output_wrapper: '(function(){%output%}).call(window);//# sourceMappingURL=' + fileName + '.map'
+      output_wrapper: '(function(){%output%}).call(window);//# sourceMappingURL=' + fileName + '.map',
     }),
     // gulp plugin for the closure-compiler considers any output as a warning, including debug info.
     continueWithWarnings: true
