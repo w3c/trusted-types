@@ -19,10 +19,17 @@ import {TrustedTypeConfig} from './data/trustedtypeconfig.js';
 import {TrustedTypes} from './trustedtypes.js';
 
 /* eslint-enable no-unused-vars */
-import {installFunction, installSetter} from './utils/wrapper.js';
+import {installFunction, installSetter, installSetterAndGetter}
+  from './utils/wrapper.js';
 
 const {apply} = Reflect;
-const {getOwnPropertyNames, hasOwnProperty, getPrototypeOf} = Object;
+const {
+  getOwnPropertyNames,
+  getOwnPropertyDescriptor,
+  hasOwnProperty,
+  getPrototypeOf,
+  isPrototypeOf,
+} = Object;
 
 /**
  * A map of attribute names to allowed types.
@@ -31,7 +38,6 @@ const {getOwnPropertyNames, hasOwnProperty, getPrototypeOf} = Object;
 let SET_ATTRIBUTE_TYPE_MAP = {
   // TODO(slekies): Add SVG Elements here
   // TODO(koto): Figure out what to to with <link>
-  // TODO(koto): Trusted code for <script> contents
   'HTMLAnchorElement': {
     'href': TrustedTypes.TrustedURL,
   },
@@ -80,6 +86,7 @@ let SET_ATTRIBUTE_TYPE_MAP = {
   },
   'HTMLScriptElement': {
     'src': TrustedTypes.TrustedScriptURL,
+    'text': TrustedTypes.TrustedScript,
   },
   'HTMLElement': {
   },
@@ -150,6 +157,7 @@ export class TrustedTypesEnforcer {
    */
   install() {
     TrustedTypes.setAllowedPolicyNames(this.config_.allowedPolicyNames);
+
     this.wrapSetter_(Element.prototype, 'innerHTML', TrustedTypes.TrustedHTML);
     this.wrapSetter_(Element.prototype, 'outerHTML', TrustedTypes.TrustedHTML);
     this.wrapWithEnforceFunction_(Range.prototype, 'createContextualFragment',
@@ -157,7 +165,7 @@ export class TrustedTypesEnforcer {
     this.wrapWithEnforceFunction_(Element.prototype, 'insertAdjacentHTML',
         TrustedTypes.TrustedHTML, 1);
 
-    if (Object.getOwnPropertyDescriptor(Document.prototype, 'write')) {
+    if (getOwnPropertyDescriptor(Document.prototype, 'write')) {
       // Chrome
       this.wrapWithEnforceFunction_(Document.prototype, 'write',
           TrustedTypes.TrustedHTML, 0);
@@ -173,6 +181,7 @@ export class TrustedTypesEnforcer {
           TrustedTypes.TrustedHTML, 0);
     }
     this.wrapSetAttribute_();
+    this.installScriptWrappers_();
     this.installPropertySetWrappers_();
   }
 
@@ -187,7 +196,7 @@ export class TrustedTypesEnforcer {
     this.restoreFunction_(Element.prototype, 'setAttribute');
     this.restoreFunction_(Element.prototype, 'setAttributeNS');
 
-    if (Object.getOwnPropertyDescriptor(Document.prototype, 'write')) {
+    if (getOwnPropertyDescriptor(Document.prototype, 'write')) {
       this.restoreFunction_(Document.prototype, 'write');
     } else {
       this.restoreFunction_(HTMLDocument.prototype, 'write');
@@ -197,7 +206,30 @@ export class TrustedTypesEnforcer {
       this.restoreFunction_(DOMParser.prototype, 'parseFromString');
     }
     this.uninstallPropertySetWrappers_();
+    this.uninstallScriptWrappers_();
     TrustedTypes.setAllowedPolicyNames(['*']);
+  }
+
+  /**
+   * Installs wrappers for setting properties of script elements.
+   */
+  installScriptWrappers_() {
+    // HTMLScript element has no own setters for crucial properties, we have to
+    // reuse ones from HTMLElement.
+    this.wrapSetter_(HTMLScriptElement.prototype, 'innerText',
+        TrustedTypes.TrustedScript, HTMLElement.prototype);
+    this.wrapSetter_(HTMLScriptElement.prototype, 'textContent',
+        TrustedTypes.TrustedScript, Node.prototype);
+  }
+
+  /**
+   * Uninstalls wrappers for setting properties of script elements.
+   */
+  uninstallScriptWrappers_() {
+    this.restoreSetter_(HTMLScriptElement.prototype, 'innerText',
+        HTMLElement.prototype);
+    this.restoreSetter_(HTMLScriptElement.prototype, 'textContent',
+        Node.prototype);
   }
 
   /**
@@ -380,7 +412,7 @@ export class TrustedTypesEnforcer {
    * @param {!Function<!Function, *>} functionBody The wrapper function.
    */
   wrapFunction_(object, name, functionBody) {
-    let descriptor = Object.getOwnPropertyDescriptor(object, name);
+    let descriptor = getOwnPropertyDescriptor(object, name);
     let originalFn = /** @type function(*):* */ (
         descriptor ? descriptor.value : null);
 
@@ -411,10 +443,19 @@ export class TrustedTypesEnforcer {
    * @param {!Object} object The object of the to-be-wrapped property.
    * @param {string} name The name of the property.
    * @param {!Function} type The type to enforce.
+   * @param {!Object=} descriptorObject If present, will reuse the
+   *   setter/getter from this one, instead of object. Used for redefining
+   *   setters in subclasses.
    * @private
    */
-  wrapSetter_(object, name, type) {
-    let descriptor = Object.getOwnPropertyDescriptor(object, name);
+  wrapSetter_(object, name, type, descriptorObject = undefined) {
+    if (descriptorObject && !isPrototypeOf.call(descriptorObject, object)) {
+      throw new Error('Invalid prototype chain');
+    }
+
+    let useObject = descriptorObject || object;
+
+    let descriptor = getOwnPropertyDescriptor(useObject, name);
 
     let originalSetter = /** @type {function(*):*} */ (descriptor ?
         descriptor.set : null);
@@ -429,17 +470,30 @@ export class TrustedTypesEnforcer {
       throw new Error('TrustedTypesEnforcer: Double installation detected');
     }
     let that = this;
-    installSetter(
-        object,
-        name,
-        /**
-         * @this {TrustedTypesEnforcer}
-         * @param {*} value
-         */
-        function(value) {
+    /**
+     * @this {TrustedTypesEnforcer}
+     * @param {*} value
+     */
+    let enforcingSetter = function(value) {
           that.enforce_.call(that, this, name, type, originalSetter, 0,
                              [value]);
-        });
+        };
+
+    if (useObject === object) {
+      installSetter(
+          object,
+          name,
+          enforcingSetter);
+    } else {
+      // Since we're creating a new setter in subclass, we also need to
+      // overwrite the getter.
+      installSetterAndGetter(
+          object,
+          name,
+          enforcingSetter,
+          descriptor.get
+      );
+    }
     this.originalSetters_[key] = originalSetter;
   }
 
@@ -448,15 +502,26 @@ export class TrustedTypesEnforcer {
    * install().
    * @param {!Object} object The object of the to-be-wrapped property.
    * @param {string} name The name of the property.
+   * @param {!Object=} descriptorObject If present, will restore the original
+   *   setter/getter from this one, instead of object.
    * @private
    */
-  restoreSetter_(object, name) {
+  restoreSetter_(object, name, descriptorObject = undefined) {
     let key = this.getKey_(object, name);
+    if (descriptorObject && !isPrototypeOf.call(descriptorObject, object)) {
+      throw new Error('Invalid prototype chain');
+    }
     if (!this.originalSetters_[key]) {
       throw new Error(
           'TrustedTypesEnforcer: Cannot restore (double uninstallation?)');
     }
-    installSetter(object, name, this.originalSetters_[key]);
+    if (descriptorObject) {
+      // We have to also overwrite a getter.
+      installSetterAndGetter(object, name, this.originalSetters_[key],
+          getOwnPropertyDescriptor(descriptorObject, name).get);
+    } else {
+      installSetter(object, name, this.originalSetters_[key]);
+    }
     delete this.originalSetters_[key];
   }
 
