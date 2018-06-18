@@ -29,7 +29,6 @@ const {getOwnPropertyNames, hasOwnProperty, getPrototypeOf} = Object;
  * @type {!Object<string, !Object<string, !Function>>}
  */
 let SET_ATTRIBUTE_TYPE_MAP = {
-  // TODO(slekies): Add event handlers
   // TODO(slekies): Add SVG Elements here
   // TODO(koto): Figure out what to to with <link>
   // TODO(koto): Trusted code for <script> contents
