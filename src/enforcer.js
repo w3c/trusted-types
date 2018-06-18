@@ -22,13 +22,13 @@ import {TrustedTypes} from './trustedtypes.js';
 import {installFunction, installSetter} from './utils/wrapper.js';
 
 const {apply} = Reflect;
-const {getOwnPropertyNames, hasOwnProperty} = Object;
+const {getOwnPropertyNames, hasOwnProperty, getPrototypeOf} = Object;
 
 /**
  * A map of attribute names to allowed types.
  * @type {!Object<string, !Object<string, !Function>>}
  */
-const SET_ATTRIBUTE_TYPE_MAP = {
+let SET_ATTRIBUTE_TYPE_MAP = {
   // TODO(slekies): Add event handlers
   // TODO(slekies): Add SVG Elements here
   // TODO(koto): Figure out what to to with <link>
@@ -82,7 +82,16 @@ const SET_ATTRIBUTE_TYPE_MAP = {
   'HTMLScriptElement': {
     'src': TrustedTypes.TrustedScriptURL,
   },
+  'HTMLElement': {
+  },
 };
+
+// Add inline event handlers property names.
+for (let name of getOwnPropertyNames(HTMLElement.prototype)) {
+  if (name.slice(0, 2) === 'on') {
+    SET_ATTRIBUTE_TYPE_MAP['HTMLElement'][name] = TrustedTypes.TrustedScript;
+  }
+}
 
 /**
  * Map of type names to type checking function.
@@ -92,6 +101,7 @@ const TYPE_CHECKER_MAP = {
   'TrustedHTML': TrustedTypes.isHTML,
   'TrustedURL': TrustedTypes.isURL,
   'TrustedScriptURL': TrustedTypes.isScriptURL,
+  'TrustedScript': TrustedTypes.isScript,
 };
 
 /**
@@ -102,6 +112,7 @@ const TYPE_PRODUCER_MAP = {
   'TrustedHTML': TrustedTypes.createHTML,
   'TrustedURL': TrustedTypes.createURL,
   'TrustedScriptURL': TrustedTypes.createScriptURL,
+  'TrustedScript': TrustedTypes.createScript,
 };
 
 /**
@@ -176,6 +187,7 @@ export class TrustedTypesEnforcer {
     this.restoreFunction_(Element.prototype, 'insertAdjacentHTML');
     this.restoreFunction_(Element.prototype, 'setAttribute');
     this.restoreFunction_(Element.prototype, 'setAttributeNS');
+
     if (Object.getOwnPropertyDescriptor(Document.prototype, 'write')) {
       this.restoreFunction_(Document.prototype, 'write');
     } else {
@@ -254,6 +266,29 @@ export class TrustedTypesEnforcer {
   }
 
   /**
+   * Returns the required type for the setAtrtibute call.
+   * @param  {!Object} context The object to infer the type of attribute of.
+   * @param  {string} attrName The attribute name.
+   * @return {Function} The type to enforce, or null if no contract is found.
+   */
+  getRequiredTypeForAttribute_(context, attrName) {
+      let ctor = context.constructor;
+      do {
+        let type = ctor && ctor.name &&
+            SET_ATTRIBUTE_TYPE_MAP[ctor.name] &&
+            SET_ATTRIBUTE_TYPE_MAP[ctor.name][attrName];
+
+        if (type || ctor == HTMLElement) {
+          // Stop at HTMLElement.
+          return type;
+        }
+        // Explore the prototype chain.
+      } while (ctor = getPrototypeOf(ctor));
+
+      return null;
+  }
+
+  /**
    * Enforces type checking for Element.prototype.setAttribute.
    * @param {!Object} context The context for the call to the original function.
    * @param {!Function} originalFn The original setAttribute function.
@@ -267,9 +302,7 @@ export class TrustedTypesEnforcer {
     // to setAttribute.
     if (context.constructor !== null) {
       let attrName = (args[0] = String(args[0])).toLowerCase();
-      let type = context.constructor && context.constructor.name &&
-          SET_ATTRIBUTE_TYPE_MAP[context.constructor.name] &&
-          SET_ATTRIBUTE_TYPE_MAP[context.constructor.name][attrName];
+      let type = this.getRequiredTypeForAttribute_(context, attrName);
 
       if (type instanceof Function) {
         return this.enforce_(
@@ -382,8 +415,16 @@ export class TrustedTypesEnforcer {
    * @private
    */
   wrapSetter_(object, name, type) {
-    let originalSetter = /** @type {!Function} */
-        (Object.getOwnPropertyDescriptor(object, name).set);
+    let descriptor = Object.getOwnPropertyDescriptor(object, name);
+
+    let originalSetter = /** @type {function(*):*} */ (descriptor ?
+        descriptor.set : null);
+
+    if (!(originalSetter instanceof Function)) {
+      throw new TypeError(
+          'No setter for property ' + name + ' on object' + object);
+    }
+
     let key = this.getKey_(object, name);
     if (this.originalSetters_[key]) {
       throw new Error('TrustedTypesEnforcer: Double installation detected');

@@ -27,6 +27,7 @@ describe('v2 TrustedTypes', () => {
     p.createHTML = (s) => s;
     p.createScriptURL = (s) => s;
     p.createURL = (s) => s;
+    p.createScript = (s) => s;
   };
 
   it('is frozen', () => {
@@ -156,23 +157,28 @@ describe('v2 TrustedTypes', () => {
         const html = p.createHTML('<foo>');
         const url = p.createURL('http://a');
         const scriptURL = p.createScriptURL('http://b');
+        const script = p.createScript('alert(1)');
 
         expect(TrustedTypes.isHTML(html)).toBe(true);
         expect(TrustedTypes.isURL(url)).toBe(true);
         expect(TrustedTypes.isScriptURL(scriptURL)).toBe(true);
+        expect(TrustedTypes.isScript(script)).toBe(true);
 
         // Do not rely on instanceof checks though...
         expect(html instanceof TrustedTypes.TrustedHTML).toBe(true);
         expect(url instanceof TrustedTypes.TrustedURL).toBe(true);
         expect(scriptURL instanceof TrustedTypes.TrustedScriptURL).toBe(true);
+        expect(script instanceof TrustedTypes.TrustedScript).toBe(true);
 
         expect('' + html).toEqual('<foo>');
         expect('' + url).toEqual('http://a');
         expect('' + scriptURL).toEqual('http://b');
+        expect('' + script).toEqual('alert(1)');
 
         expect(html.policyName).toEqual(name);
         expect(url.policyName).toEqual(name);
         expect(scriptURL.policyName).toEqual(name);
+        expect(script.policyName).toEqual(name);
       });
 
       it('respect defined transformations', () => {

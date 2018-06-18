@@ -28,6 +28,7 @@ describe('TrustedTypesEnforcer', function() {
           p.createHTML = (s) => s;
           p.createScriptURL = (s) => s;
           p.createURL = (s) => s;
+          p.createScript = (s) => s;
   };
 
   let ENFORCING_CONFIG = new TrustedTypeConfig(
@@ -216,6 +217,36 @@ describe('TrustedTypesEnforcer', function() {
       expect(el.src).toEqual('');
     });
 
+    it('on inline event handlers via setAttribute', function() {
+      let el = document.createElement('a');
+
+      expect(function() {
+        el.setAttribute('onclick', 'console.log(1)');
+      }).toThrow();
+
+      expect(el.onclick).toBe(null);
+    });
+
+    it('on inert element inline event handlers via setAttribute', function() {
+      let el = document.createElement('section');
+
+      expect(function() {
+        el.setAttribute('onclick', 'console.log(1)');
+      }).toThrow();
+
+      expect(el.onclick).toBe(null);
+    });
+
+    xit('on HTMLScriptElement.innerText', function() {
+      let el = document.createElement('script');
+
+      expect(function() {
+        el.innerText = 'console.log(1)';
+      }).toThrow();
+
+      expect(el.innerText).toEqual('');
+    });
+
     it('on Element.prototype.setAttribute', function() {
       let el = document.createElement('iframe');
 
@@ -323,6 +354,12 @@ describe('TrustedTypesEnforcer', function() {
       expect(el.getAttribute('id')).toEqual('foo');
       expect(el.id).toEqual('foo');
     });
+
+    it('passes through on attributes if the event is unknown', function() {
+      let el = document.createElement('section');
+      el.setAttribute('ontotallyfakeevent', 'foo');
+      expect(el.getAttribute('ontotallyfakeevent')).toEqual('foo');
+    });
   });
 
   describe('enforcement allows type-based assignments', function() {
@@ -394,6 +431,28 @@ describe('TrustedTypesEnforcer', function() {
       el.src = policy.createScriptURL(TEST_URL);
 
       expect(el.src).toEqual(TEST_URL);
+    });
+
+    it('on inline event handlers via setAttribute', function() {
+      let el = document.createElement('a');
+      const alert = spyOn(window, 'alert');
+
+      expect(function() {
+        el.setAttribute('onclick', policy.createScript('window.alert()'));
+      }).not.toThrow();
+
+      el.onclick();
+      expect(alert).toHaveBeenCalled();
+    });
+
+    it('on HTMLScriptElement.innerText', function() {
+      let el = document.createElement('script');
+
+      expect(function() {
+        el.innerText = policy.createScript('console.log(1)');
+      }).not.toThrow();
+
+      expect(el.innerText).toEqual('console.log(1)');
     });
 
     it('on document.write', function() {

@@ -174,6 +174,14 @@ const trustedTypesBuilderTestOnly = function() {
   }
   lockdownTrustedType(TrustedHTML, 'TrustedHTML');
 
+  /**
+   * Trusted Script object wrapping a string that can only be created from a
+   * TT policy.
+   */
+  class TrustedScript extends TrustedType {
+  }
+  lockdownTrustedType(TrustedScript, 'TrustedScript');
+
   lockdownTrustedType(TrustedType, 'TrustedType');
 
   /**
@@ -220,6 +228,9 @@ const trustedTypesBuilderTestOnly = function() {
     'createScriptURL': (s) => {
       throw new Error('undefined conversion');
     },
+    'createScript': (s) => {
+      throw new Error('undefined conversion');
+    },
     'expose': false, // Don't expose the policy by default.
   };
 
@@ -254,6 +265,7 @@ const trustedTypesBuilderTestOnly = function() {
       'createHTML': creator(TrustedHTML, 'createHTML'),
       'createScriptURL': creator(TrustedScriptURL, 'createScriptURL'),
       'createURL': creator(TrustedURL, 'createURL'),
+      'createScript': creator(TrustedScript, 'createScript'),
     });
   }
 
@@ -345,12 +357,14 @@ const trustedTypesBuilderTestOnly = function() {
     TrustedHTML,
     TrustedURL,
     TrustedScriptURL,
+    TrustedScript,
 
     // Type builders from exposed policies, for convenience. Consider removing?
     createHTML: buildTypeFromExposedPolicy(TrustedHTML, 'createHTML'),
     createURL: buildTypeFromExposedPolicy(TrustedURL, 'createURL'),
     createScriptURL: buildTypeFromExposedPolicy(TrustedScriptURL,
         'createScriptURL'),
+    createScript: buildTypeFromExposedPolicy(TrustedScript, 'createScript'),
 
     // The main function to create policies.
     createPolicy,
@@ -368,6 +382,7 @@ const trustedTypesBuilderTestOnly = function() {
     isHTML: isTrustedTypeChecker(TrustedHTML),
     isURL: isTrustedTypeChecker(TrustedURL),
     isScriptURL: isTrustedTypeChecker(TrustedScriptURL),
+    isScript: isTrustedTypeChecker(TrustedScript),
 
     setAllowedPolicyNames,
   });
