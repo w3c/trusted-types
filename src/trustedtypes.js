@@ -20,6 +20,7 @@ limitations under the License.
  * @property {function(string):TrustedHTML} createHTML
  * @property {function(string):TrustedURL} createURL
  * @property {function(string):TrustedScriptURL} createScriptURL
+ * @property {function(string):TrustedScript} createScript
  */
 let Policy = {};
 
@@ -28,6 +29,7 @@ let Policy = {};
  * @property {function(string):string} createHTML
  * @property {function(string):string} createURL
  * @property {function(string):string} createScriptURL
+ * @property {function(string):string} createScript
  * @property {boolean} expose
  */
 let InnerPolicy = {};
@@ -190,6 +192,14 @@ export const trustedTypesBuilderTestOnly = function() {
   }
   lockdownTrustedType(TrustedHTML, 'TrustedHTML');
 
+  /**
+   * Trusted Script object wrapping a string that can only be created from a
+   * TT policy.
+   */
+  class TrustedScript extends TrustedType {
+  }
+  lockdownTrustedType(TrustedScript, 'TrustedScript');
+
   lockdownTrustedType(TrustedType, 'TrustedType');
 
   /**
@@ -236,6 +246,9 @@ export const trustedTypesBuilderTestOnly = function() {
     'createScriptURL': (s) => {
       throw new Error('undefined conversion');
     },
+    'createScript': (s) => {
+      throw new Error('undefined conversion');
+    },
     'expose': false, // Don't expose the policy by default.
   };
 
@@ -270,6 +283,7 @@ export const trustedTypesBuilderTestOnly = function() {
       'createHTML': creator(TrustedHTML, 'createHTML'),
       'createScriptURL': creator(TrustedScriptURL, 'createScriptURL'),
       'createURL': creator(TrustedURL, 'createURL'),
+      'createScript': creator(TrustedScript, 'createScript'),
     });
   }
 
@@ -361,12 +375,14 @@ export const trustedTypesBuilderTestOnly = function() {
     TrustedHTML,
     TrustedURL,
     TrustedScriptURL,
+    TrustedScript,
 
     // Type builders from exposed policies, for convenience. Consider removing?
     createHTML: buildTypeFromExposedPolicy(TrustedHTML, 'createHTML'),
     createURL: buildTypeFromExposedPolicy(TrustedURL, 'createURL'),
     createScriptURL: buildTypeFromExposedPolicy(TrustedScriptURL,
         'createScriptURL'),
+    createScript: buildTypeFromExposedPolicy(TrustedScript, 'createScript'),
 
     // The main function to create policies.
     createPolicy,
@@ -384,6 +400,7 @@ export const trustedTypesBuilderTestOnly = function() {
     isHTML: isTrustedTypeChecker(TrustedHTML),
     isURL: isTrustedTypeChecker(TrustedURL),
     isScriptURL: isTrustedTypeChecker(TrustedScriptURL),
+    isScript: isTrustedTypeChecker(TrustedScript),
 
     setAllowedPolicyNames,
   });
