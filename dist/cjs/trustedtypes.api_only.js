@@ -216,7 +216,7 @@ const trustedTypesBuilderTestOnly = function() {
    * Initial builder object for the policy.
    * Its clone is passed to createPolicy builder function, with the expectation
    * to modify its properties.
-   * @type {InnerPolicy}
+   * @type {TrustedTypesInnerPolicy}
    */
   const initialBuilder = {
     'createHTML': (s) => {
@@ -237,8 +237,8 @@ const trustedTypesBuilderTestOnly = function() {
   /**
    * Wraps a user-defined policy rules with TT constructor
    * @param  {string} policyName The policy name
-   * @param  {InnerPolicy} innerPolicy InnerPolicy
-   * @return {Policy} Frozen policy object
+   * @param  {TrustedTypesInnerPolicy} innerPolicy InnerPolicy
+   * @return {!TrustedTypesPolicy} Frozen policy object
    */
   function wrapPolicy(policyName, innerPolicy) {
     /**
@@ -272,7 +272,7 @@ const trustedTypesBuilderTestOnly = function() {
   /**
    * Returns a policy object, if given policy was exposed.
    * @param  {string} name
-   * @return {?Policy}
+   * @return {?TrustedTypesPolicy}
    */
   function getExposedPolicy(name) {
     const pName = '' + name;
@@ -299,10 +299,10 @@ const trustedTypesBuilderTestOnly = function() {
    * in the builder function.
    *
    * @param  {string} name A unique name of the policy.
-   * @param  {function(InnerPolicy)} builder Function that defines
+   * @param  {function(TrustedTypesInnerPolicy)} builder Function that defines
    *   policy rules by modifying the initial policy object passed.
-   * @return {Policy} The policy that may create TT objects according to the
-   *   rules in the builder.
+   * @return {TrustedTypesPolicy} The policy that may create TT objects
+   *   according to the rules in the builder.
    * @todo Figure out if the return value (and the builder) can be typed.
    */
   function createPolicy(name, builder) {
