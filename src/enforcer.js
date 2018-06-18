@@ -576,6 +576,12 @@ export class TrustedTypesEnforcer {
       return apply(originalSetter, context, args);
     }
 
+    if (typeToEnforce === TrustedTypes.TrustedScript &&
+        propertyName.slice(0, 2) === 'on' &&
+        value === null || typeof value === 'function') {
+      return apply(originalSetter, context, args);
+    }
+
     const fallback = this.config_.fallbackPolicyName;
     if (fallback && TrustedTypes.getPolicyNames().includes(fallback)) {
       let fallbackValue = TYPE_PRODUCER_MAP[typeName](fallback, value);

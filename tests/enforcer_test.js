@@ -150,6 +150,32 @@ describe('TrustedTypesEnforcer', function() {
     });
   });
 
+  describe('enforcement', function() {
+    let enforcer;
+
+    beforeEach(function() {
+      enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
+      enforcer.install();
+    });
+
+    afterEach(function() {
+      enforcer.uninstall();
+    });
+
+    it('allows for assigning function to event handler properties', () => {
+      let el = document.createElement('div');
+      let spy = spyOn(window, 'alert');
+      el.onclick = window.alert;
+      el.onclick();
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('allows for assigning null to event handler properties', () => {
+      let el = document.createElement('div');
+      el.onclick = null;
+    });
+  });
+
   describe('enforcement disables string assignments', function() {
     let enforcer;
 
