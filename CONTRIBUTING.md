@@ -1,23 +1,32 @@
-# How to Contribute
+# Web Platform Incubator Community Group
 
-We'd love to accept your patches and contributions to this project. There are
-just a few small guidelines you need to follow.
+This repository is being used for work in the Web Platform Incubator Community Group, governed by the [W3C Community License
+Agreement (CLA)](http://www.w3.org/community/about/agreements/cla/). To contribute, you must join
+the CG.
 
-## Contributor License Agreement
+If you are not the sole contributor to a contribution (pull request), please identify all
+contributors in the pull request's body or in subsequent comments.
 
-Contributions to this project must be accompanied by a Contributor License
-Agreement. You (or your employer) retain the copyright to your contribution,
-this simply gives us permission to use and redistribute your contributions as
-part of the project. Head over to <https://cla.developers.google.com/> to see
-your current agreements on file or to sign a new one.
+To add a contributor (other than yourself, that's automatic), mark them one per line as follows:
 
-You generally only need to submit a CLA once, so if you've already submitted one
-(even if it was for a different project), you probably don't need to do it
-again.
+```
++@github_username
+```
 
-## Code reviews
+If you added a contributor by mistake, you can remove them in a comment with:
 
-All submissions, including submissions by project members, require review. We
-use GitHub pull requests for this purpose. Consult
-[GitHub Help](https://help.github.com/articles/about-pull-requests/) for more
-information on using pull requests.
+```
+-@github_username
+```
+
+If you are making a pull request on behalf of someone else but you had no part in designing the
+feature, you can remove yourself with the above syntax.
+
+# Tests
+
+For normative changes, a corresponding
+[web-platform-tests](https://github.com/web-platform-tests/wpt) PR is highly appreciated. Typically,
+both PRs will be merged at the same time. Note that a test change that contradicts the spec should
+not be merged before the corresponding spec change. If testing is not practical, please explain why
+and if appropriate [file an issue](https://github.com/web-platform-tests/wpt/issues/new) to follow
+up later. Add the `type:untestable` or `type:missing-coverage` label as appropriate.

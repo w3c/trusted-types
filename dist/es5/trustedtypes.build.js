@@ -1,4 +1,12 @@
-(function(){var aa="function"==typeof Object.create?Object.create:function(a){function c(){}c.prototype=a;return new c},f;if("function"==typeof Object.setPrototypeOf)f=Object.setPrototypeOf;else{var n;a:{var ba={m:!0},p={};try{p.__proto__=ba;n=p.m;break a}catch(a){}n=!1}f=n?function(a,c){a.__proto__=c;if(a.__proto__!==c)throw new TypeError(a+" is not extensible");return a}:null}var q=f;
+(function(){/*
+
+ Copyright 2017 Google Inc. All Rights Reserved.
+
+ Licensed under the W3C SOFTWARE AND DOCUMENT NOTICE AND LICENSE.
+
+  https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
+*/
+var aa="function"==typeof Object.create?Object.create:function(a){function c(){}c.prototype=a;return new c},f;if("function"==typeof Object.setPrototypeOf)f=Object.setPrototypeOf;else{var n;a:{var ba={m:!0},p={};try{p.__proto__=ba;n=p.m;break a}catch(a){}n=!1}f=n?function(a,c){a.__proto__=c;if(a.__proto__!==c)throw new TypeError(a+" is not extensible");return a}:null}var q=f;
 function r(a,c){a.prototype=aa(c.prototype);a.prototype.constructor=a;if(q)q(a,c);else for(var d in c)if("prototype"!=d)if(Object.defineProperties){var e=Object.getOwnPropertyDescriptor(c,d);e&&Object.defineProperty(a,d,e)}else a[d]=c[d];a.L=c.prototype}var u="function"==typeof Object.defineProperties?Object.defineProperty:function(a,c,d){a!=Array.prototype&&a!=Object.prototype&&(a[c]=d.value)},v="undefined"!=typeof window&&window===this?this:"undefined"!=typeof global&&null!=global?global:this;
 function w(){w=function(){};v.Symbol||(v.Symbol=ca)}var ca=function(){var a=0;return function(c){return"jscomp_symbol_"+(c||"")+a++}}();function x(){w();var a=v.Symbol.iterator;a||(a=v.Symbol.iterator=v.Symbol("iterator"));"function"!=typeof Array.prototype[a]&&u(Array.prototype,a,{configurable:!0,writable:!0,value:function(){return da(this)}});x=function(){}}function da(a){var c=0;return ia(function(){return c<a.length?{done:!1,value:a[c++]}:{done:!0}})}
 function ia(a){x();a={next:a};a[v.Symbol.iterator]=function(){return this};return a}function y(a){x();var c=a[Symbol.iterator];return c?c.call(a):da(a)}function A(a,c){return Object.prototype.hasOwnProperty.call(a,c)}function B(a,c){if(c){var d=v;a=a.split(".");for(var e=0;e<a.length-1;e++){var b=a[e];b in d||(d[b]={});d=d[b]}a=a[a.length-1];e=d[a];c=c(e);c!=e&&null!=c&&u(d,a,{configurable:!0,writable:!0,value:c})}}
