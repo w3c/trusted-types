@@ -22,7 +22,7 @@
     "add_build": "git add ./dist/"
   },
   "author": "Google Inc.",
-  "license": "Apache-2.0",
+  "license": "W3C-20150513",
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-preset-env": "^1.7.0",
@@ -57,7 +57,7 @@
     "externs/externs.js",
     "package.json",
     "package-lock.json",
-    "LICENSE",
+    "LICENSE.md",
     "README.md"
   ]
 }

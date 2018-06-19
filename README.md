@@ -322,7 +322,7 @@ Some details have still not been sketched out - see [issues](https://github.com/
 
 ## Polyfill
 
-This repository contains a polyfill implementation. The compiled versions are stored in [dist](dist/). 
+This repository contains a polyfill implementation. The compiled versions are stored in [dist](dist/).
 
 ### Browsers
 The es5/es6 builds can be loaded directly in the browsers:
@@ -383,8 +383,3 @@ It can be tested by running:
 $ npm test
 ```
 <del>The polyfill can also be run against the [web platform test suite](https://github.com/w3c/web-platform-tests), but that requires small patches to the suite - see [tests/platform-tests/platform-tests-runner.sh](tests/platform-tests/platform-tests-runner.sh).</del>
-
-
-## Caveats
-
-This is not an official Google product.

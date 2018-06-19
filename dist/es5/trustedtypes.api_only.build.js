@@ -1,4 +1,12 @@
-(function(){var h="function"==typeof Object.create?Object.create:function(a){function b(){}b.prototype=a;return new b},l;if("function"==typeof Object.setPrototypeOf)l=Object.setPrototypeOf;else{var m;a:{var q={l:!0},r={};try{r.__proto__=q;m=r.l;break a}catch(a){}m=!1}l=m?function(a,b){a.__proto__=b;if(a.__proto__!==b)throw new TypeError(a+" is not extensible");return a}:null}var u=l;
+(function(){/*
+
+ Copyright 2017 Google Inc. All Rights Reserved.
+
+ Licensed under the W3C SOFTWARE AND DOCUMENT NOTICE AND LICENSE.
+
+  https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
+*/
+var h="function"==typeof Object.create?Object.create:function(a){function b(){}b.prototype=a;return new b},l;if("function"==typeof Object.setPrototypeOf)l=Object.setPrototypeOf;else{var m;a:{var q={l:!0},r={};try{r.__proto__=q;m=r.l;break a}catch(a){}m=!1}l=m?function(a,b){a.__proto__=b;if(a.__proto__!==b)throw new TypeError(a+" is not extensible");return a}:null}var u=l;
 function v(a,b){a.prototype=h(b.prototype);a.prototype.constructor=a;if(u)u(a,b);else for(var e in b)if("prototype"!=e)if(Object.defineProperties){var f=Object.getOwnPropertyDescriptor(b,e);f&&Object.defineProperty(a,e,f)}else a[e]=b[e];a.H=b.prototype}var w="function"==typeof Object.defineProperties?Object.defineProperty:function(a,b,e){a!=Array.prototype&&a!=Object.prototype&&(a[b]=e.value)},z="undefined"!=typeof window&&window===this?this:"undefined"!=typeof global&&null!=global?global:this;
 function A(){A=function(){};z.Symbol||(z.Symbol=B)}var B=function(){var a=0;return function(b){return"jscomp_symbol_"+(b||"")+a++}}();function J(){A();var a=z.Symbol.iterator;a||(a=z.Symbol.iterator=z.Symbol("iterator"));"function"!=typeof Array.prototype[a]&&w(Array.prototype,a,{configurable:!0,writable:!0,value:function(){return K(this)}});J=function(){}}function K(a){var b=0;return L(function(){return b<a.length?{done:!1,value:a[b++]}:{done:!0}})}
 function L(a){J();a={next:a};a[z.Symbol.iterator]=function(){return this};return a}function M(a){J();var b=a[Symbol.iterator];return b?b.call(a):K(a)}function Q(a,b){return Object.prototype.hasOwnProperty.call(a,b)}function R(a,b){if(b){var e=z;a=a.split(".");for(var f=0;f<a.length-1;f++){var c=a[f];c in e||(e[c]={});e=e[c]}a=a[a.length-1];f=e[a];b=b(f);b!=f&&null!=b&&w(e,a,{configurable:!0,writable:!0,value:b})}}
