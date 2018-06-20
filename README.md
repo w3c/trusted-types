@@ -85,9 +85,15 @@ first step:
     }
     ```
 
-*   **TrustedJavaScript**: This type would be used to represent a trusted JavaScript code block i.e.
+*   **TrustedScript**: This type would be used to represent a trusted JavaScript code block i.e.
     something that is trusted by the author to be executed by adding it to a `<script>` element
-    content or passing to an `eval` function.
+    content, inline event handler or passing to an `eval` function.
+    
+    ```
+    interface TrustedScript {
+      stringifier;
+    }
+    ```    
 
 ### Policies
 
@@ -371,13 +377,10 @@ $ npm install
 $ npm run build
 ```
 
-To see the polyfill in action, visit the [demo page](demo/index.html) - either using the file:// protocol or a web server of your choice:
-```
-$ python -m SimpleHTTPServer
-Serving HTTP on 0.0.0.0 port 8000 ...
-# See http://127.0.0.1:8000/demo/index.html
-```
+## Demo
+To see the polyfill in action, visit the [demo page](https://wicg.github.io/trusted-types/demo/).
 
+## Testing
 It can be tested by running:
 ```
 $ npm test
