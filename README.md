@@ -328,13 +328,14 @@ Some details have still not been sketched out - see [issues](https://github.com/
 
 ## Polyfill
 
-This repository contains a polyfill implementation. The compiled versions are stored in [dist](dist/).
+This repository contains a polyfill implementation. The compiled versions are stored in [dist] directory(dist/)
 
 ### Browsers
-The es5/es6 builds can be loaded directly in the browsers:
+The es5/es6 builds can be loaded directly in the browsers. There are two variants of the browser polyfill - *api_only* (light) and *full*. The *Api_only* variant defines the API, so you can create policies and types. *Full* version also enables the type enforcement in the DOM, based on the CSP policy it infers from the current document (see [src/polyfill/full.js](src/polyfill/full.js)).
 
 ```html
-<script src="dist/es5/trustedtypes.api_only.build.js"></script>
+<!-- API only -->
+<script src="https://wicg.github.io/trusted-types/dist/es5/trustedtypes.api_only.build.js"></script>
 <script>
      const p = TrustedTypes.createPolicy('foo', ...)
      document.body.innerHTML = p.createHTML('foo'); // works
@@ -342,10 +343,9 @@ The es5/es6 builds can be loaded directly in the browsers:
 </script>
 ```
 
-There are two variants of the browser polyfill - *api_only* (light) and *full*. The *Api_only* variant defines the API, so you can create policies and types. *Full* version also enables the type enforcement in the DOM, based on the CSP policy it infers from the current document (see [src/polyfill/full.js](src/polyfill/full.js)).
-
 ```html
-<script src="dist/es5/trustedtypes.build.js" data-csp="trusted-types foo bar"></script>
+<!-- Full -->
+<script src="https://wicg.github.io/trusted-types/dist/es5/trustedtypes.build.js" data-csp="trusted-types foo bar"></script>
 <script>
     TrustedTypes.createPolicy('foo', ...);
     TrustedTypes.createPolicy('unknown', ...); // throws
