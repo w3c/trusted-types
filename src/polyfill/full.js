@@ -58,8 +58,8 @@ function detectPolicy() {
 export function bootstrap() {
   const csp = detectPolicy();
   const config = csp ? TrustedTypeConfig.fromCSP(csp) : new TrustedTypeConfig(
-    /* isLoggingEnabled */ true,
-    /* isEnforcementEnabled */ true,
+    /* isLoggingEnabled */ false,
+    /* isEnforcementEnabled */ false,
     /* fallbackPolicyName */ null,
     /* allowedPolicyNames */ ['*']);
 
