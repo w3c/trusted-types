@@ -301,11 +301,11 @@ const trustedTypesBuilderTestOnly = function() {
   function createPolicy(name, builder) {
     const pName = '' + name; // Assert it's a string
 
-    if (enforceNameWhitelist && !allowedNames.includes(pName)) {
+    if (enforceNameWhitelist && allowedNames.indexOf(pName) === -1) {
       throw new Error('Policy ' + pName + ' disallowed.');
     }
 
-    if (policyNames.includes(pName)) {
+    if (policyNames.indexOf(pName) !== -1) {
       throw new Error('Policy ' + pName + ' exists.');
     }
     // Register the name early so that if builder unwisely calls
@@ -331,7 +331,7 @@ const trustedTypesBuilderTestOnly = function() {
    * @param {!Array<string>} allowedPolicyNames
    */
   function setAllowedPolicyNames(allowedPolicyNames) {
-    if (allowedPolicyNames.includes('*')) { // Any policy name is allowed.
+    if (allowedPolicyNames.indexOf('*') !== -1) { // Any policy name is allowed.
       enforceNameWhitelist = false;
     } else {
       enforceNameWhitelist = true;

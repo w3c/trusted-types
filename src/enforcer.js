@@ -576,7 +576,7 @@ export class TrustedTypesEnforcer {
     }
 
     const fallback = this.config_.fallbackPolicyName;
-    if (fallback && TrustedTypes.getPolicyNames().includes(fallback)) {
+    if (fallback && TrustedTypes.getPolicyNames().indexOf(fallback) !== -1) {
       let fallbackValue = TYPE_PRODUCER_MAP[typeName](fallback, value);
       if (TYPE_CHECKER_MAP.hasOwnProperty(typeName) &&
           TYPE_CHECKER_MAP[typeName](fallbackValue)) {
