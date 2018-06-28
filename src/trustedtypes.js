@@ -135,6 +135,7 @@ export const trustedTypesBuilderTestOnly = function() {
     /**
      * Returns the wrapped string value of the object.
      * @return {string}
+     * @override
      */
     toString() {
       return privates(this).value;
@@ -143,6 +144,7 @@ export const trustedTypesBuilderTestOnly = function() {
     /**
      * Returns the wrapped string value of the object.
      * @return {string}
+     * @override
      */
     valueOf() {
       return privates(this).value;

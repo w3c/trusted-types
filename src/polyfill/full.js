@@ -38,8 +38,8 @@ function detectPolicy() {
                 bodyPrefix) {
             return currentScript.textContent.trim().slice(bodyPrefix.length);
         }
-        if (currentScript.dataset.csp) {
-            return currentScript.dataset.csp;
+        if (currentScript.dataset['csp']) {
+            return currentScript.dataset['csp'];
         }
         const cspInMeta = document.head.querySelector(
             'meta[http-equiv^="Content-Security-Policy"]');

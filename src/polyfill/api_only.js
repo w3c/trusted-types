@@ -11,7 +11,9 @@
  * @fileoverview Entry point for a polyfill that only defines the types
  * (i.e. no enforcement logic).
  */
-import {TrustedTypes as tt} from '../trustedtypes.js';
+import {TrustedTypes} from '../trustedtypes.js';
+
+const tt = TrustedTypes;
 
 // Make sure Closure compiler exposes the names.
 if (typeof window !== 'undefined' &&

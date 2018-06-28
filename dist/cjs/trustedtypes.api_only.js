@@ -117,6 +117,7 @@ const trustedTypesBuilderTestOnly = function() {
     /**
      * Returns the wrapped string value of the object.
      * @return {string}
+     * @override
      */
     toString() {
       return privates(this).value;
@@ -125,6 +126,7 @@ const trustedTypesBuilderTestOnly = function() {
     /**
      * Returns the wrapped string value of the object.
      * @return {string}
+     * @override
      */
     valueOf() {
       return privates(this).value;
@@ -392,22 +394,24 @@ const TrustedTypes = trustedTypesBuilderTestOnly();
  *  https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
  */
 
+const tt = TrustedTypes;
+
 // Make sure Closure compiler exposes the names.
 if (typeof window !== 'undefined' &&
     typeof window['TrustedTypes'] === 'undefined') {
   window['TrustedTypes'] = {
-    'TrustedHTML': TrustedTypes.TrustedHTML,
-    'TrustedURL': TrustedTypes.TrustedURL,
-    'TrustedScriptURL': TrustedTypes.TrustedScriptURL,
-    'TrustedScript': TrustedTypes.TrustedScript,
-    'createHTML': TrustedTypes.createHTML,
-    'createURL': TrustedTypes.createURL,
-    'createScriptURL': TrustedTypes.createScriptURL,
-    'createScript': TrustedTypes.createScript,
-    'createPolicy': TrustedTypes.createPolicy,
-    'getExposedPolicy': TrustedTypes.getExposedPolicy,
-    'getPolicyNames': TrustedTypes.getPolicyNames,
+    'TrustedHTML': tt.TrustedHTML,
+    'TrustedURL': tt.TrustedURL,
+    'TrustedScriptURL': tt.TrustedScriptURL,
+    'TrustedScript': tt.TrustedScript,
+    'createHTML': tt.createHTML,
+    'createURL': tt.createURL,
+    'createScriptURL': tt.createScriptURL,
+    'createScript': tt.createScript,
+    'createPolicy': tt.createPolicy,
+    'getExposedPolicy': tt.getExposedPolicy,
+    'getPolicyNames': tt.getPolicyNames,
   };
 }
 
-module.exports = TrustedTypes;
+module.exports = tt;
