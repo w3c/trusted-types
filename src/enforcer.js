@@ -558,6 +558,16 @@ export class TrustedTypesEnforcer {
   }
 
   /**
+   * @param  {string}  url The URL to check.
+   * @return {boolean} True iff the value is a http(s) URL.
+   * @private
+   */
+  isHttpUrl_(url) {
+    const parsedUrl = new URL(url, document.baseURI || undefined);
+    return parsedUrl.protocol == 'http:' || parsedUrl.protocol == 'https:';
+  }
+
+  /**
    * Logs and enforces TrustedTypes depending on the given configuration.
    * @template T
    * @param {!Object} context The object that the setter is called for.
@@ -585,6 +595,16 @@ export class TrustedTypesEnforcer {
         propertyName.slice(0, 2) === 'on' &&
         value === null || typeof value === 'function') {
       return apply(originalSetter, context, args);
+    }
+
+    // Apply url-allow-http
+    if (typeToEnforce === TrustedTypes.TrustedURL &&
+        this.config_.allowHttpUrls) {
+      const url = '' + value;
+      if (this.isHttpUrl_(url)) {
+        args[argNumber] = url;
+        return apply(originalSetter, context, args);
+      }
     }
 
     // Apply a fallback policy, if it exists.

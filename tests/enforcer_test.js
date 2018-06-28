@@ -257,6 +257,61 @@ describe('TrustedTypesEnforcer', function() {
     });
   });
 
+  describe('url-allow-http config', () => {
+    let enforcer;
+    let el;
+    let policy;
+
+    beforeEach(function() {
+      el = document.createElement('a');
+      enforcer = new TrustedTypesEnforcer(new TrustedTypeConfig(
+      /* isLoggingEnabled */ false,
+      /* isEnforcementEnabled */ true,
+      /* fallbackPolicy */ null,
+      /* allowedPolicyNames */ ['*'],
+      /* allowHttpUrls */ true));
+      enforcer.install();
+      policy = TrustedTypes.createPolicy(Math.random(), noopPolicy);
+    });
+
+    afterEach(function() {
+      enforcer.uninstall();
+    });
+
+    it('allows typed values for url sinks', () => {
+      el.href = policy.createURL('http://example.com/');
+      expect(el.href).toEqual('http://example.com/');
+    });
+
+    it('allows typed values for with javascript: protocol', () => {
+      el.href = policy.createURL('javascript:alert(1)');
+      expect(el.href).toEqual('javascript:alert(1)');
+    });
+
+    it('allows strings with http urls', () => {
+      el.href = 'http://example.com/';
+      expect(el.href).toEqual('http://example.com/');
+    });
+
+    it('allows strings with https urls', () => {
+      el.href = 'https://example.com/';
+      expect(el.href).toEqual('https://example.com/');
+    });
+
+    it('allows strings with relative urls', () => {
+      el.href = 'foo/bar';
+      expect(el.href).toEqual(location.origin + '/foo/bar');
+    });
+
+    it('rejects http urls for TrustedScriptURL sinks', () => {
+      const el = document.createElement('script');
+      expect(() => {
+        el.src = 'https://evil.com';
+      }).toThrowError(TypeError);
+      expect(el.src).toEqual('');
+    });
+  });
+
   describe('enforcement disables string assignments', function() {
     let enforcer;
 

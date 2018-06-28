@@ -13,17 +13,21 @@
 export class TrustedTypeConfig {
   /**
    * @param {boolean} isLoggingEnabled If true enforcement wrappers will log
-   *   warnings to the console.
+   *   violations to the console.
    * @param {boolean} isEnforcementEnabled If true enforcement is enabled at
    *   runtime.
    * @param {?string} fallbackPolicyName If present, direct DOM sink usage
-   *   will be passed throught this policy (has to be exposed).
+   *   will be passed through this policy (has to be exposed).
    * @param {Array<string>} allowedPolicyNames Whitelisted policy names.
+   * @param {boolean=} allowHttpUrls if true, HTTP(s) urls will be transparently
+   *   treated like TrustedURLs. Applied only if enforcement or logging is
+   *   enabled.
    */
   constructor(isLoggingEnabled,
       isEnforcementEnabled,
       fallbackPolicyName,
-      allowedPolicyNames) {
+      allowedPolicyNames,
+      allowHttpUrls = false) {
     /**
       * True if logging is enabled.
       * @type {boolean}
@@ -47,6 +51,12 @@ export class TrustedTypeConfig {
      * @type {Array<string>}
      */
     this.allowedPolicyNames = allowedPolicyNames;
+
+    /**
+     * True if http(s) URLs should be implicitly treated as TrustedURLs.
+     * @type {boolean}
+     */
+    this.allowHttpUrls = allowHttpUrls;
   }
 
   /**
@@ -75,14 +85,23 @@ export class TrustedTypeConfig {
    * @return {!TrustedTypeConfig}
    */
   static fromCSP(cspString) {
+    const ttDirective = 'trusted-types';
     const isLoggingEnabled = true;
     const policy = TrustedTypeConfig.parseCSP(cspString);
-    const enforce = 'trusted-types' in policy;
+    const enforce = ttDirective in policy;
+    let allowHttpUrls = false;
+    let policies = ['*'];
+    if (enforce) {
+      allowHttpUrls = policy[ttDirective].indexOf('\'url-allow-http\'') !== -1;
+      policies = policy[ttDirective].filter((p) => p.charAt(0) !== '\'');
+    }
+
     return new TrustedTypeConfig(
       isLoggingEnabled,
       enforce, /* isEnforcementEnabled */
       null, /* fallbackPolicyName */
-      enforce ? policy['trusted-types'] : ['*'] /* allowedPolicyNames */
+      policies, /* allowedPolicyNames */
+      allowHttpUrls
     );
   }
 }
