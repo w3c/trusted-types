@@ -30,7 +30,7 @@ const trustedTypesBuilderTestOnly = function() {
   /**
    * Getter for the privateMap.
    * @param  {Object} obj Key of the privateMap
-   * @return {Object} Private storage.
+   * @return {Object<string, string>} Private storage.
    */
   const privates = function(obj) {
     let v = privateMap.get(obj);
@@ -117,22 +117,24 @@ const trustedTypesBuilderTestOnly = function() {
     /**
      * Returns the wrapped string value of the object.
      * @return {string}
+     * @override
      */
     toString() {
-      return privates(this).value;
+      return privates(this)['v'];
     }
 
     /**
      * Returns the wrapped string value of the object.
      * @return {string}
+     * @override
      */
     valueOf() {
-      return privates(this).value;
+      return privates(this)['v'];
     }
   }
 
   /**
-   * @param {!function(new:TrustedType, symbol, string)} SubClass
+   * @param {function(new:TrustedType, symbol, string)} SubClass
    * @param {string} canonName The class name which should be independent of
    *     any renaming pass and which is relied upon by the enforcer and for
    *     native type interop.
@@ -236,9 +238,9 @@ const trustedTypesBuilderTestOnly = function() {
   function wrapPolicy(policyName, innerPolicy) {
     /**
      * @template T
-     * @param {!function(new:T, symbol, string)} Ctor a trusted type constructor
+     * @param {function(new:T, symbol, string)} Ctor a trusted type constructor
      * @param {string} methodName the policy factory method name
-     * @return {!function(string):!T} a factory that produces instances of Ctor.
+     * @return {function(string):!T} a factory that produces instances of Ctor.
      */
     function creator(Ctor, methodName) {
       // This causes thisValue to be null when called below.
@@ -247,7 +249,7 @@ const trustedTypesBuilderTestOnly = function() {
       const factory = {
         [methodName](s) { // Trick to get methodName to show in stacktrace.
           const o = freeze(create(policySpecificType));
-          privates(o).value = '' + method(s);
+          privates(o)['v'] = '' + method(s);
           return o;
         },
       }[methodName];
@@ -392,22 +394,24 @@ const TrustedTypes = trustedTypesBuilderTestOnly();
  *  https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
  */
 
+const tt = TrustedTypes;
+
 // Make sure Closure compiler exposes the names.
 if (typeof window !== 'undefined' &&
     typeof window['TrustedTypes'] === 'undefined') {
   window['TrustedTypes'] = {
-    'TrustedHTML': TrustedTypes.TrustedHTML,
-    'TrustedURL': TrustedTypes.TrustedURL,
-    'TrustedScriptURL': TrustedTypes.TrustedScriptURL,
-    'TrustedScript': TrustedTypes.TrustedScript,
-    'createHTML': TrustedTypes.createHTML,
-    'createURL': TrustedTypes.createURL,
-    'createScriptURL': TrustedTypes.createScriptURL,
-    'createScript': TrustedTypes.createScript,
-    'createPolicy': TrustedTypes.createPolicy,
-    'getExposedPolicy': TrustedTypes.getExposedPolicy,
-    'getPolicyNames': TrustedTypes.getPolicyNames,
+    'TrustedHTML': tt.TrustedHTML,
+    'TrustedURL': tt.TrustedURL,
+    'TrustedScriptURL': tt.TrustedScriptURL,
+    'TrustedScript': tt.TrustedScript,
+    'createHTML': tt.createHTML,
+    'createURL': tt.createURL,
+    'createScriptURL': tt.createScriptURL,
+    'createScript': tt.createScript,
+    'createPolicy': tt.createPolicy,
+    'getExposedPolicy': tt.getExposedPolicy,
+    'getPolicyNames': tt.getPolicyNames,
   };
 }
 
-module.exports = TrustedTypes;
+module.exports = tt;
