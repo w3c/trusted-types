@@ -303,6 +303,27 @@ describe('TrustedTypesEnforcer', function() {
       expect(el.href).toEqual(location.origin + '/foo/bar');
     });
 
+    it('rejects strings with javascript: URLs', () => {
+      expect(() => {
+        el.href = 'javascript:alert(1)';
+      }).toThrowError(TypeError);
+      expect(el.href).toEqual('');
+    });
+
+    it('rejects strings with data: URLs', () => {
+      expect(() => {
+        el.href = 'data:text/html,<script>alert(1)</scrip' + 't>';
+      }).toThrowError(TypeError);
+      expect(el.href).toEqual('');
+    });
+
+    it('rejects malformed URLs', () => {
+      expect(() => {
+        el.href = 'https://example.com:demo';
+      }).toThrowError(TypeError);
+      expect(el.href).toEqual('');
+    });
+
     it('rejects http urls for TrustedScriptURL sinks', () => {
       const el = document.createElement('script');
       expect(() => {

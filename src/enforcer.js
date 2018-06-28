@@ -563,8 +563,13 @@ export class TrustedTypesEnforcer {
    * @private
    */
   isHttpUrl_(url) {
-    const parsedUrl = new URL(url, document.baseURI || undefined);
-    return parsedUrl.protocol == 'http:' || parsedUrl.protocol == 'https:';
+    let parsedUrl;
+    try {
+      parsedUrl = new URL(url, document.baseURI || undefined);
+      return parsedUrl.protocol == 'http:' || parsedUrl.protocol == 'https:';
+    } catch (e) {
+      return false;
+    }
   }
 
   /**
