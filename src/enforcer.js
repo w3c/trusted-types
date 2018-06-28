@@ -151,6 +151,10 @@ export class TrustedTypesEnforcer {
   install() {
     TrustedTypes.setAllowedPolicyNames(this.config_.allowedPolicyNames);
 
+    if (!this.config_.isEnforcementEnabled && !this.config_.isLoggingEnabled) {
+      return;
+    }
+
     this.wrapSetter_(Element.prototype, 'innerHTML', TrustedTypes.TrustedHTML);
     this.wrapSetter_(Element.prototype, 'outerHTML', TrustedTypes.TrustedHTML);
     this.wrapWithEnforceFunction_(Range.prototype, 'createContextualFragment',
@@ -182,6 +186,12 @@ export class TrustedTypesEnforcer {
    * Removes the original setters.
    */
   uninstall() {
+    TrustedTypes.setAllowedPolicyNames(['*']);
+
+    if (!this.config_.isEnforcementEnabled && !this.config_.isLoggingEnabled) {
+      return;
+    }
+
     this.restoreSetter_(Element.prototype, 'innerHTML');
     this.restoreSetter_(Element.prototype, 'outerHTML');
     this.restoreFunction_(Range.prototype, 'createContextualFragment');
@@ -200,7 +210,6 @@ export class TrustedTypesEnforcer {
     }
     this.uninstallPropertySetWrappers_();
     this.uninstallScriptWrappers_();
-    TrustedTypes.setAllowedPolicyNames(['*']);
   }
 
   /**
@@ -564,17 +573,21 @@ export class TrustedTypesEnforcer {
            args) {
     let value = args[argNumber];
     const typeName = '' + typeToEnforce.name;
+    // If typed value is given, pass through.
     if (TYPE_CHECKER_MAP.hasOwnProperty(typeName) &&
         TYPE_CHECKER_MAP[typeName](value)) {
       return apply(originalSetter, context, args);
     }
 
+    // If function (instead of string) is passed to inline event attribute,
+    // pass through.
     if (typeToEnforce === TrustedTypes.TrustedScript &&
         propertyName.slice(0, 2) === 'on' &&
         value === null || typeof value === 'function') {
       return apply(originalSetter, context, args);
     }
 
+    // Apply a fallback policy, if it exists.
     const fallback = this.config_.fallbackPolicyName;
     if (fallback && TrustedTypes.getPolicyNames().indexOf(fallback) !== -1) {
       let fallbackValue = TYPE_PRODUCER_MAP[typeName](fallback, value);
@@ -596,6 +609,8 @@ export class TrustedTypesEnforcer {
 
     if (this.config_.isEnforcementEnabled) {
       throw new TypeError(message);
+    } else { // pass-through
+      return apply(originalSetter, context, args);
     }
   }
 }

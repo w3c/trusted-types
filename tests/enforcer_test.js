@@ -30,6 +30,20 @@ describe('TrustedTypesEnforcer', function() {
       /* fallbackPolicy */ null,
       /* allowedPolicyNames */ ['*']);
 
+  let NOOP_CONFIG = new TrustedTypeConfig(
+      /* isLoggingEnabled */ false,
+      /* isEnforcementEnabled */ false,
+      /* fallbackPolicy */ null,
+      /* allowedPolicyNames */ ['*']
+  );
+
+  let LOGGING_CONFIG = new TrustedTypeConfig(
+      /* isLoggingEnabled */ true,
+      /* isEnforcementEnabled */ false,
+      /* fallbackPolicy */ null,
+      /* allowedPolicyNames */ ['*']
+  );
+
   describe('install', function() {
     let enforcer;
 
@@ -61,6 +75,26 @@ describe('TrustedTypesEnforcer', function() {
       expect(function() {
         el.innerHTML = TEST_HTML;
       }).toThrowError(TypeError);
+
+      // TODO(msamuel): move to after test action.
+      enforcer.uninstall();
+    });
+
+    it('does not enforce if no logging and no enforcement is required', () => {
+      let enforcer = new TrustedTypesEnforcer(NOOP_CONFIG);
+      let el = document.createElement('div');
+
+      expect(function() {
+        el.innerHTML = TEST_HTML;
+      }).not.toThrow();
+
+      enforcer.install();
+
+      expect(function() {
+        el.innerHTML = TEST_HTML;
+      }).not.toThrow();
+
+      expect(el.innerHTML).toEqual(TEST_HTML);
 
       // TODO(msamuel): move to after test action.
       enforcer.uninstall();
@@ -143,7 +177,61 @@ describe('TrustedTypesEnforcer', function() {
     });
   });
 
-  describe('enforcement', function() {
+  describe('log-only config', function() {
+    let enforcer;
+    let el;
+    let policy;
+
+    beforeEach(function() {
+      enforcer = new TrustedTypesEnforcer(LOGGING_CONFIG);
+      policy = TrustedTypes.createPolicy(Math.random(), (p) => {
+        noopPolicy(p);
+        p.expose = true;
+      });
+      enforcer.install();
+      el = document.createElement('div');
+      spyOn(console, 'warn');
+    });
+
+    afterEach(function() {
+      enforcer.uninstall();
+    });
+
+    it('allows for string assignments', function() {
+      expect(function() {
+        el.innerHTML = TEST_HTML;
+      }).not.toThrow();
+      expect(el.innerHTML).toEqual(TEST_HTML);
+    });
+
+    it('allows for typed assignments', function() {
+      expect(function() {
+        el.innerHTML = policy.createHTML(TEST_HTML);
+      }).not.toThrow();
+      expect(el.innerHTML).toEqual(TEST_HTML);
+    });
+
+    it('logs for string assignments', function() {
+      expect(function() {
+        el.innerHTML = TEST_HTML;
+      }).not.toThrow();
+      // eslint-disable-next-line no-console
+      expect(console.warn).toHaveBeenCalledWith(
+        'Failed to set innerHTML property on [object HTMLDivElement]: This ' +
+        'document requires `TrustedHTML` assignment.', 'innerHTML',
+        jasmine.any(HTMLDivElement), TrustedTypes.TrustedHTML, TEST_HTML);
+    });
+
+    it('does not logs for typed assignments', function() {
+      expect(function() {
+        el.innerHTML = policy.createHTML(TEST_HTML);
+      }).not.toThrow();
+      // eslint-disable-next-line no-console
+      expect(console.warn).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('enforcing config', function() {
     let enforcer;
 
     beforeEach(function() {
