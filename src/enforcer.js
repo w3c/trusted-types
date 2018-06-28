@@ -138,7 +138,7 @@ export class TrustedTypesEnforcer {
      */
     this.config_ = config;
     /**
-     * @private {Object<string, !function(*): *|undefined>}
+     * @private {Object<string, function(*): *|undefined>}
      */
     this.originalSetters_ = {};
   }
@@ -266,7 +266,7 @@ export class TrustedTypesEnforcer {
         'setAttribute',
         /**
          * @this {TrustedTypesEnforcer}
-         * @param {!function(!Function, ...*)} originalFn
+         * @param {function(!Function, ...*)} originalFn
          * @return {*}
          */
         function(originalFn, ...args) {
@@ -279,7 +279,7 @@ export class TrustedTypesEnforcer {
       'setAttributeNS',
       /**
          * @this {TrustedTypesEnforcer}
-         * @param {!function(!Function, ...*)} originalFn
+         * @param {function(!Function, ...*)} originalFn
          * @return {*}
          */
         function(originalFn, ...args) {
@@ -387,7 +387,7 @@ export class TrustedTypesEnforcer {
         name,
         /**
          * @this {TrustedTypesEnforcer}
-         * @param {!function(!Function, ...*)} originalFn
+         * @param {function(!Function, ...*)} originalFn
          * @return {*}
          */
         function(originalFn, ...args) {
@@ -402,7 +402,7 @@ export class TrustedTypesEnforcer {
    * original function.
    * @param {!Object} object The object of the to-be-wrapped property.
    * @param {string} name The name of the property.
-   * @param {!function(!Function, ...*)} functionBody The wrapper function.
+   * @param {function(!Function, ...*)} functionBody The wrapper function.
    */
   wrapFunction_(object, name, functionBody) {
     let descriptor = getOwnPropertyDescriptor(object, name);
@@ -554,7 +554,7 @@ export class TrustedTypesEnforcer {
    * @param {!Object} context The object that the setter is called for.
    * @param {string} propertyName The name of the property.
    * @param {!Function} typeToEnforce The type to enforce.
-   * @param {!function(?):T} originalSetter Original setter.
+   * @param {function(?):T} originalSetter Original setter.
    * @param {number} argNumber Number of argument to enforce the type of.
    * @param {Array} args Arguments.
    * @return {T}

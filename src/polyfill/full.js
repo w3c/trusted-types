@@ -44,7 +44,7 @@ function detectPolicy() {
         const cspInMeta = document.head.querySelector(
             'meta[http-equiv^="Content-Security-Policy"]');
         if (cspInMeta) {
-            return cspInMeta.content.trim();
+            return cspInMeta['content'].trim();
         }
     } catch (e) {
         return null;

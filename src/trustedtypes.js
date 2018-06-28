@@ -48,7 +48,7 @@ export const trustedTypesBuilderTestOnly = function() {
   /**
    * Getter for the privateMap.
    * @param  {Object} obj Key of the privateMap
-   * @return {Object} Private storage.
+   * @return {Object<string, string>} Private storage.
    */
   const privates = function(obj) {
     let v = privateMap.get(obj);
@@ -138,7 +138,7 @@ export const trustedTypesBuilderTestOnly = function() {
      * @override
      */
     toString() {
-      return privates(this).value;
+      return privates(this)['v'];
     }
 
     /**
@@ -147,12 +147,12 @@ export const trustedTypesBuilderTestOnly = function() {
      * @override
      */
     valueOf() {
-      return privates(this).value;
+      return privates(this)['v'];
     }
   }
 
   /**
-   * @param {!function(new:TrustedType, symbol, string)} SubClass
+   * @param {function(new:TrustedType, symbol, string)} SubClass
    * @param {string} canonName The class name which should be independent of
    *     any renaming pass and which is relied upon by the enforcer and for
    *     native type interop.
@@ -256,9 +256,9 @@ export const trustedTypesBuilderTestOnly = function() {
   function wrapPolicy(policyName, innerPolicy) {
     /**
      * @template T
-     * @param {!function(new:T, symbol, string)} Ctor a trusted type constructor
+     * @param {function(new:T, symbol, string)} Ctor a trusted type constructor
      * @param {string} methodName the policy factory method name
-     * @return {!function(string):!T} a factory that produces instances of Ctor.
+     * @return {function(string):!T} a factory that produces instances of Ctor.
      */
     function creator(Ctor, methodName) {
       // This causes thisValue to be null when called below.
@@ -267,7 +267,7 @@ export const trustedTypesBuilderTestOnly = function() {
       const factory = {
         [methodName](s) { // Trick to get methodName to show in stacktrace.
           const o = freeze(create(policySpecificType));
-          privates(o).value = '' + method(s);
+          privates(o)['v'] = '' + method(s);
           return o;
         },
       }[methodName];
@@ -402,4 +402,3 @@ export const trustedTypesBuilderTestOnly = function() {
 };
 
 export const TrustedTypes = trustedTypesBuilderTestOnly();
-
