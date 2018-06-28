@@ -67,9 +67,24 @@ describe('TrustedTypeConfig', () => {
           .allowedPolicyNames).toEqual(['*', 'bar', 'foo']);
     });
 
+    it('ignores quoted keywords when extracting policy names', () => {
+      expect(TrustedTypeConfig.fromCSP('trusted-types foo bar \'keyword\'')
+          .allowedPolicyNames).toEqual(['bar', 'foo']);
+    });
+
     it('defaults to an empty set of allowed directives', () => {
       expect(TrustedTypeConfig.fromCSP('trusted-types')
           .allowedPolicyNames).toEqual([]);
+    });
+
+    it('does not allow http urls by default', () => {
+      expect(TrustedTypeConfig.fromCSP('trusted-types')
+          .allowHttpUrls).toEqual(false);
+    });
+
+    it('recognizes url-allow-http', () => {
+      expect(TrustedTypeConfig.fromCSP('trusted-types \'url-allow-http\'')
+          .allowHttpUrls).toEqual(true);
     });
   });
 });
