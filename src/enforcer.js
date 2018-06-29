@@ -24,6 +24,10 @@ const {
   isPrototypeOf,
 } = Object;
 
+const {slice} = String.prototype;
+
+const UrlConstructor = URL.prototype.constructor;
+
 /**
  * A map of attribute names to allowed types.
  * @type {!Object<string, !Object<string, !Function>>}
@@ -565,7 +569,7 @@ export class TrustedTypesEnforcer {
   isHttpUrl_(url) {
     let parsedUrl;
     try {
-      parsedUrl = new URL(url, document.baseURI || undefined);
+      parsedUrl = new UrlConstructor(url, document.baseURI || undefined);
       return parsedUrl.protocol == 'http:' || parsedUrl.protocol == 'https:';
     } catch (e) {
       return false;
@@ -597,7 +601,7 @@ export class TrustedTypesEnforcer {
     // If function (instead of string) is passed to inline event attribute,
     // pass through.
     if (typeToEnforce === TrustedTypes.TrustedScript &&
-        propertyName.slice(0, 2) === 'on' &&
+        apply(slice, propertyName, [0, 2]) === 'on' &&
         value === null || typeof value === 'function') {
       return apply(originalSetter, context, args);
     }
