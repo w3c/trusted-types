@@ -24,6 +24,8 @@ const {
   isPrototypeOf,
 } = Object;
 
+const UrlConstructor = URL.prototype.constructor;
+
 /**
  * A map of attribute names to allowed types.
  * @type {!Object<string, !Object<string, !Function>>}
@@ -565,7 +567,7 @@ export class TrustedTypesEnforcer {
   isHttpUrl_(url) {
     let parsedUrl;
     try {
-      parsedUrl = new URL(url, document.baseURI || undefined);
+      parsedUrl = new UrlConstructor(url, document.baseURI || undefined);
       return parsedUrl.protocol == 'http:' || parsedUrl.protocol == 'https:';
     } catch (e) {
       return false;
