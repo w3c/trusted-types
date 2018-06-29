@@ -8,6 +8,12 @@
  */
 
 /**
+ * CSP Directive name controlling Trusted Types behavior.
+ * @type {string}
+ */
+export const DIRECTIVE_NAME = 'trusted-types';
+
+/**
  * A configuration object for trusted type enforcement.
  */
 export class TrustedTypeConfig {
@@ -22,12 +28,14 @@ export class TrustedTypeConfig {
    * @param {boolean=} allowHttpUrls if true, HTTP(s) urls will be transparently
    *   treated like TrustedURLs. Applied only if enforcement or logging is
    *   enabled.
+   * @param {?string} cspString String with the CSP policy.
    */
   constructor(isLoggingEnabled,
       isEnforcementEnabled,
       fallbackPolicyName,
       allowedPolicyNames,
-      allowHttpUrls = false) {
+      allowHttpUrls = false,
+      cspString = null) {
     /**
       * True if logging is enabled.
       * @type {boolean}
@@ -57,6 +65,12 @@ export class TrustedTypeConfig {
      * @type {boolean}
      */
     this.allowHttpUrls = allowHttpUrls;
+
+    /**
+     * CSP string that defined the policy.
+     * @type {?string}
+     */
+    this.cspString = cspString;
   }
 
   /**
@@ -85,15 +99,15 @@ export class TrustedTypeConfig {
    * @return {!TrustedTypeConfig}
    */
   static fromCSP(cspString) {
-    const ttDirective = 'trusted-types';
     const isLoggingEnabled = true;
     const policy = TrustedTypeConfig.parseCSP(cspString);
-    const enforce = ttDirective in policy;
+    const enforce = DIRECTIVE_NAME in policy;
     let allowHttpUrls = false;
     let policies = ['*'];
     if (enforce) {
-      allowHttpUrls = policy[ttDirective].indexOf('\'url-allow-http\'') !== -1;
-      policies = policy[ttDirective].filter((p) => p.charAt(0) !== '\'');
+      allowHttpUrls = policy[DIRECTIVE_NAME]
+          .indexOf('\'url-allow-http\'') !== -1;
+      policies = policy[DIRECTIVE_NAME].filter((p) => p.charAt(0) !== '\'');
     }
 
     return new TrustedTypeConfig(
@@ -101,7 +115,8 @@ export class TrustedTypeConfig {
       enforce, /* isEnforcementEnabled */
       null, /* fallbackPolicyName */
       policies, /* allowedPolicyNames */
-      allowHttpUrls
+      allowHttpUrls,
+      cspString
     );
   }
 }
