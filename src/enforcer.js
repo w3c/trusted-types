@@ -644,9 +644,9 @@ export class TrustedTypesEnforcer {
       }
     }
 
-    let message = 'Failed to set ' + propertyName + ' property on ' +
-        ('' + context || context.constructor.name) +
-        ': This document requires `' + (typeToEnforce.name) + '` assignment.';
+    let contextName = context.constructor.name || '' + context;
+    let message = `Failed to set ${propertyName} on ${contextName}: `
+        + `This property requires ${typeName}.`;
 
     if (this.config_.isLoggingEnabled) {
       // eslint-disable-next-line no-console
@@ -663,18 +663,26 @@ export class TrustedTypesEnforcer {
           blockedURI = blockedURI.href;
         }
       }
+      const valueSlice = apply(slice, '' + value, [0, 40]);
       const event = new SecurityPolicyViolationEvent(
         'securitypolicyviolation',
         {
-          blockedURI,
-          disposition: this.config_.isEnforcementEnabled ? 'enforce' : 'report',
-          documentURI: document.location.href,
-          effectiveDirective: DIRECTIVE_NAME,
-          originalPolicy: this.config_.cspString,
-          statusCode: 0,
-          violatedDirective: DIRECTIVE_NAME,
+          'bubbles': true,
+          'blockedURI': blockedURI,
+          'disposition': this.config_.isEnforcementEnabled ?
+              'enforce' : 'report',
+          'documentURI': document.location.href,
+          'effectiveDirective': DIRECTIVE_NAME,
+          'originalPolicy': this.config_.cspString,
+          'statusCode': 0,
+          'violatedDirective': DIRECTIVE_NAME,
+          'sample': `${contextName}.${propertyName} ${valueSlice}`,
         });
-      document.dispatchEvent(event);
+      if (context.isConnected) {
+        context.dispatchEvent(event);
+      } else { // Fallback - dispatch an event on base document.
+        document.dispatchEvent(event);
+      }
     }
 
     if (this.config_.isEnforcementEnabled) {

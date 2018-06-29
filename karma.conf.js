@@ -52,7 +52,8 @@ module.exports = function(config) {
       FirefoxHeadlessDev: {
         base: 'FirefoxHeadless',
         prefs: {
-          // Not enabnled in release versions. https://developer.mozilla.org/en-US/Firefox/Experimental_features
+          // Not enabled in release versions.
+          // https://developer.mozilla.org/en-US/Firefox/Experimental_features
           'security.csp.enable_violation_events': true,
         }
       }

@@ -222,13 +222,14 @@ describe('TrustedTypesEnforcer', function() {
       }).not.toThrow();
       // eslint-disable-next-line no-console
       expect(console.warn).toHaveBeenCalledWith(
-        'Failed to set innerHTML property on [object HTMLDivElement]: This ' +
-        'document requires `TrustedHTML` assignment.', 'innerHTML',
+        'Failed to set innerHTML on HTMLDivElement: This ' +
+        'property requires TrustedHTML.', 'innerHTML',
         jasmine.any(HTMLDivElement), TrustedTypes.TrustedHTML, TEST_HTML);
     });
 
     describe('securitypolicyviolation event', () => {
       let caughtEvent;
+      let el;
 
       // eslint-disable-next-line require-jsdoc
       function policyViolationCheck(e) {
@@ -236,6 +237,14 @@ describe('TrustedTypesEnforcer', function() {
       }
 
       beforeEach(() => {
+        el = document.createElement('div');
+        document.body.appendChild(el);
+        caughtEvent = null;
+        if (!window.SecurityPolicyViolationEvent) {
+          // skip tests if event is not supported.
+          pending();
+        }
+
         caughtEvent = null;
         document.addEventListener('securitypolicyviolation',
             policyViolationCheck, true);
@@ -253,22 +262,41 @@ describe('TrustedTypesEnforcer', function() {
         expect(caughtEvent).not.toBe(null);
       });
 
+      it('dispatches if element is not in any document', () => {
+        let standaloneEl = document.createElement('div');
+        expect(function() {
+          standaloneEl.innerHTML = TEST_HTML;
+        }).not.toThrow();
+        expect(caughtEvent).not.toBe(null);
+      });
+
       it('contains relevant properties', () => {
         expect(function() {
           el.innerHTML = TEST_HTML;
         }).not.toThrow();
         expect(caughtEvent.originalPolicy).toEqual('script-src https:');
-        expect(caughtEvent.target).toEqual(document);
         expect(caughtEvent.type).toEqual('securitypolicyviolation');
         expect(caughtEvent.effectiveDirective).toEqual('trusted-types');
         expect(caughtEvent.violatedDirective).toEqual('trusted-types');
         expect(caughtEvent.disposition).toEqual('report');
         expect(caughtEvent.documentURI).toEqual(document.location.href);
         expect(caughtEvent.blockedURI).toEqual('');
+        expect(caughtEvent.target).toBe(el);
+        expect(caughtEvent.sample).toEqual(
+          'HTMLDivElement.innerHTML <b>html</b>');
+      });
+
+      it('trims sample', () => {
+        expect(function() {
+          el.innerHTML = '<b>super long text maybe even user data:12345</b>';
+        }).not.toThrow();
+        expect(caughtEvent.sample).toEqual(
+          'HTMLDivElement.innerHTML <b>super long text maybe even user data:');
       });
 
       it('contains blocked URI when known', () => {
         const el = document.createElement('a');
+        document.body.appendChild(el);
         expect(function() {
           el.href = 'foo';
         }).not.toThrow();
@@ -335,7 +363,12 @@ describe('TrustedTypesEnforcer', function() {
       }
 
       beforeEach(() => {
+        if (!window.SecurityPolicyViolationEvent) {
+          // skip tests if event is not supported.
+          pending();
+        }
         el = document.createElement('div');
+        document.body.appendChild(el);
         caughtEvent = null;
         document.addEventListener('securitypolicyviolation',
             policyViolationCheck, true);
@@ -359,7 +392,7 @@ describe('TrustedTypesEnforcer', function() {
         }).toThrow();
         expect(caughtEvent.originalPolicy).toEqual(
             'script-src https:; trusted-types *');
-        expect(caughtEvent.target).toEqual(document);
+        expect(caughtEvent.target).toEqual(el);
         expect(caughtEvent.type).toEqual('securitypolicyviolation');
         expect(caughtEvent.effectiveDirective).toEqual('trusted-types');
         expect(caughtEvent.violatedDirective).toEqual('trusted-types');
@@ -370,6 +403,7 @@ describe('TrustedTypesEnforcer', function() {
 
       it('contains blocked URI when known', () => {
         const el = document.createElement('a');
+        document.body.appendChild(el);
         expect(function() {
           el.href = 'foo';
         }).toThrow();
