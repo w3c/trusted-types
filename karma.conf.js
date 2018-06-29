@@ -42,12 +42,19 @@ module.exports = function(config) {
 
     autoWatch: true,
 
-    browsers: ['ChromeHeadlessNoSandbox', 'FirefoxHeadless'],
+    browsers: ['ChromeHeadlessNoSandbox', 'FirefoxHeadlessDev'],
 
     customLaunchers: {
       ChromeHeadlessNoSandbox: {
         base: 'ChromeHeadless',
         flags: ['--no-sandbox']
+      },
+      FirefoxHeadlessDev: {
+        base: 'FirefoxHeadless',
+        prefs: {
+          // Not enabnled in release versions. https://developer.mozilla.org/en-US/Firefox/Experimental_features
+          'security.csp.enable_violation_events': true,
+        }
       }
     },
 

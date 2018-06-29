@@ -8,7 +8,7 @@
  */
 
 /* eslint-disable no-unused-vars */
-import {TrustedTypeConfig} from './data/trustedtypeconfig.js';
+import {DIRECTIVE_NAME, TrustedTypeConfig} from './data/trustedtypeconfig.js';
 import {TrustedTypes} from './trustedtypes.js';
 
 /* eslint-enable no-unused-vars */
@@ -27,6 +27,38 @@ const {
 const {slice} = String.prototype;
 
 const UrlConstructor = URL.prototype.constructor;
+
+// This is not available in release Firefox :(
+// https://developer.mozilla.org/en-US/docs/Web/API/SecurityPolicyViolationEvent
+// https://bugzilla.mozilla.org/show_bug.cgi?id=1432523
+const SecurityPolicyViolationEvent = window['SecurityPolicyViolationEvent'] ||
+  null;
+
+/**
+ * Parses URL, catching all the errors.
+ * @param  {string} url URL string to parse.
+ * @return {URL|null}
+ */
+function parseUrl_(url) {
+  try {
+    return new UrlConstructor(url, document.baseURI || undefined);
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
+ * Checks if the URL is a HTTP(s) URL.
+ * @param  {string}  url The URL to check.
+ * @return {boolean} True iff the value is a http(s) URL.
+ */
+function isHttpUrl_(url) {
+  const parsedUrl = parseUrl_(url);
+  if (!parsedUrl) {
+    return false;
+  }
+  return parsedUrl.protocol == 'http:' || parsedUrl.protocol == 'https:';
+}
 
 /**
  * A map of attribute names to allowed types.
@@ -562,21 +594,6 @@ export class TrustedTypesEnforcer {
   }
 
   /**
-   * @param  {string}  url The URL to check.
-   * @return {boolean} True iff the value is a http(s) URL.
-   * @private
-   */
-  isHttpUrl_(url) {
-    let parsedUrl;
-    try {
-      parsedUrl = new UrlConstructor(url, document.baseURI || undefined);
-      return parsedUrl.protocol == 'http:' || parsedUrl.protocol == 'https:';
-    } catch (e) {
-      return false;
-    }
-  }
-
-  /**
    * Logs and enforces TrustedTypes depending on the given configuration.
    * @template T
    * @param {!Object} context The object that the setter is called for.
@@ -610,7 +627,7 @@ export class TrustedTypesEnforcer {
     if (typeToEnforce === TrustedTypes.TrustedURL &&
         this.config_.allowHttpUrls) {
       const url = '' + value;
-      if (this.isHttpUrl_(url)) {
+      if (isHttpUrl_(url)) {
         args[argNumber] = url;
         return apply(originalSetter, context, args);
       }
@@ -634,6 +651,30 @@ export class TrustedTypesEnforcer {
     if (this.config_.isLoggingEnabled) {
       // eslint-disable-next-line no-console
       console.warn(message, propertyName, context, typeToEnforce, value);
+    }
+
+    // Unconditionally dispatch an event.
+    if (typeof SecurityPolicyViolationEvent == 'function') {
+      let blockedURI = '';
+      if (typeToEnforce === TrustedTypes.TrustedURL ||
+          typeToEnforce === TrustedTypes.TrustedScriptURL) {
+        blockedURI = parseUrl_(value) || '';
+        if (blockedURI) {
+          blockedURI = blockedURI.href;
+        }
+      }
+      const event = new SecurityPolicyViolationEvent(
+        'securitypolicyviolation',
+        {
+          blockedURI,
+          disposition: this.config_.isEnforcementEnabled ? 'enforce' : 'report',
+          documentURI: document.location.href,
+          effectiveDirective: DIRECTIVE_NAME,
+          originalPolicy: this.config_.cspString,
+          statusCode: 0,
+          violatedDirective: DIRECTIVE_NAME,
+        });
+      document.dispatchEvent(event);
     }
 
     if (this.config_.isEnforcementEnabled) {

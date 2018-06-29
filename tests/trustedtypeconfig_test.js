@@ -86,5 +86,11 @@ describe('TrustedTypeConfig', () => {
       expect(TrustedTypeConfig.fromCSP('trusted-types \'url-allow-http\'')
           .allowHttpUrls).toEqual(true);
     });
+
+    it('passes the CSP string to config object', () => {
+      const csp = 'trusted-types a b c; script-src foo';
+      expect(TrustedTypeConfig.fromCSP(csp)
+          .cspString).toEqual(csp);
+    });
   });
 });

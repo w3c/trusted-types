@@ -15,6 +15,7 @@
     "fix": "eslint --fix src/ tests/",
     "test": "karma start --single-run",
     "karma": "karma start --browsers ChromeHeadless",
+    "karma:firefox": "karma start --browsers Firefox",
     "build": "run-p build:cjs build:es6 build:es5",
     "build:cjs": "rollup -c",
     "build:es5": "gulp es5",
