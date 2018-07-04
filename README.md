@@ -77,7 +77,8 @@ first step:
     ```
 
 *   **TrustedScriptURL**: This type would be used to represent a URL that could be used to load
-    resources that may result in script execution in the current document.
+    resources that may result in script execution in the current document. This type also inherits
+    from `TrustedURL`.
 
     ```
     interface TrustedScriptURL {

@@ -798,6 +798,16 @@ describe('TrustedTypesEnforcer', function() {
       expect(el.srcdoc).toEqual(TEST_HTML);
     });
 
+    it('on img.src (with createScriptURL)', function() {
+      let el = document.createElement('img');
+
+      expect(function() {
+        el.src = policy.createScriptURL(TEST_URL);
+      }).not.toThrow();
+
+      expect(el.src).toEqual(TEST_URL);
+    });
+
     it('on Range.createContextualFragment', function() {
       let range = document.createRange();
 
@@ -1102,7 +1112,7 @@ describe('TrustedTypesEnforcer', function() {
       }).toThrow();
 
       expect(() => {
-       el.src = policy.createScriptURL(TEST_URL);
+       el.src = policy.createScript(TEST_URL);
       }).toThrow();
 
       expect(el.src).toEqual('');
