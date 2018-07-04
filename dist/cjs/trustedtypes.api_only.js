@@ -11,9 +11,6 @@
 /* eslint-enable no-unused-vars */
 
 
-const {apply} = Reflect;
-const {hasOwnProperty} = Object.prototype;
-
 const trustedTypesBuilderTestOnly = function() {
   // Capture common names early.
   const {
@@ -190,24 +187,6 @@ const trustedTypesBuilderTestOnly = function() {
   }
 
   /**
-   * Function building a type from exposed policy
-   * @template T
-   * @param  {T} type        The type to build
-   * @param  {string} functionName Function name to call in a policy.
-   * @return {function(string,string):T} The type
-   */
-  function buildTypeFromExposedPolicy(type, functionName) {
-    return function(policyName, value) {
-      const policy = getExposedPolicy(policyName);
-      if (!(policy && apply(hasOwnProperty, policy, [functionName]))) {
-        throw new Error('Policy not found');
-      }
-      const policyFn = policy[functionName];
-      return policyFn(value);
-    };
-  }
-
-  /**
    * Initial builder object for the policy.
    * Its clone is passed to createPolicy builder function, with the expectation
    * to modify its properties.
@@ -354,13 +333,6 @@ const trustedTypesBuilderTestOnly = function() {
     TrustedURL,
     TrustedScriptURL,
     TrustedScript,
-
-    // Type builders from exposed policies, for convenience. Consider removing?
-    createHTML: buildTypeFromExposedPolicy(TrustedHTML, 'createHTML'),
-    createURL: buildTypeFromExposedPolicy(TrustedURL, 'createURL'),
-    createScriptURL: buildTypeFromExposedPolicy(TrustedScriptURL,
-        'createScriptURL'),
-    createScript: buildTypeFromExposedPolicy(TrustedScript, 'createScript'),
 
     // The main function to create policies.
     createPolicy,

@@ -217,25 +217,6 @@ describe('v2 TrustedTypes', () => {
     });
   });
 
-  describe('create* methods', () => {
-    it('support creating from exposed policies', () => {
-      const name = 'bar';
-      const exposed = TrustedTypes.createPolicy(name, (p) => {
-        noopPolicy(p);
-      }, true);
-      const html = exposed.createHTML('foo');
-      const html2 = TrustedTypes.createHTML(name, 'foo');
-      expect(html.policyName).toEqual(html2.policyName);
-      expect('' + html).toEqual('' + html2);
-    });
-
-    it('do not allow creating from non-exposed policies', () => {
-      const name = 'p';
-      TrustedTypes.createPolicy(name, (p) => {});
-      expect(() => TrustedTypes.createHTML(name, 'foo')).toThrow();
-    });
-  });
-
   describe('setAllowedPolicyNames', () => {
     it('is not applied by default', () => {
       expect(() => TrustedTypes.createPolicy('foo', (p) => {})).not.toThrow();
