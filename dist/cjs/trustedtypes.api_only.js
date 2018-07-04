@@ -226,7 +226,6 @@ const trustedTypesBuilderTestOnly = function() {
     'createScript': (s) => {
       throw new Error('undefined conversion');
     },
-    'expose': false, // Don't expose the policy by default.
   };
 
   /**
@@ -296,11 +295,13 @@ const trustedTypesBuilderTestOnly = function() {
    * @param  {string} name A unique name of the policy.
    * @param  {function(TrustedTypesInnerPolicy)} builder Function that defines
    *   policy rules by modifying the initial policy object passed.
+   * @param  {boolean=} expose Iff true, the policy will be exposed (available
+   *   globally).
    * @return {TrustedTypesPolicy} The policy that may create TT objects
    *   according to the rules in the builder.
    * @todo Figure out if the return value (and the builder) can be typed.
    */
-  function createPolicy(name, builder) {
+  function createPolicy(name, builder, expose = false) {
     const pName = '' + name; // Assert it's a string
 
     if (enforceNameWhitelist && allowedNames.indexOf(pName) === -1) {
@@ -321,7 +322,7 @@ const trustedTypesBuilderTestOnly = function() {
 
     const policy = wrapPolicy(pName, innerPolicy);
 
-    if (innerPolicy['expose']) {
+    if (expose) {
       exposedPolicies.set(pName, policy);
     }
 

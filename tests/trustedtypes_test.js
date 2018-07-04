@@ -43,8 +43,7 @@ describe('v2 TrustedTypes', () => {
 
     it('supports exposing policy', () => {
       const p = TrustedTypes.createPolicy('policy', (p) => {
-        p.expose = true;
-      });
+      }, true);
       expect(TrustedTypes.getExposedPolicy('policy')).toBe(p);
     });
 
@@ -73,8 +72,7 @@ describe('v2 TrustedTypes', () => {
     it('returns all policy names', () => {
       TrustedTypes.createPolicy('hidden', () => {});
       TrustedTypes.createPolicy('exposed', (p) => {
-        p.expose = true;
-      });
+      }, true);
 
       expect(TrustedTypes.getPolicyNames()).toEqual(['hidden', 'exposed']);
     });
@@ -224,8 +222,7 @@ describe('v2 TrustedTypes', () => {
       const name = 'bar';
       const exposed = TrustedTypes.createPolicy(name, (p) => {
         noopPolicy(p);
-        p.expose = true;
-      });
+      }, true);
       const html = exposed.createHTML('foo');
       const html2 = TrustedTypes.createHTML(name, 'foo');
       expect(html.policyName).toEqual(html2.policyName);
