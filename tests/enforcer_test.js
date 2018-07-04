@@ -191,8 +191,7 @@ describe('TrustedTypesEnforcer', function() {
       enforcer = new TrustedTypesEnforcer(LOGGING_CONFIG);
       policy = TrustedTypes.createPolicy(Math.random(), (p) => {
         noopPolicy(p);
-        p.expose = true;
-      });
+      }, true);
       enforcer.install();
       el = document.createElement('div');
       spyOn(console, 'warn');
@@ -765,8 +764,7 @@ describe('TrustedTypesEnforcer', function() {
       enforcer.install();
       policy = TrustedTypes.createPolicy(Math.random(), (p) => {
         noopPolicy(p);
-        p.expose = true;
-      });
+      }, true);
     });
 
     afterEach(function() {
@@ -798,6 +796,16 @@ describe('TrustedTypesEnforcer', function() {
       }).not.toThrow();
 
       expect(el.srcdoc).toEqual(TEST_HTML);
+    });
+
+    it('on img.src (with createScriptURL)', function() {
+      let el = document.createElement('img');
+
+      expect(function() {
+        el.src = policy.createScriptURL(TEST_URL);
+      }).not.toThrow();
+
+      expect(el.src).toEqual(TEST_URL);
     });
 
     it('on Range.createContextualFragment', function() {
@@ -989,8 +997,7 @@ describe('TrustedTypesEnforcer', function() {
       enforcer.install();
       TrustedTypes.createPolicy('fallback1', (p) => {
         p.createHTML = (s) => 'fallback:' + s;
-        p.expose = true;
-      });
+      }, true);
       let el = document.createElement('div');
       el.innerHTML = TEST_HTML;
 
@@ -1019,8 +1026,7 @@ describe('TrustedTypesEnforcer', function() {
       enforcer.install();
       TrustedTypes.createPolicy('fallback2', (p) => {
         p.createHTML = (s) => 'fallback:' + s;
-        p.expose = true;
-      });
+      }, true);
       const policy = TrustedTypes.createPolicy(Math.random(), noopPolicy);
       let el = document.createElement('div');
       el.innerHTML = policy.createHTML(TEST_HTML);
@@ -1050,8 +1056,7 @@ describe('TrustedTypesEnforcer', function() {
       enforcer.install();
       policy = TrustedTypes.createPolicy(Math.random(), (p) => {
         noopPolicy(p);
-        p.expose = true;
-      });
+      }, true);
     });
 
     afterEach(function() {
@@ -1107,7 +1112,7 @@ describe('TrustedTypesEnforcer', function() {
       }).toThrow();
 
       expect(() => {
-       el.src = policy.createScriptURL(TEST_URL);
+       el.src = policy.createScript(TEST_URL);
       }).toThrow();
 
       expect(el.src).toEqual('');

@@ -141,14 +141,30 @@ const TYPE_CHECKER_MAP = {
 
 /**
  * Map of type names to type producing function.
- * @type {Object<string,!Function>}
+ * @type {Object<string,string>}
  */
 const TYPE_PRODUCER_MAP = {
-  'TrustedHTML': TrustedTypes.createHTML,
-  'TrustedURL': TrustedTypes.createURL,
-  'TrustedScriptURL': TrustedTypes.createScriptURL,
-  'TrustedScript': TrustedTypes.createScript,
+  'TrustedHTML': 'createHTML',
+  'TrustedURL': 'createURL',
+  'TrustedScriptURL': 'createScriptURL',
+  'TrustedScript': 'createScript',
 };
+
+/**
+ * @type {function(string):?TrustedTypesPolicy}
+ */
+const getExposedPolicy = TrustedTypes.getExposedPolicy;
+
+/* eslint-disable no-unused-vars */
+/**
+ * @typedef {TrustedTypesPolicy}
+ * @property {function(string):TrustedHTML} createHTML
+ * @property {function(string):TrustedURL} createURL
+ * @property {function(string):TrustedScriptURL} createScriptURL
+ * @property {function(string):TrustedScript} createScript
+ */
+let TrustedTypesPolicy = {};
+/* eslint-enable no-unused-vars */
 
 /**
  * A map of HTML attribute to element property names.
@@ -635,10 +651,15 @@ export class TrustedTypesEnforcer {
 
     // Apply a fallback policy, if it exists.
     const fallback = this.config_.fallbackPolicyName;
-    if (fallback && TrustedTypes.getPolicyNames().indexOf(fallback) !== -1) {
-      let fallbackValue = TYPE_PRODUCER_MAP[typeName](fallback, value);
-      if (TYPE_CHECKER_MAP.hasOwnProperty(typeName) &&
-          TYPE_CHECKER_MAP[typeName](fallbackValue)) {
+    if (fallback) {
+      const fallbackPolicy = getExposedPolicy.call(TrustedTypes, fallback);
+      if (fallbackPolicy && TYPE_CHECKER_MAP.hasOwnProperty(typeName)) {
+        let fallbackValue;
+        try {
+          fallbackValue = fallbackPolicy[TYPE_PRODUCER_MAP[typeName]](value);
+        } catch (e) {
+          // eslint-disable-next-line no-empty
+        }
         args[argNumber] = fallbackValue;
         return apply(originalSetter, context, args);
       }

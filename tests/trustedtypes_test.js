@@ -43,8 +43,7 @@ describe('v2 TrustedTypes', () => {
 
     it('supports exposing policy', () => {
       const p = TrustedTypes.createPolicy('policy', (p) => {
-        p.expose = true;
-      });
+      }, true);
       expect(TrustedTypes.getExposedPolicy('policy')).toBe(p);
     });
 
@@ -73,8 +72,7 @@ describe('v2 TrustedTypes', () => {
     it('returns all policy names', () => {
       TrustedTypes.createPolicy('hidden', () => {});
       TrustedTypes.createPolicy('exposed', (p) => {
-        p.expose = true;
-      });
+      }, true);
 
       expect(TrustedTypes.getPolicyNames()).toEqual(['hidden', 'exposed']);
     });
@@ -216,26 +214,6 @@ describe('v2 TrustedTypes', () => {
         expect(TrustedTypes.isURL(html)).toBe(false);
         expect(String(html)).toEqual('foo');
       });
-    });
-  });
-
-  describe('create* methods', () => {
-    it('support creating from exposed policies', () => {
-      const name = 'bar';
-      const exposed = TrustedTypes.createPolicy(name, (p) => {
-        noopPolicy(p);
-        p.expose = true;
-      });
-      const html = exposed.createHTML('foo');
-      const html2 = TrustedTypes.createHTML(name, 'foo');
-      expect(html.policyName).toEqual(html2.policyName);
-      expect('' + html).toEqual('' + html2);
-    });
-
-    it('do not allow creating from non-exposed policies', () => {
-      const name = 'p';
-      TrustedTypes.createPolicy(name, (p) => {});
-      expect(() => TrustedTypes.createHTML(name, 'foo')).toThrow();
     });
   });
 

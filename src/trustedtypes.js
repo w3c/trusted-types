@@ -23,14 +23,10 @@ let TrustedTypesPolicy = {};
  * @property {function(string):string} createURL
  * @property {function(string):string} createScriptURL
  * @property {function(string):string} createScript
- * @property {boolean} expose
  */
 let TrustedTypesInnerPolicy = {};
 /* eslint-enable no-unused-vars */
 
-
-const {apply} = Reflect;
-const {hasOwnProperty} = Object.prototype;
 
 export const trustedTypesBuilderTestOnly = function() {
   // Capture common names early.
@@ -174,8 +170,9 @@ export const trustedTypesBuilderTestOnly = function() {
   /**
    * Trusted Script URL object wrapping a string that can only be created from a
    * TT policy.
+   * TrustedScriptURL inherits from TrustedURL.
    */
-  class TrustedScriptURL extends TrustedType {
+  class TrustedScriptURL extends TrustedURL {
   }
   lockdownTrustedType(TrustedScriptURL, 'TrustedScriptURL');
 
@@ -208,24 +205,6 @@ export const trustedTypesBuilderTestOnly = function() {
   }
 
   /**
-   * Function building a type from exposed policy
-   * @template T
-   * @param  {T} type        The type to build
-   * @param  {string} functionName Function name to call in a policy.
-   * @return {function(string,string):T} The type
-   */
-  function buildTypeFromExposedPolicy(type, functionName) {
-    return function(policyName, value) {
-      const policy = getExposedPolicy(policyName);
-      if (!(policy && apply(hasOwnProperty, policy, [functionName]))) {
-        throw new Error('Policy not found');
-      }
-      const policyFn = policy[functionName];
-      return policyFn(value);
-    };
-  }
-
-  /**
    * Initial builder object for the policy.
    * Its clone is passed to createPolicy builder function, with the expectation
    * to modify its properties.
@@ -244,7 +223,6 @@ export const trustedTypesBuilderTestOnly = function() {
     'createScript': (s) => {
       throw new Error('undefined conversion');
     },
-    'expose': false, // Don't expose the policy by default.
   };
 
   /**
@@ -314,11 +292,13 @@ export const trustedTypesBuilderTestOnly = function() {
    * @param  {string} name A unique name of the policy.
    * @param  {function(TrustedTypesInnerPolicy)} builder Function that defines
    *   policy rules by modifying the initial policy object passed.
+   * @param  {boolean=} expose Iff true, the policy will be exposed (available
+   *   globally).
    * @return {TrustedTypesPolicy} The policy that may create TT objects
    *   according to the rules in the builder.
    * @todo Figure out if the return value (and the builder) can be typed.
    */
-  function createPolicy(name, builder) {
+  function createPolicy(name, builder, expose = false) {
     const pName = '' + name; // Assert it's a string
 
     if (enforceNameWhitelist && allowedNames.indexOf(pName) === -1) {
@@ -339,7 +319,7 @@ export const trustedTypesBuilderTestOnly = function() {
 
     const policy = wrapPolicy(pName, innerPolicy);
 
-    if (innerPolicy['expose']) {
+    if (expose) {
       exposedPolicies.set(pName, policy);
     }
 
@@ -371,13 +351,6 @@ export const trustedTypesBuilderTestOnly = function() {
     TrustedURL,
     TrustedScriptURL,
     TrustedScript,
-
-    // Type builders from exposed policies, for convenience. Consider removing?
-    createHTML: buildTypeFromExposedPolicy(TrustedHTML, 'createHTML'),
-    createURL: buildTypeFromExposedPolicy(TrustedURL, 'createURL'),
-    createScriptURL: buildTypeFromExposedPolicy(TrustedScriptURL,
-        'createScriptURL'),
-    createScript: buildTypeFromExposedPolicy(TrustedScript, 'createScript'),
 
     // The main function to create policies.
     createPolicy,

@@ -77,7 +77,8 @@ first step:
     ```
 
 *   **TrustedScriptURL**: This type would be used to represent a URL that could be used to load
-    resources that may result in script execution in the current document.
+    resources that may result in script execution in the current document. This type also inherits
+    from `TrustedURL`.
 
     ```
     interface TrustedScriptURL {
@@ -88,12 +89,12 @@ first step:
 *   **TrustedScript**: This type would be used to represent a trusted JavaScript code block i.e.
     something that is trusted by the author to be executed by adding it to a `<script>` element
     content, inline event handler or passing to an `eval` function.
-    
+
     ```
     interface TrustedScript {
       stringifier;
     }
-    ```    
+    ```
 
 ### Policies
 
@@ -136,12 +137,12 @@ As valid trusted type objects must originate from a policy, those policies alone
 
 ```
 interface PolicyContainer {
-    Policy createPolicy(DOMString policyName, Function builder);
+    Policy createPolicy(DOMString policyName, Function builder, optional boolean expose = true);
     Policy getExposedPolicy(DOMString policyName);
     Array<DOMString> getPolicyNames();
 }
 ```
-We propose to expose a `PolicyContainer` implementation under `window.TrustedTypes`. The most important function exposed in a `PolicyContainer` is `createPolicy`.
+We propose to provide a `PolicyContainer` implementation under `window.TrustedTypes`. The most important function available in a `PolicyContainer` is `createPolicy`.
 
 The builder function will be called with a custom `InnerPolicy`, that is later modified within the builder to define the rules of the policy. Note that the functions operate on strings. The actual type construction is provided by the private API, not exposed to the authors.
 
@@ -150,7 +151,6 @@ interface InnerPolicy {
     string createHTML(string);
     string createURL(string);
     string createScriptURL(string);
-    boolean expose;
 }
 ```
 
@@ -165,7 +165,7 @@ const myPolicy = TrustedTypes.createPolicy('https://example.com#mypolicy', (inne
 
 The policy object is returned, and can be used as a capability to create typed objects i.e. code parts without a reference to the policy object cannot use it.
 
-Optionally, the policy may be exposed globally by setting its `expose` property to `true` in the builder, which makes it possible to retrieve it via `TrustedTypes.getExposedPolicy`. This mode is recommended only for the strict, sanitizing, "last resort" type of policies.
+Optionally, the policy may be exposed globally by calling `createPolicy` with `expose` argument set  `true`. Exposed policies can be retrieved via `TrustedTypes.getExposedPolicy`. This mode is recommended only for the strict, sanitizing, "last resort" type of policies.
 
 The policy object can be used directly to create typed values that conform to its rules:
 
