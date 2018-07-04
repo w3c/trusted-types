@@ -56,14 +56,13 @@ var TrustedTypes;
  * in the builder function.
  *
  * @param  {string} name A unique name of the policy.
- * @param  {!function(TrustedTypesInnerPolicy)} builder Function that defines
- *   policy rules by modifying the initial policy object passed.
+ * @param  {!TrustedTypesInnerPolicy} policy The policy rules.
  * @param  {boolean=} opt_expose Iff true, the policy will be exposed
  *   (available globally).
  * @return {!TrustedTypesPolicy} The policy that may create TT objects
  *   according to the rules in the builder.
  */
-TrustedTypes.createPolicy = function(name, builder, opt_expose){};
+TrustedTypes.createPolicy = function(name, policy, opt_expose){};
 
 /**
  * Return a Policy object, if the policy was defined and exposed.
