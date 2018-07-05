@@ -16,45 +16,56 @@ describe('v2 TrustedTypes', () => {
      TrustedTypes = trustedTypesBuilderTestOnly();
   });
 
-  const noopPolicy = (p) => {
-    p.createHTML = (s) => s;
-    p.createScriptURL = (s) => s;
-    p.createURL = (s) => s;
-    p.createScript = (s) => s;
+  const noopPolicy = {
+    'createHTML': (s) => s,
+    'createScriptURL': (s) => s,
+    'createURL': (s) => s,
+    'createScript': (s) => s,
   };
 
   it('is frozen', () => {
     expect(Object.isFrozen(TrustedTypes)).toBe(true);
   });
 
-  describe('addPolicy', () => {
+  describe('createPolicy', () => {
     it('returns a working policy object', () => {
-      const p = TrustedTypes.createPolicy('policy', () => {});
+      const p = TrustedTypes.createPolicy('policy', {});
 
       expect(p.createHTML instanceof Function).toBe(true);
       expect(p.createURL instanceof Function).toBe(true);
       expect(p.createScriptURL instanceof Function).toBe(true);
     });
 
+    it('ignores methods from policy prototype chain', () => {
+      const parent = {
+        'createHTML': (s) => s,
+      };
+      const child = Object.create(parent);
+      child['createScriptURL'] = (s) => s;
+
+      const policy = TrustedTypes.createPolicy('policy', child);
+      expect('' + policy.createScriptURL('https://foo')).toEqual('https://foo');
+      expect(() => policy.createHTML('<foo>')).toThrow();
+    });
+
     it('defaults to a non-exposed policy', () => {
-      TrustedTypes.createPolicy('policy', () => {});
+      TrustedTypes.createPolicy('policy', {});
       expect(TrustedTypes.getExposedPolicy(name)).toBe(null);
     });
 
     it('supports exposing policy', () => {
-      const p = TrustedTypes.createPolicy('policy', (p) => {
-      }, true);
+      const p = TrustedTypes.createPolicy('policy', {}, true);
       expect(TrustedTypes.getExposedPolicy('policy')).toBe(p);
     });
 
     it('does not allow for policy name collisions', () => {
-      TrustedTypes.createPolicy('conflicting', () => {});
-      expect(() => TrustedTypes.createPolicy('conflicting', () => {}))
+      TrustedTypes.createPolicy('conflicting', {});
+      expect(() => TrustedTypes.createPolicy('conflicting', {}))
         .toThrow();
     });
 
     it('returns a frozen policy object', () => {
-      let p = TrustedTypes.createPolicy('frozencheck', () => {});
+      let p = TrustedTypes.createPolicy('frozencheck', {});
       expect(Object.isFrozen(p)).toBe(true);
       expect(() => {
         p.a = 'foo';
@@ -70,9 +81,8 @@ describe('v2 TrustedTypes', () => {
 
   describe('getPolicyNames', () => {
     it('returns all policy names', () => {
-      TrustedTypes.createPolicy('hidden', () => {});
-      TrustedTypes.createPolicy('exposed', (p) => {
-      }, true);
+      TrustedTypes.createPolicy('hidden', {});
+      TrustedTypes.createPolicy('exposed', {}, true);
 
       expect(TrustedTypes.getPolicyNames()).toEqual(['hidden', 'exposed']);
     });
@@ -135,8 +145,17 @@ describe('v2 TrustedTypes', () => {
   describe('policy', () => {
     describe('create* methods', () => {
       it('reject by default', () => {
-        const p = TrustedTypes.createPolicy('policy', () => {});
+        const p = TrustedTypes.createPolicy('policy', {});
         expect(() => p.createHTML('foo')).toThrow();
+        expect(() => p.createURL('foo')).toThrow();
+        expect(() => p.createScriptURL('foo')).toThrow();
+      });
+
+      it('can be used selectively', () => {
+        const p = TrustedTypes.createPolicy('policy', {
+          'createHTML': (s) => s,
+        });
+        expect(() => p.createHTML('foo')).not.toThrow();
         expect(() => p.createURL('foo')).toThrow();
         expect(() => p.createScriptURL('foo')).toThrow();
       });
@@ -173,10 +192,10 @@ describe('v2 TrustedTypes', () => {
       });
 
       it('respect defined transformations', () => {
-        const policyRules = (p) => {
-          p.createHTML = (s) => 'createHTML:' + s;
-          p.createURL = (s) => 'createURL:' + s;
-          p.createScriptURL = (s) => 'createScriptURL:' + s;
+        const policyRules = {
+          createHTML: (s) => 'createHTML:' + s,
+          createURL: (s) => 'createURL:' + s,
+          createScriptURL: (s) => 'createScriptURL:' + s,
         };
         const p = TrustedTypes.createPolicy('transform', policyRules);
         expect('' + p.createURL('http://b')).toEqual('createURL:http://b');
@@ -219,19 +238,19 @@ describe('v2 TrustedTypes', () => {
 
   describe('setAllowedPolicyNames', () => {
     it('is not applied by default', () => {
-      expect(() => TrustedTypes.createPolicy('foo', (p) => {})).not.toThrow();
+      expect(() => TrustedTypes.createPolicy('foo', {})).not.toThrow();
     });
 
     it('is applied by createPolicy', () => {
       TrustedTypes.setAllowedPolicyNames(['bar']);
-      expect(() => TrustedTypes.createPolicy('foo', (p) => {})).toThrow();
-      expect(() => TrustedTypes.createPolicy('bar', (p) => {})).not.toThrow();
+      expect(() => TrustedTypes.createPolicy('foo', {})).toThrow();
+      expect(() => TrustedTypes.createPolicy('bar', {})).not.toThrow();
     });
 
     it('supports wildcard', () => {
       TrustedTypes.setAllowedPolicyNames(['*']);
-      expect(() => TrustedTypes.createPolicy('foo', (p) => {})).not.toThrow();
-      expect(() => TrustedTypes.createPolicy('bar', (p) => {})).not.toThrow();
+      expect(() => TrustedTypes.createPolicy('foo', {})).not.toThrow();
+      expect(() => TrustedTypes.createPolicy('bar', {})).not.toThrow();
     });
   });
 });

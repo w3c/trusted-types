@@ -31,7 +31,7 @@ let TrustedTypesInnerPolicy = {};
 export const trustedTypesBuilderTestOnly = function() {
   // Capture common names early.
   const {
-    assign, create, defineProperty, freeze, getOwnPropertyNames,
+    create, defineProperty, freeze, getOwnPropertyNames,
     getPrototypeOf, prototype: ObjectPrototype,
   } = Object;
 
@@ -195,6 +195,18 @@ export const trustedTypesBuilderTestOnly = function() {
   lockdownTrustedType(TrustedType, 'TrustedType');
 
   /**
+   * @type {!Object<string,!Function>}
+   */
+  const createTypeMapping = {
+    'createHTML': TrustedHTML,
+    'createScriptURL': TrustedScriptURL,
+    'createURL': TrustedURL,
+    'createScript': TrustedScript,
+  };
+
+  const createFunctionAllowed = createTypeMapping.hasOwnProperty;
+
+  /**
    * Function generating a type checker.
    * @template T
    * @param  {T} type The type to check against.
@@ -204,26 +216,9 @@ export const trustedTypesBuilderTestOnly = function() {
     return (obj) => (obj instanceof type) && privateMap.has(obj);
   }
 
-  /**
-   * Initial builder object for the policy.
-   * Its clone is passed to createPolicy builder function, with the expectation
-   * to modify its properties.
-   * @type {TrustedTypesInnerPolicy}
-   */
-  const initialBuilder = {
-    'createHTML': (s) => {
-      throw new Error('undefined conversion');
-    },
-    'createURL': (s) => {
-      throw new Error('undefined conversion');
-    },
-    'createScriptURL': (s) => {
-      throw new Error('undefined conversion');
-    },
-    'createScript': (s) => {
-      throw new Error('undefined conversion');
-    },
-  };
+  const rejectInputFn = (s) => {
+ throw new Error('undefined conversion');
+};
 
   /**
    * Wraps a user-defined policy rules with TT constructor
@@ -240,24 +235,26 @@ export const trustedTypesBuilderTestOnly = function() {
      */
     function creator(Ctor, methodName) {
       // This causes thisValue to be null when called below.
-      const method = innerPolicy[methodName];
+      const method = innerPolicy[methodName] || rejectInputFn;
       const policySpecificType = freeze(new Ctor(creatorSymbol, policyName));
       const factory = {
         [methodName](s) { // Trick to get methodName to show in stacktrace.
+          const allowedValue = '' + method(s);
           const o = freeze(create(policySpecificType));
-          privates(o)['v'] = '' + method(s);
+          privates(o)['v'] = allowedValue;
           return o;
         },
       }[methodName];
       return freeze(factory);
     }
 
-    return freeze({
-      'createHTML': creator(TrustedHTML, 'createHTML'),
-      'createScriptURL': creator(TrustedScriptURL, 'createScriptURL'),
-      'createURL': creator(TrustedURL, 'createURL'),
-      'createScript': creator(TrustedScript, 'createScript'),
-    });
+    let policy = create(null);
+
+    for (const name of getOwnPropertyNames(createTypeMapping)) {
+      policy[name] = creator(createTypeMapping[name], name);
+    }
+
+    return freeze(policy);
   }
 
   /**
@@ -287,18 +284,17 @@ export const trustedTypesBuilderTestOnly = function() {
    *
    * Returns a frozen object representing a policy - a collection of functions
    * that may create TT objects based on the user-provided rules specified
-   * in the builder function.
+   * in the policy object.
    *
    * @param  {string} name A unique name of the policy.
-   * @param  {function(TrustedTypesInnerPolicy)} builder Function that defines
-   *   policy rules by modifying the initial policy object passed.
+   * @param  {TrustedTypesInnerPolicy} policy Policy rules object.
    * @param  {boolean=} expose Iff true, the policy will be exposed (available
    *   globally).
    * @return {TrustedTypesPolicy} The policy that may create TT objects
-   *   according to the rules in the builder.
-   * @todo Figure out if the return value (and the builder) can be typed.
+   *   according to the policy rules.
+   * @todo Figure out if the return value (and the policy) can be typed.
    */
-  function createPolicy(name, builder, expose = false) {
+  function createPolicy(name, policy, expose = false) {
     const pName = '' + name; // Assert it's a string
 
     if (enforceNameWhitelist && allowedNames.indexOf(pName) === -1) {
@@ -308,22 +304,27 @@ export const trustedTypesBuilderTestOnly = function() {
     if (policyNames.indexOf(pName) !== -1) {
       throw new Error('Policy ' + pName + ' exists.');
     }
-    // Register the name early so that if builder unwisely calls
+    // Register the name early so that if policy getters unwisely calls
     // across protection domains to code that reenters this function,
-    // builder's author still has rights to the name.
+    // policy author still has rights to the name.
     policyNames.push(pName);
 
-    const innerPolicy = assign(create(null), initialBuilder);
-    builder(innerPolicy);
+    // Only copy own properties of names present in createTypeMapping.
+    const innerPolicy = create(null);
+    for (const key of getOwnPropertyNames(policy)) {
+      if (createFunctionAllowed.call(createTypeMapping, key)) {
+        innerPolicy[key] = policy[key];
+      }
+    }
     freeze(innerPolicy);
 
-    const policy = wrapPolicy(pName, innerPolicy);
+    const wrappedPolicy = wrapPolicy(pName, innerPolicy);
 
     if (expose) {
-      exposedPolicies.set(pName, policy);
+      exposedPolicies.set(pName, wrappedPolicy);
     }
 
-    return policy;
+    return wrappedPolicy;
   }
 
   /**
