@@ -36,7 +36,7 @@ describe('v2 TrustedTypes', () => {
       expect(p.createScriptURL instanceof Function).toBe(true);
     });
 
-    fit('ignores methods from policy prototype chain', () => {
+    it('ignores methods from policy prototype chain', () => {
       const parent = {
         'createHTML': (s) => s,
       };
