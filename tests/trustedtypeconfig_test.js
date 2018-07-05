@@ -12,12 +12,14 @@ describe('TrustedTypeConfig', () => {
   describe('parseCSP', () => {
     it('parses policy with a single directive', () => {
       const policy = `default-src 'self'`;
+
       expect(TrustedTypeConfig.parseCSP(policy)).toEqual(
           {'default-src': ['\'self\'']});
     });
 
     it('parses policy with a multiple directives', () => {
       const policy = `default-src 'self'; connect-src http://foo.bar`;
+
       expect(TrustedTypeConfig.parseCSP(policy)).toEqual({
         'default-src': ['\'self\''],
         'connect-src': ['http://foo.bar'],
@@ -26,6 +28,7 @@ describe('TrustedTypeConfig', () => {
 
     it('ignores empty directives', () => {
       const policy = `default-src 'self';; connect-src http://foo.bar`;
+
       expect(TrustedTypeConfig.parseCSP(policy)).toEqual({
         'default-src': [`'self'`],
         'connect-src': ['http://foo.bar'],
@@ -34,6 +37,7 @@ describe('TrustedTypeConfig', () => {
 
     it('ignores whitespace', () => {
       const policy = `\ndefault-src    'self';    \t connect-src\n\thttp://foo.bar  `;
+
       expect(TrustedTypeConfig.parseCSP(policy)).toEqual({
         'default-src': [`'self'`],
         'connect-src': ['http://foo.bar'],
@@ -42,6 +46,7 @@ describe('TrustedTypeConfig', () => {
 
     it('supports multiple directive values', () => {
       const policy = `default-src 'self' https://a *; connect-src http://foo.bar`;
+
       expect(TrustedTypeConfig.parseCSP(policy)).toEqual({
         'default-src': [`'self'`, '*', 'https://a'],
         'connect-src': ['http://foo.bar'],
@@ -89,6 +94,7 @@ describe('TrustedTypeConfig', () => {
 
     it('passes the CSP string to config object', () => {
       const csp = 'trusted-types a b c; script-src foo';
+
       expect(TrustedTypeConfig.fromCSP(csp)
           .cspString).toEqual(csp);
     });

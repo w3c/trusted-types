@@ -1,5 +1,5 @@
 {
-    "extends": ["eslint:recommended", "google"],
+    "extends": ["eslint:recommended", "google", "plugin:jasmine/recommended"],
     "parserOptions": {
         "sourceType": "module",
         "ecmaVersion": 6
@@ -8,5 +8,12 @@
         "browser": true,
         "jasmine": true,
         "es6": true
+    },
+    "plugins": [
+        "jasmine"
+    ],
+    "rules": {
+        "jasmine/no-spec-dupes": [1, "branch"],
+        "jasmine/no-suite-dupes": [1, "branch"]
     }
 }

@@ -77,6 +77,7 @@ describe('TrustedTypesEnforcer', function() {
       }).not.toThrow();
 
       enforcer.install();
+
       expect(function() {
         el.innerHTML = TEST_HTML;
       }).toThrowError(TypeError);
@@ -134,12 +135,14 @@ describe('TrustedTypesEnforcer', function() {
       expect(function() {
         el.innerHTML = TEST_HTML;
       }).toThrow();
+
       expect(el.innerHTML).toEqual(''); // Side effect did not happen.
       // TODO: should template elements allow innerHTML assignment?
 
       expect(function() {
         el.insertAdjacentHTML('afterbegin', TEST_HTML);
       }).toThrow();
+
       expect(el.innerHTML).toEqual('');
 
       enforcer.uninstall();
@@ -153,6 +156,7 @@ describe('TrustedTypesEnforcer', function() {
       expect(function() {
         el.insertAdjacentHTML('afterbegin', TEST_HTML);
       }).not.toThrowError(TypeError);
+
       expect(el.innerHTML).toEqual(`${TEST_HTML}${TEST_HTML}`); // Roughly
     });
 
@@ -167,8 +171,10 @@ describe('TrustedTypesEnforcer', function() {
       // Make sure the original setters are called.
       expect(el.textContent).toEqual('foo');
       el.innerText = 'bar';
+
       expect(el.textContent).toEqual('bar');
       el.text = 'baz';
+
       expect(el.innerText).toEqual('baz');
     });
 
@@ -176,6 +182,7 @@ describe('TrustedTypesEnforcer', function() {
       enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
       enforcer.install();
       enforcer.uninstall();
+
       expect(function() {
         enforcer.uninstall();
       }).toThrow();
@@ -203,6 +210,7 @@ describe('TrustedTypesEnforcer', function() {
       expect(function() {
         el.innerHTML = TEST_HTML;
       }).not.toThrow();
+
       expect(el.innerHTML).toEqual(TEST_HTML);
     });
 
@@ -210,6 +218,7 @@ describe('TrustedTypesEnforcer', function() {
       expect(function() {
         el.innerHTML = policy.createHTML(TEST_HTML);
       }).not.toThrow();
+
       expect(el.innerHTML).toEqual(TEST_HTML);
     });
 
@@ -256,14 +265,17 @@ describe('TrustedTypesEnforcer', function() {
         expect(function() {
           el.innerHTML = TEST_HTML;
         }).not.toThrow();
+
         expect(caughtEvent).not.toBe(null);
       });
 
       it('dispatches if element is not in any document', () => {
         let standaloneEl = document.createElement('div');
+
         expect(function() {
           standaloneEl.innerHTML = TEST_HTML;
         }).not.toThrow();
+
         expect(caughtEvent).not.toBe(null);
       });
 
@@ -271,6 +283,7 @@ describe('TrustedTypesEnforcer', function() {
         expect(function() {
           el.innerHTML = TEST_HTML;
         }).not.toThrow();
+
         expect(caughtEvent.originalPolicy).toEqual('script-src https:');
         expect(caughtEvent.type).toEqual('securitypolicyviolation');
         expect(caughtEvent.effectiveDirective).toEqual('trusted-types');
@@ -287,6 +300,7 @@ describe('TrustedTypesEnforcer', function() {
         expect(function() {
           el.innerHTML = '<b>super long text maybe even user data:12345</b>';
         }).not.toThrow();
+
         expect(caughtEvent.sample).toEqual(
           'HTMLDivElement.innerHTML <b>super long text maybe even user data:');
       });
@@ -294,17 +308,21 @@ describe('TrustedTypesEnforcer', function() {
       it('contains blocked URI when known', () => {
         const el = document.createElement('a');
         document.body.appendChild(el);
+
         expect(function() {
           el.href = 'foo';
         }).not.toThrow();
+
         expect(caughtEvent.blockedURI).toEqual(location.origin + '/foo');
         expect(function() {
           el.href = 'http://example.com/bar';
         }).not.toThrow();
+
         expect(caughtEvent.blockedURI).toEqual('http://example.com/bar');
         expect(function() {
           el.href = 'javascript:alert(1)';
         }).not.toThrow();
+
         expect(caughtEvent.blockedURI).toEqual('javascript:alert(1)');
       });
 
@@ -312,6 +330,7 @@ describe('TrustedTypesEnforcer', function() {
         expect(function() {
           el.innerHTML = policy.createHTML(TEST_HTML);
         }).not.toThrow();
+
         expect(caughtEvent).toBe(null);
       });
     });
@@ -342,7 +361,8 @@ describe('TrustedTypesEnforcer', function() {
       let spy = spyOn(window, 'alert');
       el.onclick = window.alert;
       el.onclick();
-      expect(spy).toHaveBeenCalled();
+
+      expect(spy).toHaveBeenCalledWith();
     });
 
     it('allows for assigning null to event handler properties', () => {
@@ -380,6 +400,7 @@ describe('TrustedTypesEnforcer', function() {
         expect(function() {
           el.innerHTML = TEST_HTML;
         }).toThrow();
+
         expect(caughtEvent).not.toBe(null);
       });
 
@@ -387,8 +408,10 @@ describe('TrustedTypesEnforcer', function() {
         expect(function() {
           el.innerHTML = TEST_HTML;
         }).toThrow();
+
         expect(caughtEvent.originalPolicy).toEqual(
             'script-src https:; trusted-types *');
+
         expect(caughtEvent.target).toEqual(el);
         expect(caughtEvent.type).toEqual('securitypolicyviolation');
         expect(caughtEvent.effectiveDirective).toEqual('trusted-types');
@@ -401,25 +424,31 @@ describe('TrustedTypesEnforcer', function() {
       it('contains blocked URI when known', () => {
         const el = document.createElement('a');
         document.body.appendChild(el);
+
         expect(function() {
           el.href = 'foo';
         }).toThrow();
+
         expect(caughtEvent.blockedURI).toEqual(location.origin + '/foo');
         expect(function() {
           el.href = 'http://example.com/bar';
         }).toThrow();
+
         expect(caughtEvent.blockedURI).toEqual('http://example.com/bar');
         expect(function() {
           el.href = 'javascript:alert(1)';
         }).toThrow();
+
         expect(caughtEvent.blockedURI).toEqual('javascript:alert(1)');
       });
 
       it('is not dispatched on typed assignments', () => {
         const policy = TrustedTypes.createPolicy(Math.random(), noopPolicy);
+
         expect(function() {
           el.innerHTML = policy.createHTML(TEST_HTML);
         }).not.toThrow();
+
         expect(caughtEvent).toBe(null);
       });
     });
@@ -448,26 +477,31 @@ describe('TrustedTypesEnforcer', function() {
 
     it('allows typed values for url sinks', () => {
       el.href = policy.createURL('http://example.com/');
+
       expect(el.href).toEqual('http://example.com/');
     });
 
     it('allows typed values for with javascript: protocol', () => {
       el.href = policy.createURL('javascript:alert(1)');
+
       expect(el.href).toEqual('javascript:alert(1)');
     });
 
     it('allows strings with http urls', () => {
       el.href = 'http://example.com/';
+
       expect(el.href).toEqual('http://example.com/');
     });
 
     it('allows strings with https urls', () => {
       el.href = 'https://example.com/';
+
       expect(el.href).toEqual('https://example.com/');
     });
 
     it('allows strings with relative urls', () => {
       el.href = 'foo/bar';
+
       expect(el.href).toEqual(location.origin + '/foo/bar');
     });
 
@@ -475,6 +509,7 @@ describe('TrustedTypesEnforcer', function() {
       expect(() => {
         el.href = 'javascript:alert(1)';
       }).toThrowError(TypeError);
+
       expect(el.href).toEqual('');
     });
 
@@ -482,6 +517,7 @@ describe('TrustedTypesEnforcer', function() {
       expect(() => {
         el.href = 'data:text/html,<script>alert(1)</scrip' + 't>';
       }).toThrowError(TypeError);
+
       expect(el.href).toEqual('');
     });
 
@@ -489,14 +525,17 @@ describe('TrustedTypesEnforcer', function() {
       expect(() => {
         el.href = 'https://example.com:demo';
       }).toThrowError(TypeError);
+
       expect(el.href).toEqual('');
     });
 
     it('rejects http urls for TrustedScriptURL sinks', () => {
       const el = document.createElement('script');
+
       expect(() => {
         el.src = 'https://evil.com';
       }).toThrowError(TypeError);
+
       expect(el.src).toEqual('');
     });
   });
@@ -519,6 +558,7 @@ describe('TrustedTypesEnforcer', function() {
       expect(function() {
         el.innerHTML = TEST_HTML;
       }).toThrow();
+
       expect(el.innerHTML).toEqual('');
     });
 
@@ -530,6 +570,7 @@ describe('TrustedTypesEnforcer', function() {
       expect(function() {
         el.outerHTML = TEST_HTML;
       }).toThrow();
+
       expect(el.outerHTML).toEqual('<div></div>');
     });
 
@@ -539,6 +580,7 @@ describe('TrustedTypesEnforcer', function() {
       expect(function() {
         el.srcdoc = TEST_HTML;
       }).toThrow();
+
       expect(!el.srcdoc).toEqual(true);
     });
 
@@ -548,6 +590,7 @@ describe('TrustedTypesEnforcer', function() {
       expect(function() {
         el.href = TEST_URL;
       }).toThrow();
+
       expect(!el.srcdoc).toEqual(true);
     });
 
@@ -575,6 +618,7 @@ describe('TrustedTypesEnforcer', function() {
       expect(function() {
         el.insertAdjacentHTML('afterbegin', TEST_HTML);
       }).toThrow();
+
       expect(el.innerHTML).toEqual('');
     });
 
@@ -662,6 +706,7 @@ describe('TrustedTypesEnforcer', function() {
       expect(function() {
         document.write('<foo>');
       }).toThrow();
+
       expect(document.body.innerHTML).not.toContain('<foo>');
     });
 
@@ -669,9 +714,11 @@ describe('TrustedTypesEnforcer', function() {
       enforcer.uninstall();
       const mockOpen = spyOn(window, 'open');
       enforcer.install();
+
       expect(function() {
         window.open('/');
       }).toThrow();
+
       expect(mockOpen).not.toHaveBeenCalled();
     });
 
@@ -682,6 +729,7 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     // TODO: fix #47
+    // eslint-disable-next-line jasmine/no-disabled-tests
     xit('on copy attribute crossing types', function() {
       let div = document.createElement('div');
       let img = document.createElement('img');
@@ -735,6 +783,7 @@ describe('TrustedTypesEnforcer', function() {
     it('passes through inert attributes', function() {
       let el = document.createElement('link');
       el.setAttribute('rel', 'stylesheet');
+
       expect(el.getAttribute('rel')).toEqual('stylesheet');
       expect(el.rel).toEqual('stylesheet');
     });
@@ -742,6 +791,7 @@ describe('TrustedTypesEnforcer', function() {
     it('passes through inert elements', function() {
       let el = document.createElement('section');
       el.setAttribute('id', 'foo');
+
       expect(el.getAttribute('id')).toEqual('foo');
       expect(el.id).toEqual('foo');
     });
@@ -749,6 +799,7 @@ describe('TrustedTypesEnforcer', function() {
     it('passes through on attributes if the event is unknown', function() {
       let el = document.createElement('section');
       el.setAttribute('ontotallyfakeevent', 'foo');
+
       expect(el.getAttribute('ontotallyfakeevent')).toEqual('foo');
     });
   });
@@ -840,7 +891,8 @@ describe('TrustedTypesEnforcer', function() {
       }).not.toThrow();
 
       el.onclick();
-      expect(alert).toHaveBeenCalled();
+
+      expect(alert).toHaveBeenCalledWith();
     });
 
     it('on HTMLScriptElement.innerText', function() {
@@ -859,6 +911,7 @@ describe('TrustedTypesEnforcer', function() {
       enforcer.install();
       const html = policy.createHTML('<foo>');
       document.write(html);
+
       expect(mockWrite).toHaveBeenCalledWith(html);
     });
 
@@ -867,15 +920,18 @@ describe('TrustedTypesEnforcer', function() {
       const mockOpen = spyOn(window, 'open');
       enforcer.install();
       let url = policy.createURL('/');
+
       expect(function() {
         window.open(url, 'foo', 'bar');
       }).not.toThrow();
+
       expect(mockOpen).toHaveBeenCalledWith(url, 'foo', 'bar');
     });
 
     it('on DOMParser.parseFromString', function() {
       const dom = new DOMParser().parseFromString(
           policy.createHTML('<foo>'), 'text/html');
+
       expect(dom.body.innerHTML).toContain('<foo>');
     });
 
@@ -968,9 +1024,11 @@ describe('TrustedTypesEnforcer', function() {
       'fallback1',
       ['foo']));
       enforcer.install();
+
       expect(() => TrustedTypes.createPolicy('foo', {
         'createHTML': (s) => s,
       })).not.toThrow();
+
       expect(() => TrustedTypes.createPolicy('bar', {
         'createHTML': (s) => s,
       })).toThrow();
@@ -1010,6 +1068,7 @@ describe('TrustedTypesEnforcer', function() {
         'createHTML': (s) => 'fallback:' + s,
       });
       let el = document.createElement('div');
+
       expect(() => el.innerHTML = TEST_HTML).toThrow();
       expect(el.innerHTML).toEqual('');
     });
@@ -1038,6 +1097,7 @@ describe('TrustedTypesEnforcer', function() {
       enforcer.install();
       TrustedTypes.createPolicy(Math.random(), noopPolicy);
       let el = document.createElement('div');
+
       expect(() => el.innerHTML = TEST_HTML).toThrowError(TypeError);
       expect(el.innerHTML).toEqual('');
     });
@@ -1067,6 +1127,7 @@ describe('TrustedTypesEnforcer', function() {
       expect(() => {
         el.innerHTML = policy.createScriptURL(TEST_URL);
       }).toThrow();
+
       expect(el.innerHTML).toEqual('');
     });
 
@@ -1116,9 +1177,11 @@ describe('TrustedTypesEnforcer', function() {
       let el = document.createElement('div');
 
       el.title = policy.createHTML(TEST_URL);
+
       expect(el.title).toEqual(TEST_URL);
 
       el.title = policy.createURL(TEST_HTML);
+
       expect(el.title).toEqual(TEST_HTML);
     });
   });
