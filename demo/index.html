@@ -79,7 +79,7 @@
   };
 
   // Use the escaping policy.
-  var escapedValue = TrustedTypes.createHTML('escape', '<b>escape me</b>');
+  var escapedValue = TrustedTypes.getExposedPolicy('escape').createHTML('<b>escape me</b>');
 
   function setHtml(value, el) {
     el.innerHTML = value;
