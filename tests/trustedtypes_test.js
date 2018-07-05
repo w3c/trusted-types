@@ -36,6 +36,18 @@ describe('v2 TrustedTypes', () => {
       expect(p.createScriptURL instanceof Function).toBe(true);
     });
 
+    fit('ignores methods from policy prototype chain', () => {
+      const parent = {
+        'createHTML': (s) => s,
+      };
+      const child = Object.create(parent);
+      child['createScriptURL'] = (s) => s;
+
+      const policy = TrustedTypes.createPolicy('policy', child);
+      expect('' + policy.createScriptURL('https://foo')).toEqual('https://foo');
+      expect(() => policy.createHTML('<foo>')).toThrow();
+    });
+
     it('defaults to a non-exposed policy', () => {
       TrustedTypes.createPolicy('policy', {});
       expect(TrustedTypes.getExposedPolicy(name)).toBe(null);

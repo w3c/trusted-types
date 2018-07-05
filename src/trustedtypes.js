@@ -31,7 +31,7 @@ let TrustedTypesInnerPolicy = {};
 export const trustedTypesBuilderTestOnly = function() {
   // Capture common names early.
   const {
-    assign, create, defineProperty, freeze, getOwnPropertyNames,
+    create, defineProperty, freeze, getOwnPropertyNames,
     getPrototypeOf, prototype: ObjectPrototype,
   } = Object;
 
@@ -195,6 +195,18 @@ export const trustedTypesBuilderTestOnly = function() {
   lockdownTrustedType(TrustedType, 'TrustedType');
 
   /**
+   * @type {!Object<string,!Function>}
+   */
+  const createTypeMapping = {
+    'createHTML': TrustedHTML,
+    'createScriptURL': TrustedScriptURL,
+    'createURL': TrustedURL,
+    'createScript': TrustedScript,
+  };
+
+  const createFunctionAllowed = createTypeMapping.hasOwnProperty;
+
+  /**
    * Function generating a type checker.
    * @template T
    * @param  {T} type The type to check against.
@@ -236,12 +248,13 @@ export const trustedTypesBuilderTestOnly = function() {
       return freeze(factory);
     }
 
-    return freeze({
-      'createHTML': creator(TrustedHTML, 'createHTML'),
-      'createScriptURL': creator(TrustedScriptURL, 'createScriptURL'),
-      'createURL': creator(TrustedURL, 'createURL'),
-      'createScript': creator(TrustedScript, 'createScript'),
-    });
+    let policy = create(null);
+
+    for (const name of getOwnPropertyNames(createTypeMapping)) {
+      policy[name] = creator(createTypeMapping[name], name);
+    }
+
+    return freeze(policy);
   }
 
   /**
@@ -296,11 +309,13 @@ export const trustedTypesBuilderTestOnly = function() {
     // policy author still has rights to the name.
     policyNames.push(pName);
 
-    const innerPolicy = assign(create(null));
-    innerPolicy['createHTML'] = policy['createHTML'];
-    innerPolicy['createURL'] = policy['createURL'];
-    innerPolicy['createScriptURL'] = policy['createScriptURL'];
-    innerPolicy['createScript'] = policy['createScript'];
+    // Only copy own properties of names present in createTypeMapping.
+    const innerPolicy = create(null);
+    for (const key of getOwnPropertyNames(policy)) {
+      if (createFunctionAllowed.call(createTypeMapping, key)) {
+        innerPolicy[key] = policy[key];
+      }
+    }
     freeze(innerPolicy);
 
     const wrappedPolicy = wrapPolicy(pName, innerPolicy);
