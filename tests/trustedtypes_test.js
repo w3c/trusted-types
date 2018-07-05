@@ -44,35 +44,42 @@ describe('v2 TrustedTypes', () => {
       child['createScriptURL'] = (s) => s;
 
       const policy = TrustedTypes.createPolicy('policy', child);
+
       expect('' + policy.createScriptURL('https://foo')).toEqual('https://foo');
       expect(() => policy.createHTML('<foo>')).toThrow();
     });
 
     it('defaults to a non-exposed policy', () => {
       TrustedTypes.createPolicy('policy', {});
+
       expect(TrustedTypes.getExposedPolicy(name)).toBe(null);
     });
 
     it('supports exposing policy', () => {
       const p = TrustedTypes.createPolicy('policy', {}, true);
+
       expect(TrustedTypes.getExposedPolicy('policy')).toBe(p);
     });
 
     it('does not allow for policy name collisions', () => {
       TrustedTypes.createPolicy('conflicting', {});
+
       expect(() => TrustedTypes.createPolicy('conflicting', {}))
         .toThrow();
     });
 
     it('returns a frozen policy object', () => {
       let p = TrustedTypes.createPolicy('frozencheck', {});
+
       expect(Object.isFrozen(p)).toBe(true);
       expect(() => {
         p.a = 'foo';
       }).toThrow();
+
       expect(() => {
         p.createHTML = (s) => s;
       }).toThrow();
+
       expect(() => {
         delete p.createHTML;
       }).toThrow();
@@ -92,6 +99,7 @@ describe('v2 TrustedTypes', () => {
     it('cannot be used directly', () => {
       const name = 'known';
       TrustedTypes.createPolicy(name, noopPolicy);
+
       expect(() => new TrustedTypes.TrustedHTML()).toThrow();
       expect(() => new TrustedTypes.TrustedHTML(null, name)).toThrow();
     });
@@ -101,6 +109,7 @@ describe('v2 TrustedTypes', () => {
     it('require the object to be created via policy', () => {
       const p = TrustedTypes.createPolicy('foo', noopPolicy);
       let html = p.createHTML('test');
+
       expect(TrustedTypes.isHTML(html)).toEqual(true);
       let html2 = Object.create(html);
 
@@ -109,6 +118,7 @@ describe('v2 TrustedTypes', () => {
       expect(TrustedTypes.isHTML(html2)).toEqual(false);
 
       let html3 = Object.assign({}, html, {toString: () => 'fake'});
+
       expect(TrustedTypes.isHTML(html3)).toEqual(false);
     });
 
@@ -146,6 +156,7 @@ describe('v2 TrustedTypes', () => {
     describe('create* methods', () => {
       it('reject by default', () => {
         const p = TrustedTypes.createPolicy('policy', {});
+
         expect(() => p.createHTML('foo')).toThrow();
         expect(() => p.createURL('foo')).toThrow();
         expect(() => p.createScriptURL('foo')).toThrow();
@@ -155,6 +166,7 @@ describe('v2 TrustedTypes', () => {
         const p = TrustedTypes.createPolicy('policy', {
           'createHTML': (s) => s,
         });
+
         expect(() => p.createHTML('foo')).not.toThrow();
         expect(() => p.createURL('foo')).toThrow();
         expect(() => p.createScriptURL('foo')).toThrow();
@@ -198,6 +210,7 @@ describe('v2 TrustedTypes', () => {
           createScriptURL: (s) => 'createScriptURL:' + s,
         };
         const p = TrustedTypes.createPolicy('transform', policyRules);
+
         expect('' + p.createURL('http://b')).toEqual('createURL:http://b');
         expect('' + p.createScriptURL('http://a')).toEqual('createScriptURL:http://a');
         expect('' + p.createHTML('<foo>')).toEqual('createHTML:<foo>');
@@ -207,6 +220,7 @@ describe('v2 TrustedTypes', () => {
         const p = TrustedTypes.createPolicy('policy', noopPolicy);
 
         let html = p.createHTML('foo');
+
         expect(Object.isFrozen(html)).toBe(true);
         expect(() => html.toString = () => 'fake').toThrow();
         expect(() => html.__proto__ = {toString: () => 'fake'}).toThrow();
@@ -225,6 +239,7 @@ describe('v2 TrustedTypes', () => {
             }
           },
         });
+
         expect(proxyHtml.toString() !== 'foo' && TrustedTypes.isHTML(proxyHtml))
           .toBe(false);
 
@@ -243,12 +258,14 @@ describe('v2 TrustedTypes', () => {
 
     it('is applied by createPolicy', () => {
       TrustedTypes.setAllowedPolicyNames(['bar']);
+
       expect(() => TrustedTypes.createPolicy('foo', {})).toThrow();
       expect(() => TrustedTypes.createPolicy('bar', {})).not.toThrow();
     });
 
     it('supports wildcard', () => {
       TrustedTypes.setAllowedPolicyNames(['*']);
+
       expect(() => TrustedTypes.createPolicy('foo', {})).not.toThrow();
       expect(() => TrustedTypes.createPolicy('bar', {})).not.toThrow();
     });
