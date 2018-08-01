@@ -187,7 +187,7 @@ Content-Security-Policy: trusted-types https://example.com#foo https://example.c
 ```
 
 That will assure that no additional policies are created at runtime. Creating a policy with a name
-that was alredy created, or was not specified in the CSP throws, so introduction of non-reviewed
+that was already created, or was not specified in the CSP throws, so introduction of non-reviewed
 policies breaks the application functionally.
 
 ### DOM Sinks
