@@ -137,7 +137,7 @@ As valid trusted type objects must originate from a policy, those policies alone
 
 ```
 interface PolicyContainer {
-    Policy createPolicy(DOMString policyName, InnerPolicy policy, optional boolean expose = true);
+    Policy createPolicy(DOMString policyName, InnerPolicy policy, optional boolean expose = false);
     Policy getExposedPolicy(DOMString policyName);
     Array<DOMString> getPolicyNames();
 }
