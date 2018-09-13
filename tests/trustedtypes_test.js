@@ -36,6 +36,22 @@ describe('v2 TrustedTypes', () => {
       expect(p.createScriptURL instanceof Function).toBe(true);
     });
 
+    [null, undefined, () => {}].forEach((i) =>
+    it('creates empty policies if ' + i + ' is passed', () => {
+      const warn = spyOn(console, 'warn');
+      const p = TrustedTypes.createPolicy('policy', i);
+
+      expect(warn).toHaveBeenCalledWith(jasmine.anything());
+      expect(p.createHTML instanceof Function).toBe(true);
+      expect(() => p.createHTML('foo')).toThrow();
+    }));
+
+    it('returns a policy object with a name', () => {
+      const p = TrustedTypes.createPolicy('policy_has_name', {});
+
+      expect(p.name).toEqual('policy_has_name');
+    });
+
     it('ignores methods from policy prototype chain', () => {
       const parent = {
         'createHTML': (s) => s,
@@ -215,6 +231,25 @@ describe('v2 TrustedTypes', () => {
         expect('' + p.createScriptURL('http://a')).toEqual('createScriptURL:http://a');
         expect('' + p.createHTML('<foo>')).toEqual('createHTML:<foo>');
       });
+
+      it('cast to string', () => {
+        const policyRules = {
+          createHTML: (s) => [1, 2],
+        };
+        const p = TrustedTypes.createPolicy('transform', policyRules);
+
+        expect('' + p.createHTML('<foo>')).toBe('1,2');
+      });
+
+      [null, undefined].forEach((i) =>
+      it('cast ' + i + ' to an empty string', () => {
+        const policyRules = {
+          createHTML: (s) => i,
+        };
+        const p = TrustedTypes.createPolicy('transform', policyRules);
+
+        expect('' + p.createHTML('<foo>')).toBe('');
+      }));
 
       it('return frozen values', () => {
         const p = TrustedTypes.createPolicy('policy', noopPolicy);

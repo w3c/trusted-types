@@ -722,6 +722,20 @@ describe('TrustedTypesEnforcer', function() {
       expect(mockOpen).not.toHaveBeenCalled();
     });
 
+    it('on document.open', function() {
+      enforcer.uninstall();
+      const doc = 'open' in Document.prototype ? Document.prototype :
+          document.__proto__;
+      const mockOpen = spyOn(doc, 'open');
+      enforcer.install();
+
+      expect(function() {
+        document.open('/', 'foo', '');
+      }).toThrow();
+
+      expect(mockOpen).not.toHaveBeenCalled();
+    });
+
     it('on DOMParser.parseFromString', function() {
       expect(function() {
         new DOMParser().parseFromString('<foo>', 'text/html');
