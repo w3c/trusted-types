@@ -218,10 +218,14 @@ export class TrustedTypesEnforcer {
       // Chrome
       this.wrapWithEnforceFunction_(Document.prototype, 'write',
           TrustedTypes.TrustedHTML, 0);
+      this.wrapWithEnforceFunction_(Document.prototype, 'open',
+          TrustedTypes.TrustedURL, 0);
     } else {
       // Firefox
       this.wrapWithEnforceFunction_(HTMLDocument.prototype, 'write',
         TrustedTypes.TrustedHTML, 0);
+      this.wrapWithEnforceFunction_(HTMLDocument.prototype, 'open',
+          TrustedTypes.TrustedURL, 0);
     }
 
     this.wrapWithEnforceFunction_(window, 'open', TrustedTypes.TrustedURL, 0);
@@ -253,8 +257,10 @@ export class TrustedTypesEnforcer {
 
     if (getOwnPropertyDescriptor(Document.prototype, 'write')) {
       this.restoreFunction_(Document.prototype, 'write');
+      this.restoreFunction_(Document.prototype, 'open');
     } else {
       this.restoreFunction_(HTMLDocument.prototype, 'write');
+      this.restoreFunction_(HTMLDocument.prototype, 'open');
     }
     this.restoreFunction_(window, 'open');
     if (DOMParser) {

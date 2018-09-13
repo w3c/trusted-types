@@ -200,7 +200,7 @@ const trustedTypesBuilderTestOnly = function() {
   }
 
   const rejectInputFn = (s) => {
- throw new Error('undefined conversion');
+ throw new TypeError('undefined conversion');
 };
 
   /**
@@ -222,7 +222,11 @@ const trustedTypesBuilderTestOnly = function() {
       const policySpecificType = freeze(new Ctor(creatorSymbol, policyName));
       const factory = {
         [methodName](s) { // Trick to get methodName to show in stacktrace.
-          const allowedValue = '' + method(s);
+          let result = method(s);
+          if (result === undefined || result === null) {
+            result = '';
+          }
+          const allowedValue = '' + result;
           const o = freeze(create(policySpecificType));
           privates(o)['v'] = allowedValue;
           return o;
@@ -236,6 +240,7 @@ const trustedTypesBuilderTestOnly = function() {
     for (const name of getOwnPropertyNames(createTypeMapping)) {
       policy[name] = creator(createTypeMapping[name], name);
     }
+    policy.name = policyName;
 
     return freeze(policy);
   }
@@ -281,11 +286,11 @@ const trustedTypesBuilderTestOnly = function() {
     const pName = '' + name; // Assert it's a string
 
     if (enforceNameWhitelist && allowedNames.indexOf(pName) === -1) {
-      throw new Error('Policy ' + pName + ' disallowed.');
+      throw new TypeError('Policy ' + pName + ' disallowed.');
     }
 
     if (policyNames.indexOf(pName) !== -1) {
-      throw new Error('Policy ' + pName + ' exists.');
+      throw new TypeError('Policy ' + pName + ' exists.');
     }
     // Register the name early so that if policy getters unwisely calls
     // across protection domains to code that reenters this function,
@@ -294,10 +299,17 @@ const trustedTypesBuilderTestOnly = function() {
 
     // Only copy own properties of names present in createTypeMapping.
     const innerPolicy = create(null);
-    for (const key of getOwnPropertyNames(policy)) {
-      if (createFunctionAllowed.call(createTypeMapping, key)) {
-        innerPolicy[key] = policy[key];
+    if (policy && typeof policy === 'object') {
+      // Treat non-objects are empty policies.
+      for (const key of getOwnPropertyNames(policy)) {
+        if (createFunctionAllowed.call(createTypeMapping, key)) {
+          innerPolicy[key] = policy[key];
+        }
       }
+    } else {
+      // eslint-disable-next-line no-console
+      console.warn('TrustedTypes.createPolicy ' + pName +
+          ' was given an empty policy');
     }
     freeze(innerPolicy);
 
