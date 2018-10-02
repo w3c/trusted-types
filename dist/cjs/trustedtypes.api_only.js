@@ -300,7 +300,7 @@ const trustedTypesBuilderTestOnly = function() {
     // Only copy own properties of names present in createTypeMapping.
     const innerPolicy = create(null);
     if (policy && typeof policy === 'object') {
-      // Treat non-objects are empty policies.
+      // Treat non-objects as empty policies.
       for (const key of getOwnPropertyNames(policy)) {
         if (createFunctionAllowed.call(createTypeMapping, key)) {
           innerPolicy[key] = policy[key];
@@ -391,10 +391,6 @@ if (typeof window !== 'undefined' &&
     'TrustedURL': tt.TrustedURL,
     'TrustedScriptURL': tt.TrustedScriptURL,
     'TrustedScript': tt.TrustedScript,
-    'createHTML': tt.createHTML,
-    'createURL': tt.createURL,
-    'createScriptURL': tt.createScriptURL,
-    'createScript': tt.createScript,
     'createPolicy': tt.createPolicy,
     'getExposedPolicy': tt.getExposedPolicy,
     'getPolicyNames': tt.getPolicyNames,
