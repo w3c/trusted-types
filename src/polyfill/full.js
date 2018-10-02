@@ -68,4 +68,7 @@ export function bootstrap() {
   trustedTypesEnforcer.install();
 }
 
-bootstrap();
+// Bootstrap only if native implementation is missing.
+if (!(window['TrustedTypePolicyFactory'] instanceof Function)) {
+    bootstrap();
+}
