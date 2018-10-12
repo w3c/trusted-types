@@ -388,3 +388,7 @@ export const trustedTypesBuilderTestOnly = function() {
 };
 
 export const TrustedTypes = trustedTypesBuilderTestOnly();
+export const TrustedHTML = TrustedTypes.TrustedHTML;
+export const TrustedURL = TrustedTypes.TrustedURL;
+export const TrustedScriptURL = TrustedTypes.TrustedScriptURL;
+export const TrustedScript = TrustedTypes.TrustedScript;
