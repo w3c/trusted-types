@@ -19,8 +19,7 @@ git -C $TYPES_REPO checkout -- .
 echo "Adding polyfill..."
 cp dist/es5/trustedtypes.build.js $TYPES_REPO/trusted-types/support/
 sed -i '/[<]body[>]/a<script src=support\/trustedtypes\.build\.js\>\<\/script\>' $TYPES_REPO/trusted-types/*.html
-sed -i 's/content="trusted-types /content="trusted-types web-platform-tests-internal-unsafe /' $TYPES_REPO/trusted-types/*.html
-sed -i 's/content="trusted-types"/content="trusted-types *"/' $TYPES_REPO/trusted-types/*.html
+sed -i 's/content="trusted-types \([^*]\)/content="trusted-types web-platform-tests-internal-unsafe \1/' $TYPES_REPO/trusted-types/*.html
 
 echo "Patching the harness to use the policy"
 git -C $TYPES_REPO apply < $(dirname $0)/platform-tests.patch
