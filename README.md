@@ -88,7 +88,7 @@ first step:
 
 *   **TrustedScript**: This type would be used to represent a trusted JavaScript code block i.e.
     something that is trusted by the author to be executed by adding it to a `<script>` element
-    content, inline event handler or passing to an `eval` function.
+    content, inline event handler or passing to an `eval` function family.
 
     ```
     interface TrustedScript {
