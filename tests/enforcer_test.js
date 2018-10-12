@@ -722,6 +722,16 @@ describe('TrustedTypesEnforcer', function() {
       expect(mockOpen).not.toHaveBeenCalled();
     });
 
+    it('on setTimeout', function(done) {
+      setTimeout(function() {
+        done();
+      }, 150);
+
+      expect(function() {
+        setTimeout('fail(\'should not execute\')', 100);
+      }).toThrow();
+    });
+
     it('on document.open', function() {
       enforcer.uninstall();
       const doc = 'open' in Document.prototype ? Document.prototype :
@@ -940,6 +950,21 @@ describe('TrustedTypesEnforcer', function() {
       }).not.toThrow();
 
       expect(mockOpen).toHaveBeenCalledWith(url, 'foo', 'bar');
+    });
+
+    it('on setTimeout', function(done) {
+      /* eslint-disable no-invalid-this */
+      this.foo = '';
+      const script = policy.createScript('this.foo = \'hello\'');
+      setTimeout(function() {
+        expect(this.foo).toEqual('hello');
+        delete this.foo;
+        done();
+      }, 150);
+      /* eslint-enable no-invalid-this */
+      expect(function() {
+        setTimeout(script, 100);
+      }).not.toThrow();
     });
 
     it('on DOMParser.parseFromString', function() {

@@ -233,6 +233,10 @@ export class TrustedTypesEnforcer {
       this.wrapWithEnforceFunction_(DOMParser.prototype, 'parseFromString',
           TrustedTypes.TrustedHTML, 0);
     }
+    this.wrapWithEnforceFunction_(window, 'setInterval',
+        TrustedTypes.TrustedScript, 0);
+    this.wrapWithEnforceFunction_(window, 'setTimeout',
+        TrustedTypes.TrustedScript, 0);
     this.wrapSetAttribute_();
     this.installScriptWrappers_();
     this.installPropertySetWrappers_();
@@ -266,6 +270,8 @@ export class TrustedTypesEnforcer {
     if (DOMParser) {
       this.restoreFunction_(DOMParser.prototype, 'parseFromString');
     }
+    this.restoreFunction_(window, 'setTimeout');
+    this.restoreFunction_(window, 'setInterval');
     this.uninstallPropertySetWrappers_();
     this.uninstallScriptWrappers_();
   }
@@ -637,13 +643,19 @@ export class TrustedTypesEnforcer {
       return apply(originalSetter, context, args);
     }
 
-    // If function (instead of string) is passed to inline event attribute,
-    // pass through.
-    if (typeToEnforce === TrustedTypes.TrustedScript &&
-        apply(slice, propertyName, [0, 2]) === 'on' &&
-        value === null || typeof value === 'function') {
-      return apply(originalSetter, context, args);
+    if (typeToEnforce === TrustedTypes.TrustedScript) {
+      // If a function (instead of string) is passed to inline event attribute,
+      // or set(Timeout|Interval), pass through.
+      const propertyAcceptsFunctions =
+          propertyName == 'setInterval' ||
+          propertyName == 'setTimeout' ||
+          apply(slice, propertyName, [0, 2]) === 'on';
+      if (propertyAcceptsFunctions &&
+          (value === null || typeof value === 'function')) {
+        return apply(originalSetter, context, args);
+      }
     }
+
 
     // Apply url-allow-http
     if (typeToEnforce === TrustedTypes.TrustedURL &&
