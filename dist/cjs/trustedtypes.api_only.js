@@ -24,13 +24,20 @@ const rejectInputFn = (s) => {
 const TrustedTypePolicy = function() {
   throw new TypeError('Illegal constructor');
 };
+
+/**
+ * @constructor
+ */
+const TrustedTypePolicyFactory = function() {
+  throw new TypeError('Illegal constructor');
+};
 /* eslint-enable no-unused-vars */
 
 
 const trustedTypesBuilderTestOnly = function() {
   // Capture common names early.
   const {
-    create, defineProperty, freeze, getOwnPropertyNames,
+    assign, create, defineProperty, freeze, getOwnPropertyNames,
     getPrototypeOf, prototype: ObjectPrototype,
   } = Object;
 
@@ -355,16 +362,9 @@ const trustedTypesBuilderTestOnly = function() {
     }
   }
 
-  // TODO: Figure out if it's safe to return an instance of a typed object
-  // to make testing easier.
-  return freeze({
 
-    // Types definition, for convenience of instanceof checks
-    TrustedHTML,
-    TrustedURL,
-    TrustedScriptURL,
-    TrustedScript,
-
+  const api = create(TrustedTypePolicyFactory.prototype);
+  assign(api, {
     // The main function to create policies.
     createPolicy,
 
@@ -373,9 +373,6 @@ const trustedTypesBuilderTestOnly = function() {
 
     getPolicyNames,
 
-    // Below methods are not part of the public API and are only needed in the
-    // polyfill.
-
     // Type checkers, also validating the object was initialized through a
     // policy.
     isHTML: isTrustedTypeChecker(TrustedHTML),
@@ -383,15 +380,23 @@ const trustedTypesBuilderTestOnly = function() {
     isScriptURL: isTrustedTypeChecker(TrustedScriptURL),
     isScript: isTrustedTypeChecker(TrustedScript),
 
-    setAllowedPolicyNames,
+    TrustedHTML: TrustedHTML,
+    TrustedURL: TrustedURL,
+    TrustedScriptURL: TrustedScriptURL,
+    TrustedScript: TrustedScript,
   });
+
+  return {
+    TrustedTypes: freeze(api),
+    setAllowedPolicyNames,
+  };
 };
 
-const TrustedTypes = trustedTypesBuilderTestOnly();
-const TrustedHTML = TrustedTypes.TrustedHTML;
-const TrustedURL = TrustedTypes.TrustedURL;
-const TrustedScriptURL = TrustedTypes.TrustedScriptURL;
-const TrustedScript = TrustedTypes.TrustedScript;
+
+const {
+  TrustedTypes,
+  setAllowedPolicyNames,
+} = trustedTypesBuilderTestOnly();
 
 /**
  * @license
@@ -404,10 +409,18 @@ const TrustedScript = TrustedTypes.TrustedScript;
 
 const tt = TrustedTypes;
 
-// Make sure Closure compiler exposes the names.
-if (typeof window !== 'undefined' &&
-    typeof window['TrustedTypes'] === 'undefined') {
-  window['TrustedTypes'] = {
+/**
+ * Sets up the public Trusted Types API in the global object.
+ */
+function setupPolyfill() {
+  // Make sure Closure compiler exposes the names.
+  if (typeof window === 'undefined' ||
+      typeof window['TrustedTypes'] !== 'undefined') {
+    return;
+  }
+
+  const publicApi = Object.create(TrustedTypePolicyFactory.prototype);
+  Object.assign(publicApi, {
     'isHTML': tt.isHTML,
     'isURL': tt.isURL,
     'isScriptURL': tt.isScriptURL,
@@ -415,13 +428,17 @@ if (typeof window !== 'undefined' &&
     'createPolicy': tt.createPolicy,
     'getExposedPolicy': tt.getExposedPolicy,
     'getPolicyNames': tt.getPolicyNames,
-  };
+  });
+  window['TrustedTypes'] = Object.freeze(publicApi);
 
-  window['TrustedHTML'] = TrustedHTML;
-  window['TrustedURL'] = TrustedURL;
-  window['TrustedScriptURL'] = TrustedScriptURL;
-  window['TrustedScript'] = TrustedScript;
+  window['TrustedHTML'] = tt.TrustedHTML;
+  window['TrustedURL'] = tt.TrustedURL;
+  window['TrustedScriptURL'] = tt.TrustedScriptURL;
+  window['TrustedScript'] = tt.TrustedScript;
   window['TrustedTypePolicy'] = TrustedTypePolicy;
+  window['TrustedTypePolicyFactory'] = TrustedTypePolicyFactory;
 }
+
+setupPolyfill();
 
 module.exports = tt;

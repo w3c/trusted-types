@@ -44,9 +44,9 @@ var TrustedTypesInnerPolicy = {
 };
 
 /**
- * @const
+ * @constructor
  */
-var TrustedTypes;
+var TrustedTypePolicyFactory = function() {};
 
 /**
  * Creates a TT policy.
@@ -62,20 +62,21 @@ var TrustedTypes;
  * @return {!TrustedTypePolicy} The policy that may create TT objects
  *   according to the rules in the builder.
  */
-TrustedTypes.createPolicy = function(name, policy, opt_expose){};
+TrustedTypePolicyFactory.prototype.createPolicy = function(name, policy,
+    opt_expose){};
 
 /**
  * Return a Policy object, if the policy was defined and exposed.
  * @param  {string} name The name of the policy.
  * @return {?TrustedTypePolicy}
  */
-TrustedTypes.getExposedPolicy = function(name){};
+TrustedTypePolicyFactory.prototype.getExposedPolicy = function(name){};
 
 /**
  * Returns all defined policy names.
  * @return {!Array<string>}
  */
-TrustedTypes.getPolicyNames = function(){};
+TrustedTypePolicyFactory.prototype.getPolicyNames = function(){};
 
 /**
  * Object that represents a Trusted HTML code, safe to be inserted into DOM into
@@ -138,3 +139,8 @@ TrustedTypePolicy.prototype.createScriptURL = function(s) {};
  * @return {!TrustedScript}
  */
 TrustedTypePolicy.prototype.createScript = function(s) {};
+
+/**
+ * @const {!TrustedTypePolicyFactory}
+ */
+var TrustedTypes;

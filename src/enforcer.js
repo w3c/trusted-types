@@ -9,7 +9,7 @@
 
 /* eslint-disable no-unused-vars */
 import {DIRECTIVE_NAME, TrustedTypeConfig} from './data/trustedtypeconfig.js';
-import {TrustedTypes} from './trustedtypes.js';
+import {TrustedTypes, setAllowedPolicyNames} from './trustedtypes.js';
 
 /* eslint-enable no-unused-vars */
 import {installFunction, installSetter, installSetterAndGetter}
@@ -201,7 +201,7 @@ export class TrustedTypesEnforcer {
    *
    */
   install() {
-    TrustedTypes.setAllowedPolicyNames(this.config_.allowedPolicyNames);
+    setAllowedPolicyNames(this.config_.allowedPolicyNames);
 
     if (!this.config_.isEnforcementEnabled && !this.config_.isLoggingEnabled) {
       return;
@@ -246,7 +246,7 @@ export class TrustedTypesEnforcer {
    * Removes the original setters.
    */
   uninstall() {
-    TrustedTypes.setAllowedPolicyNames(['*']);
+    setAllowedPolicyNames(['*']);
 
     if (!this.config_.isEnforcementEnabled && !this.config_.isLoggingEnabled) {
       return;

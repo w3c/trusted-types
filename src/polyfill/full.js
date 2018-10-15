@@ -68,7 +68,21 @@ export function bootstrap() {
   trustedTypesEnforcer.install();
 }
 
+/**
+ * Determines if the enforcement should be enabled.
+ * @return {boolean}
+ */
+function shouldBootstrap() {
+  const rootProperty = 'TrustedTypes';
+  if (window[rootProperty] &&
+        window[rootProperty] instanceof Function) {
+    // Native implementation exists (polyfill is not instanceof Function).
+    return false;
+  }
+  return true;
+}
+
 // Bootstrap only if native implementation is missing.
-if (!(window['TrustedTypePolicyFactory'] instanceof Function)) {
+if (shouldBootstrap()) {
     bootstrap();
 }

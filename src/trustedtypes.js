@@ -23,6 +23,13 @@ export const TrustedTypePolicy = function() {
   throw new TypeError('Illegal constructor');
 };
 
+/**
+ * @constructor
+ */
+export const TrustedTypePolicyFactory = function() {
+  throw new TypeError('Illegal constructor');
+};
+
 /* eslint-disable no-unused-vars */
 /**
  * @typedef {TrustedTypesInnerPolicy}
@@ -38,7 +45,7 @@ let TrustedTypesInnerPolicy = {};
 export const trustedTypesBuilderTestOnly = function() {
   // Capture common names early.
   const {
-    create, defineProperty, freeze, getOwnPropertyNames,
+    assign, create, defineProperty, freeze, getOwnPropertyNames,
     getPrototypeOf, prototype: ObjectPrototype,
   } = Object;
 
@@ -363,16 +370,9 @@ export const trustedTypesBuilderTestOnly = function() {
     }
   }
 
-  // TODO: Figure out if it's safe to return an instance of a typed object
-  // to make testing easier.
-  return freeze({
 
-    // Types definition, for convenience of instanceof checks
-    TrustedHTML,
-    TrustedURL,
-    TrustedScriptURL,
-    TrustedScript,
-
+  const api = create(TrustedTypePolicyFactory.prototype);
+  assign(api, {
     // The main function to create policies.
     createPolicy,
 
@@ -381,9 +381,6 @@ export const trustedTypesBuilderTestOnly = function() {
 
     getPolicyNames,
 
-    // Below methods are not part of the public API and are only needed in the
-    // polyfill.
-
     // Type checkers, also validating the object was initialized through a
     // policy.
     isHTML: isTrustedTypeChecker(TrustedHTML),
@@ -391,12 +388,21 @@ export const trustedTypesBuilderTestOnly = function() {
     isScriptURL: isTrustedTypeChecker(TrustedScriptURL),
     isScript: isTrustedTypeChecker(TrustedScript),
 
-    setAllowedPolicyNames,
+    TrustedHTML: TrustedHTML,
+    TrustedURL: TrustedURL,
+    TrustedScriptURL: TrustedScriptURL,
+    TrustedScript: TrustedScript,
   });
+
+  return {
+    TrustedTypes: freeze(api),
+    setAllowedPolicyNames,
+  };
 };
 
-export const TrustedTypes = trustedTypesBuilderTestOnly();
-export const TrustedHTML = TrustedTypes.TrustedHTML;
-export const TrustedURL = TrustedTypes.TrustedURL;
-export const TrustedScriptURL = TrustedTypes.TrustedScriptURL;
-export const TrustedScript = TrustedTypes.TrustedScript;
+
+export const {
+  TrustedTypes,
+  setAllowedPolicyNames,
+} = trustedTypesBuilderTestOnly();
+

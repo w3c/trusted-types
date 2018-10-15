@@ -11,15 +11,23 @@
  * @fileoverview Entry point for a polyfill that only defines the types
  * (i.e. no enforcement logic).
  */
-import {TrustedTypes, TrustedHTML, TrustedURL, TrustedScriptURL, TrustedScript,
-    TrustedTypePolicy} from '../trustedtypes.js';
+import {TrustedTypes, TrustedTypePolicy, TrustedTypePolicyFactory} from
+    '../trustedtypes.js';
 
 const tt = TrustedTypes;
 
-// Make sure Closure compiler exposes the names.
-if (typeof window !== 'undefined' &&
-    typeof window['TrustedTypes'] === 'undefined') {
-  window['TrustedTypes'] = {
+/**
+ * Sets up the public Trusted Types API in the global object.
+ */
+function setupPolyfill() {
+  // Make sure Closure compiler exposes the names.
+  if (typeof window === 'undefined' ||
+      typeof window['TrustedTypes'] !== 'undefined') {
+    return;
+  }
+
+  const publicApi = Object.create(TrustedTypePolicyFactory.prototype);
+  Object.assign(publicApi, {
     'isHTML': tt.isHTML,
     'isURL': tt.isURL,
     'isScriptURL': tt.isScriptURL,
@@ -27,13 +35,17 @@ if (typeof window !== 'undefined' &&
     'createPolicy': tt.createPolicy,
     'getExposedPolicy': tt.getExposedPolicy,
     'getPolicyNames': tt.getPolicyNames,
-  };
+  });
+  window['TrustedTypes'] = Object.freeze(publicApi);
 
-  window['TrustedHTML'] = TrustedHTML;
-  window['TrustedURL'] = TrustedURL;
-  window['TrustedScriptURL'] = TrustedScriptURL;
-  window['TrustedScript'] = TrustedScript;
+  window['TrustedHTML'] = tt.TrustedHTML;
+  window['TrustedURL'] = tt.TrustedURL;
+  window['TrustedScriptURL'] = tt.TrustedScriptURL;
+  window['TrustedScript'] = tt.TrustedScript;
   window['TrustedTypePolicy'] = TrustedTypePolicy;
+  window['TrustedTypePolicyFactory'] = TrustedTypePolicyFactory;
 }
+
+setupPolyfill();
 
 export default tt;
