@@ -151,19 +151,19 @@ const TYPE_PRODUCER_MAP = {
 };
 
 /**
- * @type {function(string):?TrustedTypesPolicy}
+ * @type {function(string):?TrustedTypePolicy}
  */
 const getExposedPolicy = TrustedTypes.getExposedPolicy;
 
 /* eslint-disable no-unused-vars */
 /**
- * @typedef {TrustedTypesPolicy}
+ * @typedef {TrustedTypePolicy}
  * @property {function(string):TrustedHTML} createHTML
  * @property {function(string):TrustedURL} createURL
  * @property {function(string):TrustedScriptURL} createScriptURL
  * @property {function(string):TrustedScript} createScript
  */
-let TrustedTypesPolicy = {};
+let TrustedTypePolicy = {};
 /* eslint-enable no-unused-vars */
 
 /**

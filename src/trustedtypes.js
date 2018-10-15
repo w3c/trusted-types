@@ -9,13 +9,13 @@
 
 /* eslint-disable no-unused-vars */
 /**
- * @typedef {TrustedTypesPolicy}
+ * @typedef {TrustedTypePolicy}
  * @property {function(string):TrustedHTML} createHTML
  * @property {function(string):TrustedURL} createURL
  * @property {function(string):TrustedScriptURL} createScriptURL
  * @property {function(string):TrustedScript} createScript
  */
-let TrustedTypesPolicy = {};
+let TrustedTypePolicy = {};
 
 /**
  * @typedef {TrustedTypesInnerPolicy}
@@ -224,7 +224,7 @@ export const trustedTypesBuilderTestOnly = function() {
    * Wraps a user-defined policy rules with TT constructor
    * @param  {string} policyName The policy name
    * @param  {TrustedTypesInnerPolicy} innerPolicy InnerPolicy
-   * @return {!TrustedTypesPolicy} Frozen policy object
+   * @return {!TrustedTypePolicy} Frozen policy object
    */
   function wrapPolicy(policyName, innerPolicy) {
     /**
@@ -265,7 +265,7 @@ export const trustedTypesBuilderTestOnly = function() {
   /**
    * Returns a policy object, if given policy was exposed.
    * @param  {string} name
-   * @return {?TrustedTypesPolicy}
+   * @return {?TrustedTypePolicy}
    */
   function getExposedPolicy(name) {
     const pName = '' + name;
@@ -295,7 +295,7 @@ export const trustedTypesBuilderTestOnly = function() {
    * @param  {TrustedTypesInnerPolicy} policy Policy rules object.
    * @param  {boolean=} expose Iff true, the policy will be exposed (available
    *   globally).
-   * @return {TrustedTypesPolicy} The policy that may create TT objects
+   * @return {TrustedTypePolicy} The policy that may create TT objects
    *   according to the policy rules.
    * @todo Figure out if the return value (and the policy) can be typed.
    */
