@@ -82,27 +82,27 @@ TrustedTypes.getPolicyNames = function(){};
  * HTML context.
  * @constructor
  */
-TrustedTypes.TrustedHTML = function() {};
+var TrustedHTML = function() {};
 
 /**
  * Object that represents a Trusted URL, safe to be inserted into DOM in
  * URL context.
  * @constructor
  */
-TrustedTypes.TrustedURL = function() {};
+var TrustedURL = function() {};
 
 /**
  * Object that represents a Trusted Script URL, safe to be inserted into DOM as
  * a script URL.
  * @constructor
  */
-TrustedTypes.TrustedScriptURL = function() {};
+var TrustedScriptURL = function() {};
 
 /**
  * Object that represents a Trusted JavaScript code string, safe to be executed.
  * @constructor
  */
-TrustedTypes.TrustedScript = function() {};
+var TrustedScript = function() {};
 
 /**
  * Policy allowing to create Trusted Types.
@@ -114,27 +114,27 @@ var TrustedTypePolicy = function() {};
 /**
  * Creates a TrustedHTML object from a string.
  * @param  {string} s Input string
- * @return {!TrustedTypes.TrustedHTML}
+ * @return {!TrustedHTML}
  */
 TrustedTypePolicy.prototype.createHTML = function(s) {};
 
 /**
  * Creates a TrustedURL object from a string.
  * @param  {string} s Input string
- * @return {!TrustedTypes.TrustedURL}
+ * @return {!TrustedURL}
  */
 TrustedTypePolicy.prototype.createURL = function(s) {};
 
 /**
  * Creates a TrustedScriptURL object from a string.
  * @param  {string} s Input string
- * @return {!TrustedTypes.TrustedScriptURL}
+ * @return {!TrustedScriptURL}
  */
 TrustedTypePolicy.prototype.createScriptURL = function(s) {};
 
 /**
  * Creates a TrustedScript object from a string.
  * @param  {string} s Input string
- * @return {!TrustedTypes.TrustedScript}
+ * @return {!TrustedScript}
  */
 TrustedTypePolicy.prototype.createScript = function(s) {};
