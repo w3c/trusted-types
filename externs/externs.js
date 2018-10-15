@@ -107,6 +107,7 @@ TrustedTypes.TrustedScript = function() {};
 /**
  * Policy allowing to create Trusted Types.
  * @constructor
+ * @property {!string} name
  */
 var TrustedTypePolicy = function() {};
 

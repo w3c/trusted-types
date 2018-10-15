@@ -7,16 +7,23 @@
  *  https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
  */
 
-/* eslint-disable no-unused-vars */
-/**
- * @typedef {TrustedTypePolicy}
- * @property {function(string):TrustedHTML} createHTML
- * @property {function(string):TrustedURL} createURL
- * @property {function(string):TrustedScriptURL} createScriptURL
- * @property {function(string):TrustedScript} createScript
- */
-let TrustedTypePolicy = {};
+const rejectInputFn = (s) => {
+  throw new TypeError('undefined conversion');
+};
 
+/**
+ * @constructor
+ * @property {!function(string):TrustedHTML} createHTML
+ * @property {!function(string):TrustedURL} createURL
+ * @property {!function(string):TrustedScriptURL} createScriptURL
+ * @property {!function(string):TrustedScript} createScript
+ * @property {!string} name
+ */
+export const TrustedTypePolicy = function() {
+  throw new TypeError('Illegal constructor');
+};
+
+/* eslint-disable no-unused-vars */
 /**
  * @typedef {TrustedTypesInnerPolicy}
  * @property {function(string):string} createHTML
@@ -90,7 +97,7 @@ export const trustedTypesBuilderTestOnly = function() {
 
   /**
    * Map of all exposed policies, keyed by policy name.
-   * @type {Map<string,Object>}
+   * @type {Map<string,!TrustedTypePolicy>}
    */
   const exposedPolicies = selfContained(new Map());
 
@@ -216,10 +223,6 @@ export const trustedTypesBuilderTestOnly = function() {
     return (obj) => (obj instanceof type) && privateMap.has(obj);
   }
 
-  const rejectInputFn = (s) => {
- throw new TypeError('undefined conversion');
-};
-
   /**
    * Wraps a user-defined policy rules with TT constructor
    * @param  {string} policyName The policy name
@@ -252,14 +255,19 @@ export const trustedTypesBuilderTestOnly = function() {
       return freeze(factory);
     }
 
-    let policy = create(null);
+    let policy = create(TrustedTypePolicy.prototype);
 
     for (const name of getOwnPropertyNames(createTypeMapping)) {
       policy[name] = creator(createTypeMapping[name], name);
     }
-    policy.name = policyName;
+    defineProperty(policy, 'name', {
+        value: policyName,
+        writable: false,
+        configurable: false,
+        enumerable: true,
+    });
 
-    return freeze(policy);
+    return /** @type {!TrustedTypePolicy} */ (freeze(policy));
   }
 
   /**

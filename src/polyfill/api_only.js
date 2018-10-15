@@ -11,8 +11,8 @@
  * @fileoverview Entry point for a polyfill that only defines the types
  * (i.e. no enforcement logic).
  */
-import {TrustedTypes, TrustedHTML, TrustedURL, TrustedScriptURL, TrustedScript}
-    from '../trustedtypes.js';
+import {TrustedTypes, TrustedHTML, TrustedURL, TrustedScriptURL, TrustedScript,
+    TrustedTypePolicy} from '../trustedtypes.js';
 
 const tt = TrustedTypes;
 
@@ -33,6 +33,7 @@ if (typeof window !== 'undefined' &&
   window['TrustedURL'] = TrustedURL;
   window['TrustedScriptURL'] = TrustedScriptURL;
   window['TrustedScript'] = TrustedScript;
+  window['TrustedTypePolicy'] = TrustedTypePolicy;
 }
 
 export default tt;
