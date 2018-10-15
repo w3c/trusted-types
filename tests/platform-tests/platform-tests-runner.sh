@@ -53,7 +53,7 @@ fi
 
 case $CMD in
   wpt)
-    WPT_ARGS="${1:---channel dev --binary=`which google-chrome-unstable` --binary-arg=--disable-blink-features=TrustedDOMTypes chrome}"
+    WPT_ARGS="${*:---channel dev --binary=`which google-chrome-unstable` --binary-arg=--disable-blink-features=TrustedDOMTypes chrome}"
     init_repo
     WPT_COMMAND="./wpt run $WPT_ARGS trusted-types"
     echo "Calling $WPT_COMMAND..."

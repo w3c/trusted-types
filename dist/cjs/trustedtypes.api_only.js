@@ -8,13 +8,36 @@
  *
  *  https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
  */
+
+const rejectInputFn = (s) => {
+  throw new TypeError('undefined conversion');
+};
+
+/**
+ * @constructor
+ * @property {!function(string):TrustedHTML} createHTML
+ * @property {!function(string):TrustedURL} createURL
+ * @property {!function(string):TrustedScriptURL} createScriptURL
+ * @property {!function(string):TrustedScript} createScript
+ * @property {!string} name
+ */
+const TrustedTypePolicy = function() {
+  throw new TypeError('Illegal constructor');
+};
+
+/**
+ * @constructor
+ */
+const TrustedTypePolicyFactory = function() {
+  throw new TypeError('Illegal constructor');
+};
 /* eslint-enable no-unused-vars */
 
 
 const trustedTypesBuilderTestOnly = function() {
   // Capture common names early.
   const {
-    create, defineProperty, freeze, getOwnPropertyNames,
+    assign, create, defineProperty, freeze, getOwnPropertyNames,
     getPrototypeOf, prototype: ObjectPrototype,
   } = Object;
 
@@ -73,7 +96,7 @@ const trustedTypesBuilderTestOnly = function() {
 
   /**
    * Map of all exposed policies, keyed by policy name.
-   * @type {Map<string,Object>}
+   * @type {Map<string,!TrustedTypePolicy>}
    */
   const exposedPolicies = selfContained(new Map());
 
@@ -199,15 +222,11 @@ const trustedTypesBuilderTestOnly = function() {
     return (obj) => (obj instanceof type) && privateMap.has(obj);
   }
 
-  const rejectInputFn = (s) => {
- throw new TypeError('undefined conversion');
-};
-
   /**
    * Wraps a user-defined policy rules with TT constructor
    * @param  {string} policyName The policy name
    * @param  {TrustedTypesInnerPolicy} innerPolicy InnerPolicy
-   * @return {!TrustedTypesPolicy} Frozen policy object
+   * @return {!TrustedTypePolicy} Frozen policy object
    */
   function wrapPolicy(policyName, innerPolicy) {
     /**
@@ -235,20 +254,25 @@ const trustedTypesBuilderTestOnly = function() {
       return freeze(factory);
     }
 
-    let policy = create(null);
+    let policy = create(TrustedTypePolicy.prototype);
 
     for (const name of getOwnPropertyNames(createTypeMapping)) {
       policy[name] = creator(createTypeMapping[name], name);
     }
-    policy.name = policyName;
+    defineProperty(policy, 'name', {
+        value: policyName,
+        writable: false,
+        configurable: false,
+        enumerable: true,
+    });
 
-    return freeze(policy);
+    return /** @type {!TrustedTypePolicy} */ (freeze(policy));
   }
 
   /**
    * Returns a policy object, if given policy was exposed.
    * @param  {string} name
-   * @return {?TrustedTypesPolicy}
+   * @return {?TrustedTypePolicy}
    */
   function getExposedPolicy(name) {
     const pName = '' + name;
@@ -278,7 +302,7 @@ const trustedTypesBuilderTestOnly = function() {
    * @param  {TrustedTypesInnerPolicy} policy Policy rules object.
    * @param  {boolean=} expose Iff true, the policy will be exposed (available
    *   globally).
-   * @return {TrustedTypesPolicy} The policy that may create TT objects
+   * @return {TrustedTypePolicy} The policy that may create TT objects
    *   according to the policy rules.
    * @todo Figure out if the return value (and the policy) can be typed.
    */
@@ -338,16 +362,9 @@ const trustedTypesBuilderTestOnly = function() {
     }
   }
 
-  // TODO: Figure out if it's safe to return an instance of a typed object
-  // to make testing easier.
-  return freeze({
 
-    // Types definition, for convenience of instanceof checks
-    TrustedHTML,
-    TrustedURL,
-    TrustedScriptURL,
-    TrustedScript,
-
+  const api = create(TrustedTypePolicyFactory.prototype);
+  assign(api, {
     // The main function to create policies.
     createPolicy,
 
@@ -356,9 +373,6 @@ const trustedTypesBuilderTestOnly = function() {
 
     getPolicyNames,
 
-    // Below methods are not part of the public API and are only needed in the
-    // polyfill.
-
     // Type checkers, also validating the object was initialized through a
     // policy.
     isHTML: isTrustedTypeChecker(TrustedHTML),
@@ -366,11 +380,23 @@ const trustedTypesBuilderTestOnly = function() {
     isScriptURL: isTrustedTypeChecker(TrustedScriptURL),
     isScript: isTrustedTypeChecker(TrustedScript),
 
-    setAllowedPolicyNames,
+    TrustedHTML: TrustedHTML,
+    TrustedURL: TrustedURL,
+    TrustedScriptURL: TrustedScriptURL,
+    TrustedScript: TrustedScript,
   });
+
+  return {
+    TrustedTypes: freeze(api),
+    setAllowedPolicyNames,
+  };
 };
 
-const TrustedTypes = trustedTypesBuilderTestOnly();
+
+const {
+  TrustedTypes,
+  setAllowedPolicyNames,
+} = trustedTypesBuilderTestOnly();
 
 /**
  * @license
@@ -383,18 +409,36 @@ const TrustedTypes = trustedTypesBuilderTestOnly();
 
 const tt = TrustedTypes;
 
-// Make sure Closure compiler exposes the names.
-if (typeof window !== 'undefined' &&
-    typeof window['TrustedTypes'] === 'undefined') {
-  window['TrustedTypes'] = {
-    'TrustedHTML': tt.TrustedHTML,
-    'TrustedURL': tt.TrustedURL,
-    'TrustedScriptURL': tt.TrustedScriptURL,
-    'TrustedScript': tt.TrustedScript,
+/**
+ * Sets up the public Trusted Types API in the global object.
+ */
+function setupPolyfill() {
+  // Make sure Closure compiler exposes the names.
+  if (typeof window === 'undefined' ||
+      typeof window['TrustedTypes'] !== 'undefined') {
+    return;
+  }
+
+  const publicApi = Object.create(TrustedTypePolicyFactory.prototype);
+  Object.assign(publicApi, {
+    'isHTML': tt.isHTML,
+    'isURL': tt.isURL,
+    'isScriptURL': tt.isScriptURL,
+    'isScript': tt.isScript,
     'createPolicy': tt.createPolicy,
     'getExposedPolicy': tt.getExposedPolicy,
     'getPolicyNames': tt.getPolicyNames,
-  };
+  });
+  window['TrustedTypes'] = Object.freeze(publicApi);
+
+  window['TrustedHTML'] = tt.TrustedHTML;
+  window['TrustedURL'] = tt.TrustedURL;
+  window['TrustedScriptURL'] = tt.TrustedScriptURL;
+  window['TrustedScript'] = tt.TrustedScript;
+  window['TrustedTypePolicy'] = TrustedTypePolicy;
+  window['TrustedTypePolicyFactory'] = TrustedTypePolicyFactory;
 }
+
+setupPolyfill();
 
 module.exports = tt;

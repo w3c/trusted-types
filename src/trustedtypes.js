@@ -7,16 +7,30 @@
  *  https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
  */
 
-/* eslint-disable no-unused-vars */
-/**
- * @typedef {TrustedTypesPolicy}
- * @property {function(string):TrustedHTML} createHTML
- * @property {function(string):TrustedURL} createURL
- * @property {function(string):TrustedScriptURL} createScriptURL
- * @property {function(string):TrustedScript} createScript
- */
-let TrustedTypesPolicy = {};
+const rejectInputFn = (s) => {
+  throw new TypeError('undefined conversion');
+};
 
+/**
+ * @constructor
+ * @property {!function(string):TrustedHTML} createHTML
+ * @property {!function(string):TrustedURL} createURL
+ * @property {!function(string):TrustedScriptURL} createScriptURL
+ * @property {!function(string):TrustedScript} createScript
+ * @property {!string} name
+ */
+export const TrustedTypePolicy = function() {
+  throw new TypeError('Illegal constructor');
+};
+
+/**
+ * @constructor
+ */
+export const TrustedTypePolicyFactory = function() {
+  throw new TypeError('Illegal constructor');
+};
+
+/* eslint-disable no-unused-vars */
 /**
  * @typedef {TrustedTypesInnerPolicy}
  * @property {function(string):string} createHTML
@@ -31,7 +45,7 @@ let TrustedTypesInnerPolicy = {};
 export const trustedTypesBuilderTestOnly = function() {
   // Capture common names early.
   const {
-    create, defineProperty, freeze, getOwnPropertyNames,
+    assign, create, defineProperty, freeze, getOwnPropertyNames,
     getPrototypeOf, prototype: ObjectPrototype,
   } = Object;
 
@@ -90,7 +104,7 @@ export const trustedTypesBuilderTestOnly = function() {
 
   /**
    * Map of all exposed policies, keyed by policy name.
-   * @type {Map<string,Object>}
+   * @type {Map<string,!TrustedTypePolicy>}
    */
   const exposedPolicies = selfContained(new Map());
 
@@ -216,15 +230,11 @@ export const trustedTypesBuilderTestOnly = function() {
     return (obj) => (obj instanceof type) && privateMap.has(obj);
   }
 
-  const rejectInputFn = (s) => {
- throw new TypeError('undefined conversion');
-};
-
   /**
    * Wraps a user-defined policy rules with TT constructor
    * @param  {string} policyName The policy name
    * @param  {TrustedTypesInnerPolicy} innerPolicy InnerPolicy
-   * @return {!TrustedTypesPolicy} Frozen policy object
+   * @return {!TrustedTypePolicy} Frozen policy object
    */
   function wrapPolicy(policyName, innerPolicy) {
     /**
@@ -252,20 +262,25 @@ export const trustedTypesBuilderTestOnly = function() {
       return freeze(factory);
     }
 
-    let policy = create(null);
+    let policy = create(TrustedTypePolicy.prototype);
 
     for (const name of getOwnPropertyNames(createTypeMapping)) {
       policy[name] = creator(createTypeMapping[name], name);
     }
-    policy.name = policyName;
+    defineProperty(policy, 'name', {
+        value: policyName,
+        writable: false,
+        configurable: false,
+        enumerable: true,
+    });
 
-    return freeze(policy);
+    return /** @type {!TrustedTypePolicy} */ (freeze(policy));
   }
 
   /**
    * Returns a policy object, if given policy was exposed.
    * @param  {string} name
-   * @return {?TrustedTypesPolicy}
+   * @return {?TrustedTypePolicy}
    */
   function getExposedPolicy(name) {
     const pName = '' + name;
@@ -295,7 +310,7 @@ export const trustedTypesBuilderTestOnly = function() {
    * @param  {TrustedTypesInnerPolicy} policy Policy rules object.
    * @param  {boolean=} expose Iff true, the policy will be exposed (available
    *   globally).
-   * @return {TrustedTypesPolicy} The policy that may create TT objects
+   * @return {TrustedTypePolicy} The policy that may create TT objects
    *   according to the policy rules.
    * @todo Figure out if the return value (and the policy) can be typed.
    */
@@ -355,16 +370,9 @@ export const trustedTypesBuilderTestOnly = function() {
     }
   }
 
-  // TODO: Figure out if it's safe to return an instance of a typed object
-  // to make testing easier.
-  return freeze({
 
-    // Types definition, for convenience of instanceof checks
-    TrustedHTML,
-    TrustedURL,
-    TrustedScriptURL,
-    TrustedScript,
-
+  const api = create(TrustedTypePolicyFactory.prototype);
+  assign(api, {
     // The main function to create policies.
     createPolicy,
 
@@ -373,9 +381,6 @@ export const trustedTypesBuilderTestOnly = function() {
 
     getPolicyNames,
 
-    // Below methods are not part of the public API and are only needed in the
-    // polyfill.
-
     // Type checkers, also validating the object was initialized through a
     // policy.
     isHTML: isTrustedTypeChecker(TrustedHTML),
@@ -383,8 +388,21 @@ export const trustedTypesBuilderTestOnly = function() {
     isScriptURL: isTrustedTypeChecker(TrustedScriptURL),
     isScript: isTrustedTypeChecker(TrustedScript),
 
-    setAllowedPolicyNames,
+    TrustedHTML: TrustedHTML,
+    TrustedURL: TrustedURL,
+    TrustedScriptURL: TrustedScriptURL,
+    TrustedScript: TrustedScript,
   });
+
+  return {
+    TrustedTypes: freeze(api),
+    setAllowedPolicyNames,
+  };
 };
 
-export const TrustedTypes = trustedTypesBuilderTestOnly();
+
+export const {
+  TrustedTypes,
+  setAllowedPolicyNames,
+} = trustedTypesBuilderTestOnly();
+

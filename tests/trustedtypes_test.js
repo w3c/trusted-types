@@ -10,10 +10,11 @@ import {trustedTypesBuilderTestOnly} from '../src/trustedtypes.js';
 
 describe('v2 TrustedTypes', () => {
   let TrustedTypes;
+  let setAllowedPolicyNames;
 
   beforeEach(() => {
     // We need separate instances.
-     TrustedTypes = trustedTypesBuilderTestOnly();
+    ({TrustedTypes, setAllowedPolicyNames} = trustedTypesBuilderTestOnly());
   });
 
   const noopPolicy = {
@@ -292,14 +293,14 @@ describe('v2 TrustedTypes', () => {
     });
 
     it('is applied by createPolicy', () => {
-      TrustedTypes.setAllowedPolicyNames(['bar']);
+      setAllowedPolicyNames(['bar']);
 
       expect(() => TrustedTypes.createPolicy('foo', {})).toThrow();
       expect(() => TrustedTypes.createPolicy('bar', {})).not.toThrow();
     });
 
     it('supports wildcard', () => {
-      TrustedTypes.setAllowedPolicyNames(['*']);
+      setAllowedPolicyNames(['*']);
 
       expect(() => TrustedTypes.createPolicy('foo', {})).not.toThrow();
       expect(() => TrustedTypes.createPolicy('bar', {})).not.toThrow();
