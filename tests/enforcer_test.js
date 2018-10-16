@@ -593,6 +593,20 @@ describe('TrustedTypesEnforcer', function() {
       expect(el.outerHTML).toEqual('<div></div>');
     });
 
+    it('on Shadow DOM ShadowRoot.innerHTML', function() {
+      let wrap = document.createElement('div');
+      if (!('attachShadow' in wrap)) {
+        return pending();
+      }
+      let shadow = wrap.attachShadow({mode: 'open'});
+
+      expect(function() {
+        shadow.innerHTML = TEST_HTML;
+      }).toThrow();
+
+      expect(wrap.shadowRoot.innerHTML).toEqual('');
+    });
+
     it('on iframe srcdoc', function() {
       let el = document.createElement('iframe');
 
@@ -876,6 +890,20 @@ describe('TrustedTypesEnforcer', function() {
       expect(function() {
         el.outerHTML = policy.createHTML(TEST_HTML);
       }).not.toThrow();
+    });
+
+    it('on Shadow DOM ShadowRoot.innerHTML', function() {
+      let wrap = document.createElement('div');
+      if (!('attachShadow' in wrap)) {
+        return pending();
+      }
+      let shadow = wrap.attachShadow({mode: 'open'});
+
+      expect(function() {
+        shadow.innerHTML = policy.createHTML(TEST_HTML);
+      }).not.toThrow();
+
+      expect(wrap.shadowRoot.innerHTML).toEqual(TEST_HTML);
     });
 
     it('on iframe srcdoc', function() {
