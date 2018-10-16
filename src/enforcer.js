@@ -209,6 +209,10 @@ export class TrustedTypesEnforcer {
 
     this.wrapSetter_(Element.prototype, 'innerHTML', TrustedTypes.TrustedHTML);
     this.wrapSetter_(Element.prototype, 'outerHTML', TrustedTypes.TrustedHTML);
+    if ('ShadowRoot' in window) {
+      this.wrapSetter_(ShadowRoot.prototype, 'innerHTML',
+         TrustedTypes.TrustedHTML);
+    }
     this.wrapWithEnforceFunction_(Range.prototype, 'createContextualFragment',
         TrustedTypes.TrustedHTML, 0);
     this.wrapWithEnforceFunction_(Element.prototype, 'insertAdjacentHTML',
@@ -229,7 +233,7 @@ export class TrustedTypesEnforcer {
     }
 
     this.wrapWithEnforceFunction_(window, 'open', TrustedTypes.TrustedURL, 0);
-    if (DOMParser) {
+    if ('DOMParser' in window) {
       this.wrapWithEnforceFunction_(DOMParser.prototype, 'parseFromString',
           TrustedTypes.TrustedHTML, 0);
     }
@@ -254,6 +258,9 @@ export class TrustedTypesEnforcer {
 
     this.restoreSetter_(Element.prototype, 'innerHTML');
     this.restoreSetter_(Element.prototype, 'outerHTML');
+    if ('ShadowRoot' in window) {
+      this.restoreSetter_(ShadowRoot.prototype, 'innerHTML');
+    }
     this.restoreFunction_(Range.prototype, 'createContextualFragment');
     this.restoreFunction_(Element.prototype, 'insertAdjacentHTML');
     this.restoreFunction_(Element.prototype, 'setAttribute');
@@ -267,7 +274,7 @@ export class TrustedTypesEnforcer {
       this.restoreFunction_(HTMLDocument.prototype, 'open');
     }
     this.restoreFunction_(window, 'open');
-    if (DOMParser) {
+    if ('DOMParser' in window) {
       this.restoreFunction_(DOMParser.prototype, 'parseFromString');
     }
     this.restoreFunction_(window, 'setTimeout');
