@@ -651,14 +651,18 @@ export class TrustedTypesEnforcer {
     }
 
     if (typeToEnforce === TrustedTypes.TrustedScript) {
+      const isInlineEventHandler =
+          propertyName == 'setAttribute' ||
+          propertyName === 'setAttributeNS' ||
+          apply(slice, propertyName, [0, 2]) === 'on';
       // If a function (instead of string) is passed to inline event attribute,
       // or set(Timeout|Interval), pass through.
       const propertyAcceptsFunctions =
-          propertyName == 'setInterval' ||
-          propertyName == 'setTimeout' ||
-          apply(slice, propertyName, [0, 2]) === 'on';
-      if (propertyAcceptsFunctions &&
-          (value === null || typeof value === 'function')) {
+          propertyName === 'setInterval' ||
+          propertyName === 'setTimeout' ||
+          isInlineEventHandler;
+      if ((propertyAcceptsFunctions && typeof value === 'function') ||
+          (isInlineEventHandler && value === null)) {
         return apply(originalSetter, context, args);
       }
     }

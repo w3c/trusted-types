@@ -540,6 +540,25 @@ describe('TrustedTypesEnforcer', function() {
     });
   });
 
+  describe('enforcement disables null assignments', function() {
+    let enforcer;
+
+    beforeEach(function() {
+      enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
+      enforcer.install();
+    });
+
+    afterEach(function() {
+      enforcer.uninstall();
+    });
+
+    it('on setTimeout', function() {
+      expect(function() {
+        setTimeout(null, 100);
+      }).toThrow();
+    });
+  });
+
   describe('enforcement disables string assignments', function() {
     let enforcer;
 
@@ -944,7 +963,11 @@ describe('TrustedTypesEnforcer', function() {
 
       el.onclick();
 
+      // null is ok
       expect(alert).toHaveBeenCalledWith();
+      expect(function() {
+        el.setAttribute('onmouseover', null);
+      }).not.toThrow();
     });
 
     it('on HTMLScriptElement.innerText', function() {
