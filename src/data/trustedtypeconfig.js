@@ -104,6 +104,7 @@ export class TrustedTypeConfig {
     const enforce = DIRECTIVE_NAME in policy;
     let allowHttpUrls = false;
     let policies = ['*'];
+    let fallbackPolicyName = 'default';
     if (enforce) {
       allowHttpUrls = policy[DIRECTIVE_NAME]
           .indexOf('\'url-allow-http\'') !== -1;
@@ -113,7 +114,7 @@ export class TrustedTypeConfig {
     return new TrustedTypeConfig(
       isLoggingEnabled,
       enforce, /* isEnforcementEnabled */
-      null, /* fallbackPolicyName */
+      fallbackPolicyName, /* fallbackPolicyName */
       policies, /* allowedPolicyNames */
       allowHttpUrls,
       cspString

@@ -60,7 +60,7 @@ export function bootstrap() {
   const config = csp ? TrustedTypeConfig.fromCSP(csp) : new TrustedTypeConfig(
     /* isLoggingEnabled */ false,
     /* isEnforcementEnabled */ false,
-    /* fallbackPolicyName */ null,
+    /* fallbackPolicyName */ 'default',
     /* allowedPolicyNames */ ['*']);
 
   const trustedTypesEnforcer = new TrustedTypesEnforcer(config);
