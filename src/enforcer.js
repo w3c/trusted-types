@@ -684,13 +684,16 @@ export class TrustedTypesEnforcer {
       const fallbackPolicy = getExposedPolicy.call(TrustedTypes, fallback);
       if (fallbackPolicy && TYPE_CHECKER_MAP.hasOwnProperty(typeName)) {
         let fallbackValue;
+        let exceptionThrown;
         try {
           fallbackValue = fallbackPolicy[TYPE_PRODUCER_MAP[typeName]](value);
         } catch (e) {
-          // eslint-disable-next-line no-empty
+          exceptionThrown = true;
         }
-        args[argNumber] = fallbackValue;
-        return apply(originalSetter, context, args);
+        if (!exceptionThrown) {
+          args[argNumber] = fallbackValue;
+          return apply(originalSetter, context, args);
+        }
       }
     }
 
