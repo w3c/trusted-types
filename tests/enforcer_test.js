@@ -1191,6 +1191,26 @@ describe('TrustedTypesEnforcer', function() {
       expect(() => el.innerHTML = TEST_HTML).toThrowError(TypeError);
       expect(el.innerHTML).toEqual('');
     });
+
+    it('fails if policy throws an error', function() {
+      enforcer = new TrustedTypesEnforcer(new TrustedTypeConfig(
+      /* isLoggingEnabled */ false,
+      /* isEnforcementEnabled */ true,
+      'fallback4', ['*']));
+      enforcer.install();
+      TrustedTypes.createPolicy('fallback4', {
+        'createHTML': (s) => {
+          throw new Error();
+        },
+      }, true);
+      let el = document.createElement('div');
+
+      // Throws a generic enforcement error, not the one from the policy.
+      expect(() => el.innerHTML = 'html')
+          .toThrowError(TypeError);
+
+      expect(el.innerHTML).toEqual('');
+    });
   });
 
   describe('enforcement does not mix the types', function() {
