@@ -386,4 +386,4 @@ It can be tested by running:
 ```
 $ npm test
 ```
-<del>The polyfill can also be run against the [web platform test suite](https://github.com/w3c/web-platform-tests), but that requires small patches to the suite - see [tests/platform-tests/platform-tests-runner.sh](tests/platform-tests/platform-tests-runner.sh).</del>
+The polyfill can also be run against the [web platform test suite](https://github.com/w3c/web-platform-tests), but that requires small patches to the suite - see [tests/platform-tests/platform-tests-runner.sh](tests/platform-tests/platform-tests-runner.sh).
