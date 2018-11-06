@@ -1,28 +1,29 @@
 diff --git a/resources/testharness.js b/resources/testharness.js
-index f0c2463501..a42a47d293 100644
+index 18a6f70bea..f0a8d88129 100644
 --- a/resources/testharness.js
 +++ b/resources/testharness.js
-@@ -2489,6 +2489,7 @@ policies and contribution forms [3].
+@@ -2504,6 +2504,7 @@ policies and contribution forms [3].
          this.output_node = null;
          this.enabled = settings.output;
          this.phase = this.INITIAL;
 +        this.tt_policy = null;
      }
-
+ 
      Output.prototype.INITIAL = 0;
-@@ -2517,6 +2518,11 @@ policies and contribution forms [3].
+@@ -2532,6 +2533,12 @@ policies and contribution forms [3].
              this.output_document = document;
          }
          this.phase = this.STARTED;
 +        if (window.TrustedTypes) {
 +            this.tt_policy = window.TrustedTypes.createPolicy('web-platform-tests-internal-unsafe', {
-+                'createHTML': function(s) { return s; }
-+            });
++                'createHTML': function(s) { return s; },
++                'createScript': function(s) { return s; }
++            }, true);
 +        }
      };
-
+ 
      Output.prototype.resolve_log = function() {
-@@ -2770,6 +2776,9 @@ policies and contribution forms [3].
+@@ -2782,6 +2789,9 @@ policies and contribution forms [3].
          }
          html += "</tbody></table>";
          try {
@@ -32,3 +33,20 @@ index f0c2463501..a42a47d293 100644
              log.lastChild.innerHTML = html;
          } catch (e) {
              log.appendChild(document.createElementNS(xhtml_ns, "p"))
+diff --git a/resources/testharnessreport.js b/resources/testharnessreport.js
+index e5cb40fe0e..402c2a984a 100644
+--- a/resources/testharnessreport.js
++++ b/resources/testharnessreport.js
+@@ -26,7 +26,11 @@ function dump_test_results(tests, status) {
+                 status: status.status,
+                 message: status.message,
+                 stack: status.stack};
+-    results_element.textContent = JSON.stringify(data);
++    var json = JSON.stringify(data);
++    if (window.TrustedTypes) {
++        json = window.TrustedTypes.getExposedPolicy('web-platform-tests-internal-unsafe').createScript(json);
++    }
++    results_element.textContent = json;
+ 
+     // To avoid a HierarchyRequestError with XML documents, ensure that 'results_element'
+     // is inserted at a location that results in a valid document.
