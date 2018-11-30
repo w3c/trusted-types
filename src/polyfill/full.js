@@ -74,9 +74,8 @@ export function bootstrap() {
  */
 function shouldBootstrap() {
   const rootProperty = 'TrustedTypes';
-  if (window[rootProperty] &&
-        window[rootProperty] instanceof Function) {
-    // Native implementation exists (polyfill is not instanceof Function).
+  if (window[rootProperty] && !window[rootProperty]['_isPolyfill_']) {
+    // Native implementation exists
     return false;
   }
   return true;

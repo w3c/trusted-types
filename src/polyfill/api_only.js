@@ -35,6 +35,7 @@ function setupPolyfill() {
     'createPolicy': tt.createPolicy,
     'getExposedPolicy': tt.getExposedPolicy,
     'getPolicyNames': tt.getPolicyNames,
+    '_isPolyfill_': true,
   });
   window['TrustedTypes'] = Object.freeze(publicApi);
 
