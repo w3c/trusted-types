@@ -39,7 +39,7 @@ function init_repo {
   sed -i '/[<]body[>]/a<script src=support\/trustedtypes\.build\.js\>\<\/script\>' $TYPES_REPO/trusted-types/*.html
   echo "Removing unpolyfillable tests..."
   rm $TYPES_REPO/trusted-types/*Location*.html
-  rm $TYPES_REPO/trusted-types/idlharness.window.js
+  echo "" > $TYPES_REPO/trusted-types/idlharness.window.js
 }
 
 if [ -z "$TYPES_REPO" ]; then
@@ -53,11 +53,23 @@ fi
 
 case $CMD in
   wpt)
-    WPT_ARGS="${*:---channel dev --binary=`which google-chrome-unstable` --binary-arg=--disable-blink-features=TrustedDOMTypes chrome}"
+    case "$(uname -s)" in
+      Darwin)
+        CHROME_BINARY='"/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary"'
+      ;;
+      Linux)
+        CHROME_BINARY="$(which google-chrome-unstable)"
+      ;;
+      *)
+      echo "Unsupported platform, aborting."
+      exit 2
+      ;;
+    esac
+    WPT_ARGS="${*:---channel dev --binary=$CHROME_BINARY --binary-arg=--disable-blink-features=TrustedDOMTypes chrome}"
     init_repo
     WPT_COMMAND="./wpt run $WPT_ARGS trusted-types"
-    echo "Calling $WPT_COMMAND..."
-    (cd $TYPES_REPO; $WPT_COMMAND; git checkout -- .; git clean -f .)
+    echo "Calling $WPT_COMMAND"
+    (cd $TYPES_REPO; eval $WPT_COMMAND; git checkout -- .; git clean -f .)
   ;;
   manual)
     init_repo
