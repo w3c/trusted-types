@@ -37,6 +37,10 @@ describe('v2 TrustedTypes', () => {
       expect(p.createScriptURL instanceof Function).toBe(true);
     });
 
+    it('require a default policy to be exposed', () => {
+      expect(() => TrustedTypes.createPolicy('default', {})).toThrow();
+    });
+
     [null, undefined, () => {}].forEach((i) =>
     it('creates empty policies if ' + i + ' is passed', () => {
       const warn = spyOn(console, 'warn');
@@ -177,6 +181,16 @@ describe('v2 TrustedTypes', () => {
         expect(() => p.createHTML('foo')).toThrow();
         expect(() => p.createURL('foo')).toThrow();
         expect(() => p.createScriptURL('foo')).toThrow();
+      });
+
+      it('get their inputs casted to a string', () => {
+        const p = TrustedTypes.createPolicy('policy', {
+          createHTML(s) {
+            return typeof s;
+          },
+        });
+
+        expect('' + p.createHTML({})).toEqual('string');
       });
 
       it('can be used selectively', () => {
