@@ -136,18 +136,18 @@ As valid trusted type objects must originate from a policy, those policies alone
 #### Policies API
 
 ```
-interface PolicyContainer {
-    Policy createPolicy(DOMString policyName, InnerPolicy policy, optional boolean expose = false);
-    Policy getExposedPolicy(DOMString policyName);
+interface TrustedTypePolicyFactory {
+    TrustedTypePolicy createPolicy(DOMString policyName, TrustedTypeInnerPolicy policy, optional boolean expose = false);
+    TrustedTypePolicy getExposedPolicy(DOMString policyName);
     Array<DOMString> getPolicyNames();
 }
 ```
-We propose to provide a `PolicyContainer` implementation under `window.TrustedTypes`. The most important function available in a `PolicyContainer` is `createPolicy`.
+We propose to provide a `TrustedTypePolicyFactory` implementation under `window.TrustedTypes`. The most important function available in a `TrustedTypePolicyFactory` is `createPolicy`.
 
-The policy rules for creating individual types are configured via the properties of `InnerPolicy` object. Note that the functions operate on strings. The actual type construction is provided by the private API, not exposed to the authors.
+The policy rules for creating individual types are configured via the properties of `TrustedTypeInnerPolicy` object. Note that the functions operate on strings. The actual type construction is provided by the private API, not exposed to the authors.
 
 ```
-interface InnerPolicy {
+interface TrustedTypeInnerPolicy {
     string createHTML(string);
     string createURL(string);
     string createScriptURL(string);
