@@ -171,7 +171,7 @@ Optionally, the policy may be exposed globally by calling `createPolicy` with `e
 The policy object can be used directly to create typed values that conform to its rules:
 
 ```javascript
- const trustedHtml = myPolicy.createHTML('<p>ok<script>not ok</script>')
+ const trustedHtml = myPolicy.createHTML('<p>ok<script>not ok</script></p>')
  document.body.innerHTML = trustedHtml // does not throw.
  trustedHtml.toString() // <p>ok</p>, as the customSanitize removed the script.
 ```
