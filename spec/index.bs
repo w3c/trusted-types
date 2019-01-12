@@ -1,0 +1,23 @@
+<pre class='metadata'>
+Title: Trusted Types Spec WIP
+Shortname: trusted-types
+Group: WICG
+Level: none
+Status: ED
+URL: https://wicg.github.io/trusted-types/
+Editor: Krzysztof Kotowicz, Google LLC https://google.com, koto@google.com
+Editor: Mike West, Google LLC https://google.com, mkwst@google.com
+Repository: WICG/trusted-types
+Abstract: an API that allows the applications to lock down the DOM XSS sinks to only accept non-spoofable, typed values in place of strings.
+Markup Shorthands: css no, markdown yes
+Ignored Terms: h1, h2, h3, h4, h5, h6, xmp
+Complain About: broken-links yes
+Complain About: missing-example-ids yes
+</pre>
+
+Placeholder {#top}
+==================
+
+Port from <a href="https://docs.google.com/document/d/1wpH37zSrfecx65TS6Up7l_WWydG_l2e6UXaZadIxzas/edit#heading=h.9b4jja7aagiy">Google Docs</a> in progress.
+
+Just wait.....
