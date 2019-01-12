@@ -4,7 +4,7 @@ Shortname: trusted-types
 Group: WICG
 Level: none
 Status: ED
-URL: https://wicg.github.io/trusted-types/
+URL: https://raw.githack.com/WICG/trusted-types/master/dist/spec/index.bs.html
 Editor: Krzysztof Kotowicz, Google LLC https://google.com, koto@google.com
 Editor: Mike West, Google LLC https://google.com, mkwst@google.com
 Repository: WICG/trusted-types
@@ -20,4 +20,4 @@ Placeholder {#top}
 
 Port from <a href="https://docs.google.com/document/d/1wpH37zSrfecx65TS6Up7l_WWydG_l2e6UXaZadIxzas/edit#heading=h.9b4jja7aagiy">Google Docs</a> in progress.
 
-Just wait.....
+Just wait...
