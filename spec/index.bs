@@ -9,15 +9,212 @@ Editor: Krzysztof Kotowicz, Google LLC https://google.com, koto@google.com
 Editor: Mike West, Google LLC https://google.com, mkwst@google.com
 Repository: WICG/trusted-types
 Abstract: an API that allows the applications to lock down the DOM XSS sinks to only accept non-spoofable, typed values in place of strings.
-Markup Shorthands: css no, markdown yes
+Markup Shorthands: css no, markdown yes, biblio yes
 Ignored Terms: h1, h2, h3, h4, h5, h6, xmp
-Complain About: broken-links yes
-Complain About: missing-example-ids yes
+Complain About: broken-links yes, missing-example-ids yes
 </pre>
 
-Placeholder {#top}
-==================
+# Introduction
 
-Port from <a href="https://docs.google.com/document/d/1wpH37zSrfecx65TS6Up7l_WWydG_l2e6UXaZadIxzas/edit#heading=h.9b4jja7aagiy">Google Docs</a> in progress.
+DOM-Based Cross-Site Scripting (DOM XSS) occurs when a web application
+takes a string value from an attacker-controlled source (e.g. the
+document URL parameter, or postMessage channel) and passes that value
+to one of the sink functions (e.g. the `eval` function, or
+`HTMLAnchorElement.href` setter), that eventually causes execution of the
+script payload controlled by the attacker.
 
-Just wait...
+This vulnerability type is prevalent in the web applications for two
+reasons. For one, it’s easy to introduce - there are over 60 different
+sinks that execute scripts based on a string input
+(e.g. `Element.innerHTML`, or `Location.href` setters). A lot of those
+sinks are widely used, and are often passed an attacker-controlled
+value without the developer realizing it. Secondly, DOM XSS is
+difficult to prevent. Due to the dynamic nature of JavaScript it’s
+difficult to ascertain that this vulnerability is not present in a
+given program - as such, DOM XSS is often missed during manual code
+reviews, and automated code analysis. As an example,
+`foo[bar] = aString` is a statement that potentially introduces DOM XSS.
+
+This document defines Trusted Types - an API that allows the
+applications to lock down the DOM XSS sinks to only accept
+non-spoofable, typed values in place of strings. These values can in
+turn only be created from application-defined policies, allowing the
+authors to define rules guarding writing values to the DOM, and
+reducing the DOM XSS attack surface to small, isolated parts of the
+web application codebase, which are substantially easier to safeguard,
+monitor and review.
+
+
+## Goals
+
+*   Minimize the likelihood of accidental DOM XSS introduction by the authors.
+
+*   Encourage a design in which XSS-related security decisions are
+    encapsulated within a small part of the application.
+
+
+*   Reduce DOM XSS security review surface for complex web application codebases.
+
+
+## Non-goals
+
+*   Address injections into server-side generated markup, in specific
+    reflections into the body of the scripts running in a document.
+
+Issue:  mention other solutions, like templating systems, or CSP for mitigating
+
+
+## Use cases
+
+Issue: figure out if we need this section here. CSP has none, SRI has one and it looks useful.
+
+*   An author maintains a complex web application written in a framework
+    that uses a secure templating system to generate the UI
+    components. The application also depends on 3rd party client-side
+    libraries that perform auxiliary tasks (e.g. analytics, performance
+    monitoring). To ensure that none of these components introduces DOM
+    XSS vulnerabilities, author defines a Trusted Type policy in the
+    templating policy and enables the enforcement for the DOM sinks.
+*   Issue: Something about reducing the review surface
+
+
+# Framework
+
+DOM XSS sink functions accept string values, but those values
+represent a few distinct types. For example,
+[[DOM-Parsing#widl-Element-innerHTML|Element.innerHTML]]'s
+setter expects a snippet of HTML to parse,
+{{HTMLScriptElement/src!!attribute|HTMLScriptElement.src}}'s
+setter expects a URL to load and execute a script from, and
+{{HTMLScriptElement/text!!attribute|HTMLScriptElement.text}}'s
+setter expects raw content for the script element (in most cases an
+uncompiled script body).
+
+DOM XSS is introduced when attacker-controlled payload reaches one of
+the sink functions, however it’s impossible to determine if this
+vulnerability is present by looking at the DOM sink calls only, as the
+strings do not carry the information about the provenance of their
+value. To allow the authors to control values reaching sensitive DOM
+and JavaScript functions, we introduce Trusted Types.
+
+
+## Trusted Types
+
+In place of strings, we introduce the following list of
+<dfn type>Trusted Type</dfn>s indicating that a given value is
+trusted by the authors to be used with a DOM sink in a certain context.
+This allows the authors to specify the intention when creating a given
+value, and the user agents to introduce checks based on the type of
+such value to preserve the authors’ intent. For example, if the
+authors intends a value to be used as a URL of an image, an attempt to
+load a script from that URL would fail.
+
+All types below wrap over an immutable string, specified when the
+objects are created. These objects are non-spoofable in a sense that
+there is no JavaScript-exposed way to replace the inner string value
+of a given object - it’s stored in an internal slot with no setter
+exposed.
+
+All the object’s stringifiers return the inner string value. This
+makes it easy to incrementally migrate the application code into using
+Trusted Types in place of DOM strings (it’s possible to start
+producing types in parts of the application, while still using and
+accepting strings in other parts of the codebase). In that sense,
+Trusted Types are backwards-compatible with the regular DOM APIs.
+
+
+### <dfn type>TrustedHTML</dfn>
+
+The TrustedHTML interface represents a string that a developer can
+confidently insert into a context that will render it as HTML
+(element.innerHTML's setter, for example). These objects are immutable
+wrappers around a string, constructed via a [=TrustedTypePolicy=]'s
+{{TrustedTypePolicy/createHTML|createHTML}} method.
+
+<pre class="idl">
+[Exposed=Window]
+interface TrustedHTML {
+  stringifier;
+};
+</pre>
+
+TrustedHTML objects have a `[[Data]]` internal slot which holds a
+DOMString. The slot's value is set when the object is created, and
+will never change during its lifetime.
+
+To stringify a TrustedHTML object, return the DOMString from its
+`[[Data]]` internal slot.
+
+
+### <dfn type>TrustedScript</dfn>
+
+The TrustedScript interface represents a string with an uncompiled
+script body that a developer can confidently execute (by passing it to
+a {{HTMLScriptElement/text!!attribute|HTMLScriptElement.text}}'s
+setter, for example). These objects are immutable wrappers around a
+string, constructed via a [=TrustedTypePolicy=]'s
+{{TrustedTypePolicy/createScript|createScript}} method.
+
+<pre class="idl">
+[Exposed=Window]
+interface TrustedScript {
+  stringifier;
+};
+</pre>
+
+TrustedScript objects have a `[[Data]]` internal slot which holds a
+DOMString. The slot's value is set when the object is created, and
+will never change during its lifetime.
+
+To stringify a TrustedScript object, return the DOMString from its
+`[[Data]]` internal slot.
+
+
+### <dfn type>TrustedScriptURL</dfn>
+
+The TrustedScriptURL interface represents a string that a developer
+can confidently insert into a context that will be parsed as URL of an
+external script resource ({{HTMLScriptElement/src|HTMLScriptElement.src}}'s
+
+setter, for example). These objects are immutable wrappers around a
+string, constructed via a [=TrustedTypePolicy=]'s
+{{TrustedTypePolicy/createScriptURL|createScriptURL}} method.
+
+<pre class="idl">
+[Exposed=Window]
+interface TrustedScriptURL {
+  stringifier;
+};
+</pre>
+
+TrustedScriptURL objects have a `[[Data]]` internal slot which holds a
+USVString. The slot's value is set when the object is created, and
+will never change during its lifetime.
+
+To stringify a TrustedScriptURL object, return the USVString from its
+`[[Data]]` internal slot.
+
+
+### <dfn type>TrustedURL</dfn>
+
+The TrustedScriptURL interface represents a string that a developer
+can confidently insert into a context that will be parsed as URL of an
+external resource that are not scripted
+({{HTMLScriptElement/src!!attribute|HTMLScriptElement.src}}'s
+setter, for example). These objects are immutable wrappers around a
+string, constructed via a [=TrustedTypePolicy=]'s
+{{TrustedTypePolicy/createURL|createURL}} method.
+
+<pre class="idl">
+[Exposed=Window]
+interface TrustedURL {
+  stringifier;
+};
+</pre>
+
+TrustedURL objects have a `[[Data]]` internal slot which holds a
+USVString.  The slot's value is set when the object is created, and
+will never change during its lifetime.
+
+To stringify a TrustedURL object, return the USVString from its
+`[[Data]]` internal slot.
