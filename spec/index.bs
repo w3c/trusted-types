@@ -14,7 +14,7 @@ Ignored Terms: h1, h2, h3, h4, h5, h6, xmp
 Complain About: broken-links yes, missing-example-ids yes
 </pre>
 
-# Introduction
+# Introduction # {#introduction}
 
 DOM-Based Cross-Site Scripting (DOM XSS) occurs when a web application
 takes a string value from an attacker-controlled source (e.g. the
@@ -45,7 +45,7 @@ web application codebase, which are substantially easier to safeguard,
 monitor and review.
 
 
-## Goals
+## Goals ## {#goals}
 
 *   Minimize the likelihood of accidental DOM XSS introduction by the authors.
 
@@ -56,7 +56,7 @@ monitor and review.
 *   Reduce DOM XSS security review surface for complex web application codebases.
 
 
-## Non-goals
+## Non-goals ## {#non-goals}
 
 *   Address injections into server-side generated markup, in specific
     reflections into the body of the scripts running in a document.
@@ -64,7 +64,7 @@ monitor and review.
 Issue:  mention other solutions, like templating systems, or CSP for mitigating
 
 
-## Use cases
+## Use cases ## {#use-cases}
 
 Issue: figure out if we need this section here. CSP has none, SRI has one and it looks useful.
 
@@ -78,7 +78,7 @@ Issue: figure out if we need this section here. CSP has none, SRI has one and it
 *   Issue: Something about reducing the review surface
 
 
-# Framework
+# Framework # {#framework}
 
 DOM XSS sink functions accept string values, but those values
 represent a few distinct types. For example,
@@ -98,7 +98,7 @@ value. To allow the authors to control values reaching sensitive DOM
 and JavaScript functions, we introduce Trusted Types.
 
 
-## Trusted Types
+## Trusted Types ## {#trusted-types}
 
 In place of strings, we introduce the following list of
 <dfn type>Trusted Type</dfn>s indicating that a given value is
@@ -123,13 +123,13 @@ accepting strings in other parts of the codebase). In that sense,
 Trusted Types are backwards-compatible with the regular DOM APIs.
 
 
-### <dfn type>TrustedHTML</dfn>
+### <dfn type>TrustedHTML</dfn> ### {#trusted-html}
 
 The TrustedHTML interface represents a string that a developer can
 confidently insert into a context that will render it as HTML
 (element.innerHTML's setter, for example). These objects are immutable
 wrappers around a string, constructed via a [=TrustedTypePolicy=]'s
-{{TrustedTypePolicy/createHTML|createHTML}} method.
+{{TrustedTypePolicy/createHTML(input)|createHTML}} method.
 
 <pre class="idl">
 [Exposed=Window]
@@ -146,14 +146,14 @@ To stringify a TrustedHTML object, return the DOMString from its
 `[[Data]]` internal slot.
 
 
-### <dfn type>TrustedScript</dfn>
+### <dfn type>TrustedScript</dfn> ### {#trusted-script}
 
 The TrustedScript interface represents a string with an uncompiled
 script body that a developer can confidently execute (by passing it to
 a {{HTMLScriptElement/text!!attribute|HTMLScriptElement.text}}'s
 setter, for example). These objects are immutable wrappers around a
 string, constructed via a [=TrustedTypePolicy=]'s
-{{TrustedTypePolicy/createScript|createScript}} method.
+{{TrustedTypePolicy/createScript(input)|createScript}} method.
 
 <pre class="idl">
 [Exposed=Window]
@@ -170,7 +170,7 @@ To stringify a TrustedScript object, return the DOMString from its
 `[[Data]]` internal slot.
 
 
-### <dfn type>TrustedScriptURL</dfn>
+### <dfn type>TrustedScriptURL</dfn> ### {#trused-script-url}
 
 The TrustedScriptURL interface represents a string that a developer
 can confidently insert into a context that will be parsed as URL of an
@@ -178,7 +178,7 @@ external script resource ({{HTMLScriptElement/src|HTMLScriptElement.src}}'s
 
 setter, for example). These objects are immutable wrappers around a
 string, constructed via a [=TrustedTypePolicy=]'s
-{{TrustedTypePolicy/createScriptURL|createScriptURL}} method.
+{{TrustedTypePolicy/createScriptURL(input)|createScriptURL}} method.
 
 <pre class="idl">
 [Exposed=Window]
@@ -195,7 +195,7 @@ To stringify a TrustedScriptURL object, return the USVString from its
 `[[Data]]` internal slot.
 
 
-### <dfn type>TrustedURL</dfn>
+### <dfn type>TrustedURL</dfn> ### {#trusted-url}
 
 The TrustedScriptURL interface represents a string that a developer
 can confidently insert into a context that will be parsed as URL of an
@@ -203,7 +203,7 @@ external resource that are not scripted
 ({{HTMLScriptElement/src!!attribute|HTMLScriptElement.src}}'s
 setter, for example). These objects are immutable wrappers around a
 string, constructed via a [=TrustedTypePolicy=]'s
-{{TrustedTypePolicy/createURL|createURL}} method.
+{{TrustedTypePolicy/createURL(input)|createURL}} method.
 
 <pre class="idl">
 [Exposed=Window]
@@ -218,3 +218,255 @@ will never change during its lifetime.
 
 To stringify a TrustedURL object, return the USVString from its
 `[[Data]]` internal slot.
+
+
+## Policies ## {#policies}
+
+[=Trusted Type=] objects wrap values that are explicitly trusted by
+the author to be inserted into the DOM (contrary to strings, trust in
+which is implicit, which leads to accidental vulnerabilities). As
+such, creating a Trusted Type object instance becomes a de facto DOM
+XSS sink, and hence code that creates TT instances is
+security-critical. To allow for strict control over Trusted Type
+object creation we don’t expose the constructors of those
+directly. Instead, Trusted Types can only be created via user-defined
+and immutable policies that define rules for converting a string into
+a given Trusted Type object.
+
+This allows the authors to specify custom, programmatic rules that
+Trusted Types must adhere to. For example, the authors may define a
+policy that will sanitize an HTML string, allowing only a subset of
+tags and attributes that are known not to cause JavaScript
+execution. Any TrustedHTML object created through this policy can then
+be safely used in the application, and e.g. passed to `innerHTML`
+setter - even if the input value was controlled by the attacker, the
+policy rules neutralized it to adhere to policy-specific
+contract. Similar policy may be used for script URLs, that for example
+assures that only a whitelist of script URLs can be used by the
+application.
+
+There can be multiple policies for a document, allowing the
+applications to define different rules for different parts of the
+codebase. As Trusted Type objects can only be created via policies, if
+[=enforcement=] is enabled, only the policy code can introduce a DOM
+XSS, and hence call-sites of the policies' factory functions are the
+/only/ security-sensitive code in the entire program. Only this
+typically small subset of the entire code base needs to be
+security-reviewed for DOM XSS - there’s no need to monitor or review
+the traditional DOM sinks, as User Agents [=enforcement|enforce=] that
+those sinks will only accept Trusted Type objects, and these in turn
+can only be created via policies.
+
+The {{TrustedTypePolicyFactory/createPolicy|createPolicy} function in
+factory (a factory object singleton is available as TrustedTypes in
+the global object) returns a policy object whose create\* functions
+will create Trusted Type objects after applying the policy
+rules. Policies may also be optionally exposed, allowing callers to
+obtain a reference to the policy object from the global registry.
+
+While it’s safe to globally expose a policy that sanitizes its input
+(and allow any part of the application to use it), there might be a
+need to create lax policies to be used internally, and only to be
+called with author-controlled input. For example, a client-side HTML
+templating library, an HTML sanitizer library, or a JS asynchronous
+code plugin loading subsystem each will likely need full control over
+HTML or URLs. The API design facilitates that - each policy may only
+be used if the callsite can obtain a reference to the policy (a return
+value from {{TrustedTypePolicyFactory/createPolicy}}). As such, policy
+references can be treated as [=capabilities=], access to which can be
+controlled using JavaScript techniques (e.g. via closures, internal
+function variables, or modules).
+
+### <dfn type>TrustedTypePolicy</dfn> ### {#trusted-type-policy}
+
+Policy objects implement a TrustedTypePolicy interface and define a
+group of functions creating Trusted Type objects. Each policy is
+identified by a name unique within a realm. Each of the create
+functions converts a string value to a given Trusted Type variant, or
+throws a TypeError if a conversion of a given value is disallowed.
+
+<pre class="idl">
+[Exposed=Window]
+interface TrustedTypePolicy {
+  [Unforgeable] readonly attribute DOMString name;
+  [Unforgeable] TrustedHTML createHTML(DOMString input);
+  [Unforgeable] TrustedScript createScript(DOMString input);
+  [Unforgeable] TrustedScriptURL createScriptURL(DOMString input);
+  [Unforgeable] TrustedURL createURL(DOMString input);
+};
+</pre>
+
+Each TrustedTypePolicy object has an `[[options]]` internal slot,
+describing the actual behavior of the policy.
+
+<dfn method for="TrustedTypePolicy">createHTML(input)</dfn> returns the
+result of executing the [=Create a Trusted Type algorithm=], with the
+following arguments:
+1.  `“TrustedHTML”` as trustedTypeName,
+1.  [[DOM#context-object|context object]] as policy, and
+1.  input as value.
+
+<dfn method for="TrustedTypePolicy">createScript(input)</dfn> returns the
+result of executing the [=Create a Trusted Type algorithm=], with the
+following arguments:
+1.  `“TrustedScript”` as trustedTypeName,
+1.  [[DOM#context-object|context object]] as policy, and
+1.  input as value.
+
+<dfn method for="TrustedTypePolicy">createScriptURL(input)</dfn> returns the
+result of executing the [=Create a Trusted Type algorithm=], with the
+following arguments:
+1.  `“TrustedScriptURL”` as trustedTypeName,
+1.  [[DOM#context-object|context object]] as policy, and
+1.  input as value.
+
+<dfn method for="TrustedTypePolicy">createURL(input)</dfn> returns the
+result of executing the [=Create a Trusted Type algorithm=], with the
+following arguments:
+1.  `“TrustedURL”` as trustedTypeName,
+1.  [[DOM#context-object|context object]] as policy, and
+1.  input as value.
+
+
+### <dfn type>TrustedTypePolicyOptions</dfn> ### {#trusted-type-policy-options}
+
+This dictionary holds author-defined functions for converting string
+values into trusted values. These functions do not create [=Trusted Type=]
+object instances directly; instead - this behavior is provided by
+[=TrustedTypePolicy=].
+
+<pre class="idl">
+dictionary TrustedTypePolicyOptions {
+   CreateHTMLCallback? createHTML;
+   CreateScriptCallback? createScript;
+   CreateURLCallback? createURL;
+   CreateScriptURLCallback? createScriptURL;
+   boolean exposed = false;
+};
+callback CreateHTMLCallback = DOMString (DOMString input);
+callback CreateScriptCallback = DOMString (DOMString input);
+callback CreateURLCallback = USVString (DOMString input);
+callback CreateScriptURLCallback = USVString (DOMString input);
+</pre>
+
+
+### <dfn type>TrustedTypePolicyFactory</dfn> ### {#trusted-type-policy-factory}
+
+TrustedTypePolicyFactory is the main object allowing for creating
+[=TrustedTypePolicy|policies=] and verifying that the candidate
+Trusted Type object instances were indeed created via one of the
+policies.
+
+<xmp class="idl">
+[Exposed=Window] interface TrustedTypePolicyFactory {
+    [Unforgeable] TrustedTypePolicy createPolicy(
+        DOMString policyName, optional TrustedTypePolicyOptions policyOptions,
+        optional boolean exposed = false);
+    [Unforgeable] TrustedTypePolicy getExposedPolicy(DOMString policyName);
+    [Unforgeable] sequence<DOMString> getPolicyNames();
+    [Unforgeable] boolean isHTML(object? checkedObject);
+    [Unforgeable] boolean isScript(object? checkedObject);
+    [Unforgeable] boolean isScriptURL(object? checkedObject);
+    [Unforgeable] boolean isURL(object? checkedObject);
+};
+</xmp>
+
+Internal slot `[[PolicyMap]]` contains a map, with each map entry
+being a pair of a policy name (DOMString key) and the
+TrustedTypePolicy (value).
+
+Internal slot `[[Configuration]]` stores the Trusted Type
+Configuration to be applied for documents the factory is created for.
+
+Issue: Configuration or PolicyOptions?
+
+<dfn method for="TrustedTypePolicyFactory">createPolicy(policyName, policyOptions, exposed)</dfn>
+creates a uniquely named policy object that will implement the rules
+passed in the [=TrustedTypePolicyOptions=] object. Allowed policy names
+may be restricted by the [=Trusted-Types HTTP Response Header=] - if that
+is present, and the policy name is not on the whitelist defined in the
+header, the policy creation fails with a [[WebIDL-1#idl-Error|TypeError]].
+Also, if createPolicy is called more than once with any given policyName,
+policy creation fails with a TypeError. The policy can also be
+optionally exposed, allowing for a policy retrieval by name. Returns
+the result of executing a [=Create a policy algorithm=], with the
+following arguments:
+1.  [[DOM#context-object|context object]] as factory,
+1.  policyName as policyName, and
+1.  exposed as exposed.
+
+<dfn method for="TrustedTypePolicyFactory">getPolicyNames()</dfn>
+returns a new list, comprising of all keys of the `[[PolicyMap]]`
+internal slot map.
+
+<dfn method for="TrustedTypePolicyFactory">getExposedPolicy(policyName)</dfn>
+returns a policy object identified by a name, if that policy exists
+and is exposed. Returns the result of executing a
+[=Get exposed policy algorithm=], with the following arguments:
+1.  [[DOM#context-object|context object]] as factory, policyName as policyName.
+
+<dfn method for="TrustedTypePolicyFactory">isHTML(checkedObject)</dfn>,
+<dfn method for="TrustedTypePolicyFactory">isScript(checkedObject)</dfn>,
+<dfn method for="TrustedTypePolicyFactory">isScriptURL(checkedObject)</dfn>,
+<dfn method for="TrustedTypePolicyFactory">isURL(checkedObject)</dfn>
+are used to check if a given object is indeed a legitimate
+[=Trusted Type=] object (e.g. it was created via one of the configured
+policies). This is to be able to detect a forgery of the objects via
+e.g. {{Object/create(O, properties)!!method|Object.create}} or
+prototype chains manipulation. The functions return true if
+checkedObject is an instance of an object of the corresponding Trusted
+Type that has its `[[Data]]` internal slot set.  They return false
+otherwise.
+
+<div class="example">
+<xmp highlight="js">
+const myPolicy = TrustedTypes.createPolicy('myPolicy', {
+  // This needs security review, as it's security critical code;
+  // a flaw in this code could cause DOM XSS.
+  createHTML(input) { return ASanitizer.sanitize(input) },
+  createScriptURL(input) {
+    const u = new URL(dirty, document.baseURI);
+    if (APPLICATION_CONFIG.scriptOrigins.includes(u.origin)) {
+      return u.href;
+    }
+    throw new Error('Cannot load scripts from this origin');
+  },
+});
+TrustedTypes.getPolicyNames();
+// ['myPolicy']
+
+TrustedTypes.getExposedPolicy('myPolicy');
+// null
+
+document.querySelector("#foo").innerHTML = myPolicy.createHTML(aValue);
+scriptElement.src = myPolicy.createScriptURL(
+    'https://scripts.myapp.example/script.js');
+</xmp>
+</div>
+
+### Default policy ### {#default-policy}
+
+One of the policies, the “default” policy, is special; while all other
+policies have to be called explicitly to create a TrustedType object,
+the default policy can also be called implicitly by the user agent. It
+allows the application to define the rules that should be run as a
+fallback, in case a DOM sink function is passed a string (instead of a
+Trusted Type object).
+
+This optional behavior allows for introducing Trusted Type enforcement
+to applications that are still using legacy code that writes to the DOM
+(or calls `eval`) directly. Needless to say, this exposed policy should
+necessarily be defined with very strict rules not to introduce a DOM
+XSS vulnerability in unknown parts of the application. In an extreme
+case, a lax, no-op default policy could bring the application DOM XSS
+security posture back to the pre-Trusted Types level. If possible,
+authors should resort to a default policy in a transitional period
+only, use it to detect and rewrite “raw DOM writes” dependencies and
+eventually phase out its usage entirely.
+
+Issue: library authors should not depend on the default policy.
+
+
+## Algorithms ## {#algorithms}
+
+Issue: finish migrating from Google doc.
