@@ -1214,7 +1214,7 @@ Possible extra rowspan handling
 </style>
   <meta content="Bikeshed version 86d51a2d9c3c0de4540c77189312f7e2393844af" name="generator">
   <link href="https://raw.githack.com/WICG/trusted-types/master/dist/spec/index.bs.html" rel="canonical">
-  <meta content="29c64783e34e15a76f23100db0130bc9468ace1b" name="document-revision">
+  <meta content="99759c5f171037221649ca125b69696b01238e6e" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -1534,8 +1534,11 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
         <li><a href="#is-policy-name-allow-algorithm"><span class="secno">2.3.5</span> <span class="content"><span>Is policy name allowed algorithm</span></span></a>
         <li><a href="#is-default-policy"><span class="secno">2.3.6</span> <span class="content"><span>Is a default policy</span></span></a>
         <li><a href="#create-a-trusted-type-algorithm"><span class="secno">2.3.7</span> <span class="content"><span>Create a Trusted Type algorithm</span></span></a>
+        <li><a href="#create-a-violation-for-algorithm"><span class="secno">2.3.8</span> <span class="content"><span>Create a Violation for algorithm</span></span></a>
        </ol>
-      <li><a href="#violation"><span class="secno">2.4</span> <span class="content"><span>Violation</span></span></a>
+      <li><a href="#violation"><span class="secno">2.4</span> <span class="content">Violation</span></a>
+      <li><a href="#trusted-type-configuration"><span class="secno">2.5</span> <span class="content">TrustedTypeConfiguration</span></a>
+      <li><a href="#trusted-types-http-header"><span class="secno">2.6</span> <span class="content"><span>Trusted-Types</span> HTTP Response Header</span></a>
      </ol>
     <li><a href="#conformance"><span class="secno"></span> <span class="content"> Conformance</span></a>
     <li>
@@ -1548,6 +1551,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <a href="#references"><span class="secno"></span> <span class="content">References</span></a>
      <ol class="toc">
       <li><a href="#normative"><span class="secno"></span> <span class="content">Normative References</span></a>
+      <li><a href="#informative"><span class="secno"></span> <span class="content">Informative References</span></a>
      </ol>
     <li><a href="#idl-index"><span class="secno"></span> <span class="content">IDL Index</span></a>
     <li><a href="#issues-index"><span class="secno"></span> <span class="content">Issues Index</span></a>
@@ -1911,8 +1915,7 @@ the default policy can also be called implicitly by the user agent. It
 allows the application to define the rules that should be run as a
 fallback, in case a DOM sink function is passed a string (instead of a
 Trusted Type object).</p>
-   <p>This optional behavior allows for introducing Trusted Type enforcement
-to applications that are still using legacy code that writes to the DOM
+   <p>This optional behavior allows for introducing Trusted Type <a data-link-type="dfn" href="#enforcement" id="ref-for-enforcement②">enforcement</a> to applications that are still using legacy code that writes to the DOM
 (or calls <code>eval</code>) directly. Needless to say, this exposed policy should
 necessarily be defined with very strict rules not to introduce a DOM
 XSS vulnerability in unknown parts of the application. In an extreme
@@ -1923,6 +1926,7 @@ only, use it to detect and rewrite "raw DOM writes" dependencies and
 eventually phase out its usage entirely.</p>
    <p class="issue" id="issue-8cdab294"><a class="self-link" href="#issue-8cdab294"></a> library authors should not depend on the default policy.</p>
    <h3 class="heading settled" data-level="2.3" id="algorithms"><span class="secno">2.3. </span><span class="content">Algorithms</span><a class="self-link" href="#algorithms"></a></h3>
+   <p class="issue" id="issue-594c8990"><a class="self-link" href="#issue-594c8990"></a> should algorithms move after all type definitions instead of appearing in the middle?</p>
    <h4 class="heading settled" data-level="2.3.1" id="initialize-policy-factory-algorithm"><span class="secno">2.3.1. </span><span class="content"><dfn data-dfn-type="abstract-op" data-export id="abstract-opdef-initialize-policy-factory-algorithm">Initialize policy factory algorithm<a class="self-link" href="#abstract-opdef-initialize-policy-factory-algorithm"></a></dfn></span><a class="self-link" href="#initialize-policy-factory-algorithm"></a></h4>
    <p>To initialize a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicyfactory" id="ref-for-trustedtypepolicyfactory">Trusted Type Factory</a></code> with a <code class="idl"><a data-link-type="idl" href="#dictdef-trustedtypeconfiguration" id="ref-for-dictdef-trustedtypeconfiguration①">TrustedTypeConfiguration</a></code> run these steps:</p>
    <ol>
@@ -2063,20 +2067,21 @@ set to <em>dataString</em>.</p>
      <p>Return <em>trustedObject</em>.</p>
    </ol>
    <p class="issue" id="issue-f07622ba"><a class="self-link" href="#issue-f07622ba"></a> In step 6, "is an error, return error".  Should it return <em>policyValue</em> or raise a different error?</p>
-   <h3 class="heading settled" data-level="2.4" id="violation"><span class="secno">2.4. </span><span class="content"><dfn data-dfn-type="dfn" data-noexport id="violation①">Violation<a class="self-link" href="#violation①"></a></dfn></span><a class="self-link" href="#violation"></a></h3>
-   <p class="issue" id="issue-aaa77a25"><a class="self-link" href="#issue-aaa77a25"></a> STILL TODO</p>
-   <ul>
-    <li data-md>
-     <p><dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="callback-this-value">callback this value</dfn></p>
-    <li data-md>
-     <p><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-is-a-default-policy-algorithm">Is a default policy algorithm</dfn></p>
-    <li data-md>
-     <p><dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="capabilities">capabilities</dfn> link to ocaps</p>
-    <li data-md>
-     <p><dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="enforcement">enforcement</dfn></p>
-    <li data-md>
-     <p><dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="trusted-types-http-response-header">Trusted-Types HTTP Response Header</dfn> <dfn data-dfn-type="http-header" data-export id="http-headerdef-trusted-types">Trusted-Types<a class="self-link" href="#http-headerdef-trusted-types"></a></dfn></p>
-   </ul>
+   <h4 class="heading settled" data-level="2.3.8" id="create-a-violation-for-algorithm"><span class="secno">2.3.8. </span><span class="content"><dfn data-dfn-type="abstract-op" data-export id="abstract-opdef-create-a-violation-for-algorithm">Create a Violation for algorithm<a class="self-link" href="#abstract-opdef-create-a-violation-for-algorithm"></a></dfn></span><a class="self-link" href="#create-a-violation-for-algorithm"></a></h4>
+   <p class="issue" id="issue-28dcbd8e"><a class="self-link" href="#issue-28dcbd8e"></a> TODO: write</p>
+   <h3 class="heading settled" data-level="2.4" id="violation"><span class="secno">2.4. </span><span class="content">Violation</span><a class="self-link" href="#violation"></a></h3>
+   <p>A violation represents an action which goes against the set of <code class="idl"><a data-link-type="idl" href="#dictdef-trustedtypeconfiguration" id="ref-for-dictdef-trustedtypeconfiguration②">TrustedTypeConfiguration</a></code> objects associated with the <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document">Document</a></code>.</p>
+   <p class="issue" id="issue-e2eb5dd8"><a class="self-link" href="#issue-e2eb5dd8"></a> rephrase in terms of "not allowed by any" or "disallowed by any"</p>
+   <p class="issue" id="issue-d1310019"><a class="self-link" href="#issue-d1310019"></a> how does this relate to webappsec-csp/<a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation" id="ref-for-violation">Violation</a>?</p>
+   <p class="issue" id="issue-cf1ff51c"><a class="self-link" href="#issue-cf1ff51c"></a> TODO: Describe the properties of the violation
+Each violation has a configuration , which is a Trusted Type Configuration.
+Each violation has a global object , which is a global object.</p>
+   <p class="issue" id="issue-621e48db"><a class="self-link" href="#issue-621e48db"></a> TODO(mkwst): How to serialize? CSP3 has no serialization defined for
+the violation object, although reporting assumes the object should be
+serializable.</p>
+   <h3 class="heading settled" data-level="2.5" id="trusted-type-configuration"><span class="secno">2.5. </span><span class="content">TrustedTypeConfiguration</span><a class="self-link" href="#trusted-type-configuration"></a></h3>
+   <p>A Trusted Type Configuration defines <a data-link-type="dfn" href="#enforcement" id="ref-for-enforcement③">enforcement</a> setting for <a data-link-type="dfn" href="#trusted-type" id="ref-for-trusted-type③">Trusted Types</a> and restrictions on policy names that can be applied
+to a <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document①">Document</a></code>.</p>
 <pre class="idl highlight def"><c- b>enum</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="enum" data-export id="enumdef-stringatsinkdisposition"><code><c- g>StringAtSinkDisposition</c-></code></dfn> {
   <dfn class="idl-code" data-dfn-for="StringAtSinkDisposition" data-dfn-type="enum-value" data-export id="dom-stringatsinkdisposition-reject"><code><c- s>"reject"</c-></code><a class="self-link" href="#dom-stringatsinkdisposition-reject"></a></dfn>,
   <dfn class="idl-code" data-dfn-for="StringAtSinkDisposition" data-dfn-type="enum-value" data-export id="dom-stringatsinkdisposition-report"><code><c- s>"report"</c-></code><a class="self-link" href="#dom-stringatsinkdisposition-report"></a></dfn>,
@@ -2095,6 +2100,45 @@ set to <em>dataString</em>.</p>
   <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①⑤"><c- b>DOMString</c-></a> <dfn class="idl-code" data-default="&quot;default&quot;" data-dfn-for="TrustedTypeConfiguration" data-dfn-type="dict-member" data-export data-type="DOMString " id="dom-trustedtypeconfiguration-reportinggroup"><code><c- g>reportingGroup</c-></code><a class="self-link" href="#dom-trustedtypeconfiguration-reportinggroup"></a></dfn> = "default";
 };
 </pre>
+   <p>Each Trusted Type Configuration has an associated
+{{StringAtSinkDisposition|string at sink disposition}
+(for all DOM sinks).
+It is either “reject”, “report” or “unsafe-allow”.</p>
+   <p>Each Trusted Type Configuration has an associated <code class="idl"><a data-link-type="idl" href="#enumdef-unknownpolicynamedisposition" id="ref-for-enumdef-unknownpolicynamedisposition①">unknown policy name disposition</a></code>,
+which is either “reject” or “allow”.</p>
+   <p>Each Trusted Type Configuration has an associated allowed policy names set.</p>
+   <p>Each Trusted Type Configuration has a related reporting group name.</p>
+   <h3 class="heading settled" data-level="2.6" id="trusted-types-http-header"><span class="secno">2.6. </span><span class="content"><dfn data-dfn-type="http-header" data-export id="http-headerdef-trusted-types">Trusted-Types<a class="self-link" href="#http-headerdef-trusted-types"></a></dfn> HTTP Response Header</span><a class="self-link" href="#trusted-types-http-header"></a></h3>
+   <p class="issue" id="issue-559d4710"><a class="self-link" href="#issue-559d4710"></a> +mkwst The header does not appear in the origin trials.  Can
+the spec differ so much from the implementation, especially given the
+upcoming Origin Trials?</p>
+   <p>The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="trusted-types-http-response-header">Trusted-Types HTTP response header</dfn> instructs the user agent
+to apply a particular configuration of the Trusted Types framework to
+the document created from a given response. Specifically, the header
+value defines which policies (identified by name) can be created by
+the application, and what should be the behavior when a string value
+is passed to an XSS sink (e.g. should the type-based enforcement be
+enabled, or whether to attempt implicit conversion with a default
+policy).</p>
+   <p>The header value is a serialized Trusted Types configuration
+represented by the following ANBF:</p>
+<pre class="highlight"><c- nc>TRUSTEDTYPES</c-> <c- o>=</c-> <c- nc>json-field-value</c->
+</pre>
+   <p>The header’s value is interpreted as a JSON-formatted array of values
+without the outer <code>[</code> and <code>]</code>, as described in Section 4 of <a data-link-type="biblio" href="#biblio-http-jfv">[HTTP-JFV]</a>.</p>
+   <p class="issue" id="issue-aaa77a25"><a class="self-link" href="#issue-aaa77a25"></a> STILL TODO</p>
+   <ul>
+    <li data-md>
+     <p><dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="callback-this-value">callback this value</dfn></p>
+    <li data-md>
+     <p><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-is-a-default-policy-algorithm">Is a default policy algorithm</dfn></p>
+    <li data-md>
+     <p><dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="capabilities">capabilities</dfn> link to ocaps</p>
+    <li data-md>
+     <p><dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="enforcement">enforcement</dfn></p>
+   </ul>
+   <p class="issue" id="issue-72dfcf5b"><a class="self-link" href="#issue-72dfcf5b"></a> Go through and identify non-normative sections and mark them
+appropriately.</p>
   </main>
   <div data-fill-with="conformance">
    <h2 class="no-ref no-num heading settled" id="conformance"><span class="content"> Conformance</span><a class="self-link" href="#conformance"></a></h2>
@@ -2245,12 +2289,13 @@ set to <em>dataString</em>.</p>
   <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
   <h3 class="no-num no-ref heading settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
   <ul class="index">
-   <li><a href="#dom-unknownpolicynamedisposition-allow">"allow"</a><span>, in §2.4</span>
-   <li><a href="#dom-trustedtypeconfiguration-allowednames">allowedNames</a><span>, in §2.4</span>
-   <li><a href="#callback-this-value">callback this value</a><span>, in §2.4</span>
-   <li><a href="#capabilities">capabilities</a><span>, in §2.4</span>
+   <li><a href="#dom-unknownpolicynamedisposition-allow">"allow"</a><span>, in §2.5</span>
+   <li><a href="#dom-trustedtypeconfiguration-allowednames">allowedNames</a><span>, in §2.5</span>
+   <li><a href="#callback-this-value">callback this value</a><span>, in §2.6</span>
+   <li><a href="#capabilities">capabilities</a><span>, in §2.6</span>
    <li><a href="#abstract-opdef-create-a-trusted-type-algorithm">Create a Trusted Type algorithm</a><span>, in §2.3.7</span>
    <li><a href="#abstract-opdef-create-a-trusted-type-policy-algorithm">Create a Trusted Type Policy algorithm</a><span>, in §2.3.2</span>
+   <li><a href="#abstract-opdef-create-a-violation-for-algorithm">Create a Violation for algorithm</a><span>, in §2.3.8</span>
    <li><a href="#dom-trustedtypepolicyoptions-createhtml">createHTML</a><span>, in §2.2.2</span>
    <li><a href="#callbackdef-createhtmlcallback">CreateHTMLCallback</a><span>, in §2.2.2</span>
    <li><a href="#dom-trustedtypepolicy-createhtml">createHTML(input)</a><span>, in §2.2.1</span>
@@ -2266,8 +2311,8 @@ set to <em>dataString</em>.</p>
    <li><a href="#dom-trustedtypepolicyoptions-createurl">createURL</a><span>, in §2.2.2</span>
    <li><a href="#callbackdef-createurlcallback">CreateURLCallback</a><span>, in §2.2.2</span>
    <li><a href="#dom-trustedtypepolicy-createurl">createURL(input)</a><span>, in §2.2.1</span>
-   <li><a href="#dom-trustedtypeconfiguration-domsinks">domSinks</a><span>, in §2.4</span>
-   <li><a href="#enforcement">enforcement</a><span>, in §2.4</span>
+   <li><a href="#dom-trustedtypeconfiguration-domsinks">domSinks</a><span>, in §2.5</span>
+   <li><a href="#enforcement">enforcement</a><span>, in §2.6</span>
    <li><a href="#dom-trustedtypepolicyoptions-exposed">exposed</a><span>, in §2.2.2</span>
    <li><a href="#abstract-opdef-get-default-policy-algorithm">Get default policy algorithm</a><span>, in §2.3.4</span>
    <li><a href="#abstract-opdef-get-exposed-policy-algorithm">Get exposed policy algorithm</a><span>, in §2.3.3</span>
@@ -2275,7 +2320,7 @@ set to <em>dataString</em>.</p>
    <li><a href="#dom-trustedtypepolicyfactory-getpolicynames">getPolicyNames()</a><span>, in §2.2.3</span>
    <li><a href="#abstract-opdef-initialize-policy-factory-algorithm">Initialize policy factory algorithm</a><span>, in §2.3.1</span>
    <li><a href="#abstract-opdef-is-a-default-policy">Is a default policy</a><span>, in §2.3.6</span>
-   <li><a href="#abstract-opdef-is-a-default-policy-algorithm">Is a default policy algorithm</a><span>, in §2.4</span>
+   <li><a href="#abstract-opdef-is-a-default-policy-algorithm">Is a default policy algorithm</a><span>, in §2.6</span>
    <li><a href="#dom-trustedtypepolicyfactory-ishtml">isHTML(checkedObject)</a><span>, in §2.2.3</span>
    <li><a href="#abstract-opdef-is-policy-name-allowed-algorithm">Is policy name allowed algorithm</a><span>, in §2.3.5</span>
    <li><a href="#dom-trustedtypepolicyfactory-isscript">isScript(checkedObject)</a><span>, in §2.2.3</span>
@@ -2285,12 +2330,12 @@ set to <em>dataString</em>.</p>
    <li>
     "reject"
     <ul>
-     <li><a href="#dom-stringatsinkdisposition-reject">enum-value for StringAtSinkDisposition</a><span>, in §2.4</span>
-     <li><a href="#dom-unknownpolicynamedisposition-reject">enum-value for UnknownPolicyNameDisposition</a><span>, in §2.4</span>
+     <li><a href="#dom-stringatsinkdisposition-reject">enum-value for StringAtSinkDisposition</a><span>, in §2.5</span>
+     <li><a href="#dom-unknownpolicynamedisposition-reject">enum-value for UnknownPolicyNameDisposition</a><span>, in §2.5</span>
     </ul>
-   <li><a href="#dom-stringatsinkdisposition-report">"report"</a><span>, in §2.4</span>
-   <li><a href="#dom-trustedtypeconfiguration-reportinggroup">reportingGroup</a><span>, in §2.4</span>
-   <li><a href="#enumdef-stringatsinkdisposition">StringAtSinkDisposition</a><span>, in §2.4</span>
+   <li><a href="#dom-stringatsinkdisposition-report">"report"</a><span>, in §2.5</span>
+   <li><a href="#dom-trustedtypeconfiguration-reportinggroup">reportingGroup</a><span>, in §2.5</span>
+   <li><a href="#enumdef-stringatsinkdisposition">StringAtSinkDisposition</a><span>, in §2.5</span>
    <li>
     stringification behavior
     <ul>
@@ -2318,7 +2363,7 @@ set to <em>dataString</em>.</p>
      <li><a href="#typedef-trustedscripturl">(type)</a><span>, in §2.1.3</span>
     </ul>
    <li><a href="#trusted-type">Trusted Type</a><span>, in §2.1</span>
-   <li><a href="#dictdef-trustedtypeconfiguration">TrustedTypeConfiguration</a><span>, in §2.4</span>
+   <li><a href="#dictdef-trustedtypeconfiguration">TrustedTypeConfiguration</a><span>, in §2.5</span>
    <li>
     TrustedTypePolicy
     <ul>
@@ -2337,19 +2382,31 @@ set to <em>dataString</em>.</p>
      <li><a href="#dictdef-trustedtypepolicyoptions">(dictionary)</a><span>, in §2.2.2</span>
      <li><a href="#typedef-trustedtypepolicyoptions">(type)</a><span>, in §2.2.2</span>
     </ul>
-   <li><a href="#http-headerdef-trusted-types">Trusted-Types</a><span>, in §2.4</span>
-   <li><a href="#trusted-types-http-response-header">Trusted-Types HTTP Response Header</a><span>, in §2.4</span>
+   <li><a href="#http-headerdef-trusted-types">Trusted-Types</a><span>, in §2.6</span>
+   <li><a href="#trusted-types-http-response-header">Trusted-Types HTTP response header</a><span>, in §2.6</span>
    <li>
     TrustedURL
     <ul>
      <li><a href="#trustedurl">(interface)</a><span>, in §2.1.4</span>
      <li><a href="#typedef-trustedurl">(type)</a><span>, in §2.1.4</span>
     </ul>
-   <li><a href="#dom-trustedtypeconfiguration-unknownpolicyname">unknownPolicyName</a><span>, in §2.4</span>
-   <li><a href="#enumdef-unknownpolicynamedisposition">UnknownPolicyNameDisposition</a><span>, in §2.4</span>
-   <li><a href="#dom-stringatsinkdisposition-unsafe-allow">"unsafe-allow"</a><span>, in §2.4</span>
-   <li><a href="#violation①">Violation</a><span>, in §2.4</span>
+   <li><a href="#dom-trustedtypeconfiguration-unknownpolicyname">unknownPolicyName</a><span>, in §2.5</span>
+   <li><a href="#enumdef-unknownpolicynamedisposition">UnknownPolicyNameDisposition</a><span>, in §2.5</span>
+   <li><a href="#dom-stringatsinkdisposition-unsafe-allow">"unsafe-allow"</a><span>, in §2.5</span>
   </ul>
+  <aside class="dfn-panel" data-for="term-for-violation">
+   <a href="https://w3c.github.io/webappsec-csp/#violation">https://w3c.github.io/webappsec-csp/#violation</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-violation">2.4. Violation</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-document">
+   <a href="https://dom.spec.whatwg.org/#document">https://dom.spec.whatwg.org/#document</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-document">2.4. Violation</a>
+    <li><a href="#ref-for-document①">2.5. TrustedTypeConfiguration</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-dom-script-src">
    <a href="https://html.spec.whatwg.org/multipage/scripting.html#dom-script-src">https://html.spec.whatwg.org/multipage/scripting.html#dom-script-src</a><b>Referenced in:</b>
    <ul>
@@ -2371,7 +2428,7 @@ set to <em>dataString</em>.</p>
     <li><a href="#ref-for-idl-DOMString">2.2.1. TrustedTypePolicy</a> <a href="#ref-for-idl-DOMString①">(2)</a> <a href="#ref-for-idl-DOMString②">(3)</a> <a href="#ref-for-idl-DOMString③">(4)</a> <a href="#ref-for-idl-DOMString④">(5)</a>
     <li><a href="#ref-for-idl-DOMString⑤">2.2.2. TrustedTypePolicyOptions</a> <a href="#ref-for-idl-DOMString⑥">(2)</a> <a href="#ref-for-idl-DOMString⑦">(3)</a> <a href="#ref-for-idl-DOMString⑧">(4)</a> <a href="#ref-for-idl-DOMString⑨">(5)</a> <a href="#ref-for-idl-DOMString①⓪">(6)</a>
     <li><a href="#ref-for-idl-DOMString①①">2.2.3. TrustedTypePolicyFactory</a> <a href="#ref-for-idl-DOMString①②">(2)</a> <a href="#ref-for-idl-DOMString①③">(3)</a>
-    <li><a href="#ref-for-idl-DOMString①④">2.4. Violation</a> <a href="#ref-for-idl-DOMString①⑤">(2)</a>
+    <li><a href="#ref-for-idl-DOMString①④">2.5. TrustedTypeConfiguration</a> <a href="#ref-for-idl-DOMString①⑤">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-Exposed">
@@ -2414,6 +2471,16 @@ set to <em>dataString</em>.</p>
   <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
   <ul class="index">
    <li>
+    <a data-link-type="biblio">[csp-3]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-violation" style="color:initial">violation</span>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[DOM]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-document" style="color:initial">Document</span>
+    </ul>
+   <li>
     <a data-link-type="biblio">[HTML]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-dom-script-src" style="color:initial">src</span>
@@ -2433,12 +2500,21 @@ set to <em>dataString</em>.</p>
   <h2 class="no-num no-ref heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
   <h3 class="no-num no-ref heading settled" id="normative"><span class="content">Normative References</span><a class="self-link" href="#normative"></a></h3>
   <dl>
+   <dt id="biblio-csp-3">[CSP-3]
+   <dd>Content Security Policy Level 3 URL: <a href="https://www.w3.org/TR/CSP3/">https://www.w3.org/TR/CSP3/</a>
+   <dt id="biblio-dom">[DOM]
+   <dd>Anne van Kesteren. <a href="https://dom.spec.whatwg.org/">DOM Standard</a>. Living Standard. URL: <a href="https://dom.spec.whatwg.org/">https://dom.spec.whatwg.org/</a>
    <dt id="biblio-html">[HTML]
    <dd>Anne van Kesteren; et al. <a href="https://html.spec.whatwg.org/multipage/">HTML Standard</a>. Living Standard. URL: <a href="https://html.spec.whatwg.org/multipage/">https://html.spec.whatwg.org/multipage/</a>
    <dt id="biblio-rfc2119">[RFC2119]
    <dd>S. Bradner. <a href="https://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>. March 1997. Best Current Practice. URL: <a href="https://tools.ietf.org/html/rfc2119">https://tools.ietf.org/html/rfc2119</a>
    <dt id="biblio-webidl">[WebIDL]
    <dd>Cameron McCormack; Boris Zbarsky; Tobie Langel. <a href="https://heycam.github.io/webidl/">Web IDL</a>. 15 December 2016. ED. URL: <a href="https://heycam.github.io/webidl/">https://heycam.github.io/webidl/</a>
+  </dl>
+  <h3 class="no-num no-ref heading settled" id="informative"><span class="content">Informative References</span><a class="self-link" href="#informative"></a></h3>
+  <dl>
+   <dt id="biblio-http-jfv">[HTTP-JFV]
+   <dd>J. Reschke. <a href="https://tools.ietf.org/html/draft-reschke-http-jfv">A JSON Encoding for HTTP Header Field Values</a>. 24 October 2017. Active Internet-Draft. URL: <a href="https://tools.ietf.org/html/draft-reschke-http-jfv">https://tools.ietf.org/html/draft-reschke-http-jfv</a>
   </dl>
   <h2 class="no-num no-ref heading settled" id="idl-index"><span class="content">IDL Index</span><a class="self-link" href="#idl-index"></a></h2>
 <pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed⑥"><c- g>Exposed</c-></a>=<c- n>Window</c->]
@@ -2506,7 +2582,7 @@ set to <em>dataString</em>.</p>
 };
 
 <c- b>dictionary</c-> <a href="#dictdef-trustedtypeconfiguration"><code><c- g>TrustedTypeConfiguration</c-></code></a> {
-  <a class="n" data-link-type="idl-name" href="#enumdef-unknownpolicynamedisposition" id="ref-for-enumdef-unknownpolicynamedisposition①"><c- n>UnknownPolicyNameDisposition</c-></a> <a data-default="&quot;allow&quot;" data-type="UnknownPolicyNameDisposition " href="#dom-trustedtypeconfiguration-unknownpolicyname"><code><c- g>unknownPolicyName</c-></code></a> = "allow";
+  <a class="n" data-link-type="idl-name" href="#enumdef-unknownpolicynamedisposition" id="ref-for-enumdef-unknownpolicynamedisposition②"><c- n>UnknownPolicyNameDisposition</c-></a> <a data-default="&quot;allow&quot;" data-type="UnknownPolicyNameDisposition " href="#dom-trustedtypeconfiguration-unknownpolicyname"><code><c- g>unknownPolicyName</c-></code></a> = "allow";
   <a class="n" data-link-type="idl-name" href="#enumdef-stringatsinkdisposition" id="ref-for-enumdef-stringatsinkdisposition①"><c- n>StringAtSinkDisposition</c-></a>? <a data-type="StringAtSinkDisposition? " href="#dom-trustedtypeconfiguration-domsinks"><code><c- g>domSinks</c-></code></a>;
   <c- b>sequence</c->&lt;<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①④①"><c- b>DOMString</c-></a>> <a data-type="sequence<DOMString> " href="#dom-trustedtypeconfiguration-allowednames"><code><c- g>allowedNames</c-></code></a>;
   <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①⑤①"><c- b>DOMString</c-></a> <a data-default="&quot;default&quot;" data-type="DOMString " href="#dom-trustedtypeconfiguration-reportinggroup"><code><c- g>reportingGroup</c-></code></a> = "default";
@@ -2519,10 +2595,25 @@ set to <em>dataString</em>.</p>
    <div class="issue"> figure out if we need this section here. CSP has none, SRI has one and it looks useful.<a href="#issue-d33261f4"> ↵ </a></div>
    <div class="issue"> Something about reducing the review surface<a href="#issue-5bedf486"> ↵ </a></div>
    <div class="issue"> library authors should not depend on the default policy.<a href="#issue-8cdab294"> ↵ </a></div>
+   <div class="issue"> should algorithms move after all type definitions instead of appearing in the middle?<a href="#issue-594c8990"> ↵ </a></div>
    <div class="issue"> does configuration need to be defensively copied.<a href="#issue-281b8e3f"> ↵ </a></div>
    <div class="issue"> in step 4, exposed is not reachable from policy.  Should we first look up <code>[[options]]</code> internal slot.<a href="#issue-99d8b4ca"> ↵ </a></div>
    <div class="issue"> In step 6, "is an error, return error".  Should it return <em>policyValue</em> or raise a different error?<a href="#issue-f07622ba"> ↵ </a></div>
+   <div class="issue"> TODO: write<a href="#issue-28dcbd8e"> ↵ </a></div>
+   <div class="issue"> rephrase in terms of "not allowed by any" or "disallowed by any"<a href="#issue-e2eb5dd8"> ↵ </a></div>
+   <div class="issue"> how does this relate to webappsec-csp/<a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation">Violation</a>?<a href="#issue-d1310019"> ↵ </a></div>
+   <div class="issue"> TODO: Describe the properties of the violation
+Each violation has a configuration , which is a Trusted Type Configuration.
+Each violation has a global object , which is a global object.<a href="#issue-cf1ff51c"> ↵ </a></div>
+   <div class="issue"> TODO(mkwst): How to serialize? CSP3 has no serialization defined for
+the violation object, although reporting assumes the object should be
+serializable.<a href="#issue-621e48db"> ↵ </a></div>
+   <div class="issue"> +mkwst The header does not appear in the origin trials.  Can
+the spec differ so much from the implementation, especially given the
+upcoming Origin Trials?<a href="#issue-559d4710"> ↵ </a></div>
    <div class="issue"> STILL TODO<a href="#issue-aaa77a25"> ↵ </a></div>
+   <div class="issue"> Go through and identify non-normative sections and mark them
+appropriately.<a href="#issue-72dfcf5b"> ↵ </a></div>
   </div>
   <aside class="dfn-panel" data-for="trusted-type">
    <b><a href="#trusted-type">#trusted-type</a></b><b>Referenced in:</b>
@@ -2530,6 +2621,7 @@ set to <em>dataString</em>.</p>
     <li><a href="#ref-for-trusted-type">2.2. Policies</a>
     <li><a href="#ref-for-trusted-type①">2.2.2. TrustedTypePolicyOptions</a>
     <li><a href="#ref-for-trusted-type②">2.2.3. TrustedTypePolicyFactory</a>
+    <li><a href="#ref-for-trusted-type③">2.5. TrustedTypeConfiguration</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="trustedhtml">
@@ -2737,6 +2829,44 @@ set to <em>dataString</em>.</p>
     <li><a href="#ref-for-abstract-opdef-create-a-trusted-type-algorithm">2.2.1. TrustedTypePolicy</a> <a href="#ref-for-abstract-opdef-create-a-trusted-type-algorithm①">(2)</a> <a href="#ref-for-abstract-opdef-create-a-trusted-type-algorithm②">(3)</a> <a href="#ref-for-abstract-opdef-create-a-trusted-type-algorithm③">(4)</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="enumdef-stringatsinkdisposition">
+   <b><a href="#enumdef-stringatsinkdisposition">#enumdef-stringatsinkdisposition</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-enumdef-stringatsinkdisposition">2.5. TrustedTypeConfiguration</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="enumdef-unknownpolicynamedisposition">
+   <b><a href="#enumdef-unknownpolicynamedisposition">#enumdef-unknownpolicynamedisposition</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-enumdef-unknownpolicynamedisposition">2.5. TrustedTypeConfiguration</a> <a href="#ref-for-enumdef-unknownpolicynamedisposition①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="dictdef-trustedtypeconfiguration">
+   <b><a href="#dictdef-trustedtypeconfiguration">#dictdef-trustedtypeconfiguration</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dictdef-trustedtypeconfiguration">2.2.3. TrustedTypePolicyFactory</a>
+    <li><a href="#ref-for-dictdef-trustedtypeconfiguration①">2.3.1. Initialize policy factory algorithm</a>
+    <li><a href="#ref-for-dictdef-trustedtypeconfiguration②">2.4. Violation</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="dom-trustedtypeconfiguration-unknownpolicyname">
+   <b><a href="#dom-trustedtypeconfiguration-unknownpolicyname">#dom-trustedtypeconfiguration-unknownpolicyname</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-trustedtypeconfiguration-unknownpolicyname">2.3.5. Is policy name allowed algorithm</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="dom-trustedtypeconfiguration-allowednames">
+   <b><a href="#dom-trustedtypeconfiguration-allowednames">#dom-trustedtypeconfiguration-allowednames</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-trustedtypeconfiguration-allowednames">2.3.5. Is policy name allowed algorithm</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="trusted-types-http-response-header">
+   <b><a href="#trusted-types-http-response-header">#trusted-types-http-response-header</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-trusted-types-http-response-header">2.2.3. TrustedTypePolicyFactory</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="callback-this-value">
    <b><a href="#callback-this-value">#callback-this-value</a></b><b>Referenced in:</b>
    <ul>
@@ -2759,43 +2889,8 @@ set to <em>dataString</em>.</p>
    <b><a href="#enforcement">#enforcement</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-enforcement">2.2. Policies</a> <a href="#ref-for-enforcement①">(2)</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="trusted-types-http-response-header">
-   <b><a href="#trusted-types-http-response-header">#trusted-types-http-response-header</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-trusted-types-http-response-header">2.2.3. TrustedTypePolicyFactory</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="enumdef-stringatsinkdisposition">
-   <b><a href="#enumdef-stringatsinkdisposition">#enumdef-stringatsinkdisposition</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-enumdef-stringatsinkdisposition">2.4. Violation</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="enumdef-unknownpolicynamedisposition">
-   <b><a href="#enumdef-unknownpolicynamedisposition">#enumdef-unknownpolicynamedisposition</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-enumdef-unknownpolicynamedisposition">2.4. Violation</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="dictdef-trustedtypeconfiguration">
-   <b><a href="#dictdef-trustedtypeconfiguration">#dictdef-trustedtypeconfiguration</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dictdef-trustedtypeconfiguration">2.2.3. TrustedTypePolicyFactory</a>
-    <li><a href="#ref-for-dictdef-trustedtypeconfiguration①">2.3.1. Initialize policy factory algorithm</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="dom-trustedtypeconfiguration-unknownpolicyname">
-   <b><a href="#dom-trustedtypeconfiguration-unknownpolicyname">#dom-trustedtypeconfiguration-unknownpolicyname</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-trustedtypeconfiguration-unknownpolicyname">2.3.5. Is policy name allowed algorithm</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="dom-trustedtypeconfiguration-allowednames">
-   <b><a href="#dom-trustedtypeconfiguration-allowednames">#dom-trustedtypeconfiguration-allowednames</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-trustedtypeconfiguration-allowednames">2.3.5. Is policy name allowed algorithm</a>
+    <li><a href="#ref-for-enforcement②">2.2.4. Default policy</a>
+    <li><a href="#ref-for-enforcement③">2.5. TrustedTypeConfiguration</a>
    </ul>
   </aside>
 <script>/* script-dfn-panel */

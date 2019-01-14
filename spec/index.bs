@@ -456,7 +456,7 @@ allows the application to define the rules that should be run as a
 fallback, in case a DOM sink function is passed a string (instead of a
 Trusted Type object).
 
-This optional behavior allows for introducing Trusted Type enforcement
+This optional behavior allows for introducing Trusted Type [=enforcement=]
 to applications that are still using legacy code that writes to the DOM
 (or calls `eval`) directly. Needless to say, this exposed policy should
 necessarily be defined with very strict rules not to introduce a DOM
@@ -471,6 +471,8 @@ Issue: library authors should not depend on the default policy.
 
 
 ## Algorithms ## {#algorithms}
+
+Issue: should algorithms move after all type definitions instead of appearing in the middle?
 
 
 ### <dfn abstract-op>Initialize policy factory algorithm</dfn> ### {#initialize-policy-factory-algorithm}
@@ -611,20 +613,33 @@ and a string *value*, execute the following steps:
 Issue: In step 6, "is an error, return error".  Should it return
 *policyValue* or raise a different error?
 
+### <dfn abstract-op>Create a Violation for algorithm</dfn> ### {#create-a-violation-for-algorithm}
+
+Issue: TODO: write
 
 
+## Violation ## {#violation}
 
+A violation represents an action which goes against the set of
+{{TrustedTypeConfiguration}} objects associated with the {{Document}}.
 
+Issue: rephrase in terms of "not allowed by any" or "disallowed by any"
 
+Issue: how does this relate to webappsec-csp/[=Violation=]?
 
-Issue: STILL TODO
+Issue: TODO: Describe the properties of the violation
+Each violation has a configuration , which is a Trusted Type Configuration.
+Each violation has a global object , which is a global object.
 
-*   <dfn>callback this value</dfn>
-*   <dfn abstract-op>Is a default policy algorithm</dfn>
-*   <dfn>capabilities</dfn> link to ocaps
-*   <dfn>enforcement</dfn>
-*   <dfn>Trusted-Types HTTP Response Header</dfn>
-    <dfn http-header>Trusted-Types</dfn>
+Issue: TODO(mkwst): How to serialize? CSP3 has no serialization defined for
+the violation object, although reporting assumes the object should be
+serializable.
+
+## TrustedTypeConfiguration ## {#trusted-type-configuration}
+
+A Trusted Type Configuration defines [=enforcement=] setting for
+[=Trusted Types=] and restrictions on policy names that can be applied
+to a {{Document}}.
 
 <xmp class="idl">
 enum StringAtSinkDisposition {
@@ -645,3 +660,56 @@ dictionary TrustedTypeConfiguration {
   DOMString reportingGroup = "default";
 };
 </xmp>
+
+Each Trusted Type Configuration has an associated
+{{StringAtSinkDisposition|string at sink disposition}
+(for all DOM sinks).
+It is either “reject”, “report” or “unsafe-allow”.
+
+Each Trusted Type Configuration has an associated
+{{UnknownPolicyNameDisposition|unknown policy name disposition}},
+which is either “reject” or “allow”.
+
+Each Trusted Type Configuration has an associated allowed policy names set.
+
+Each Trusted Type Configuration has a related reporting group name.
+
+
+## <dfn http-header>Trusted-Types</dfn> HTTP Response Header ## {#trusted-types-http-header}
+
+Issue: +mkwst The header does not appear in the origin trials.  Can
+the spec differ so much from the implementation, especially given the
+upcoming Origin Trials?
+
+The <dfn>Trusted-Types HTTP response header</dfn> instructs the user agent
+to apply a particular configuration of the Trusted Types framework to
+the document created from a given response. Specifically, the header
+value defines which policies (identified by name) can be created by
+the application, and what should be the behavior when a string value
+is passed to an XSS sink (e.g. should the type-based enforcement be
+enabled, or whether to attempt implicit conversion with a default
+policy).
+
+The header value is a serialized Trusted Types configuration
+represented by the following ANBF:
+
+<xmp highlight="abnf">
+TRUSTEDTYPES = json-field-value
+</xmp>
+
+The header’s value is interpreted as a JSON-formatted array of values
+without the outer `[` and `]`, as described in Section 4 of
+[[HTTP-JFV]].
+
+
+
+Issue: STILL TODO
+
+*   <dfn>callback this value</dfn>
+*   <dfn abstract-op>Is a default policy algorithm</dfn>
+*   <dfn>capabilities</dfn> link to ocaps
+*   <dfn>enforcement</dfn>
+
+
+Issue: Go through and identify non-normative sections and mark them
+appropriately.
