@@ -379,8 +379,8 @@ Internal slot `[[PolicyMap]]` contains a map, with each map entry
 being a pair of a policy name (DOMString key) and the
 TrustedTypePolicy (value).
 
-Internal slot `[[Configuration]]` stores the Trusted Type
-Configuration to be applied for documents the factory is created for.
+Internal slot `[[Configuration]]` stores the {{TrustedTypeConfiguration}}
+to be applied for documents the factory is created for.
 
 <dfn method for="TrustedTypePolicyFactory">createPolicy(policyName, policyOptions, exposed)</dfn>
 creates a uniquely named policy object that will implement the rules
@@ -472,14 +472,17 @@ Issue: library authors should not depend on the default policy.
 
 ## Algorithms ## {#algorithms}
 
+
 ### <dfn abstract-op>Initialize policy factory algorithm</dfn> ### {#initialize-policy-factory-algorithm}
 
 To initialize a {{TrustedTypePolicyFactory|Trusted Type Factory}} with a
-Trusted Type Configuration run these steps:
+{{TrustedTypeConfiguration}} run these steps:
 
 1.  Let *factory* be a new TrustedTypePolicyFactory object, with an empty `[[PolicyMap]]` map.
 1.  Set the `[[Configuration]]` internal slot to *configuration*.
 1.  Return *factory*.
+
+Issue: does configuration need to be defensively copied.
 
 ### <dfn abstract-op>Create a Trusted Type Policy algorithm</dfn> ### {#create-trusted-type-policy-algorithm}
 
@@ -491,7 +494,7 @@ and exposed flag (exposed), run these steps:
     `policyName`, then throw a *TypeError*.
 1.  Let *policyAllowed* be the result of running [$Is policy name allowed algorithm$].
 1.  If *policyAllowed* is False, throw a *TypeError*.
-1.  If [$Is a default policy algorithm$] returns True and exposed is False, then
+1.  If [$Is a default policy algorithm$] returns True and *exposed* is False, then
     throw a *TypeError*.
 1.  Let *policy* be a new {{TrustedTypePolicy}} object.
 1.  Set policy's `name` property value to *policyName*.
@@ -499,12 +502,52 @@ and exposed flag (exposed), run these steps:
 1.  Set *policyOptions*
     {{TrustedTypePolicy/createHTML(input)|createHTML}} property to *option*'s
     {{TrustedTypePolicyOptions/createHTML|createHTML}} property value.
-1.  Set *policyOptions* createScript property to option's createScript property value.
-1.  Set *policyOptions* createScriptURL property to option's createScriptURL property value.
-1.  Set *policyOptions* createURL property to option's createURL property value.
+1.  Set *policyOptions* {{TrustedTypePolicy/createScript()|createScript}}
+    property to *option*'s
+    {{TrustedTypePolicyOptions/createScript|createScript}} property value.
+1.  Set *policyOptions* {{TrustedTypePolicy/createScriptURL()|createScriptURL}}
+    property to *option*'s
+    {{TrustedTypePolicyOptions/createScriptURL|createScriptURL}} property value.
+1.  Set *policyOptions* {{TrustedTypePolicy/createURL()|createURL}}
+    property to *option*'s
+    {{TrustedTypePolicyOptions/createURL|createURL}} property value.
 1.  Set *policy*'s `[[options]]` internal slot value to *policyOptions*.
-1.  Set the factory's `[[PolicyMap]]`(policyName) to *policy*.
-1.  Return policy.
+1.  Set the velue for the *policyName* entry of *factory*'s `[[PolicyMap]]` to *policy*.
+1.  Return *policy*.
+
+
+### <dfn abstract-op>Get exposed policy algorithm</dfn> ### {#get-exposed-policy-algorithm}
+
+1.  Let *policyName* and *factory* be the same variables as those of
+    the same name in the algorithm that invoked these steps.
+1.  If *factory*'s `[[PolicyMap]]` internal slot does not have an entry
+    with the key *policyName*, return null.
+1.  Otherwise, let *policy* be the value of the *policyName* entry of
+    *factory*'s `[[PolicyMap]]`.
+1.  If *policy*'s {{TrustedTypePolicyOptions/exposed|exposed}} attribute is false,
+    return null.
+1.  Return *policy*.
+
+Issue: in step 4, exposed is not reachable from policy.  Either that property needs to be copied onto policy or a policy needs to link to its options.
+
+### <dfn abstract-op>Get default policy algorithm</dfn> ### {#get-default-policy-algorithm}
+To get the default policy for a *factory*, execute the following steps:
+
+1.  Set *policyName* to `“default”`.
+1.  Return the result of executing the [$Get exposed policy algorithm$].
+
+### <dfn abstract-op>Is policy name allowed algorithm</dfn> ### {#is-policy-name-allow-algorithm}
+Let policyName and factory be the same variables as those of the same name in the algorithm that invoked these steps.
+
+1.  Let *configuration* be the value of *factory*'s internal
+    `[[Configuration]]` slot.
+1.  If *configuration*'s
+    {{TrustedTypeConfiguration/unknownPolicyName|unknownPolicyName}}'s
+    is `“allow”`, return true.
+1.  Otherwise, if *factory*'s `[[Configuration]]`'s
+    {{TrustedTypeConfiguration/allowedNames|allowedNames}} set
+    contains *policyName*, return true. 
+1.  Return false.
 
 
 
@@ -514,10 +557,28 @@ and exposed flag (exposed), run these steps:
 Issue: STILL TODO
 
 *   <dfn abstract-op>Create a Trusted Type algorithm</dfn>
-*   <dfn abstract-op>Is policy name allowed algorithm</dfn>
 *   <dfn abstract-op>Is a default policy algorithm</dfn>
-*   <dfn abstract-op>Get exposed policy algorithm</dfn>
 *   <dfn>capabilities</dfn> link to ocaps
 *   <dfn>enforcement</dfn>
 *   <dfn>Trusted-Types HTTP Response Header</dfn>
     <dfn http-header>Trusted-Types</dfn>
+
+<xmp class="idl">
+enum StringAtSinkDisposition {
+  "reject",
+  "report",
+  "unsafe-allow",
+};
+
+enum UnknownPolicyNameDisposition {
+  "reject",
+  "allow",
+};
+
+dictionary TrustedTypeConfiguration {
+  UnknownPolicyNameDisposition unknownPolicyName = "allow";
+  StringAtSinkDisposition? domSinks;
+  sequence<DOMString> allowedNames;
+  DOMString reportingGroup = "default";
+};
+</xmp>
