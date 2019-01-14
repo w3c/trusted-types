@@ -306,28 +306,28 @@ describing the actual behavior of the policy.
 <dfn method for="TrustedTypePolicy">createHTML(input)</dfn> returns the
 result of executing the [$Create a Trusted Type algorithm$], with the
 following arguments:
-1.  `“TrustedHTML”` as trustedTypeName,
+1.  `"TrustedHTML"` as trustedTypeName,
 1.  [[DOM#context-object|context object]] as policy, and
 1.  input as value.
 
 <dfn method for="TrustedTypePolicy">createScript(input)</dfn> returns the
 result of executing the [$Create a Trusted Type algorithm$], with the
 following arguments:
-1.  `“TrustedScript”` as trustedTypeName,
+1.  `"TrustedScript"` as trustedTypeName,
 1.  [[DOM#context-object|context object]] as policy, and
 1.  input as value.
 
 <dfn method for="TrustedTypePolicy">createScriptURL(input)</dfn> returns the
 result of executing the [$Create a Trusted Type algorithm$], with the
 following arguments:
-1.  `“TrustedScriptURL”` as trustedTypeName,
+1.  `"TrustedScriptURL"` as trustedTypeName,
 1.  [[DOM#context-object|context object]] as policy, and
 1.  input as value.
 
 <dfn method for="TrustedTypePolicy">createURL(input)</dfn> returns the
 result of executing the [$Create a Trusted Type algorithm$], with the
 following arguments:
-1.  `“TrustedURL”` as trustedTypeName,
+1.  `"TrustedURL"` as trustedTypeName,
 1.  [[DOM#context-object|context object]] as policy, and
 1.  input as value.
 
@@ -449,7 +449,7 @@ scriptElement.src = myPolicy.createScriptURL(
 
 ### Default policy ### {#default-policy}
 
-One of the policies, the “default” policy, is special; while all other
+One of the policies, the "default" policy, is special; while all other
 policies have to be called explicitly to create a TrustedType object,
 the default policy can also be called implicitly by the user agent. It
 allows the application to define the rules that should be run as a
@@ -464,7 +464,7 @@ XSS vulnerability in unknown parts of the application. In an extreme
 case, a lax, no-op default policy could bring the application DOM XSS
 security posture back to the pre-Trusted Types level. If possible,
 authors should resort to a default policy in a transitional period
-only, use it to detect and rewrite “raw DOM writes” dependencies and
+only, use it to detect and rewrite "raw DOM writes" dependencies and
 eventually phase out its usage entirely.
 
 Issue: library authors should not depend on the default policy.
@@ -487,8 +487,8 @@ Issue: does configuration need to be defensively copied.
 ### <dfn abstract-op>Create a Trusted Type Policy algorithm</dfn> ### {#create-trusted-type-policy-algorithm}
 
 To create a {{TrustedTypePolicy} in a {{TrustedTypePolicyFactory|factory}},
-given a DOMString (policyName), policy options dictionary (options)
-and exposed flag (exposed), run these steps:
+given a DOMString (*policyName*), policy options dictionary (*options*)
+and exposed flag (*exposed*), run these steps:
 
 1.  If *factory*'s `[[PolicyMap]]` internal slot has an entry with the key
     `policyName`, then throw a *TypeError*.
@@ -528,26 +528,89 @@ and exposed flag (exposed), run these steps:
     return null.
 1.  Return *policy*.
 
-Issue: in step 4, exposed is not reachable from policy.  Either that property needs to be copied onto policy or a policy needs to link to its options.
+Issue: in step 4, exposed is not reachable from policy.  Should we first look up `[[options]]` internal slot.
+
 
 ### <dfn abstract-op>Get default policy algorithm</dfn> ### {#get-default-policy-algorithm}
 To get the default policy for a *factory*, execute the following steps:
 
-1.  Set *policyName* to `“default”`.
+1.  Set *policyName* to `"default"`.
 1.  Return the result of executing the [$Get exposed policy algorithm$].
 
+
 ### <dfn abstract-op>Is policy name allowed algorithm</dfn> ### {#is-policy-name-allow-algorithm}
-Let policyName and factory be the same variables as those of the same name in the algorithm that invoked these steps.
+
+Let *policyName* and *factory* be the same variables as those of the
+same name in the algorithm that invoked these steps.
 
 1.  Let *configuration* be the value of *factory*'s internal
     `[[Configuration]]` slot.
 1.  If *configuration*'s
     {{TrustedTypeConfiguration/unknownPolicyName|unknownPolicyName}}'s
-    is `“allow”`, return true.
+    is `"allow"`, return true.
 1.  Otherwise, if *factory*'s `[[Configuration]]`'s
     {{TrustedTypeConfiguration/allowedNames|allowedNames}} set
-    contains *policyName*, return true. 
+    contains *policyName*, return true.
 1.  Return false.
+
+
+### <dfn abstract-op>Is a default policy</dfn> ### {#is-default-policy}
+
+Let *policyName* be the same variable as that of the same name in the
+algorithm that invoked these steps.
+
+1.  If *policyName* equals `"default"`, return true.
+1.  Otherwise, return false.
+
+
+### <dfn abstract-op>Create a Trusted Type algorithm</dfn> ### {#create-a-trusted-type-algorithm}
+
+Given a {{TrustedTypePolicy}} *policy*, a type name *trustedTypeName*,
+and a string *value*, execute the following steps:
+
+
+
+1.  Let *functionName* be a function name for the given *trustedTypeName*,
+    based on the following table:
+
+    <table>
+      <tr>
+        <th>Function name</th>
+        <th>Trusted Type name </th>
+      </tr>
+      <tr>
+        <td>"createHTML"</td>
+        <td>"TrustedHTML"</td>
+      </tr>
+      <tr>
+        <td>"createScript"</td>
+        <td>"TrustedScript"</td>
+      </tr>
+      <tr>
+        <td>"createScriptURL"</td>
+        <td>"TrustedScriptURL"</td>
+      </tr>
+      <tr>
+        <td>"createURL"</td>
+        <td>"TrustedURL"</td>
+      </tr>
+    </table>
+
+1.  Let *options* be the value of *policy*'s `[[options]]` slot.
+1.  Let *function* be the value of the property in *options* named *functionName*.
+1.  If *function* is null, throw a *TypeError*.
+1.  Let *policyValue* be the result of invoking *function* with
+    *value* as a first argument, and [=callback this value=] set to null.
+1.  If *policyValue* is an error, return error.
+1.  Let *dataString* be the result of stringifying *policyValue*.
+1.  Let *trustedObject* be a new instance of an interface with a type
+    name *trustedTypeName*, with its `[[Data]]` internal slot value
+    set to *dataString*.
+1.  Return *trustedObject*.
+
+Issue: In step 6, "is an error, return error".  Should it return
+*policyValue* or raise a different error?
+
 
 
 
@@ -556,7 +619,7 @@ Let policyName and factory be the same variables as those of the same name in th
 
 Issue: STILL TODO
 
-*   <dfn abstract-op>Create a Trusted Type algorithm</dfn>
+*   <dfn>callback this value</dfn>
 *   <dfn abstract-op>Is a default policy algorithm</dfn>
 *   <dfn>capabilities</dfn> link to ocaps
 *   <dfn>enforcement</dfn>

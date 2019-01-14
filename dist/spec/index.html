@@ -1214,7 +1214,7 @@ Possible extra rowspan handling
 </style>
   <meta content="Bikeshed version 86d51a2d9c3c0de4540c77189312f7e2393844af" name="generator">
   <link href="https://raw.githack.com/WICG/trusted-types/master/dist/spec/index.bs.html" rel="canonical">
-  <meta content="095abd3ea39a4facf7f240168c64e7c047ed4e66" name="document-revision">
+  <meta content="29c64783e34e15a76f23100db0130bc9468ace1b" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -1532,7 +1532,10 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
         <li><a href="#get-exposed-policy-algorithm"><span class="secno">2.3.3</span> <span class="content"><span>Get exposed policy algorithm</span></span></a>
         <li><a href="#get-default-policy-algorithm"><span class="secno">2.3.4</span> <span class="content"><span>Get default policy algorithm</span></span></a>
         <li><a href="#is-policy-name-allow-algorithm"><span class="secno">2.3.5</span> <span class="content"><span>Is policy name allowed algorithm</span></span></a>
+        <li><a href="#is-default-policy"><span class="secno">2.3.6</span> <span class="content"><span>Is a default policy</span></span></a>
+        <li><a href="#create-a-trusted-type-algorithm"><span class="secno">2.3.7</span> <span class="content"><span>Create a Trusted Type algorithm</span></span></a>
        </ol>
+      <li><a href="#violation"><span class="secno">2.4</span> <span class="content"><span>Violation</span></span></a>
      </ol>
     <li><a href="#conformance"><span class="secno"></span> <span class="content"> Conformance</span></a>
     <li>
@@ -1769,7 +1772,7 @@ result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-cr
 following arguments:</p>
    <ol>
     <li data-md>
-     <p><code>“TrustedHTML”</code> as trustedTypeName,</p>
+     <p><code>"TrustedHTML"</code> as trustedTypeName,</p>
     <li data-md>
      <p><a href="https://dom.spec.whatwg.org/#context-object">context object</a> as policy, and</p>
     <li data-md>
@@ -1780,7 +1783,7 @@ result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-cr
 following arguments:</p>
    <ol>
     <li data-md>
-     <p><code>“TrustedScript”</code> as trustedTypeName,</p>
+     <p><code>"TrustedScript"</code> as trustedTypeName,</p>
     <li data-md>
      <p><a href="https://dom.spec.whatwg.org/#context-object">context object</a> as policy, and</p>
     <li data-md>
@@ -1791,7 +1794,7 @@ result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-cr
 following arguments:</p>
    <ol>
     <li data-md>
-     <p><code>“TrustedScriptURL”</code> as trustedTypeName,</p>
+     <p><code>"TrustedScriptURL"</code> as trustedTypeName,</p>
     <li data-md>
      <p><a href="https://dom.spec.whatwg.org/#context-object">context object</a> as policy, and</p>
     <li data-md>
@@ -1802,7 +1805,7 @@ result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-cr
 following arguments:</p>
    <ol>
     <li data-md>
-     <p><code>“TrustedURL”</code> as trustedTypeName,</p>
+     <p><code>"TrustedURL"</code> as trustedTypeName,</p>
     <li data-md>
      <p><a href="https://dom.spec.whatwg.org/#context-object">context object</a> as policy, and</p>
     <li data-md>
@@ -1902,7 +1905,7 @@ scriptElement<c- p>.</c->src <c- o>=</c-> myPolicy<c- p>.</c->createScriptURL<c-
 </pre>
    </div>
    <h4 class="heading settled" data-level="2.2.4" id="default-policy"><span class="secno">2.2.4. </span><span class="content">Default policy</span><a class="self-link" href="#default-policy"></a></h4>
-   <p>One of the policies, the “default” policy, is special; while all other
+   <p>One of the policies, the "default" policy, is special; while all other
 policies have to be called explicitly to create a TrustedType object,
 the default policy can also be called implicitly by the user agent. It
 allows the application to define the rules that should be run as a
@@ -1916,7 +1919,7 @@ XSS vulnerability in unknown parts of the application. In an extreme
 case, a lax, no-op default policy could bring the application DOM XSS
 security posture back to the pre-Trusted Types level. If possible,
 authors should resort to a default policy in a transitional period
-only, use it to detect and rewrite “raw DOM writes” dependencies and
+only, use it to detect and rewrite "raw DOM writes" dependencies and
 eventually phase out its usage entirely.</p>
    <p class="issue" id="issue-8cdab294"><a class="self-link" href="#issue-8cdab294"></a> library authors should not depend on the default policy.</p>
    <h3 class="heading settled" data-level="2.3" id="algorithms"><span class="secno">2.3. </span><span class="content">Algorithms</span><a class="self-link" href="#algorithms"></a></h3>
@@ -1933,8 +1936,8 @@ eventually phase out its usage entirely.</p>
    <p class="issue" id="issue-281b8e3f"><a class="self-link" href="#issue-281b8e3f"></a> does configuration need to be defensively copied.</p>
    <h4 class="heading settled" data-level="2.3.2" id="create-trusted-type-policy-algorithm"><span class="secno">2.3.2. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-create-a-trusted-type-policy-algorithm">Create a Trusted Type Policy algorithm</dfn></span><a class="self-link" href="#create-trusted-type-policy-algorithm"></a></h4>
    <p>To create a {{TrustedTypePolicy} in a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicyfactory" id="ref-for-trustedtypepolicyfactory①">factory</a></code>,
-given a DOMString (policyName), policy options dictionary (options)
-and exposed flag (exposed), run these steps:</p>
+given a DOMString (<em>policyName</em>), policy options dictionary (<em>options</em>)
+and exposed flag (<em>exposed</em>), run these steps:</p>
    <ol>
     <li data-md>
      <p>If <em>factory</em>'s <code>[[PolicyMap]]</code> internal slot has an entry with the key <code>policyName</code>, then throw a <em>TypeError</em>.</p>
@@ -1982,33 +1985,89 @@ return null.</p>
     <li data-md>
      <p>Return <em>policy</em>.</p>
    </ol>
-   <p class="issue" id="issue-7bf4c53c"><a class="self-link" href="#issue-7bf4c53c"></a> in step 4, exposed is not reachable from policy.  Either that property needs to be copied onto policy or a policy needs to link to its options.</p>
+   <p class="issue" id="issue-99d8b4ca"><a class="self-link" href="#issue-99d8b4ca"></a> in step 4, exposed is not reachable from policy.  Should we first look up <code>[[options]]</code> internal slot.</p>
    <h4 class="heading settled" data-level="2.3.4" id="get-default-policy-algorithm"><span class="secno">2.3.4. </span><span class="content"><dfn data-dfn-type="abstract-op" data-export id="abstract-opdef-get-default-policy-algorithm">Get default policy algorithm<a class="self-link" href="#abstract-opdef-get-default-policy-algorithm"></a></dfn></span><a class="self-link" href="#get-default-policy-algorithm"></a></h4>
     To get the default policy for a <em>factory</em>, execute the following steps: 
    <ol>
     <li data-md>
-     <p>Set <em>policyName</em> to <code>“default”</code>.</p>
+     <p>Set <em>policyName</em> to <code>"default"</code>.</p>
     <li data-md>
      <p>Return the result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-get-exposed-policy-algorithm" id="ref-for-abstract-opdef-get-exposed-policy-algorithm①">Get exposed policy algorithm</a>.</p>
    </ol>
    <h4 class="heading settled" data-level="2.3.5" id="is-policy-name-allow-algorithm"><span class="secno">2.3.5. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-is-policy-name-allowed-algorithm">Is policy name allowed algorithm</dfn></span><a class="self-link" href="#is-policy-name-allow-algorithm"></a></h4>
-    Let policyName and factory be the same variables as those of the same name in the algorithm that invoked these steps. 
+   <p>Let <em>policyName</em> and <em>factory</em> be the same variables as those of the
+same name in the algorithm that invoked these steps.</p>
    <ol>
     <li data-md>
      <p>Let <em>configuration</em> be the value of <em>factory</em>'s internal <code>[[Configuration]]</code> slot.</p>
     <li data-md>
      <p>If <em>configuration</em>'s <code class="idl"><a data-link-type="idl" href="#dom-trustedtypeconfiguration-unknownpolicyname" id="ref-for-dom-trustedtypeconfiguration-unknownpolicyname">unknownPolicyName</a></code>'s
-is <code>“allow”</code>, return true.</p>
+is <code>"allow"</code>, return true.</p>
     <li data-md>
      <p>Otherwise, if <em>factory</em>'s <code>[[Configuration]]</code>'s <code class="idl"><a data-link-type="idl" href="#dom-trustedtypeconfiguration-allowednames" id="ref-for-dom-trustedtypeconfiguration-allowednames">allowedNames</a></code> set
 contains <em>policyName</em>, return true.</p>
     <li data-md>
      <p>Return false.</p>
    </ol>
+   <h4 class="heading settled" data-level="2.3.6" id="is-default-policy"><span class="secno">2.3.6. </span><span class="content"><dfn data-dfn-type="abstract-op" data-export id="abstract-opdef-is-a-default-policy">Is a default policy<a class="self-link" href="#abstract-opdef-is-a-default-policy"></a></dfn></span><a class="self-link" href="#is-default-policy"></a></h4>
+   <p>Let <em>policyName</em> be the same variable as that of the same name in the
+algorithm that invoked these steps.</p>
+   <ol>
+    <li data-md>
+     <p>If <em>policyName</em> equals <code>"default"</code>, return true.</p>
+    <li data-md>
+     <p>Otherwise, return false.</p>
+   </ol>
+   <h4 class="heading settled" data-level="2.3.7" id="create-a-trusted-type-algorithm"><span class="secno">2.3.7. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-create-a-trusted-type-algorithm">Create a Trusted Type algorithm</dfn></span><a class="self-link" href="#create-a-trusted-type-algorithm"></a></h4>
+   <p>Given a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy⑨">TrustedTypePolicy</a></code> <em>policy</em>, a type name <em>trustedTypeName</em>,
+and a string <em>value</em>, execute the following steps:</p>
+   <ol>
+    <li data-md>
+     <p>Let <em>functionName</em> be a function name for the given <em>trustedTypeName</em>,
+based on the following table:</p>
+     <table>
+      <tbody>
+       <tr>
+        <th>Function name
+        <th>Trusted Type name 
+       <tr>
+        <td>"createHTML"
+        <td>"TrustedHTML"
+       <tr>
+        <td>"createScript"
+        <td>"TrustedScript"
+       <tr>
+        <td>"createScriptURL"
+        <td>"TrustedScriptURL"
+       <tr>
+        <td>"createURL"
+        <td>"TrustedURL"
+     </table>
+    <li data-md>
+     <p>Let <em>options</em> be the value of <em>policy</em>'s <code>[[options]]</code> slot.</p>
+    <li data-md>
+     <p>Let <em>function</em> be the value of the property in <em>options</em> named <em>functionName</em>.</p>
+    <li data-md>
+     <p>If <em>function</em> is null, throw a <em>TypeError</em>.</p>
+    <li data-md>
+     <p>Let <em>policyValue</em> be the result of invoking <em>function</em> with <em>value</em> as a first argument, and <a data-link-type="dfn" href="#callback-this-value" id="ref-for-callback-this-value">callback this value</a> set to null.</p>
+    <li data-md>
+     <p>If <em>policyValue</em> is an error, return error.</p>
+    <li data-md>
+     <p>Let <em>dataString</em> be the result of stringifying <em>policyValue</em>.</p>
+    <li data-md>
+     <p>Let <em>trustedObject</em> be a new instance of an interface with a type
+name <em>trustedTypeName</em>, with its <code>[[Data]]</code> internal slot value
+set to <em>dataString</em>.</p>
+    <li data-md>
+     <p>Return <em>trustedObject</em>.</p>
+   </ol>
+   <p class="issue" id="issue-f07622ba"><a class="self-link" href="#issue-f07622ba"></a> In step 6, "is an error, return error".  Should it return <em>policyValue</em> or raise a different error?</p>
+   <h3 class="heading settled" data-level="2.4" id="violation"><span class="secno">2.4. </span><span class="content"><dfn data-dfn-type="dfn" data-noexport id="violation①">Violation<a class="self-link" href="#violation①"></a></dfn></span><a class="self-link" href="#violation"></a></h3>
    <p class="issue" id="issue-aaa77a25"><a class="self-link" href="#issue-aaa77a25"></a> STILL TODO</p>
    <ul>
     <li data-md>
-     <p><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-create-a-trusted-type-algorithm">Create a Trusted Type algorithm</dfn></p>
+     <p><dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="callback-this-value">callback this value</dfn></p>
     <li data-md>
      <p><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-is-a-default-policy-algorithm">Is a default policy algorithm</dfn></p>
     <li data-md>
@@ -2186,10 +2245,11 @@ contains <em>policyName</em>, return true.</p>
   <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
   <h3 class="no-num no-ref heading settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
   <ul class="index">
-   <li><a href="#dom-unknownpolicynamedisposition-allow">"allow"</a><span>, in §2.3.5</span>
-   <li><a href="#dom-trustedtypeconfiguration-allowednames">allowedNames</a><span>, in §2.3.5</span>
-   <li><a href="#capabilities">capabilities</a><span>, in §2.3.5</span>
-   <li><a href="#abstract-opdef-create-a-trusted-type-algorithm">Create a Trusted Type algorithm</a><span>, in §2.3.5</span>
+   <li><a href="#dom-unknownpolicynamedisposition-allow">"allow"</a><span>, in §2.4</span>
+   <li><a href="#dom-trustedtypeconfiguration-allowednames">allowedNames</a><span>, in §2.4</span>
+   <li><a href="#callback-this-value">callback this value</a><span>, in §2.4</span>
+   <li><a href="#capabilities">capabilities</a><span>, in §2.4</span>
+   <li><a href="#abstract-opdef-create-a-trusted-type-algorithm">Create a Trusted Type algorithm</a><span>, in §2.3.7</span>
    <li><a href="#abstract-opdef-create-a-trusted-type-policy-algorithm">Create a Trusted Type Policy algorithm</a><span>, in §2.3.2</span>
    <li><a href="#dom-trustedtypepolicyoptions-createhtml">createHTML</a><span>, in §2.2.2</span>
    <li><a href="#callbackdef-createhtmlcallback">CreateHTMLCallback</a><span>, in §2.2.2</span>
@@ -2206,15 +2266,16 @@ contains <em>policyName</em>, return true.</p>
    <li><a href="#dom-trustedtypepolicyoptions-createurl">createURL</a><span>, in §2.2.2</span>
    <li><a href="#callbackdef-createurlcallback">CreateURLCallback</a><span>, in §2.2.2</span>
    <li><a href="#dom-trustedtypepolicy-createurl">createURL(input)</a><span>, in §2.2.1</span>
-   <li><a href="#dom-trustedtypeconfiguration-domsinks">domSinks</a><span>, in §2.3.5</span>
-   <li><a href="#enforcement">enforcement</a><span>, in §2.3.5</span>
+   <li><a href="#dom-trustedtypeconfiguration-domsinks">domSinks</a><span>, in §2.4</span>
+   <li><a href="#enforcement">enforcement</a><span>, in §2.4</span>
    <li><a href="#dom-trustedtypepolicyoptions-exposed">exposed</a><span>, in §2.2.2</span>
    <li><a href="#abstract-opdef-get-default-policy-algorithm">Get default policy algorithm</a><span>, in §2.3.4</span>
    <li><a href="#abstract-opdef-get-exposed-policy-algorithm">Get exposed policy algorithm</a><span>, in §2.3.3</span>
    <li><a href="#dom-trustedtypepolicyfactory-getexposedpolicy">getExposedPolicy(policyName)</a><span>, in §2.2.3</span>
    <li><a href="#dom-trustedtypepolicyfactory-getpolicynames">getPolicyNames()</a><span>, in §2.2.3</span>
    <li><a href="#abstract-opdef-initialize-policy-factory-algorithm">Initialize policy factory algorithm</a><span>, in §2.3.1</span>
-   <li><a href="#abstract-opdef-is-a-default-policy-algorithm">Is a default policy algorithm</a><span>, in §2.3.5</span>
+   <li><a href="#abstract-opdef-is-a-default-policy">Is a default policy</a><span>, in §2.3.6</span>
+   <li><a href="#abstract-opdef-is-a-default-policy-algorithm">Is a default policy algorithm</a><span>, in §2.4</span>
    <li><a href="#dom-trustedtypepolicyfactory-ishtml">isHTML(checkedObject)</a><span>, in §2.2.3</span>
    <li><a href="#abstract-opdef-is-policy-name-allowed-algorithm">Is policy name allowed algorithm</a><span>, in §2.3.5</span>
    <li><a href="#dom-trustedtypepolicyfactory-isscript">isScript(checkedObject)</a><span>, in §2.2.3</span>
@@ -2224,12 +2285,12 @@ contains <em>policyName</em>, return true.</p>
    <li>
     "reject"
     <ul>
-     <li><a href="#dom-stringatsinkdisposition-reject">enum-value for StringAtSinkDisposition</a><span>, in §2.3.5</span>
-     <li><a href="#dom-unknownpolicynamedisposition-reject">enum-value for UnknownPolicyNameDisposition</a><span>, in §2.3.5</span>
+     <li><a href="#dom-stringatsinkdisposition-reject">enum-value for StringAtSinkDisposition</a><span>, in §2.4</span>
+     <li><a href="#dom-unknownpolicynamedisposition-reject">enum-value for UnknownPolicyNameDisposition</a><span>, in §2.4</span>
     </ul>
-   <li><a href="#dom-stringatsinkdisposition-report">"report"</a><span>, in §2.3.5</span>
-   <li><a href="#dom-trustedtypeconfiguration-reportinggroup">reportingGroup</a><span>, in §2.3.5</span>
-   <li><a href="#enumdef-stringatsinkdisposition">StringAtSinkDisposition</a><span>, in §2.3.5</span>
+   <li><a href="#dom-stringatsinkdisposition-report">"report"</a><span>, in §2.4</span>
+   <li><a href="#dom-trustedtypeconfiguration-reportinggroup">reportingGroup</a><span>, in §2.4</span>
+   <li><a href="#enumdef-stringatsinkdisposition">StringAtSinkDisposition</a><span>, in §2.4</span>
    <li>
     stringification behavior
     <ul>
@@ -2257,7 +2318,7 @@ contains <em>policyName</em>, return true.</p>
      <li><a href="#typedef-trustedscripturl">(type)</a><span>, in §2.1.3</span>
     </ul>
    <li><a href="#trusted-type">Trusted Type</a><span>, in §2.1</span>
-   <li><a href="#dictdef-trustedtypeconfiguration">TrustedTypeConfiguration</a><span>, in §2.3.5</span>
+   <li><a href="#dictdef-trustedtypeconfiguration">TrustedTypeConfiguration</a><span>, in §2.4</span>
    <li>
     TrustedTypePolicy
     <ul>
@@ -2276,17 +2337,18 @@ contains <em>policyName</em>, return true.</p>
      <li><a href="#dictdef-trustedtypepolicyoptions">(dictionary)</a><span>, in §2.2.2</span>
      <li><a href="#typedef-trustedtypepolicyoptions">(type)</a><span>, in §2.2.2</span>
     </ul>
-   <li><a href="#http-headerdef-trusted-types">Trusted-Types</a><span>, in §2.3.5</span>
-   <li><a href="#trusted-types-http-response-header">Trusted-Types HTTP Response Header</a><span>, in §2.3.5</span>
+   <li><a href="#http-headerdef-trusted-types">Trusted-Types</a><span>, in §2.4</span>
+   <li><a href="#trusted-types-http-response-header">Trusted-Types HTTP Response Header</a><span>, in §2.4</span>
    <li>
     TrustedURL
     <ul>
      <li><a href="#trustedurl">(interface)</a><span>, in §2.1.4</span>
      <li><a href="#typedef-trustedurl">(type)</a><span>, in §2.1.4</span>
     </ul>
-   <li><a href="#dom-trustedtypeconfiguration-unknownpolicyname">unknownPolicyName</a><span>, in §2.3.5</span>
-   <li><a href="#enumdef-unknownpolicynamedisposition">UnknownPolicyNameDisposition</a><span>, in §2.3.5</span>
-   <li><a href="#dom-stringatsinkdisposition-unsafe-allow">"unsafe-allow"</a><span>, in §2.3.5</span>
+   <li><a href="#dom-trustedtypeconfiguration-unknownpolicyname">unknownPolicyName</a><span>, in §2.4</span>
+   <li><a href="#enumdef-unknownpolicynamedisposition">UnknownPolicyNameDisposition</a><span>, in §2.4</span>
+   <li><a href="#dom-stringatsinkdisposition-unsafe-allow">"unsafe-allow"</a><span>, in §2.4</span>
+   <li><a href="#violation①">Violation</a><span>, in §2.4</span>
   </ul>
   <aside class="dfn-panel" data-for="term-for-dom-script-src">
    <a href="https://html.spec.whatwg.org/multipage/scripting.html#dom-script-src">https://html.spec.whatwg.org/multipage/scripting.html#dom-script-src</a><b>Referenced in:</b>
@@ -2309,7 +2371,7 @@ contains <em>policyName</em>, return true.</p>
     <li><a href="#ref-for-idl-DOMString">2.2.1. TrustedTypePolicy</a> <a href="#ref-for-idl-DOMString①">(2)</a> <a href="#ref-for-idl-DOMString②">(3)</a> <a href="#ref-for-idl-DOMString③">(4)</a> <a href="#ref-for-idl-DOMString④">(5)</a>
     <li><a href="#ref-for-idl-DOMString⑤">2.2.2. TrustedTypePolicyOptions</a> <a href="#ref-for-idl-DOMString⑥">(2)</a> <a href="#ref-for-idl-DOMString⑦">(3)</a> <a href="#ref-for-idl-DOMString⑧">(4)</a> <a href="#ref-for-idl-DOMString⑨">(5)</a> <a href="#ref-for-idl-DOMString①⓪">(6)</a>
     <li><a href="#ref-for-idl-DOMString①①">2.2.3. TrustedTypePolicyFactory</a> <a href="#ref-for-idl-DOMString①②">(2)</a> <a href="#ref-for-idl-DOMString①③">(3)</a>
-    <li><a href="#ref-for-idl-DOMString①④">2.3.5. Is policy name allowed algorithm</a> <a href="#ref-for-idl-DOMString①⑤">(2)</a>
+    <li><a href="#ref-for-idl-DOMString①④">2.4. Violation</a> <a href="#ref-for-idl-DOMString①⑤">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-Exposed">
@@ -2458,7 +2520,8 @@ contains <em>policyName</em>, return true.</p>
    <div class="issue"> Something about reducing the review surface<a href="#issue-5bedf486"> ↵ </a></div>
    <div class="issue"> library authors should not depend on the default policy.<a href="#issue-8cdab294"> ↵ </a></div>
    <div class="issue"> does configuration need to be defensively copied.<a href="#issue-281b8e3f"> ↵ </a></div>
-   <div class="issue"> in step 4, exposed is not reachable from policy.  Either that property needs to be copied onto policy or a policy needs to link to its options.<a href="#issue-7bf4c53c"> ↵ </a></div>
+   <div class="issue"> in step 4, exposed is not reachable from policy.  Should we first look up <code>[[options]]</code> internal slot.<a href="#issue-99d8b4ca"> ↵ </a></div>
+   <div class="issue"> In step 6, "is an error, return error".  Should it return <em>policyValue</em> or raise a different error?<a href="#issue-f07622ba"> ↵ </a></div>
    <div class="issue"> STILL TODO<a href="#issue-aaa77a25"> ↵ </a></div>
   </div>
   <aside class="dfn-panel" data-for="trusted-type">
@@ -2503,6 +2566,7 @@ contains <em>policyName</em>, return true.</p>
     <li><a href="#ref-for-trustedtypepolicy④">2.2.2. TrustedTypePolicyOptions</a>
     <li><a href="#ref-for-trustedtypepolicy⑤">2.2.3. TrustedTypePolicyFactory</a> <a href="#ref-for-trustedtypepolicy⑥">(2)</a> <a href="#ref-for-trustedtypepolicy⑦">(3)</a>
     <li><a href="#ref-for-trustedtypepolicy⑧">2.3.2. Create a Trusted Type Policy algorithm</a>
+    <li><a href="#ref-for-trustedtypepolicy⑨">2.3.7. Create a Trusted Type algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-trustedtypepolicy-createhtml">
@@ -2673,6 +2737,12 @@ contains <em>policyName</em>, return true.</p>
     <li><a href="#ref-for-abstract-opdef-create-a-trusted-type-algorithm">2.2.1. TrustedTypePolicy</a> <a href="#ref-for-abstract-opdef-create-a-trusted-type-algorithm①">(2)</a> <a href="#ref-for-abstract-opdef-create-a-trusted-type-algorithm②">(3)</a> <a href="#ref-for-abstract-opdef-create-a-trusted-type-algorithm③">(4)</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="callback-this-value">
+   <b><a href="#callback-this-value">#callback-this-value</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-callback-this-value">2.3.7. Create a Trusted Type algorithm</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="abstract-opdef-is-a-default-policy-algorithm">
    <b><a href="#abstract-opdef-is-a-default-policy-algorithm">#abstract-opdef-is-a-default-policy-algorithm</a></b><b>Referenced in:</b>
    <ul>
@@ -2700,13 +2770,13 @@ contains <em>policyName</em>, return true.</p>
   <aside class="dfn-panel" data-for="enumdef-stringatsinkdisposition">
    <b><a href="#enumdef-stringatsinkdisposition">#enumdef-stringatsinkdisposition</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-enumdef-stringatsinkdisposition">2.3.5. Is policy name allowed algorithm</a>
+    <li><a href="#ref-for-enumdef-stringatsinkdisposition">2.4. Violation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="enumdef-unknownpolicynamedisposition">
    <b><a href="#enumdef-unknownpolicynamedisposition">#enumdef-unknownpolicynamedisposition</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-enumdef-unknownpolicynamedisposition">2.3.5. Is policy name allowed algorithm</a>
+    <li><a href="#ref-for-enumdef-unknownpolicynamedisposition">2.4. Violation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dictdef-trustedtypeconfiguration">
