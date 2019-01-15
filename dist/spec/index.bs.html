@@ -1214,7 +1214,7 @@ Possible extra rowspan handling
 </style>
   <meta content="Bikeshed version 86d51a2d9c3c0de4540c77189312f7e2393844af" name="generator">
   <link href="https://raw.githack.com/WICG/trusted-types/master/dist/spec/index.bs.html" rel="canonical">
-  <meta content="7ccba2b0a58ef9009a3ec2225fd89234a3a7c052" name="document-revision">
+  <meta content="e1b2e1f7c864f3a05749e4a11c329a344f5b5a30" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -1569,8 +1569,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
           <li><a href="#enforcement-in-window-open"><span class="secno">2.3.2.4</span> <span class="content"><span>Enforcement in window open steps algorithm</span></span></a>
           <li><a href="#enforcement-in-location"><span class="secno">2.3.2.5</span> <span class="content"><span>Enforcement in Location navigation</span> algorithm</span></a>
           <li><a href="#enforcement-document-write"><span class="secno">2.3.2.6</span> <span class="content"><span>Enforcement in document write steps</span> algorithm</span></a>
+          <li><a href="#enforcement-in-sinks"><span class="secno">2.3.2.7</span> <span class="content">Enforcement in property sinks</span></a>
          </ol>
-        <li><a href="#enforcement-in-sinks"><span class="secno">2.3.3</span> <span class="content">Enforcement in property sinks #</span></a>
        </ol>
      </ol>
     <li><a href="#more-todo"><span class="secno">3</span> <span class="content">STILL TODO</span></a>
@@ -2566,7 +2566,7 @@ string algorithm</a> with:</p>
      <p>If the previous algorithm throws an exception, rethrow the
 exception, and abort the following steps.</p>
    </ol>
-   <h4 class="heading settled" data-level="2.3.3" id="enforcement-in-sinks"><span class="secno">2.3.3. </span><span class="content">Enforcement in property sinks #</span><a class="self-link" href="#enforcement-in-sinks"></a></h4>
+   <h5 class="heading settled" data-level="2.3.2.7" id="enforcement-in-sinks"><span class="secno">2.3.2.7. </span><span class="content">Enforcement in property sinks</span><a class="self-link" href="#enforcement-in-sinks"></a></h5>
    <p>This document modifies the setters of the following properties of
 various DOM elements.  For each property in the list, modify the IDL
 to accept a given parameter type instead of the DOMString /
@@ -2998,43 +2998,43 @@ appropriately.</p>
   <aside class="dfn-panel" data-for="term-for-dom-fs-action">
    <a href="https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#dom-fs-action">https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#dom-fs-action</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-fs-action">2.3.3. Enforcement in property sinks #</a>
+    <li><a href="#ref-for-dom-fs-action">2.3.2.7. Enforcement in property sinks</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-object-codebase">
    <a href="https://html.spec.whatwg.org/multipage/obsolete.html#dom-object-codebase">https://html.spec.whatwg.org/multipage/obsolete.html#dom-object-codebase</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-object-codebase">2.3.3. Enforcement in property sinks #</a>
+    <li><a href="#ref-for-dom-object-codebase">2.3.2.7. Enforcement in property sinks</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-object-data">
    <a href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#dom-object-data">https://html.spec.whatwg.org/multipage/iframe-embed-object.html#dom-object-data</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-object-data">2.3.3. Enforcement in property sinks #</a>
+    <li><a href="#ref-for-dom-object-data">2.3.2.7. Enforcement in property sinks</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-fs-formaction">
    <a href="https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#dom-fs-formaction">https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#dom-fs-formaction</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-fs-formaction">2.3.3. Enforcement in property sinks #</a>
+    <li><a href="#ref-for-dom-fs-formaction">2.3.2.7. Enforcement in property sinks</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-link-href">
    <a href="https://html.spec.whatwg.org/multipage/semantics.html#dom-link-href">https://html.spec.whatwg.org/multipage/semantics.html#dom-link-href</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-link-href">2.3.3. Enforcement in property sinks #</a>
+    <li><a href="#ref-for-dom-link-href">2.3.2.7. Enforcement in property sinks</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-track-src">
    <a href="https://html.spec.whatwg.org/multipage/media.html#dom-track-src">https://html.spec.whatwg.org/multipage/media.html#dom-track-src</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-track-src">2.3.3. Enforcement in property sinks #</a>
+    <li><a href="#ref-for-dom-track-src">2.3.2.7. Enforcement in property sinks</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-iframe-srcdoc">
    <a href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#dom-iframe-srcdoc">https://html.spec.whatwg.org/multipage/iframe-embed-object.html#dom-iframe-srcdoc</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-iframe-srcdoc">2.3.3. Enforcement in property sinks #</a>
+    <li><a href="#ref-for-dom-iframe-srcdoc">2.3.2.7. Enforcement in property sinks</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-script-text">
@@ -3042,7 +3042,7 @@ appropriately.</p>
    <ul>
     <li><a href="#ref-for-dom-script-text">2. Framework</a>
     <li><a href="#ref-for-dom-script-text①">2.1.2. TrustedScript</a>
-    <li><a href="#ref-for-dom-script-text②">2.3.3. Enforcement in property sinks #</a>
+    <li><a href="#ref-for-dom-script-text②">2.3.2.7. Enforcement in property sinks</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idl-DOMString">
@@ -3654,21 +3654,21 @@ appropriately.<a href="#issue-72dfcf5b"> ↵ </a></div>
     <li><a href="#ref-for-typedefdef-htmlstring">2.3.1.2. Enforce a Trusted Type algorithm</a>
     <li><a href="#ref-for-typedefdef-htmlstring①">2.3.2.3. Extensions to the Document interface</a> <a href="#ref-for-typedefdef-htmlstring②">(2)</a>
     <li><a href="#ref-for-typedefdef-htmlstring③">2.3.2.6. Enforcement in document write steps algorithm</a>
-    <li><a href="#ref-for-typedefdef-htmlstring④">2.3.3. Enforcement in property sinks #</a> <a href="#ref-for-typedefdef-htmlstring⑤">(2)</a>
+    <li><a href="#ref-for-typedefdef-htmlstring④">2.3.2.7. Enforcement in property sinks</a> <a href="#ref-for-typedefdef-htmlstring⑤">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="typedefdef-scriptstring">
    <b><a href="#typedefdef-scriptstring">#typedefdef-scriptstring</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-typedefdef-scriptstring">2.3.1.2. Enforce a Trusted Type algorithm</a>
-    <li><a href="#ref-for-typedefdef-scriptstring①">2.3.3. Enforcement in property sinks #</a> <a href="#ref-for-typedefdef-scriptstring②">(2)</a> <a href="#ref-for-typedefdef-scriptstring③">(3)</a>
+    <li><a href="#ref-for-typedefdef-scriptstring①">2.3.2.7. Enforcement in property sinks</a> <a href="#ref-for-typedefdef-scriptstring②">(2)</a> <a href="#ref-for-typedefdef-scriptstring③">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="typedefdef-scripturlstring">
    <b><a href="#typedefdef-scripturlstring">#typedefdef-scripturlstring</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-typedefdef-scripturlstring">2.3.1.2. Enforce a Trusted Type algorithm</a>
-    <li><a href="#ref-for-typedefdef-scripturlstring①">2.3.3. Enforcement in property sinks #</a> <a href="#ref-for-typedefdef-scripturlstring②">(2)</a> <a href="#ref-for-typedefdef-scripturlstring③">(3)</a> <a href="#ref-for-typedefdef-scripturlstring④">(4)</a>
+    <li><a href="#ref-for-typedefdef-scripturlstring①">2.3.2.7. Enforcement in property sinks</a> <a href="#ref-for-typedefdef-scripturlstring②">(2)</a> <a href="#ref-for-typedefdef-scripturlstring③">(3)</a> <a href="#ref-for-typedefdef-scripturlstring④">(4)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="typedefdef-urlstring">
@@ -3678,7 +3678,7 @@ appropriately.<a href="#issue-72dfcf5b"> ↵ </a></div>
     <li><a href="#ref-for-typedefdef-urlstring①">2.3.2.2. Extensions to the Window interface</a> <a href="#ref-for-typedefdef-urlstring②">(2)</a>
     <li><a href="#ref-for-typedefdef-urlstring③">2.3.2.3. Extensions to the Document interface</a>
     <li><a href="#ref-for-typedefdef-urlstring④">2.3.2.4. Enforcement in window open steps algorithm</a>
-    <li><a href="#ref-for-typedefdef-urlstring⑤">2.3.3. Enforcement in property sinks #</a> <a href="#ref-for-typedefdef-urlstring⑥">(2)</a> <a href="#ref-for-typedefdef-urlstring⑦">(3)</a> <a href="#ref-for-typedefdef-urlstring⑧">(4)</a> <a href="#ref-for-typedefdef-urlstring⑨">(5)</a> <a href="#ref-for-typedefdef-urlstring①⓪">(6)</a> <a href="#ref-for-typedefdef-urlstring①①">(7)</a> <a href="#ref-for-typedefdef-urlstring①②">(8)</a> <a href="#ref-for-typedefdef-urlstring①③">(9)</a> <a href="#ref-for-typedefdef-urlstring①④">(10)</a> <a href="#ref-for-typedefdef-urlstring①⑤">(11)</a> <a href="#ref-for-typedefdef-urlstring①⑥">(12)</a> <a href="#ref-for-typedefdef-urlstring①⑦">(13)</a> <a href="#ref-for-typedefdef-urlstring①⑧">(14)</a> <a href="#ref-for-typedefdef-urlstring①⑨">(15)</a>
+    <li><a href="#ref-for-typedefdef-urlstring⑤">2.3.2.7. Enforcement in property sinks</a> <a href="#ref-for-typedefdef-urlstring⑥">(2)</a> <a href="#ref-for-typedefdef-urlstring⑦">(3)</a> <a href="#ref-for-typedefdef-urlstring⑧">(4)</a> <a href="#ref-for-typedefdef-urlstring⑨">(5)</a> <a href="#ref-for-typedefdef-urlstring①⓪">(6)</a> <a href="#ref-for-typedefdef-urlstring①①">(7)</a> <a href="#ref-for-typedefdef-urlstring①②">(8)</a> <a href="#ref-for-typedefdef-urlstring①③">(9)</a> <a href="#ref-for-typedefdef-urlstring①④">(10)</a> <a href="#ref-for-typedefdef-urlstring①⑤">(11)</a> <a href="#ref-for-typedefdef-urlstring①⑥">(12)</a> <a href="#ref-for-typedefdef-urlstring①⑦">(13)</a> <a href="#ref-for-typedefdef-urlstring①⑧">(14)</a> <a href="#ref-for-typedefdef-urlstring①⑨">(15)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="abstract-opdef-get-trusted-type-compliant-string-algorithm">
@@ -3693,7 +3693,7 @@ appropriately.<a href="#issue-72dfcf5b"> ↵ </a></div>
   <aside class="dfn-panel" data-for="abstract-opdef-enforce-a-trusted-type-algorithm">
    <b><a href="#abstract-opdef-enforce-a-trusted-type-algorithm">#abstract-opdef-enforce-a-trusted-type-algorithm</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-abstract-opdef-enforce-a-trusted-type-algorithm">2.3.3. Enforcement in property sinks #</a>
+    <li><a href="#ref-for-abstract-opdef-enforce-a-trusted-type-algorithm">2.3.2.7. Enforcement in property sinks</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-window-trustedtypes">

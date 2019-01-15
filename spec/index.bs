@@ -1116,7 +1116,7 @@ input), and add the following steps before step 1:
     exception, and abort the following steps.
 
 
-### Enforcement in property sinks #### {#enforcement-in-sinks}
+#### Enforcement in property sinks #### {#enforcement-in-sinks}
 
 This document modifies the setters of the following properties of
 various DOM elements.  For each property in the list, modify the IDL
