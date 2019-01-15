@@ -556,7 +556,7 @@ same name in the algorithm that invoked these steps.
 1.  Return false.
 
 
-### <dfn abstract-op>Is a default policy</dfn> ### {#is-default-policy}
+### <dfn abstract-op>Is a default policy algorithm</dfn> ### {#is-default-policy-algorithm}
 
 Let *policyName* be the same variable as that of the same name in the
 algorithm that invoked these steps.
@@ -616,6 +616,152 @@ Issue: In step 6, "is an error, return error".  Should it return
 ### <dfn abstract-op>Create a Violation for algorithm</dfn> ### {#create-a-violation-for-algorithm}
 
 Issue: TODO: write
+
+### <dfn abstract-op>Obtain a Trusted Type Configuration for a response algorithm</dfn> ### {#obtain-a-trusted-type-configuration-for-a-response-algorithm}
+
+This algorithm parses the [=Trusted-Types HTTP Response Header=] from
+the response as a [[HTTP-JFV]] value and creates a configuration
+object.  The header value consists of a list of values.
+Every string value is assumed to be an
+{{TrustedTypeConfiguration/allowedNames|allowed policy name}},
+and the presence of the header by default
+[=enforcement|enforces=] the types at every sink type:
+
+Issue: Maybe move these examples to the section on the HTTP header.
+
+Note: The header syntax is tailored to making a secure configuration
+simple, while allowing explicit change towards less strict
+configurations possible.
+
+<div class="example" id="whitelist-of-policy-names-in-header">
+Types are enforced at sinks, and only policies name “one” and “two”
+may be created.
+
+<pre class="http">
+Trusted-Types: "one", "two"
+</pre>
+</div>
+
+<div class="example" id="header-that-allows-no-policy-names">
+A value of `null` indicates policies may not be created, and sinks are
+enforced.  I.e. no DOM XSS sinks can be used in a document.
+
+<pre class="http">
+Trusted-Types: null
+</pre>
+</div>
+
+A policy named `"*"` makes it possible to create policies with any
+previously unused name.
+
+<div class="example" id="wildcard-policy-name-in-header">
+<pre class="http">
+Trusted-Types: "*"
+</pre>
+</div>
+
+If the policy named `“default”` is present in the list, it refers to the
+[#default-policy|default policy], and unless otherwise configured,
+all strings passed to DOM XSS sinks will be passed through it instead
+of being rejected outright.
+
+Issue: "unless otherwise configured" or "until otherwise configured"
+
+<div class="example" id="default-in-header">
+<pre class="http">
+Trusted-Types: "one", "two", "default"
+</pre>
+</div>
+
+To specify more fine-grained control over the enforcement, authors can
+use a header value using [https://tools.ietf.org/html/rfc8259#section-4].
+That object allows for configuring the enforcement for the DOM XSS sinks.
+
+<div class="example" id="complex configuration-in-header">
+Only reports violations in DOM XSS sinks, but allow strings passed to them
+(similar to Content-Security-Policy-Report-Only).
+<pre class="http" id="string-at-sink-disposition-in-header">
+Trusted-Types: "*", {"dom”: "unsafe-allow"}
+</pre>
+
+Report violations using a “trustedtypes” reporting group.
+<pre class="http" id="reporting-group-in-header">
+Trusted-Types: "*", {"report": "trustedtypes"}
+</pre>
+
+Explicitly specify that a string passed to a DOM XSS sink requiring
+any Trusted Type should be rejected.  This is the default behaviour if the
+header is present.
+<pre class="http" id="unknown-policy-name-disposition-in-header">
+Trusted-Types: "*", {"dom": "reject"}
+</pre>
+</div>
+
+Issue: it seems to be the case that one object is allowed and it should
+appear last, it cannot contain an allowedNames property and the allowedNames
+set should be the string values.  Clarify.
+
+Issue: maybe treat a string as a configuration that is equivalent to a
+configuration that allows just that name and which has the default values
+for the other properties and allow `{"allowedNames":[...],...}`.
+This would enable a use case where migrating one tool at a time by having
+some policies that are report-only and others that are enforced.
+
+Issue: if so, need example of 2 disjoint allowed name sets with different
+configurations.
+
+Issue: what happens if there are 2 configurations with overlapping
+allowed name sets?
+
+Issue: does a single configuration with an unknown policy name disposition
+of "allow" govern all policy names that appear in no other configuratons.
+
+
+Given a response (*response&), perform the following steps:
+
+1.  Let *config* be a new {{TrustedTypeConfiguration}}.
+1.  Let *defaultSinkDisposition* be `“unsafe-allow”`.
+1.  Let *hasWildcardPolicy* be true
+1.  Let *header* be the value of the header in response’s header list
+    whose name is `“Trusted-Types”`
+1.  Let *list* be the result of executing the algorithm defined in
+    Section 4 of [[HTTP-JFV]] on *header*. If that algorithm results
+    in an error, abort these steps.
+
+    Issue: A trailing comma should not disable enforcement.  Do we
+    need to leave the document in a locked down state?
+    Maybe set *config*.domSinks to "reject" and return *config*.
+1.  If *list* is not empty, then set *hasWildcardPolicy* to false and set
+    defaultSinkDisposition to `“reject”`.
+1.  For each *item* in *list*:
+    1.  If *item* is a [https://tools.ietf.org/html/rfc8259#section-7|string]:
+        1.  If *item* is equal to `“*”`, then set *hasWildcardPolicy* to true.
+        1.  Otherwise, add *item* to *config*'s
+            {{TrustedTypeConfiguration/allowedNames|allowedNames} set.
+    1.  Otherwise, if *item* is an
+        [https://tools.ietf.org/html/rfc8259#section-4|object],
+        for each *name* → *value* of item, execute the following steps:
+        1.  Let *propertyName* be the result of running ASCII lowercase on name.
+        1.  Execute the first statement, switching on *propertyName*:
+            1.  case `“dom”`:
+                If value is a valid {{StringAtSinkDisposition}}, set
+                *defaultSinkDisposition* to that value. Otherwise, throw
+                an error.
+
+            1.  case `“report”`:
+                If value is a [https://tools.ietf.org/html/rfc8259#section-7|string],
+                set *config*'s
+                {{TrustedTypeConfiguration/reportingGroup|reportingGroup}}
+                to that value.
+                Otherwise, throw an error.
+            1.  Otherwise, continue.
+    1.  Otherwise, throw an error.
+1.  If *hasWildcardPolicy* is false, then set *config*'s
+    {{TrustedTypeConfiguration/unknownPolicyName}} to `“reject”`.
+1.  If *config*’s {{TrustedTypeConfiguration/domSinks|domSinks}} is null,
+    set *config*’s domSinks to *defaultSinkDisposition*’s value.
+1.  Return *config*.
+
 
 
 ## Violation ## {#violation}
@@ -702,11 +848,48 @@ without the outer `[` and `]`, as described in Section 4 of
 [[HTTP-JFV]].
 
 
+## Reporting ## {#reporting}
+
+Issue: How does a policy violation get reported (both at the sink
+level, and when creating a policy).
+
+
+### Report sink type mismatch violation ### {#report-sink-type-mismatch-violation}
+
+Issue: Check that this algorithm is complete.
+
+Given a [#Violation|violation] (*violation*), this algorithm reports
+it to the {{TrustedTypeConfiguration/reportingGroup|endpoint}}
+specified in the violation’s {{TrustedTypeConfiguration|configuration
+object}}.
+
+1.  Enqueue a task to run the following steps:
+    1.  Let *group* be *violation*’s configuration's
+        {{TrustedTypeConfiguration/reportingGroup}}.
+    1.  Let *settings* be *violation*’s [[CSP3#violation-global-object|global object]]’s
+        relevant settings object.
+    1.  Execute [[REPORTING#queue-report|Queue data as type for endpoint group on settings algorith]]
+        with the following arguments:
+        *  *data* = violation
+        *  *type* = `“trusted-types”`
+        *  *endpoint group* = *group*
+        *  *settings* = *settings*
+
+        Note: The optional *url* parameter is not provided.
+
+## Integrations ## {#integrations}
+
+<xmp class="idl">
+typedef (DOMString or TrustedHTML) HTMLString;
+typedef (DOMString or TrustedScript) ScriptString;
+typedef (USVString or TrustedScriptURL) ScriptURLString;
+typedef (USVString or TrustedURL) URLString;
+typedef (TrustedHTML or TrustedScript or TrustedScriptURL or TrustedURL) TrustedType;
+</xmp>
 
 Issue: STILL TODO
 
 *   <dfn>callback this value</dfn>
-*   <dfn abstract-op>Is a default policy algorithm</dfn>
 *   <dfn>capabilities</dfn> link to ocaps
 *   <dfn>enforcement</dfn>
 

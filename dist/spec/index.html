@@ -1214,7 +1214,7 @@ Possible extra rowspan handling
 </style>
   <meta content="Bikeshed version 86d51a2d9c3c0de4540c77189312f7e2393844af" name="generator">
   <link href="https://raw.githack.com/WICG/trusted-types/master/dist/spec/index.bs.html" rel="canonical">
-  <meta content="99759c5f171037221649ca125b69696b01238e6e" name="document-revision">
+  <meta content="93e0551698c29035b049a65deb100fbbac21ebe0" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -1532,13 +1532,20 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
         <li><a href="#get-exposed-policy-algorithm"><span class="secno">2.3.3</span> <span class="content"><span>Get exposed policy algorithm</span></span></a>
         <li><a href="#get-default-policy-algorithm"><span class="secno">2.3.4</span> <span class="content"><span>Get default policy algorithm</span></span></a>
         <li><a href="#is-policy-name-allow-algorithm"><span class="secno">2.3.5</span> <span class="content"><span>Is policy name allowed algorithm</span></span></a>
-        <li><a href="#is-default-policy"><span class="secno">2.3.6</span> <span class="content"><span>Is a default policy</span></span></a>
+        <li><a href="#is-default-policy-algorithm"><span class="secno">2.3.6</span> <span class="content"><span>Is a default policy algorithm</span></span></a>
         <li><a href="#create-a-trusted-type-algorithm"><span class="secno">2.3.7</span> <span class="content"><span>Create a Trusted Type algorithm</span></span></a>
         <li><a href="#create-a-violation-for-algorithm"><span class="secno">2.3.8</span> <span class="content"><span>Create a Violation for algorithm</span></span></a>
+        <li><a href="#obtain-a-trusted-type-configuration-for-a-response-algorithm"><span class="secno">2.3.9</span> <span class="content"><span>Obtain a Trusted Type Configuration for a response algorithm</span></span></a>
        </ol>
       <li><a href="#violation"><span class="secno">2.4</span> <span class="content">Violation</span></a>
       <li><a href="#trusted-type-configuration"><span class="secno">2.5</span> <span class="content">TrustedTypeConfiguration</span></a>
       <li><a href="#trusted-types-http-header"><span class="secno">2.6</span> <span class="content"><span>Trusted-Types</span> HTTP Response Header</span></a>
+      <li>
+       <a href="#reporting"><span class="secno">2.7</span> <span class="content">Reporting</span></a>
+       <ol class="toc">
+        <li><a href="#report-sink-type-mismatch-violation"><span class="secno">2.7.1</span> <span class="content">Report sink type mismatch violation</span></a>
+       </ol>
+      <li><a href="#integrations"><span class="secno">2.8</span> <span class="content">Integrations</span></a>
      </ol>
     <li><a href="#conformance"><span class="secno"></span> <span class="content"> Conformance</span></a>
     <li>
@@ -2013,7 +2020,7 @@ contains <em>policyName</em>, return true.</p>
     <li data-md>
      <p>Return false.</p>
    </ol>
-   <h4 class="heading settled" data-level="2.3.6" id="is-default-policy"><span class="secno">2.3.6. </span><span class="content"><dfn data-dfn-type="abstract-op" data-export id="abstract-opdef-is-a-default-policy">Is a default policy<a class="self-link" href="#abstract-opdef-is-a-default-policy"></a></dfn></span><a class="self-link" href="#is-default-policy"></a></h4>
+   <h4 class="heading settled" data-level="2.3.6" id="is-default-policy-algorithm"><span class="secno">2.3.6. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-is-a-default-policy-algorithm">Is a default policy algorithm</dfn></span><a class="self-link" href="#is-default-policy-algorithm"></a></h4>
    <p>Let <em>policyName</em> be the same variable as that of the same name in the
 algorithm that invoked these steps.</p>
    <ol>
@@ -2069,8 +2076,145 @@ set to <em>dataString</em>.</p>
    <p class="issue" id="issue-f07622ba"><a class="self-link" href="#issue-f07622ba"></a> In step 6, "is an error, return error".  Should it return <em>policyValue</em> or raise a different error?</p>
    <h4 class="heading settled" data-level="2.3.8" id="create-a-violation-for-algorithm"><span class="secno">2.3.8. </span><span class="content"><dfn data-dfn-type="abstract-op" data-export id="abstract-opdef-create-a-violation-for-algorithm">Create a Violation for algorithm<a class="self-link" href="#abstract-opdef-create-a-violation-for-algorithm"></a></dfn></span><a class="self-link" href="#create-a-violation-for-algorithm"></a></h4>
    <p class="issue" id="issue-28dcbd8e"><a class="self-link" href="#issue-28dcbd8e"></a> TODO: write</p>
+   <h4 class="heading settled" data-level="2.3.9" id="obtain-a-trusted-type-configuration-for-a-response-algorithm"><span class="secno">2.3.9. </span><span class="content"><dfn data-dfn-type="abstract-op" data-export id="abstract-opdef-obtain-a-trusted-type-configuration-for-a-response-algorithm">Obtain a Trusted Type Configuration for a response algorithm<a class="self-link" href="#abstract-opdef-obtain-a-trusted-type-configuration-for-a-response-algorithm"></a></dfn></span><a class="self-link" href="#obtain-a-trusted-type-configuration-for-a-response-algorithm"></a></h4>
+   <p>This algorithm parses the <a data-link-type="dfn" href="#trusted-types-http-response-header" id="ref-for-trusted-types-http-response-header①">Trusted-Types HTTP Response Header</a> from
+the response as a <a data-link-type="biblio" href="#biblio-http-jfv">[HTTP-JFV]</a> value and creates a configuration
+object.  The header value consists of a list of values.
+Every string value is assumed to be an <code class="idl"><a data-link-type="idl" href="#dom-trustedtypeconfiguration-allowednames" id="ref-for-dom-trustedtypeconfiguration-allowednames①">allowed policy name</a></code>,
+and the presence of the header by default <a data-link-type="dfn" href="#enforcement" id="ref-for-enforcement③">enforces</a> the types at every sink type:</p>
+   <p class="issue" id="issue-6535fddb"><a class="self-link" href="#issue-6535fddb"></a> Maybe move these examples to the section on the HTTP header.</p>
+   <p class="note" role="note"><span>Note:</span> The header syntax is tailored to making a secure configuration
+simple, while allowing explicit change towards less strict
+configurations possible.</p>
+   <div class="example" id="whitelist-of-policy-names-in-header">
+    <a class="self-link" href="#whitelist-of-policy-names-in-header"></a> Types are enforced at sinks, and only policies name “one” and “two”
+may be created. 
+<pre class="http">Trusted-Types: "one", "two"
+</pre>
+   </div>
+   <div class="example" id="header-that-allows-no-policy-names">
+    <a class="self-link" href="#header-that-allows-no-policy-names"></a> A value of <code>null</code> indicates policies may not be created, and sinks are
+enforced.  I.e. no DOM XSS sinks can be used in a document. 
+<pre class="http">Trusted-Types: null
+</pre>
+   </div>
+   <p>A policy named <code>"*"</code> makes it possible to create policies with any
+previously unused name.</p>
+   <div class="example" id="wildcard-policy-name-in-header">
+    <a class="self-link" href="#wildcard-policy-name-in-header"></a> 
+<pre class="http">Trusted-Types: "*"
+</pre>
+   </div>
+   <p>If the policy named <code>“default”</code> is present in the list, it refers to the
+[#default-policy|default policy], and unless otherwise configured,
+all strings passed to DOM XSS sinks will be passed through it instead
+of being rejected outright.</p>
+   <p class="issue" id="issue-b26a268f"><a class="self-link" href="#issue-b26a268f"></a> "unless otherwise configured" or "until otherwise configured"</p>
+   <div class="example" id="default-in-header">
+    <a class="self-link" href="#default-in-header"></a> 
+<pre class="http">Trusted-Types: "one", "two", "default"
+</pre>
+   </div>
+   <p>To specify more fine-grained control over the enforcement, authors can
+use a header value using [https://tools.ietf.org/html/rfc8259#section-4].
+That object allows for configuring the enforcement for the DOM XSS sinks.</p>
+   <div class="example" id="complex configuration-in-header">
+    <a class="self-link" href="#complex%20configuration-in-header"></a> Only reports violations in DOM XSS sinks, but allow strings passed to them
+(similar to Content-Security-Policy-Report-Only). 
+<pre class="http" id="string-at-sink-disposition-in-header">Trusted-Types: "*", {"dom”: "unsafe-allow"}
+</pre>
+    <p>Report violations using a “trustedtypes” reporting group.</p>
+<pre class="http" id="reporting-group-in-header">Trusted-Types: "*", {"report": "trustedtypes"}
+</pre>
+    <p>Explicitly specify that a string passed to a DOM XSS sink requiring
+any Trusted Type should be rejected.  This is the default behaviour if the
+header is present.</p>
+<pre class="http" id="unknown-policy-name-disposition-in-header">Trusted-Types: "*", {"dom": "reject"}
+</pre>
+   </div>
+   <p class="issue" id="issue-cd9bcfb2"><a class="self-link" href="#issue-cd9bcfb2"></a> it seems to be the case that one object is allowed and it should
+appear last, it cannot contain an allowedNames property and the allowedNames
+set should be the string values.  Clarify.</p>
+   <p class="issue" id="issue-7d9c4dc9"><a class="self-link" href="#issue-7d9c4dc9"></a> maybe treat a string as a configuration that is equivalent to a
+configuration that allows just that name and which has the default values
+for the other properties and allow <code>{"allowedNames":[...],...}</code>.
+This would enable a use case where migrating one tool at a time by having
+some policies that are report-only and others that are enforced.</p>
+   <p class="issue" id="issue-e1f7a37a"><a class="self-link" href="#issue-e1f7a37a"></a> if so, need example of 2 disjoint allowed name sets with different
+configurations.</p>
+   <p class="issue" id="issue-ba779f5f"><a class="self-link" href="#issue-ba779f5f"></a> what happens if there are 2 configurations with overlapping
+allowed name sets?</p>
+   <p class="issue" id="issue-e5fdd885"><a class="self-link" href="#issue-e5fdd885"></a> does a single configuration with an unknown policy name disposition
+of "allow" govern all policy names that appear in no other configuratons.</p>
+   <p>Given a response (*response&amp;), perform the following steps:</p>
+   <ol>
+    <li data-md>
+     <p>Let <em>config</em> be a new <code class="idl"><a data-link-type="idl" href="#dictdef-trustedtypeconfiguration" id="ref-for-dictdef-trustedtypeconfiguration②">TrustedTypeConfiguration</a></code>.</p>
+    <li data-md>
+     <p>Let <em>defaultSinkDisposition</em> be <code>“unsafe-allow”</code>.</p>
+    <li data-md>
+     <p>Let <em>hasWildcardPolicy</em> be true</p>
+    <li data-md>
+     <p>Let <em>header</em> be the value of the header in response’s header list
+whose name is <code>“Trusted-Types”</code></p>
+    <li data-md>
+     <p>Let <em>list</em> be the result of executing the algorithm defined in
+Section 4 of <a data-link-type="biblio" href="#biblio-http-jfv">[HTTP-JFV]</a> on <em>header</em>. If that algorithm results
+in an error, abort these steps.</p>
+     <p class="issue" id="issue-6648a1f5"><a class="self-link" href="#issue-6648a1f5"></a> A trailing comma should not disable enforcement.  Do we
+need to leave the document in a locked down state?
+Maybe set <em>config</em>.domSinks to "reject" and return <em>config</em>.</p>
+    <li data-md>
+     <p>If <em>list</em> is not empty, then set <em>hasWildcardPolicy</em> to false and set
+defaultSinkDisposition to <code>“reject”</code>.</p>
+    <li data-md>
+     <p>For each <em>item</em> in <em>list</em>:</p>
+     <ol>
+      <li data-md>
+       <p>If <em>item</em> is a [https://tools.ietf.org/html/rfc8259#section-7|string]:</p>
+       <ol>
+        <li data-md>
+         <p>If <em>item</em> is equal to <code>“*”</code>, then set <em>hasWildcardPolicy</em> to true.</p>
+        <li data-md>
+         <p>Otherwise, add <em>item</em> to <em>config</em>'s
+{{TrustedTypeConfiguration/allowedNames|allowedNames} set.</p>
+       </ol>
+      <li data-md>
+       <p>Otherwise, if <em>item</em> is an
+[https://tools.ietf.org/html/rfc8259#section-4|object],
+for each <em>name</em> → <em>value</em> of item, execute the following steps:</p>
+       <ol>
+        <li data-md>
+         <p>Let <em>propertyName</em> be the result of running ASCII lowercase on name.</p>
+        <li data-md>
+         <p>Execute the first statement, switching on <em>propertyName</em>:</p>
+         <ol>
+          <li data-md>
+           <p>case <code>“dom”</code>:
+If value is a valid <code class="idl"><a data-link-type="idl" href="#enumdef-stringatsinkdisposition" id="ref-for-enumdef-stringatsinkdisposition">StringAtSinkDisposition</a></code>, set <em>defaultSinkDisposition</em> to that value. Otherwise, throw
+an error.</p>
+          <li data-md>
+           <p>case <code>“report”</code>:
+If value is a [https://tools.ietf.org/html/rfc8259#section-7|string],
+set <em>config</em>'s <code class="idl"><a data-link-type="idl" href="#dom-trustedtypeconfiguration-reportinggroup" id="ref-for-dom-trustedtypeconfiguration-reportinggroup">reportingGroup</a></code> to that value.
+Otherwise, throw an error.</p>
+          <li data-md>
+           <p>Otherwise, continue.</p>
+         </ol>
+       </ol>
+      <li data-md>
+       <p>Otherwise, throw an error.</p>
+     </ol>
+    <li data-md>
+     <p>If <em>hasWildcardPolicy</em> is false, then set <em>config</em>'s <code class="idl"><a data-link-type="idl" href="#dom-trustedtypeconfiguration-unknownpolicyname" id="ref-for-dom-trustedtypeconfiguration-unknownpolicyname①">unknownPolicyName</a></code> to <code>“reject”</code>.</p>
+    <li data-md>
+     <p>If <em>config</em>’s <code class="idl"><a data-link-type="idl" href="#dom-trustedtypeconfiguration-domsinks" id="ref-for-dom-trustedtypeconfiguration-domsinks">domSinks</a></code> is null,
+set <em>config</em>’s domSinks to <em>defaultSinkDisposition</em>’s value.</p>
+    <li data-md>
+     <p>Return <em>config</em>.</p>
+   </ol>
    <h3 class="heading settled" data-level="2.4" id="violation"><span class="secno">2.4. </span><span class="content">Violation</span><a class="self-link" href="#violation"></a></h3>
-   <p>A violation represents an action which goes against the set of <code class="idl"><a data-link-type="idl" href="#dictdef-trustedtypeconfiguration" id="ref-for-dictdef-trustedtypeconfiguration②">TrustedTypeConfiguration</a></code> objects associated with the <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document">Document</a></code>.</p>
+   <p>A violation represents an action which goes against the set of <code class="idl"><a data-link-type="idl" href="#dictdef-trustedtypeconfiguration" id="ref-for-dictdef-trustedtypeconfiguration③">TrustedTypeConfiguration</a></code> objects associated with the <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document">Document</a></code>.</p>
    <p class="issue" id="issue-e2eb5dd8"><a class="self-link" href="#issue-e2eb5dd8"></a> rephrase in terms of "not allowed by any" or "disallowed by any"</p>
    <p class="issue" id="issue-d1310019"><a class="self-link" href="#issue-d1310019"></a> how does this relate to webappsec-csp/<a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation" id="ref-for-violation">Violation</a>?</p>
    <p class="issue" id="issue-cf1ff51c"><a class="self-link" href="#issue-cf1ff51c"></a> TODO: Describe the properties of the violation
@@ -2080,7 +2224,7 @@ Each violation has a global object , which is a global object.</p>
 the violation object, although reporting assumes the object should be
 serializable.</p>
    <h3 class="heading settled" data-level="2.5" id="trusted-type-configuration"><span class="secno">2.5. </span><span class="content">TrustedTypeConfiguration</span><a class="self-link" href="#trusted-type-configuration"></a></h3>
-   <p>A Trusted Type Configuration defines <a data-link-type="dfn" href="#enforcement" id="ref-for-enforcement③">enforcement</a> setting for <a data-link-type="dfn" href="#trusted-type" id="ref-for-trusted-type③">Trusted Types</a> and restrictions on policy names that can be applied
+   <p>A Trusted Type Configuration defines <a data-link-type="dfn" href="#enforcement" id="ref-for-enforcement④">enforcement</a> setting for <a data-link-type="dfn" href="#trusted-type" id="ref-for-trusted-type③">Trusted Types</a> and restrictions on policy names that can be applied
 to a <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document①">Document</a></code>.</p>
 <pre class="idl highlight def"><c- b>enum</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="enum" data-export id="enumdef-stringatsinkdisposition"><code><c- g>StringAtSinkDisposition</c-></code></dfn> {
   <dfn class="idl-code" data-dfn-for="StringAtSinkDisposition" data-dfn-type="enum-value" data-export id="dom-stringatsinkdisposition-reject"><code><c- s>"reject"</c-></code><a class="self-link" href="#dom-stringatsinkdisposition-reject"></a></dfn>,
@@ -2095,9 +2239,9 @@ to a <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org
 
 <c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-trustedtypeconfiguration"><code><c- g>TrustedTypeConfiguration</c-></code></dfn> {
   <a class="n" data-link-type="idl-name" href="#enumdef-unknownpolicynamedisposition" id="ref-for-enumdef-unknownpolicynamedisposition"><c- n>UnknownPolicyNameDisposition</c-></a> <dfn class="dfn-paneled idl-code" data-default="&quot;allow&quot;" data-dfn-for="TrustedTypeConfiguration" data-dfn-type="dict-member" data-export data-type="UnknownPolicyNameDisposition " id="dom-trustedtypeconfiguration-unknownpolicyname"><code><c- g>unknownPolicyName</c-></code></dfn> = "allow";
-  <a class="n" data-link-type="idl-name" href="#enumdef-stringatsinkdisposition" id="ref-for-enumdef-stringatsinkdisposition"><c- n>StringAtSinkDisposition</c-></a>? <dfn class="idl-code" data-dfn-for="TrustedTypeConfiguration" data-dfn-type="dict-member" data-export data-type="StringAtSinkDisposition? " id="dom-trustedtypeconfiguration-domsinks"><code><c- g>domSinks</c-></code><a class="self-link" href="#dom-trustedtypeconfiguration-domsinks"></a></dfn>;
+  <a class="n" data-link-type="idl-name" href="#enumdef-stringatsinkdisposition" id="ref-for-enumdef-stringatsinkdisposition①"><c- n>StringAtSinkDisposition</c-></a>? <dfn class="dfn-paneled idl-code" data-dfn-for="TrustedTypeConfiguration" data-dfn-type="dict-member" data-export data-type="StringAtSinkDisposition? " id="dom-trustedtypeconfiguration-domsinks"><code><c- g>domSinks</c-></code></dfn>;
   <c- b>sequence</c->&lt;<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①④"><c- b>DOMString</c-></a>> <dfn class="dfn-paneled idl-code" data-dfn-for="TrustedTypeConfiguration" data-dfn-type="dict-member" data-export data-type="sequence<DOMString> " id="dom-trustedtypeconfiguration-allowednames"><code><c- g>allowedNames</c-></code></dfn>;
-  <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①⑤"><c- b>DOMString</c-></a> <dfn class="idl-code" data-default="&quot;default&quot;" data-dfn-for="TrustedTypeConfiguration" data-dfn-type="dict-member" data-export data-type="DOMString " id="dom-trustedtypeconfiguration-reportinggroup"><code><c- g>reportingGroup</c-></code><a class="self-link" href="#dom-trustedtypeconfiguration-reportinggroup"></a></dfn> = "default";
+  <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①⑤"><c- b>DOMString</c-></a> <dfn class="dfn-paneled idl-code" data-default="&quot;default&quot;" data-dfn-for="TrustedTypeConfiguration" data-dfn-type="dict-member" data-export data-type="DOMString " id="dom-trustedtypeconfiguration-reportinggroup"><code><c- g>reportingGroup</c-></code></dfn> = "default";
 };
 </pre>
    <p>Each Trusted Type Configuration has an associated
@@ -2126,12 +2270,49 @@ represented by the following ANBF:</p>
 </pre>
    <p>The header’s value is interpreted as a JSON-formatted array of values
 without the outer <code>[</code> and <code>]</code>, as described in Section 4 of <a data-link-type="biblio" href="#biblio-http-jfv">[HTTP-JFV]</a>.</p>
+   <h3 class="heading settled" data-level="2.7" id="reporting"><span class="secno">2.7. </span><span class="content">Reporting</span><a class="self-link" href="#reporting"></a></h3>
+   <p class="issue" id="issue-de6065a2"><a class="self-link" href="#issue-de6065a2"></a> How does a policy violation get reported (both at the sink
+level, and when creating a policy).</p>
+   <h4 class="heading settled" data-level="2.7.1" id="report-sink-type-mismatch-violation"><span class="secno">2.7.1. </span><span class="content">Report sink type mismatch violation</span><a class="self-link" href="#report-sink-type-mismatch-violation"></a></h4>
+   <p class="issue" id="issue-d66da75e"><a class="self-link" href="#issue-d66da75e"></a> Check that this algorithm is complete.</p>
+   <p>Given a [#Violation|violation] (<em>violation</em>), this algorithm reports
+it to the <code class="idl"><a data-link-type="idl" href="#dom-trustedtypeconfiguration-reportinggroup" id="ref-for-dom-trustedtypeconfiguration-reportinggroup①">endpoint</a></code> specified in the violation’s <code class="idl"><a data-link-type="idl" href="#dictdef-trustedtypeconfiguration" id="ref-for-dictdef-trustedtypeconfiguration④">configuration
+object</a></code>.</p>
+   <ol>
+    <li data-md>
+     <p>Enqueue a task to run the following steps:</p>
+     <ol>
+      <li data-md>
+       <p>Let <em>group</em> be <em>violation</em>’s configuration’s <code class="idl"><a data-link-type="idl" href="#dom-trustedtypeconfiguration-reportinggroup" id="ref-for-dom-trustedtypeconfiguration-reportinggroup②">reportingGroup</a></code>.</p>
+      <li data-md>
+       <p>Let <em>settings</em> be <em>violation</em>’s <a href="https://www.w3.org/TR/CSP3/#violation-global-object">global object</a>’s
+relevant settings object.</p>
+      <li data-md>
+       <p>Execute <a href="https://wicg.github.io/reporting/#queue-report">Queue data as type for endpoint group on settings algorith</a> with the following arguments:</p>
+       <ul>
+        <li data-md>
+         <p><em>data</em> = violation</p>
+        <li data-md>
+         <p><em>type</em> = <code>“trusted-types”</code></p>
+        <li data-md>
+         <p><em>endpoint group</em> = <em>group</em></p>
+        <li data-md>
+         <p><em>settings</em> = <em>settings</em></p>
+       </ul>
+       <p class="note" role="note"><span>Note:</span> The optional <em>url</em> parameter is not provided.</p>
+     </ol>
+   </ol>
+   <h3 class="heading settled" data-level="2.8" id="integrations"><span class="secno">2.8. </span><span class="content">Integrations</span><a class="self-link" href="#integrations"></a></h3>
+<pre class="idl highlight def"><c- b>typedef</c-> (<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①⑥"><c- b>DOMString</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml①"><c- n>TrustedHTML</c-></a>) <dfn class="idl-code" data-dfn-type="typedef" data-export id="typedefdef-htmlstring"><code><c- g>HTMLString</c-></code><a class="self-link" href="#typedefdef-htmlstring"></a></dfn>;
+<c- b>typedef</c-> (<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①⑦"><c- b>DOMString</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript①"><c- n>TrustedScript</c-></a>) <dfn class="idl-code" data-dfn-type="typedef" data-export id="typedefdef-scriptstring"><code><c- g>ScriptString</c-></code><a class="self-link" href="#typedefdef-scriptstring"></a></dfn>;
+<c- b>typedef</c-> (<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString②"><c- b>USVString</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl①"><c- n>TrustedScriptURL</c-></a>) <dfn class="idl-code" data-dfn-type="typedef" data-export id="typedefdef-scripturlstring"><code><c- g>ScriptURLString</c-></code><a class="self-link" href="#typedefdef-scripturlstring"></a></dfn>;
+<c- b>typedef</c-> (<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString③"><c- b>USVString</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="#trustedurl" id="ref-for-trustedurl①"><c- n>TrustedURL</c-></a>) <dfn class="idl-code" data-dfn-type="typedef" data-export id="typedefdef-urlstring"><code><c- g>URLString</c-></code><a class="self-link" href="#typedefdef-urlstring"></a></dfn>;
+<c- b>typedef</c-> (<a class="n" data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml②"><c- n>TrustedHTML</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript②"><c- n>TrustedScript</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl②"><c- n>TrustedScriptURL</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="#trustedurl" id="ref-for-trustedurl②"><c- n>TrustedURL</c-></a>) <dfn class="idl-code" data-dfn-type="typedef" data-export id="typedefdef-trustedtype"><code><c- g>TrustedType</c-></code><a class="self-link" href="#typedefdef-trustedtype"></a></dfn>;
+</pre>
    <p class="issue" id="issue-aaa77a25"><a class="self-link" href="#issue-aaa77a25"></a> STILL TODO</p>
    <ul>
     <li data-md>
      <p><dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="callback-this-value">callback this value</dfn></p>
-    <li data-md>
-     <p><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-is-a-default-policy-algorithm">Is a default policy algorithm</dfn></p>
     <li data-md>
      <p><dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="capabilities">capabilities</dfn> link to ocaps</p>
     <li data-md>
@@ -2291,8 +2472,8 @@ appropriately.</p>
   <ul class="index">
    <li><a href="#dom-unknownpolicynamedisposition-allow">"allow"</a><span>, in §2.5</span>
    <li><a href="#dom-trustedtypeconfiguration-allowednames">allowedNames</a><span>, in §2.5</span>
-   <li><a href="#callback-this-value">callback this value</a><span>, in §2.6</span>
-   <li><a href="#capabilities">capabilities</a><span>, in §2.6</span>
+   <li><a href="#callback-this-value">callback this value</a><span>, in §2.8</span>
+   <li><a href="#capabilities">capabilities</a><span>, in §2.8</span>
    <li><a href="#abstract-opdef-create-a-trusted-type-algorithm">Create a Trusted Type algorithm</a><span>, in §2.3.7</span>
    <li><a href="#abstract-opdef-create-a-trusted-type-policy-algorithm">Create a Trusted Type Policy algorithm</a><span>, in §2.3.2</span>
    <li><a href="#abstract-opdef-create-a-violation-for-algorithm">Create a Violation for algorithm</a><span>, in §2.3.8</span>
@@ -2312,21 +2493,22 @@ appropriately.</p>
    <li><a href="#callbackdef-createurlcallback">CreateURLCallback</a><span>, in §2.2.2</span>
    <li><a href="#dom-trustedtypepolicy-createurl">createURL(input)</a><span>, in §2.2.1</span>
    <li><a href="#dom-trustedtypeconfiguration-domsinks">domSinks</a><span>, in §2.5</span>
-   <li><a href="#enforcement">enforcement</a><span>, in §2.6</span>
+   <li><a href="#enforcement">enforcement</a><span>, in §2.8</span>
    <li><a href="#dom-trustedtypepolicyoptions-exposed">exposed</a><span>, in §2.2.2</span>
    <li><a href="#abstract-opdef-get-default-policy-algorithm">Get default policy algorithm</a><span>, in §2.3.4</span>
    <li><a href="#abstract-opdef-get-exposed-policy-algorithm">Get exposed policy algorithm</a><span>, in §2.3.3</span>
    <li><a href="#dom-trustedtypepolicyfactory-getexposedpolicy">getExposedPolicy(policyName)</a><span>, in §2.2.3</span>
    <li><a href="#dom-trustedtypepolicyfactory-getpolicynames">getPolicyNames()</a><span>, in §2.2.3</span>
+   <li><a href="#typedefdef-htmlstring">HTMLString</a><span>, in §2.8</span>
    <li><a href="#abstract-opdef-initialize-policy-factory-algorithm">Initialize policy factory algorithm</a><span>, in §2.3.1</span>
-   <li><a href="#abstract-opdef-is-a-default-policy">Is a default policy</a><span>, in §2.3.6</span>
-   <li><a href="#abstract-opdef-is-a-default-policy-algorithm">Is a default policy algorithm</a><span>, in §2.6</span>
+   <li><a href="#abstract-opdef-is-a-default-policy-algorithm">Is a default policy algorithm</a><span>, in §2.3.6</span>
    <li><a href="#dom-trustedtypepolicyfactory-ishtml">isHTML(checkedObject)</a><span>, in §2.2.3</span>
    <li><a href="#abstract-opdef-is-policy-name-allowed-algorithm">Is policy name allowed algorithm</a><span>, in §2.3.5</span>
    <li><a href="#dom-trustedtypepolicyfactory-isscript">isScript(checkedObject)</a><span>, in §2.2.3</span>
    <li><a href="#dom-trustedtypepolicyfactory-isscripturl">isScriptURL(checkedObject)</a><span>, in §2.2.3</span>
    <li><a href="#dom-trustedtypepolicyfactory-isurl">isURL(checkedObject)</a><span>, in §2.2.3</span>
    <li><a href="#dom-trustedtypepolicy-name">name</a><span>, in §2.2.1</span>
+   <li><a href="#abstract-opdef-obtain-a-trusted-type-configuration-for-a-response-algorithm">Obtain a Trusted Type Configuration for a response algorithm</a><span>, in §2.3.9</span>
    <li>
     "reject"
     <ul>
@@ -2335,6 +2517,8 @@ appropriately.</p>
     </ul>
    <li><a href="#dom-stringatsinkdisposition-report">"report"</a><span>, in §2.5</span>
    <li><a href="#dom-trustedtypeconfiguration-reportinggroup">reportingGroup</a><span>, in §2.5</span>
+   <li><a href="#typedefdef-scriptstring">ScriptString</a><span>, in §2.8</span>
+   <li><a href="#typedefdef-scripturlstring">ScriptURLString</a><span>, in §2.8</span>
    <li><a href="#enumdef-stringatsinkdisposition">StringAtSinkDisposition</a><span>, in §2.5</span>
    <li>
     stringification behavior
@@ -2362,6 +2546,7 @@ appropriately.</p>
      <li><a href="#trustedscripturl">(interface)</a><span>, in §2.1.3</span>
      <li><a href="#typedef-trustedscripturl">(type)</a><span>, in §2.1.3</span>
     </ul>
+   <li><a href="#typedefdef-trustedtype">TrustedType</a><span>, in §2.8</span>
    <li><a href="#trusted-type">Trusted Type</a><span>, in §2.1</span>
    <li><a href="#dictdef-trustedtypeconfiguration">TrustedTypeConfiguration</a><span>, in §2.5</span>
    <li>
@@ -2393,6 +2578,7 @@ appropriately.</p>
    <li><a href="#dom-trustedtypeconfiguration-unknownpolicyname">unknownPolicyName</a><span>, in §2.5</span>
    <li><a href="#enumdef-unknownpolicynamedisposition">UnknownPolicyNameDisposition</a><span>, in §2.5</span>
    <li><a href="#dom-stringatsinkdisposition-unsafe-allow">"unsafe-allow"</a><span>, in §2.5</span>
+   <li><a href="#typedefdef-urlstring">URLString</a><span>, in §2.8</span>
   </ul>
   <aside class="dfn-panel" data-for="term-for-violation">
    <a href="https://w3c.github.io/webappsec-csp/#violation">https://w3c.github.io/webappsec-csp/#violation</a><b>Referenced in:</b>
@@ -2429,6 +2615,7 @@ appropriately.</p>
     <li><a href="#ref-for-idl-DOMString⑤">2.2.2. TrustedTypePolicyOptions</a> <a href="#ref-for-idl-DOMString⑥">(2)</a> <a href="#ref-for-idl-DOMString⑦">(3)</a> <a href="#ref-for-idl-DOMString⑧">(4)</a> <a href="#ref-for-idl-DOMString⑨">(5)</a> <a href="#ref-for-idl-DOMString①⓪">(6)</a>
     <li><a href="#ref-for-idl-DOMString①①">2.2.3. TrustedTypePolicyFactory</a> <a href="#ref-for-idl-DOMString①②">(2)</a> <a href="#ref-for-idl-DOMString①③">(3)</a>
     <li><a href="#ref-for-idl-DOMString①④">2.5. TrustedTypeConfiguration</a> <a href="#ref-for-idl-DOMString①⑤">(2)</a>
+    <li><a href="#ref-for-idl-DOMString①⑥">2.8. Integrations</a> <a href="#ref-for-idl-DOMString①⑦">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-Exposed">
@@ -2446,6 +2633,7 @@ appropriately.</p>
    <a href="https://heycam.github.io/webidl/#idl-USVString">https://heycam.github.io/webidl/#idl-USVString</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-idl-USVString">2.2.2. TrustedTypePolicyOptions</a> <a href="#ref-for-idl-USVString①">(2)</a>
+    <li><a href="#ref-for-idl-USVString②">2.8. Integrations</a> <a href="#ref-for-idl-USVString③">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-Unforgeable">
@@ -2539,11 +2727,11 @@ appropriately.</p>
 
 [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed④①"><c- g>Exposed</c-></a>=<c- n>Window</c->]
 <c- b>interface</c-> <a href="#trustedtypepolicy"><code><c- g>TrustedTypePolicy</c-></code></a> {
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable①③"><c- g>Unforgeable</c-></a>] <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①⑥"><c- b>DOMString</c-></a> <a data-readonly data-type="DOMString" href="#dom-trustedtypepolicy-name"><code><c- g>name</c-></code></a>;
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable①②"><c- g>Unforgeable</c-></a>] <a class="n" data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml①"><c- n>TrustedHTML</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createhtml" id="ref-for-dom-trustedtypepolicy-createhtml①①"><c- g>createHTML</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①⑦"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicy-createhtml-input-input"><code><c- g>input</c-></code></a>);
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable②①"><c- g>Unforgeable</c-></a>] <a class="n" data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript①"><c- n>TrustedScript</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createscript" id="ref-for-dom-trustedtypepolicy-createscript①①"><c- g>createScript</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②①"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicy-createscript-input-input"><code><c- g>input</c-></code></a>);
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable③①"><c- g>Unforgeable</c-></a>] <a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl①"><c- n>TrustedScriptURL</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createscripturl" id="ref-for-dom-trustedtypepolicy-createscripturl①①"><c- g>createScriptURL</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString③①"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicy-createscripturl-input-input"><code><c- g>input</c-></code></a>);
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable④①"><c- g>Unforgeable</c-></a>] <a class="n" data-link-type="idl-name" href="#trustedurl" id="ref-for-trustedurl①"><c- n>TrustedURL</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createurl" id="ref-for-dom-trustedtypepolicy-createurl①①"><c- g>createURL</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString④①"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicy-createurl-input-input"><code><c- g>input</c-></code></a>);
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable①③"><c- g>Unforgeable</c-></a>] <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①⑧"><c- b>DOMString</c-></a> <a data-readonly data-type="DOMString" href="#dom-trustedtypepolicy-name"><code><c- g>name</c-></code></a>;
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable①②"><c- g>Unforgeable</c-></a>] <a class="n" data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml③"><c- n>TrustedHTML</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createhtml" id="ref-for-dom-trustedtypepolicy-createhtml①①"><c- g>createHTML</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①⑨"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicy-createhtml-input-input"><code><c- g>input</c-></code></a>);
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable②①"><c- g>Unforgeable</c-></a>] <a class="n" data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript③"><c- n>TrustedScript</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createscript" id="ref-for-dom-trustedtypepolicy-createscript①①"><c- g>createScript</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②①"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicy-createscript-input-input"><code><c- g>input</c-></code></a>);
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable③①"><c- g>Unforgeable</c-></a>] <a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl③"><c- n>TrustedScriptURL</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createscripturl" id="ref-for-dom-trustedtypepolicy-createscripturl①①"><c- g>createScriptURL</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString③①"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicy-createscripturl-input-input"><code><c- g>input</c-></code></a>);
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable④①"><c- g>Unforgeable</c-></a>] <a class="n" data-link-type="idl-name" href="#trustedurl" id="ref-for-trustedurl③"><c- n>TrustedURL</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createurl" id="ref-for-dom-trustedtypepolicy-createurl①①"><c- g>createURL</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString④①"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicy-createurl-input-input"><code><c- g>input</c-></code></a>);
 };
 
 <c- b>dictionary</c-> <a href="#dictdef-trustedtypepolicyoptions"><code><c- g>TrustedTypePolicyOptions</c-></code></a> {
@@ -2555,7 +2743,7 @@ appropriately.</p>
 };
 <c- b>callback</c-> <a href="#callbackdef-createhtmlcallback"><code><c- g>CreateHTMLCallback</c-></code></a> = <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString⑤①"><c- b>DOMString</c-></a> (<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString⑥①"><c- b>DOMString</c-></a> <a href="#dom-createhtmlcallback-input"><code><c- g>input</c-></code></a>);
 <c- b>callback</c-> <a href="#callbackdef-createscriptcallback"><code><c- g>CreateScriptCallback</c-></code></a> = <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString⑦①"><c- b>DOMString</c-></a> (<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString⑧①"><c- b>DOMString</c-></a> <a href="#dom-createscriptcallback-input"><code><c- g>input</c-></code></a>);
-<c- b>callback</c-> <a href="#callbackdef-createurlcallback"><code><c- g>CreateURLCallback</c-></code></a> = <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString②"><c- b>USVString</c-></a> (<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString⑨①"><c- b>DOMString</c-></a> <a href="#dom-createurlcallback-input"><code><c- g>input</c-></code></a>);
+<c- b>callback</c-> <a href="#callbackdef-createurlcallback"><code><c- g>CreateURLCallback</c-></code></a> = <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString④"><c- b>USVString</c-></a> (<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString⑨①"><c- b>DOMString</c-></a> <a href="#dom-createurlcallback-input"><code><c- g>input</c-></code></a>);
 <c- b>callback</c-> <a href="#callbackdef-createscripturlcallback"><code><c- g>CreateScriptURLCallback</c-></code></a> = <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString①①"><c- b>USVString</c-></a> (<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①⓪①"><c- b>DOMString</c-></a> <a href="#dom-createscripturlcallback-input"><code><c- g>input</c-></code></a>);
 
 [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed⑤①"><c- g>Exposed</c-></a>=<c- n>Window</c->] <c- b>interface</c-> <a href="#trustedtypepolicyfactory"><code><c- g>TrustedTypePolicyFactory</c-></code></a> {
@@ -2583,10 +2771,16 @@ appropriately.</p>
 
 <c- b>dictionary</c-> <a href="#dictdef-trustedtypeconfiguration"><code><c- g>TrustedTypeConfiguration</c-></code></a> {
   <a class="n" data-link-type="idl-name" href="#enumdef-unknownpolicynamedisposition" id="ref-for-enumdef-unknownpolicynamedisposition②"><c- n>UnknownPolicyNameDisposition</c-></a> <a data-default="&quot;allow&quot;" data-type="UnknownPolicyNameDisposition " href="#dom-trustedtypeconfiguration-unknownpolicyname"><code><c- g>unknownPolicyName</c-></code></a> = "allow";
-  <a class="n" data-link-type="idl-name" href="#enumdef-stringatsinkdisposition" id="ref-for-enumdef-stringatsinkdisposition①"><c- n>StringAtSinkDisposition</c-></a>? <a data-type="StringAtSinkDisposition? " href="#dom-trustedtypeconfiguration-domsinks"><code><c- g>domSinks</c-></code></a>;
+  <a class="n" data-link-type="idl-name" href="#enumdef-stringatsinkdisposition" id="ref-for-enumdef-stringatsinkdisposition①①"><c- n>StringAtSinkDisposition</c-></a>? <a data-type="StringAtSinkDisposition? " href="#dom-trustedtypeconfiguration-domsinks"><code><c- g>domSinks</c-></code></a>;
   <c- b>sequence</c->&lt;<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①④①"><c- b>DOMString</c-></a>> <a data-type="sequence<DOMString> " href="#dom-trustedtypeconfiguration-allowednames"><code><c- g>allowedNames</c-></code></a>;
   <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①⑤①"><c- b>DOMString</c-></a> <a data-default="&quot;default&quot;" data-type="DOMString " href="#dom-trustedtypeconfiguration-reportinggroup"><code><c- g>reportingGroup</c-></code></a> = "default";
 };
+
+<c- b>typedef</c-> (<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①⑥①"><c- b>DOMString</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml①①"><c- n>TrustedHTML</c-></a>) <a href="#typedefdef-htmlstring"><code><c- g>HTMLString</c-></code></a>;
+<c- b>typedef</c-> (<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①⑦①"><c- b>DOMString</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript①①"><c- n>TrustedScript</c-></a>) <a href="#typedefdef-scriptstring"><code><c- g>ScriptString</c-></code></a>;
+<c- b>typedef</c-> (<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString②①"><c- b>USVString</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl①①"><c- n>TrustedScriptURL</c-></a>) <a href="#typedefdef-scripturlstring"><code><c- g>ScriptURLString</c-></code></a>;
+<c- b>typedef</c-> (<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString③①"><c- b>USVString</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="#trustedurl" id="ref-for-trustedurl①①"><c- n>TrustedURL</c-></a>) <a href="#typedefdef-urlstring"><code><c- g>URLString</c-></code></a>;
+<c- b>typedef</c-> (<a class="n" data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml②①"><c- n>TrustedHTML</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript②①"><c- n>TrustedScript</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl②①"><c- n>TrustedScriptURL</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="#trustedurl" id="ref-for-trustedurl②①"><c- n>TrustedURL</c-></a>) <a href="#typedefdef-trustedtype"><code><c- g>TrustedType</c-></code></a>;
 
 </pre>
   <h2 class="no-num no-ref heading settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
@@ -2600,6 +2794,25 @@ appropriately.</p>
    <div class="issue"> in step 4, exposed is not reachable from policy.  Should we first look up <code>[[options]]</code> internal slot.<a href="#issue-99d8b4ca"> ↵ </a></div>
    <div class="issue"> In step 6, "is an error, return error".  Should it return <em>policyValue</em> or raise a different error?<a href="#issue-f07622ba"> ↵ </a></div>
    <div class="issue"> TODO: write<a href="#issue-28dcbd8e"> ↵ </a></div>
+   <div class="issue"> Maybe move these examples to the section on the HTTP header.<a href="#issue-6535fddb"> ↵ </a></div>
+   <div class="issue"> "unless otherwise configured" or "until otherwise configured"<a href="#issue-b26a268f"> ↵ </a></div>
+   <div class="issue"> it seems to be the case that one object is allowed and it should
+appear last, it cannot contain an allowedNames property and the allowedNames
+set should be the string values.  Clarify.<a href="#issue-cd9bcfb2"> ↵ </a></div>
+   <div class="issue"> maybe treat a string as a configuration that is equivalent to a
+configuration that allows just that name and which has the default values
+for the other properties and allow <code>{"allowedNames":[...],...}</code>.
+This would enable a use case where migrating one tool at a time by having
+some policies that are report-only and others that are enforced.<a href="#issue-7d9c4dc9"> ↵ </a></div>
+   <div class="issue"> if so, need example of 2 disjoint allowed name sets with different
+configurations.<a href="#issue-e1f7a37a"> ↵ </a></div>
+   <div class="issue"> what happens if there are 2 configurations with overlapping
+allowed name sets?<a href="#issue-ba779f5f"> ↵ </a></div>
+   <div class="issue"> does a single configuration with an unknown policy name disposition
+of "allow" govern all policy names that appear in no other configuratons.<a href="#issue-e5fdd885"> ↵ </a></div>
+   <div class="issue"> A trailing comma should not disable enforcement.  Do we
+need to leave the document in a locked down state?
+Maybe set <em>config</em>.domSinks to "reject" and return <em>config</em>.<a href="#issue-6648a1f5"> ↵ </a></div>
    <div class="issue"> rephrase in terms of "not allowed by any" or "disallowed by any"<a href="#issue-e2eb5dd8"> ↵ </a></div>
    <div class="issue"> how does this relate to webappsec-csp/<a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation">Violation</a>?<a href="#issue-d1310019"> ↵ </a></div>
    <div class="issue"> TODO: Describe the properties of the violation
@@ -2611,6 +2824,9 @@ serializable.<a href="#issue-621e48db"> ↵ </a></div>
    <div class="issue"> +mkwst The header does not appear in the origin trials.  Can
 the spec differ so much from the implementation, especially given the
 upcoming Origin Trials?<a href="#issue-559d4710"> ↵ </a></div>
+   <div class="issue"> How does a policy violation get reported (both at the sink
+level, and when creating a policy).<a href="#issue-de6065a2"> ↵ </a></div>
+   <div class="issue"> Check that this algorithm is complete.<a href="#issue-d66da75e"> ↵ </a></div>
    <div class="issue"> STILL TODO<a href="#issue-aaa77a25"> ↵ </a></div>
    <div class="issue"> Go through and identify non-normative sections and mark them
 appropriately.<a href="#issue-72dfcf5b"> ↵ </a></div>
@@ -2628,24 +2844,28 @@ appropriately.<a href="#issue-72dfcf5b"> ↵ </a></div>
    <b><a href="#trustedhtml">#trustedhtml</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-trustedhtml">2.2.1. TrustedTypePolicy</a>
+    <li><a href="#ref-for-trustedhtml①">2.8. Integrations</a> <a href="#ref-for-trustedhtml②">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="trustedscript">
    <b><a href="#trustedscript">#trustedscript</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-trustedscript">2.2.1. TrustedTypePolicy</a>
+    <li><a href="#ref-for-trustedscript①">2.8. Integrations</a> <a href="#ref-for-trustedscript②">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="trustedscripturl">
    <b><a href="#trustedscripturl">#trustedscripturl</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-trustedscripturl">2.2.1. TrustedTypePolicy</a>
+    <li><a href="#ref-for-trustedscripturl①">2.8. Integrations</a> <a href="#ref-for-trustedscripturl②">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="trustedurl">
    <b><a href="#trustedurl">#trustedurl</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-trustedurl">2.2.1. TrustedTypePolicy</a>
+    <li><a href="#ref-for-trustedurl①">2.8. Integrations</a> <a href="#ref-for-trustedurl②">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="trustedtypepolicy">
@@ -2823,6 +3043,12 @@ appropriately.<a href="#issue-72dfcf5b"> ↵ </a></div>
     <li><a href="#ref-for-abstract-opdef-is-policy-name-allowed-algorithm">2.3.2. Create a Trusted Type Policy algorithm</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="abstract-opdef-is-a-default-policy-algorithm">
+   <b><a href="#abstract-opdef-is-a-default-policy-algorithm">#abstract-opdef-is-a-default-policy-algorithm</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-abstract-opdef-is-a-default-policy-algorithm">2.3.2. Create a Trusted Type Policy algorithm</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="abstract-opdef-create-a-trusted-type-algorithm">
    <b><a href="#abstract-opdef-create-a-trusted-type-algorithm">#abstract-opdef-create-a-trusted-type-algorithm</a></b><b>Referenced in:</b>
    <ul>
@@ -2832,7 +3058,8 @@ appropriately.<a href="#issue-72dfcf5b"> ↵ </a></div>
   <aside class="dfn-panel" data-for="enumdef-stringatsinkdisposition">
    <b><a href="#enumdef-stringatsinkdisposition">#enumdef-stringatsinkdisposition</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-enumdef-stringatsinkdisposition">2.5. TrustedTypeConfiguration</a>
+    <li><a href="#ref-for-enumdef-stringatsinkdisposition">2.3.9. Obtain a Trusted Type Configuration for a response algorithm</a>
+    <li><a href="#ref-for-enumdef-stringatsinkdisposition①">2.5. TrustedTypeConfiguration</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="enumdef-unknownpolicynamedisposition">
@@ -2846,37 +3073,49 @@ appropriately.<a href="#issue-72dfcf5b"> ↵ </a></div>
    <ul>
     <li><a href="#ref-for-dictdef-trustedtypeconfiguration">2.2.3. TrustedTypePolicyFactory</a>
     <li><a href="#ref-for-dictdef-trustedtypeconfiguration①">2.3.1. Initialize policy factory algorithm</a>
-    <li><a href="#ref-for-dictdef-trustedtypeconfiguration②">2.4. Violation</a>
+    <li><a href="#ref-for-dictdef-trustedtypeconfiguration②">2.3.9. Obtain a Trusted Type Configuration for a response algorithm</a>
+    <li><a href="#ref-for-dictdef-trustedtypeconfiguration③">2.4. Violation</a>
+    <li><a href="#ref-for-dictdef-trustedtypeconfiguration④">2.7.1. Report sink type mismatch violation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-trustedtypeconfiguration-unknownpolicyname">
    <b><a href="#dom-trustedtypeconfiguration-unknownpolicyname">#dom-trustedtypeconfiguration-unknownpolicyname</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-trustedtypeconfiguration-unknownpolicyname">2.3.5. Is policy name allowed algorithm</a>
+    <li><a href="#ref-for-dom-trustedtypeconfiguration-unknownpolicyname①">2.3.9. Obtain a Trusted Type Configuration for a response algorithm</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="dom-trustedtypeconfiguration-domsinks">
+   <b><a href="#dom-trustedtypeconfiguration-domsinks">#dom-trustedtypeconfiguration-domsinks</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-trustedtypeconfiguration-domsinks">2.3.9. Obtain a Trusted Type Configuration for a response algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-trustedtypeconfiguration-allowednames">
    <b><a href="#dom-trustedtypeconfiguration-allowednames">#dom-trustedtypeconfiguration-allowednames</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-trustedtypeconfiguration-allowednames">2.3.5. Is policy name allowed algorithm</a>
+    <li><a href="#ref-for-dom-trustedtypeconfiguration-allowednames①">2.3.9. Obtain a Trusted Type Configuration for a response algorithm</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="dom-trustedtypeconfiguration-reportinggroup">
+   <b><a href="#dom-trustedtypeconfiguration-reportinggroup">#dom-trustedtypeconfiguration-reportinggroup</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-trustedtypeconfiguration-reportinggroup">2.3.9. Obtain a Trusted Type Configuration for a response algorithm</a>
+    <li><a href="#ref-for-dom-trustedtypeconfiguration-reportinggroup①">2.7.1. Report sink type mismatch violation</a> <a href="#ref-for-dom-trustedtypeconfiguration-reportinggroup②">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="trusted-types-http-response-header">
    <b><a href="#trusted-types-http-response-header">#trusted-types-http-response-header</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-trusted-types-http-response-header">2.2.3. TrustedTypePolicyFactory</a>
+    <li><a href="#ref-for-trusted-types-http-response-header①">2.3.9. Obtain a Trusted Type Configuration for a response algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="callback-this-value">
    <b><a href="#callback-this-value">#callback-this-value</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-callback-this-value">2.3.7. Create a Trusted Type algorithm</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="abstract-opdef-is-a-default-policy-algorithm">
-   <b><a href="#abstract-opdef-is-a-default-policy-algorithm">#abstract-opdef-is-a-default-policy-algorithm</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-abstract-opdef-is-a-default-policy-algorithm">2.3.2. Create a Trusted Type Policy algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="capabilities">
@@ -2890,7 +3129,8 @@ appropriately.<a href="#issue-72dfcf5b"> ↵ </a></div>
    <ul>
     <li><a href="#ref-for-enforcement">2.2. Policies</a> <a href="#ref-for-enforcement①">(2)</a>
     <li><a href="#ref-for-enforcement②">2.2.4. Default policy</a>
-    <li><a href="#ref-for-enforcement③">2.5. TrustedTypeConfiguration</a>
+    <li><a href="#ref-for-enforcement③">2.3.9. Obtain a Trusted Type Configuration for a response algorithm</a>
+    <li><a href="#ref-for-enforcement④">2.5. TrustedTypeConfiguration</a>
    </ul>
   </aside>
 <script>/* script-dfn-panel */
