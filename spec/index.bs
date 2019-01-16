@@ -4,7 +4,7 @@ Shortname: trusted-types
 Group: WICG
 Level: none
 Status: ED
-URL: https://raw.githack.com/WICG/trusted-types/master/dist/spec/index.bs.html
+URL: https://wicg.github.io/trusted-types/dist/spec/index.bs.html
 Editor: Krzysztof Kotowicz, Google LLC https://google.com, koto@google.com
 Editor: Mike West, Google LLC https://google.com, mkwst@google.com
 Repository: WICG/trusted-types
@@ -879,7 +879,7 @@ object}}.
 
         Note: The optional *url* parameter is not provided.
 
-## Integrations ## {#integrations}
+# Integrations # {#integrations}
 
 Note: DOM sink setters may accept these types to indicate that they accept
 the appropriate trusted type or a string when enforcement is off or when
@@ -893,9 +893,9 @@ typedef (USVString or TrustedURL) URLString;
 typedef (TrustedHTML or TrustedScript or TrustedScriptURL or TrustedURL) TrustedType;
 </xmp>
 
-### Algorithms ### {#integrations-algorithms}
+## Algorithms ## {#integrations-algorithms}
 
-#### <dfn abstract-op>Get Trusted Type compliant string algorithm</dfn> #### {#get-trusted-type-compliant-string-algorithm}
+### <dfn abstract-op>Get Trusted Type compliant string algorithm</dfn> ### {#get-trusted-type-compliant-string-algorithm}
 
 This algorithm will return a string that can be assigned to a DOM
 [:sink:], optionally unwrapping it from a matching [:Trusted Type:].
@@ -946,7 +946,7 @@ ISSUE: In step 1, refer to the internal slot in Document or the IDL additions to
 1.  If *disposition* is `“report”`, then return stringified *input* and abort these steps.
 1.  Throw a {{TypeError}}.
 
-#### <dfn abstract-op>Enforce a Trusted Type algorithm</dfn> #### {#enforce-a-trusted-type-algorithm}
+### <dfn abstract-op>Enforce a Trusted Type algorithm</dfn> ### {#enforce-a-trusted-type-algorithm}
 
 Enforce a Trusted Type algorithm describes a modification to the DOM
 XSS [:sink:] functions (e.g. setter functions on DOM XSS sink attributes),
@@ -994,7 +994,7 @@ without modification.
     result.
 
 
-### Integration with HTML ### {#integration-with-html}
+## Integration with HTML ## {#integration-with-html}
 
 {{Window}} objects have a {{Window/TrustedTypes|trusted type policy factory}},
 which is a {{TrustedTypePolicyFactory}} object.
@@ -1003,7 +1003,7 @@ which is a {{TrustedTypePolicyFactory}} object.
 which is a {{TrustedTypeConfiguration}} object.
 
 
-#### <dfn abstract-op>Initialize a Document’s trusted type configuration algorithm</dfn> #### {#initialize-a-documents-trusted-type-configuration-algorithm}
+### <dfn abstract-op>Initialize a Document’s trusted type configuration algorithm</dfn> ### {#initialize-a-documents-trusted-type-configuration-algorithm}
 
 This algorithm should be executed during the
 [[HTML5#initialise-the-document-object|Initializing a new Document
@@ -1027,7 +1027,7 @@ following steps in order to initialize
 
 
 
-#### Extensions to the Window interface #### {#extensions-to-the-window-interface}
+### Extensions to the Window interface ### {#extensions-to-the-window-interface}
 
 This document extends the {{Window}} interface defined by [[HTML5|HTML]]:
 
@@ -1055,7 +1055,7 @@ has a trusted type policy factory, or null otherwise.
 {{USVString}} to {{URLString}}.
 
 
-#### Extensions to the Document interface #### {#extensions-to-the-document-interface}
+### Extensions to the Document interface ### {#extensions-to-the-document-interface}
 
 This document modifies the {{Document}} interface defined by [[HTML5|HTML]]:
 
@@ -1070,7 +1070,7 @@ partial interface mixin Document {
 The types of arguments were changed.
 
 
-#### <dfn abstract-op>Enforcement in window open steps algorithm</dfn> #### {#enforcement-in-window-open}
+### <dfn abstract-op>Enforcement in window open steps algorithm</dfn> ### {#enforcement-in-window-open}
 
 Modify the [[HTML5#window-open-steps|window open steps]] to accept a
 {{URLString}} (*url*) (instead of a string url), and add the following
@@ -1087,7 +1087,7 @@ steps after step 9:
     and abort the following steps.
 
 
-#### <dfn abstract-op>Enforcement in Location navigation</dfn> algorithm #### {#enforcement-in-location}
+### <dfn abstract-op>Enforcement in Location navigation</dfn> algorithm ### {#enforcement-in-location}
 
 To the [[HTML5#location-object-navigate|Location-object navigate]] algorithm, add the following steps before step 1:
 
@@ -1100,7 +1100,7 @@ To the [[HTML5#location-object-navigate|Location-object navigate]] algorithm, ad
     exception, and abort the following steps.
 
 
-#### <dfn abstract-op>Enforcement in document write steps</dfn> algorithm #### {#enforcement-document-write}
+### <dfn abstract-op>Enforcement in document write steps</dfn> algorithm ### {#enforcement-document-write}
 
 Modify the [[HTML5#document-write-steps|document write steps]]
 algorithm to accept an {{HTMLString}} (*input*) (instead of a string
@@ -1116,7 +1116,7 @@ input), and add the following steps before step 1:
     exception, and abort the following steps.
 
 
-#### Enforcement in property sinks #### {#enforcement-in-sinks}
+### Enforcement in property sinks ### {#enforcement-in-sinks}
 
 This document modifies the setters of the following properties of
 various DOM elements.  For each property in the list, modify the IDL

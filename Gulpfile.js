@@ -148,7 +148,7 @@ gulp.task('es6.full', function() {
 });
 
 gulp.task('spec', function() {
-  return bikeshed('spec/index.bs', 'dist/spec/index.bs.html');
+  return bikeshed('spec/index.bs', 'dist/spec/index.html');
 });
 
 gulp.task('spec.watch', function() {
@@ -160,7 +160,7 @@ gulp.task('spec.watch', function() {
               __dirname,
               'dist',
               reldir,
-              `${ path.basename(bspath) }.html`);
+              `${ path.basename(bspath, '.bs') }.html`);
           bikeshed(bspath, outfile);
       });
 });
