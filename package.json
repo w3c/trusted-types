@@ -20,6 +20,7 @@
     "build:cjs": "rollup -c",
     "build:es5": "gulp es5",
     "build:es6": "gulp es6",
+    "spec": "gulp spec",
     "add_build": "git add ./dist/"
   },
   "author": "Google Inc.",
@@ -28,6 +29,7 @@
     "babel-core": "^6.26.3",
     "babel-preset-env": "^1.7.0",
     "babelify": "^8.0.0",
+    "bikeshed-js": "^1.0.7",
     "browserify": "^16.2.3",
     "eslint": "^4.19.1",
     "eslint-config-google": "^0.9.1",
@@ -53,6 +55,7 @@
     "lint",
     "test",
     "build",
+    "spec",
     "add_build"
   ],
   "files": [
