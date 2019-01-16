@@ -104,7 +104,7 @@ let SET_ATTRIBUTE_TYPE_MAP = {
     'srcdoc': TrustedTypes.TrustedHTML,
   },
   'HTMLLinkElement': {
-    'href': TrustedTypes.TrustedScriptURL,
+    'href': TrustedTypes.TrustedURL,
   },
   'HTMLObjectElement': {
     'data': TrustedTypes.TrustedScriptURL,
