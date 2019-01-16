@@ -176,9 +176,8 @@ const trustedTypesBuilderTestOnly = function() {
   /**
    * Trusted Script URL object wrapping a string that can only be created from a
    * TT policy.
-   * TrustedScriptURL inherits from TrustedURL.
    */
-  class TrustedScriptURL extends TrustedURL {
+  class TrustedScriptURL extends TrustedType {
   }
   lockdownTrustedType(TrustedScriptURL, 'TrustedScriptURL');
 
