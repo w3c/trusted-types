@@ -1214,7 +1214,7 @@ Possible extra rowspan handling
 </style>
   <meta content="Bikeshed version 86d51a2d9c3c0de4540c77189312f7e2393844af" name="generator">
   <link href="https://wicg.github.io/trusted-types/dist/spec/index.html" rel="canonical">
-  <meta content="784e0a67efe31d3f9f0a8b6b1c727a8a711ea76f" name="document-revision">
+  <meta content="3c9c3eb1701b9c9d773ce34639b4793aed53a0ba" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -1481,7 +1481,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   </div>
   <div class="p-summary" data-fill-with="abstract">
    <h2 class="no-num no-toc no-ref heading settled" id="abstract"><span class="content">Abstract</span></h2>
-   <p>an API that allows the applications to lock down the DOM XSS sinks to only accept non-spoofable, typed values in place of strings.</p>
+   <p>an API that allows applications to lock down DOM XSS sinks to only accept non-spoofable, typed values in place of strings.</p>
   </div>
   <div data-fill-with="at-risk"></div>
   <h2 class="no-num no-toc no-ref heading settled" id="status"><span class="content">Status of this document</span></h2>
@@ -1567,13 +1567,27 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
         <li><a href="#initialize-a-documents-trusted-type-configuration-algorithm"><span class="secno">3.2.1</span> <span class="content"><span>Initialize a Document’s trusted type configuration algorithm</span></span></a>
         <li><a href="#extensions-to-the-window-interface"><span class="secno">3.2.2</span> <span class="content">Extensions to the Window interface</span></a>
         <li><a href="#extensions-to-the-document-interface"><span class="secno">3.2.3</span> <span class="content">Extensions to the Document interface</span></a>
-        <li><a href="#enforcement-in-window-open"><span class="secno">3.2.4</span> <span class="content"><span>Enforcement in window open steps algorithm</span></span></a>
-        <li><a href="#enforcement-in-location"><span class="secno">3.2.5</span> <span class="content"><span>Enforcement in Location navigation</span> algorithm</span></a>
-        <li><a href="#enforcement-document-write"><span class="secno">3.2.6</span> <span class="content"><span>Enforcement in document write steps</span> algorithm</span></a>
+        <li><a href="#enforcement-in-window-open"><span class="secno">3.2.4</span> <span class="content">Enforcement in window open steps algorithm</span></a>
+        <li><a href="#enforcement-in-location"><span class="secno">3.2.5</span> <span class="content">Enforcement in Location navigation algorithm</span></a>
+        <li><a href="#enforcement-document-write"><span class="secno">3.2.6</span> <span class="content">Enforcement in document write steps</span></a>
         <li><a href="#enforcement-in-sinks"><span class="secno">3.2.7</span> <span class="content">Enforcement in property sinks</span></a>
+        <li><a href="#enforcement-in-timer-functions"><span class="secno">3.2.8</span> <span class="content">Enforcement in timer functions</span></a>
+        <li><a href="#enforcement-in-event-handler-content-attributes"><span class="secno">3.2.9</span> <span class="content">Enforcement in event handler content attributes</span></a>
+        <li><a href="#string-compilation"><span class="secno">3.2.10</span> <span class="content">String compilation</span></a>
+       </ol>
+      <li>
+       <a href="#integration-with-dom-parsing"><span class="secno">3.3</span> <span class="content">Integration with DOM Parsing #</span></a>
+       <ol class="toc">
+        <li><a href="#extensions-to-element-interface"><span class="secno">3.3.1</span> <span class="content">Extensions to the Element interface</span></a>
+        <li><a href="#extensions-to-the-range-interface"><span class="secno">3.3.2</span> <span class="content">Extensions to the Range interface</span></a>
+        <li><a href="#extensions-to-the-DOMParser"><span class="secno">3.3.3</span> <span class="content">Extensions to the DOMParser interface</span></a>
        </ol>
      </ol>
-    <li><a href="#more-todo"><span class="secno">4</span> <span class="content">STILL TODO</span></a>
+    <li>
+     <a href="#implementation-considerations"><span class="secno">4</span> <span class="content">Implementation Considerations</span></a>
+     <ol class="toc">
+      <li><a href="#vendor-specific-extensions-and-addons"><span class="secno">4.1</span> <span class="content">Vendor-specific Extensions and Addons</span></a>
+     </ol>
     <li><a href="#conformance"><span class="secno"></span> <span class="content"> Conformance</span></a>
     <li>
      <a href="#index"><span class="secno"></span> <span class="content">Index</span></a>
@@ -1608,14 +1622,13 @@ difficult to prevent. Due to the dynamic nature of JavaScript it’s
 difficult to ascertain that this vulnerability is not present in a
 given program - as such, DOM XSS is often missed during manual code
 reviews, and automated code analysis. As an example, <code>foo[bar] = aString</code> is a statement that potentially introduces DOM XSS.</p>
-   <p>This document defines Trusted Types - an API that allows the
-applications to lock down the DOM XSS sinks to only accept
-non-spoofable, typed values in place of strings. These values can in
-turn only be created from application-defined policies, allowing the
-authors to define rules guarding writing values to the DOM, and
-reducing the DOM XSS attack surface to small, isolated parts of the
-web application codebase, which are substantially easier to safeguard,
-monitor and review.</p>
+   <p>This document defines Trusted Types - an API that allows applications
+to lock down DOM XSS sinks to only accept non-spoofable, typed values
+in place of strings. These values can in turn only be created from
+application-defined policies, allowing the authors to define rules
+guarding writing values to the DOM, and reducing the DOM XSS attack
+surface to small, isolated parts of the web application codebase,
+which are substantially easier to safeguard, monitor and review.</p>
    <h3 class="heading settled" data-level="1.1" id="goals"><span class="secno">1.1. </span><span class="content">Goals</span><a class="self-link" href="#goals"></a></h3>
    <ul>
     <li data-md>
@@ -1785,9 +1798,9 @@ code plugin loading subsystem each will likely need full control over
 HTML or URLs. The API design facilitates that - each policy may only
 be used if the callsite can obtain a reference to the policy (a return
 value from <code class="idl"><a data-link-type="idl" href="#dom-trustedtypepolicyfactory-createpolicy" id="ref-for-dom-trustedtypepolicyfactory-createpolicy">createPolicy()</a></code>). As such, policy
-references can be treated as <a data-link-type="dfn" href="#capabilities" id="ref-for-capabilities">capabilities</a>, access to which can be
-controlled using JavaScript techniques (e.g. via closures, internal
-function variables, or modules).</p>
+references can be treated as <a href="https://en.wikipedia.org/wiki/Object-capability_model">capabilities</a>,
+access to which can be controlled using JavaScript techniques
+(e.g. via closures, internal function variables, or modules).</p>
    <h4 class="heading settled" data-level="2.2.1" id="trusted-type-policy"><span class="secno">2.2.1. </span><span class="content"><dfn class="css" data-dfn-type="type" data-export id="typedef-trustedtypepolicy">TrustedTypePolicy<a class="self-link" href="#typedef-trustedtypepolicy"></a></dfn></span><a class="self-link" href="#trusted-type-policy"></a></h4>
    <p>Policy objects implement a TrustedTypePolicy interface and define a
 group of functions creating Trusted Type objects. Each policy is
@@ -1915,8 +1928,7 @@ and is exposed. Returns the result of executing a <a data-link-type="abstract-op
 Type and has its <code>[[Data]]</code> internal slot set, or return false otherwise.</p>
    <p class="note" role="note"><span>Note:</span> These functions are used to check if a given object is indeed a legitimate <a data-link-type="dfn" href="#trusted-type" id="ref-for-trusted-type②">Trusted Type</a> object (e.g. it was created via one of the configured
 policies). This is to be able to detect a forgery of the objects via
-e.g. [http://www.ecma-international.org/ecma-262/6.0/#sec-object.create|Object.create]
-or prototype chains manipulation.</p>
+e.g. <a href="https://tc39.github.io/ecma262/#sec-object.create">Object.create</a> or prototype chains manipulation.</p>
    <div class="example" id="create-and-used-unexposed-policy">
     <a class="self-link" href="#create-and-used-unexposed-policy"></a> 
 <pre class="highlight"><c- kr>const</c-> myPolicy <c- o>=</c-> TrustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- t>'myPolicy'</c-><c- p>,</c-> <c- p>{</c->
@@ -2088,7 +2100,7 @@ based on the following table:</p>
     <li data-md>
      <p>If <em>function</em> is null, throw a <em>TypeError</em>.</p>
     <li data-md>
-     <p>Let <em>policyValue</em> be the result of invoking <em>function</em> with <em>value</em> as a first argument, and <a data-link-type="dfn" href="#callback-this-value" id="ref-for-callback-this-value">callback this value</a> set to null.</p>
+     <p>Let <em>policyValue</em> be the result of invoking <em>function</em> with <em>value</em> as a first argument, and <a href="https://tc39.github.io/ecma262/#sec-method">callback **this** value</a> set to null.</p>
     <li data-md>
      <p>If <em>policyValue</em> is an error, return error.</p>
     <li data-md>
@@ -2254,17 +2266,15 @@ defaultSinkDisposition to <code>“reject”</code>.</p>
      <p>For each <em>item</em> in <em>list</em>:</p>
      <ol>
       <li data-md>
-       <p>If <em>item</em> is a [https://tools.ietf.org/html/rfc8259#section-7|string]:</p>
+       <p>If <em>item</em> is a <a href="https://tools.ietf.org/html/rfc8259#section-7">string</a> :</p>
        <ol>
         <li data-md>
          <p>If <em>item</em> is equal to <code>“*”</code>, then set <em>hasWildcardPolicy</em> to true.</p>
         <li data-md>
-         <p>Otherwise, add <em>item</em> to <em>config</em>'s
-{{TrustedTypeConfiguration/allowedNames|allowedNames} set.</p>
+         <p>Otherwise, add <em>item</em> to <em>config</em>'s <code class="idl"><a data-link-type="idl" href="#dom-trustedtypeconfiguration-allowednames" id="ref-for-dom-trustedtypeconfiguration-allowednames②">allowedNames</a></code> set.</p>
        </ol>
       <li data-md>
-       <p>Otherwise, if <em>item</em> is an
-[https://tools.ietf.org/html/rfc8259#section-4|object],
+       <p>Otherwise, if <em>item</em> is an <a href="https://tools.ietf.org/html/rfc8259#section-4">object</a>,
 for each <em>name</em> → <em>value</em> of item, execute the following steps:</p>
        <ol>
         <li data-md>
@@ -2278,7 +2288,7 @@ If value is a valid <code class="idl"><a data-link-type="idl" href="#enumdef-str
 an error.</p>
           <li data-md>
            <p>case <code>“report”</code>:
-If value is a [https://tools.ietf.org/html/rfc8259#section-7|string],
+If value is a <a href="https://tools.ietf.org/html/rfc8259#section-7">string</a>,
 set <em>config</em>'s <code class="idl"><a data-link-type="idl" href="#dom-trustedtypeconfiguration-reportinggroup" id="ref-for-dom-trustedtypeconfiguration-reportinggroup">reportingGroup</a></code> to that value.
 Otherwise, throw an error.</p>
           <li data-md>
@@ -2340,8 +2350,7 @@ enforcement falls back to a <a data-link-type="dfn" href="#default-policy" id="r
 </pre>
    <h3 class="heading settled" data-level="3.1" id="integrations-algorithms"><span class="secno">3.1. </span><span class="content">Algorithms</span><a class="self-link" href="#integrations-algorithms"></a></h3>
    <h4 class="heading settled" data-level="3.1.1" id="get-trusted-type-compliant-string-algorithm"><span class="secno">3.1.1. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-get-trusted-type-compliant-string-algorithm">Get Trusted Type compliant string algorithm</dfn></span><a class="self-link" href="#get-trusted-type-compliant-string-algorithm"></a></h4>
-   <p>This algorithm will return a string that can be assigned to a DOM
-[:sink:], optionally unwrapping it from a matching [:Trusted Type:].
+   <p>This algorithm will return a string that can be assigned to a DOM <a data-link-type="dfn" href="#sink" id="ref-for-sink①">sink</a>, optionally unwrapping it from a matching <a data-link-type="dfn" href="#trusted-type" id="ref-for-trusted-type④">Trusted Type</a>.
 It will ensure that the Trusted Type enforcement setting was respected.</p>
    <p>Given a TrustedType type (<em>expectedType</em>), a <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document②">Document</a></code> (<em>document</em>), a {TrustedType} (<em>input</em>), and a boolean
 (<em>passThroughFunctions</em>) run these steps:</p>
@@ -2350,8 +2359,7 @@ It will ensure that the Trusted Type enforcement setting was respected.</p>
    <p class="issue" id="issue-e10bac35"><a class="self-link" href="#issue-e10bac35"></a> In step 1, refer to the internal slot in Document or the IDL additions to document that store the configuration.</p>
    <ol>
     <li data-md>
-     <p>Let <em>disposition</em> be <em>document</em>’s
-[:Document trusted type policy configuration|TrustedTypeConfiguration:]'s <code class="idl"><a data-link-type="idl" href="#dom-trustedtypeconfiguration-domsinks" id="ref-for-dom-trustedtypeconfiguration-domsinks①">domSinks</a></code>.</p>
+     <p>Let <em>disposition</em> be <em>document</em>’s TrustedTypeConfiguration’s <code class="idl"><a data-link-type="idl" href="#dom-trustedtypeconfiguration-domsinks" id="ref-for-dom-trustedtypeconfiguration-domsinks①">domSinks</a></code>.</p>
     <li data-md>
      <p>If <em>disposition</em> is <code>“unsafe-allow”</code>, then run these steps:</p>
      <ol>
@@ -2404,13 +2412,16 @@ following steps.</p>
      <p>Throw a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror">TypeError</a></code>.</p>
    </ol>
    <h4 class="heading settled" data-level="3.1.2" id="enforce-a-trusted-type-algorithm"><span class="secno">3.1.2. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-enforce-a-trusted-type-algorithm">Enforce a Trusted Type algorithm</dfn></span><a class="self-link" href="#enforce-a-trusted-type-algorithm"></a></h4>
+   <p class="note" role="note"><span>Note:</span> <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="enforcement">enforcement</dfn> is the process of checking that a value
+has an appropriate type before it reaches a <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="sink">sink</dfn>, a function
+that could result in XSS if an assignment of an untrusted
+input reached it unmitigated.  Examples of sinks include
+setter functions on DOM XSS sink attributes.</p>
    <p>Enforce a Trusted Type algorithm describes a modification to the DOM
-XSS [:sink:] functions (e.g. setter functions on DOM XSS sink attributes),
-asserting that the input meets [:Trusted Type:] restrictions set for the
-current <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document③">Document</a></code>.  It accepts an input value that the original function
-would and will optionally pass-through to the original function -- all
-original arguments to the function apart from input are passed through
-without modification.</p>
+XSS sink functions, asserting that the input meets <a data-link-type="dfn" href="#trusted-type" id="ref-for-trusted-type⑤">Trusted Type</a> restrictions set for the current <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document③">Document</a></code>.  It accepts an input
+value that the original function would and will optionally
+pass-through to the original function -- all original arguments to the
+function apart from input are passed through without modification.</p>
    <ol>
     <li data-md>
      <p>Let <em>compliantValue</em> be the result of executing <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string-algorithm" id="ref-for-abstract-opdef-get-trusted-type-compliant-string-algorithm">Get Trusted Type
@@ -2504,8 +2515,8 @@ has a trusted type policy factory, or null otherwise.</p>
   [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions①"><c- g>CEReactions</c-></a>] <c- b>void</c-> <dfn class="idl-code" data-dfn-for="Document" data-dfn-type="method" data-export data-lt="writeln(...text)|writeln()" id="dom-document-writeln"><code><c- g>writeln</c-></code><a class="self-link" href="#dom-document-writeln"></a></dfn>(<a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring②"><c- n>HTMLString</c-></a>... <dfn class="idl-code" data-dfn-for="Document/writeln(...text)" data-dfn-type="argument" data-export id="dom-document-writeln-text-text"><code><c- g>text</c-></code><a class="self-link" href="#dom-document-writeln-text-text"></a></dfn>);
 };
 </pre>
-   <p>The types of arguments were changed.</p>
-   <h4 class="heading settled" data-level="3.2.4" id="enforcement-in-window-open"><span class="secno">3.2.4. </span><span class="content"><dfn data-dfn-type="abstract-op" data-export id="abstract-opdef-enforcement-in-window-open-steps-algorithm">Enforcement in window open steps algorithm<a class="self-link" href="#abstract-opdef-enforcement-in-window-open-steps-algorithm"></a></dfn></span><a class="self-link" href="#enforcement-in-window-open"></a></h4>
+   <p class="note" role="note"><span>Note:</span> The types of arguments were changed.</p>
+   <h4 class="heading settled" data-level="3.2.4" id="enforcement-in-window-open"><span class="secno">3.2.4. </span><span class="content">Enforcement in window open steps algorithm</span><a class="self-link" href="#enforcement-in-window-open"></a></h4>
    <p>Modify the <a href="https://www.w3.org/TR/html5/#window-open-steps">window open steps</a> to accept a <code class="idl"><a data-link-type="idl" href="#typedefdef-urlstring" id="ref-for-typedefdef-urlstring④">URLString</a></code> (<em>url</em>) (instead of a string url), and add the following
 steps after step 9:</p>
    <ol>
@@ -2526,7 +2537,7 @@ string algorithm</a> with:</p>
      <p>If the previous algorithm throws an exception, rethrow the exception,
 and abort the following steps.</p>
    </ol>
-   <h4 class="heading settled" data-level="3.2.5" id="enforcement-in-location"><span class="secno">3.2.5. </span><span class="content"><dfn data-dfn-type="abstract-op" data-export id="abstract-opdef-enforcement-in-location-navigation">Enforcement in Location navigation<a class="self-link" href="#abstract-opdef-enforcement-in-location-navigation"></a></dfn> algorithm</span><a class="self-link" href="#enforcement-in-location"></a></h4>
+   <h4 class="heading settled" data-level="3.2.5" id="enforcement-in-location"><span class="secno">3.2.5. </span><span class="content">Enforcement in Location navigation algorithm</span><a class="self-link" href="#enforcement-in-location"></a></h4>
    <p>To the <a href="https://www.w3.org/TR/html5/#location-object-navigate">Location-object navigate</a> algorithm, add the following steps before step 1:</p>
    <ol>
     <li data-md>
@@ -2545,7 +2556,7 @@ and abort the following steps.</p>
      <p>If the previous algorithm throws an exception, rethrow the
 exception, and abort the following steps.</p>
    </ol>
-   <h4 class="heading settled" data-level="3.2.6" id="enforcement-document-write"><span class="secno">3.2.6. </span><span class="content"><dfn data-dfn-type="abstract-op" data-export id="abstract-opdef-enforcement-in-document-write-steps">Enforcement in document write steps<a class="self-link" href="#abstract-opdef-enforcement-in-document-write-steps"></a></dfn> algorithm</span><a class="self-link" href="#enforcement-document-write"></a></h4>
+   <h4 class="heading settled" data-level="3.2.6" id="enforcement-document-write"><span class="secno">3.2.6. </span><span class="content">Enforcement in document write steps</span><a class="self-link" href="#enforcement-document-write"></a></h4>
    <p>Modify the <a href="https://www.w3.org/TR/html5/#document-write-steps">document write steps</a> algorithm to accept an <code class="idl"><a data-link-type="idl" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring③">HTMLString</a></code> (<em>input</em>) (instead of a string
 input), and add the following steps before step 1:</p>
    <ol>
@@ -2662,17 +2673,125 @@ algorithm</a>.</p>
       <td><code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/media.html#dom-track-src" id="ref-for-dom-track-src">HTMLTrackElement.src</a></code>
       <td><code class="idl"><a data-link-type="idl" href="#typedefdef-urlstring" id="ref-for-typedefdef-urlstring①⑨">URLString</a></code>
    </table>
-   <h2 class="heading settled" data-level="4" id="more-todo"><span class="secno">4. </span><span class="content">STILL TODO</span><a class="self-link" href="#more-todo"></a></h2>
-   <ul>
+   <h4 class="heading settled" data-level="3.2.8" id="enforcement-in-timer-functions"><span class="secno">3.2.8. </span><span class="content">Enforcement in timer functions</span><a class="self-link" href="#enforcement-in-timer-functions"></a></h4>
+   <p>To the <a href="https://www.w3.org/TR/html5/#timer-initialisation-steps">timer initialization steps algorithm</a>,
+add a step between 7.1 and 7.2:</p>
+   <ol>
     <li data-md>
-     <p><dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="callback-this-value">callback this value</dfn></p>
+     <p>Set the first method argument to the result of executing
+the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string-algorithm" id="ref-for-abstract-opdef-get-trusted-type-compliant-string-algorithm④">Get Trusted Type compliant string algorithm</a>, with</p>
+     <ul>
+      <li data-md>
+       <p><em>document</em> set to the document of the method content proxy.</p>
+      <li data-md>
+       <p><em>input</em> set to the first method argument,</p>
+      <li data-md>
+       <p><em>expectedType</em> set to <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript④">TrustedScript</a></code> and</p>
+      <li data-md>
+       <p><em>passThroughFunctions</em> set to true.</p>
+     </ul>
+   </ol>
+   <p class="note" role="note"><span>Note:</span> Makes sure that a <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript⑤">TrustedScript</a></code> is passed to timer
+functions in place of a string when Trusted Types are enforced, but
+also unconditionally accepts any <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#Function" id="ref-for-Function④">Function</a></code> object.</p>
+   <h4 class="heading settled" data-level="3.2.9" id="enforcement-in-event-handler-content-attributes"><span class="secno">3.2.9. </span><span class="content">Enforcement in event handler content attributes</span><a class="self-link" href="#enforcement-in-event-handler-content-attributes"></a></h4>
+   <p>This document modifies the <a href="https://www.w3.org/TR/html5/#event-handler-content-attributes">attribute change steps for an event handler content attribute</a>.</p>
+   <p>At the beginning of step 5, insert the following steps:</p>
+   <ol>
     <li data-md>
-     <p><dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="capabilities">capabilities</dfn> link to ocaps</p>
+     <p>Let <em>value</em> be the result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string-algorithm" id="ref-for-abstract-opdef-get-trusted-type-compliant-string-algorithm⑤">Get Trusted Type compliant string algorithm</a>, with</p>
+     <ul>
+      <li data-md>
+       <p><em>document</em> set to the owner document of <em>eventTarget</em>,</p>
+      <li data-md>
+       <p><em>input</em> set to <em>value</em>,</p>
+      <li data-md>
+       <p><em>expectedType</em> set to <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript⑥">TrustedScript</a></code>, and</p>
+      <li data-md>
+       <p><em>passThroughFunctions</em> set to false.</p>
+     </ul>
     <li data-md>
-     <p><dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="enforcement">enforcement</dfn></p>
+     <p>If the algorithm throws an error, abort these steps.</p>
+   </ol>
+   <h4 class="heading settled" data-level="3.2.10" id="string-compilation"><span class="secno">3.2.10. </span><span class="content">String compilation</span><a class="self-link" href="#string-compilation"></a></h4>
+   <p class="note" role="note"><span>Note:</span> See <a href="https://github.com/tc39/ecma262/issues/938">TC39/ecma262 issue #938</a> (adding a string to be compiled to algorithm parameters)</p>
+   <p class="issue" id="issue-f24e404a"><a class="self-link" href="#issue-f24e404a"></a> Should we be modifying
+[[HTML5#hostensurecancompilestrings(callerrealm,-calleerealm)|HostEnsureCanCompileStrings]]
+or EnsureCSPDoesNotBlockStringCompilation?</p>
+   <p>Modify <a href="https://www.w3.org/TR/CSP3/#can-compile-strings">HostEnsureCanCompileStrings</a> algorithm, adding the following steps before step 1:</p>
+   <ol>
     <li data-md>
-     <p><dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="sink">sink</dfn></p>
-   </ul>
+     <p>Let <em>value</em> be the result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string-algorithm" id="ref-for-abstract-opdef-get-trusted-type-compliant-string-algorithm⑥">Get Trusted Type compliant string algorithm</a>, with:</p>
+     <ul>
+      <li data-md>
+       <p><em>document</em> set to the <em>callerRealm</em>’s
+[[HTML5#environment-settings-object|environment setting object]'s <a href="https://www.w3.org/TR/html5/#responsible-document">responsible document</a>,</p>
+      <li data-md>
+       <p><em>input</em> set to <em>codeToCompile</em>,</p>
+      <li data-md>
+       <p><em>expectedType</em> being <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript⑦">TrustedScript</a></code>, and</p>
+      <li data-md>
+       <p><em>passThroughFunctions</em> set to false</p>
+     </ul>
+    <li data-md>
+     <p>If the algorithm throws an error, throw an <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-evalerror" id="ref-for-exceptiondef-evalerror">EvalError</a></code>.</p>
+   </ol>
+   <h3 class="heading settled" data-level="3.3" id="integration-with-dom-parsing"><span class="secno">3.3. </span><span class="content">Integration with DOM Parsing #</span><a class="self-link" href="#integration-with-dom-parsing"></a></h3>
+   <p class="note" role="note"><span>Note:</span> Re <a data-link-type="biblio" href="#biblio-dom-parsing">[DOM-Parsing]</a>.</p>
+   <h4 class="heading settled" data-level="3.3.1" id="extensions-to-element-interface"><span class="secno">3.3.1. </span><span class="content">Extensions to the Element interface</span><a class="self-link" href="#extensions-to-element-interface"></a></h4>
+   <p>This document modifies the <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#element" id="ref-for-element">Element</a></code> interface defined by DOM Parsing:</p>
+<pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#element" id="ref-for-element①"><c- g>Element</c-></a> {
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions②"><c- g>CEReactions</c-></a>/*, TreatNullAs=EmptyString */] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring⑥"><c- n>HTMLString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="Element" data-dfn-type="attribute" data-export data-type="HTMLString" id="dom-element-innerhtml"><code><c- g>innerHTML</c-></code></dfn>;
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions③"><c- g>CEReactions</c-></a>/*, TreatNullAs=EmptyString */] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring⑦"><c- n>HTMLString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="Element" data-dfn-type="attribute" data-export data-type="HTMLString" id="dom-element-outerhtml"><code><c- g>outerHTML</c-></code></dfn>;
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions④"><c- g>CEReactions</c-></a>] <c- b>void</c-> <dfn class="dfn-paneled idl-code" data-dfn-for="Element" data-dfn-type="method" data-export data-lt="insertAdjacentHTML(position, text)" id="dom-element-insertadjacenthtml"><code><c- g>insertAdjacentHTML</c-></code></dfn>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②②"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="Element/insertAdjacentHTML(position, text)" data-dfn-type="argument" data-export id="dom-element-insertadjacenthtml-position-text-position"><code><c- g>position</c-></code><a class="self-link" href="#dom-element-insertadjacenthtml-position-text-position"></a></dfn>, <a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring⑧"><c- n>HTMLString</c-></a> <dfn class="idl-code" data-dfn-for="Element/insertAdjacentHTML(position, text)" data-dfn-type="argument" data-export id="dom-element-insertadjacenthtml-position-text-text"><code><c- g>text</c-></code><a class="self-link" href="#dom-element-insertadjacenthtml-position-text-text"></a></dfn>);
+};
+</pre>
+   <p>For <code class="idl"><a data-link-type="idl" href="#dom-element-innerhtml" id="ref-for-dom-element-innerhtml">innerHTML</a></code>'s and <code class="idl"><a data-link-type="idl" href="#dom-element-outerhtml" id="ref-for-dom-element-outerhtml">outerHTML</a></code>'s execute the <a data-link-type="abstract-op" href="#abstract-opdef-enforce-a-trusted-type-algorithm" id="ref-for-abstract-opdef-enforce-a-trusted-type-algorithm①">Enforce a Trusted Type algorithm</a>.</p>
+   <p>For the <code class="idl"><a data-link-type="idl" href="#dom-element-insertadjacenthtml" id="ref-for-dom-element-insertadjacenthtml">insertAdjacentHTML()</a></code> method, execute the <a data-link-type="abstract-op" href="#abstract-opdef-enforce-a-trusted-type-algorithm" id="ref-for-abstract-opdef-enforce-a-trusted-type-algorithm②">Enforce a Trusted Type algorithm</a> with input argument set to the <em>text</em> parameter value.</p>
+   <p class="issue" id="issue-171d5237"><a class="self-link" href="#issue-171d5237"></a> do we need to specify that type argument should be <code class="idl"><a data-link-type="idl" href="#trustedhtml" id="ref-for-trustedhtml⑤">TrustedHTML</a></code> twice herein.</p>
+   <p class="issue" id="issue-f74e9f32①"><a class="self-link" href="#issue-f74e9f32①"></a> removed <a href="https://heycam.github.io/webidl/#TreatNullAs">TreatNullAs=EmptyString</a> from
+features parameter which is not recognized by bikeshed.  Maybe there’s
+additional configuration required.  See "It should not be used in
+specifications unless ..."</p>
+   <h4 class="heading settled" data-level="3.3.2" id="extensions-to-the-range-interface"><span class="secno">3.3.2. </span><span class="content">Extensions to the Range interface</span><a class="self-link" href="#extensions-to-the-range-interface"></a></h4>
+   <p>This document modifies the <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#range" id="ref-for-range">Range</a></code> interface defined by <a data-link-type="biblio" href="#biblio-dom-parsing">[DOM-Parsing]</a>:</p>
+<pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#range" id="ref-for-range①"><c- g>Range</c-></a> {
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions⑤"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#NewObject" id="ref-for-NewObject"><c- g>NewObject</c-></a>] <a class="n" data-link-type="idl-name" href="https://dom.spec.whatwg.org/#documentfragment" id="ref-for-documentfragment"><c- n>DocumentFragment</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="Range" data-dfn-type="method" data-export data-lt="createContextualFragment(fragment)" id="dom-range-createcontextualfragment"><code><c- g>createContextualFragment</c-></code></dfn>(<a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring⑨"><c- n>HTMLString</c-></a> <dfn class="idl-code" data-dfn-for="Range/createContextualFragment(fragment)" data-dfn-type="argument" data-export id="dom-range-createcontextualfragment-fragment-fragment"><code><c- g>fragment</c-></code><a class="self-link" href="#dom-range-createcontextualfragment-fragment-fragment"></a></dfn>);
+};
+</pre>
+   <p>For <code class="idl"><a data-link-type="idl" href="#dom-range-createcontextualfragment" id="ref-for-dom-range-createcontextualfragment">createContextualFragment()</a></code> function, execute the <a data-link-type="abstract-op" href="#abstract-opdef-enforce-a-trusted-type-algorithm" id="ref-for-abstract-opdef-enforce-a-trusted-type-algorithm③">Enforce a Trusted Type algorithm</a> with the <em>input</em> argument set to
+the <em>fragment</em> value.</p>
+   <p class="issue" id="issue-f3900e0a"><a class="self-link" href="#issue-f3900e0a"></a> Do we need to specify that the enforcement type is <code class="idl"><a data-link-type="idl" href="#trustedhtml" id="ref-for-trustedhtml⑥">TrustedHTML</a></code>?</p>
+   <h4 class="heading settled" data-level="3.3.3" id="extensions-to-the-DOMParser"><span class="secno">3.3.3. </span><span class="content">Extensions to the DOMParser interface</span><a class="self-link" href="#extensions-to-the-DOMParser"></a></h4>
+   <p>This document modifies the <code class="idl"><a data-link-type="idl" href="#domparser" id="ref-for-domparser">DOMParser</a></code> interface defined by <a data-link-type="biblio" href="#biblio-dom-parsing">[DOM-Parsing]</a>:</p>
+<pre class="idl highlight def">[<dfn class="idl-code" data-dfn-for="DOMParser" data-dfn-type="constructor" data-export data-lt="DOMParser()" id="dom-domparser-domparser"><code><c- g>Constructor</c-></code><a class="self-link" href="#dom-domparser-domparser"></a></dfn>, <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed⑥"><c- g>Exposed</c-></a>=<c- n>Window</c->]
+<c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="domparser"><code><c- g>DOMParser</c-></code></dfn> {
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#NewObject" id="ref-for-NewObject①"><c- g>NewObject</c-></a>] <a class="n" data-link-type="idl-name" href="https://dom.spec.whatwg.org/#document" id="ref-for-document①⓪"><c- n>Document</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="DOMParser" data-dfn-type="method" data-export data-lt="parseFromString(str, type)" id="dom-domparser-parsefromstring"><code><c- g>parseFromString</c-></code></dfn>(<a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring①⓪"><c- n>HTMLString</c-></a> <dfn class="idl-code" data-dfn-for="DOMParser/parseFromString(str, type)" data-dfn-type="argument" data-export id="dom-domparser-parsefromstring-str-type-str"><code><c- g>str</c-></code><a class="self-link" href="#dom-domparser-parsefromstring-str-type-str"></a></dfn>, <a class="n" data-link-type="idl-name" href="#enumdef-supportedtype" id="ref-for-enumdef-supportedtype"><c- n>SupportedType</c-></a> <dfn class="idl-code" data-dfn-for="DOMParser/parseFromString(str, type)" data-dfn-type="argument" data-export id="dom-domparser-parsefromstring-str-type-type"><code><c- g>type</c-></code><a class="self-link" href="#dom-domparser-parsefromstring-str-type-type"></a></dfn>);
+};
+</pre>
+   <p class="issue" id="issue-8efca2f1"><a class="self-link" href="#issue-8efca2f1"></a> IDL linkage broken for SupportedType but I don’t want DOMParser to not
+show up in the IDL summary.</p>
+<pre class="idl highlight def">// Not modified by this document, but bikeshed is not recognizing
+// SupportedType
+<c- b>enum</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="enum" data-export id="enumdef-supportedtype"><code><c- g>SupportedType</c-></code></dfn> {
+  <dfn class="idl-code" data-dfn-for="SupportedType" data-dfn-type="enum-value" data-export id="dom-supportedtype-text-html"><code><c- s>"text/html"</c-></code><a class="self-link" href="#dom-supportedtype-text-html"></a></dfn>,
+  <dfn class="idl-code" data-dfn-for="SupportedType" data-dfn-type="enum-value" data-export id="dom-supportedtype-text-xml"><code><c- s>"text/xml"</c-></code><a class="self-link" href="#dom-supportedtype-text-xml"></a></dfn>,
+  <dfn class="idl-code" data-dfn-for="SupportedType" data-dfn-type="enum-value" data-export id="dom-supportedtype-application-xml"><code><c- s>"application/xml"</c-></code><a class="self-link" href="#dom-supportedtype-application-xml"></a></dfn>,
+  <dfn class="idl-code" data-dfn-for="SupportedType" data-dfn-type="enum-value" data-export id="dom-supportedtype-application-xhtmlxml"><code><c- s>"application/xhtml+xml"</c-></code><a class="self-link" href="#dom-supportedtype-application-xhtmlxml"></a></dfn>,
+  <dfn class="idl-code" data-dfn-for="SupportedType" data-dfn-type="enum-value" data-export id="dom-supportedtype-image-svgxml"><code><c- s>"image/svg+xml"</c-></code><a class="self-link" href="#dom-supportedtype-image-svgxml"></a></dfn>
+};
+</pre>
+   <p>For <code class="idl"><a data-link-type="idl" href="#dom-domparser-parsefromstring" id="ref-for-dom-domparser-parsefromstring">parseFromString()</a></code> function, execute the <a data-link-type="abstract-op" href="#abstract-opdef-enforce-a-trusted-type-algorithm" id="ref-for-abstract-opdef-enforce-a-trusted-type-algorithm④">Enforce a
+Trusted Type algorithm</a> with <em>input</em> argument set to the <em>str</em> value.</p>
+   <p class="issue" id="issue-4b9885e1"><a class="self-link" href="#issue-4b9885e1"></a> Do we need to specify that the enforcement type is <code class="idl"><a data-link-type="idl" href="#trustedhtml" id="ref-for-trustedhtml⑦">TrustedHTML</a></code>, or
+that it is dependent on <em>type</em> which may be <code>"image/svg+xml"</code> or generic XML?</p>
+   <h2 class="heading settled" data-level="4" id="implementation-considerations"><span class="secno">4. </span><span class="content">Implementation Considerations</span><a class="self-link" href="#implementation-considerations"></a></h2>
+   <h3 class="heading settled" data-level="4.1" id="vendor-specific-extensions-and-addons"><span class="secno">4.1. </span><span class="content">Vendor-specific Extensions and Addons</span><a class="self-link" href="#vendor-specific-extensions-and-addons"></a></h3>
+   <p>Restriction imposed by the <code class="idl"><a data-link-type="idl" href="#dictdef-trustedtypeconfiguration" id="ref-for-dictdef-trustedtypeconfiguration⑥">TrustedTypeConfiguration</a></code> objects SHOULD
+NOT interfere with the operation of user-agent features like addons,
+extensions, or bookmarklets. These kinds of features generally advance
+the user’s priority over page authors, as espoused in <a data-link-type="biblio" href="#biblio-html-design-principles">[html-design-principles]</a>. Specifically, extensions SHOULD be able to pass strings
+to the DOM XSS sinks of the document without triggering <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy③">default policy</a> execution, <a href="#violation">violation</a> generation, or the rejection of the value.</p>
    <p class="issue" id="issue-72dfcf5b"><a class="self-link" href="#issue-72dfcf5b"></a> Go through and identify non-normative sections and mark them
 appropriately.</p>
   </main>
@@ -2827,11 +2946,12 @@ appropriately.</p>
   <ul class="index">
    <li><a href="#dom-unknownpolicynamedisposition-allow">"allow"</a><span>, in §2.2.7</span>
    <li><a href="#dom-trustedtypeconfiguration-allowednames">allowedNames</a><span>, in §2.2.7</span>
-   <li><a href="#callback-this-value">callback this value</a><span>, in §4</span>
-   <li><a href="#capabilities">capabilities</a><span>, in §4</span>
+   <li><a href="#dom-supportedtype-application-xhtmlxml">"application/xhtml+xml"</a><span>, in §3.3.3</span>
+   <li><a href="#dom-supportedtype-application-xml">"application/xml"</a><span>, in §3.3.3</span>
    <li><a href="#abstract-opdef-create-a-trusted-type-algorithm">Create a Trusted Type algorithm</a><span>, in §2.2.5.7</span>
    <li><a href="#abstract-opdef-create-a-trusted-type-policy-algorithm">Create a Trusted Type Policy algorithm</a><span>, in §2.2.5.2</span>
    <li><a href="#abstract-opdef-create-a-violation-for-algorithm">Create a Violation for algorithm</a><span>, in §2.2.6.1</span>
+   <li><a href="#dom-range-createcontextualfragment">createContextualFragment(fragment)</a><span>, in §3.3.2</span>
    <li><a href="#dom-trustedtypepolicyoptions-createhtml">createHTML</a><span>, in §2.2.2</span>
    <li><a href="#callbackdef-createhtmlcallback">CreateHTMLCallback</a><span>, in §2.2.2</span>
    <li><a href="#dom-trustedtypepolicy-createhtml">createHTML(input)</a><span>, in §2.2.1</span>
@@ -2848,12 +2968,11 @@ appropriately.</p>
    <li><a href="#callbackdef-createurlcallback">CreateURLCallback</a><span>, in §2.2.2</span>
    <li><a href="#dom-trustedtypepolicy-createurl">createURL(input)</a><span>, in §2.2.1</span>
    <li><a href="#default-policy">Default policy</a><span>, in §2.2.4</span>
+   <li><a href="#dom-domparser-domparser">DOMParser()</a><span>, in §3.3.3</span>
+   <li><a href="#domparser">DOMParser</a><span>, in §3.3.3</span>
    <li><a href="#dom-trustedtypeconfiguration-domsinks">domSinks</a><span>, in §2.2.7</span>
    <li><a href="#abstract-opdef-enforce-a-trusted-type-algorithm">Enforce a Trusted Type algorithm</a><span>, in §3.1.2</span>
-   <li><a href="#enforcement">enforcement</a><span>, in §4</span>
-   <li><a href="#abstract-opdef-enforcement-in-document-write-steps">Enforcement in document write steps</a><span>, in §3.2.6</span>
-   <li><a href="#abstract-opdef-enforcement-in-location-navigation">Enforcement in Location navigation</a><span>, in §3.2.5</span>
-   <li><a href="#abstract-opdef-enforcement-in-window-open-steps-algorithm">Enforcement in window open steps algorithm</a><span>, in §3.2.4</span>
+   <li><a href="#enforcement">enforcement</a><span>, in §3.1.2</span>
    <li><a href="#dom-trustedtypepolicyoptions-exposed">exposed</a><span>, in §2.2.2</span>
    <li><a href="#abstract-opdef-get-default-policy-algorithm">Get default policy algorithm</a><span>, in §2.2.5.4</span>
    <li><a href="#abstract-opdef-get-exposed-policy-algorithm">Get exposed policy algorithm</a><span>, in §2.2.5.3</span>
@@ -2861,8 +2980,11 @@ appropriately.</p>
    <li><a href="#dom-trustedtypepolicyfactory-getpolicynames">getPolicyNames()</a><span>, in §2.2.3</span>
    <li><a href="#abstract-opdef-get-trusted-type-compliant-string-algorithm">Get Trusted Type compliant string algorithm</a><span>, in §3.1.1</span>
    <li><a href="#typedefdef-htmlstring">HTMLString</a><span>, in §3</span>
+   <li><a href="#dom-supportedtype-image-svgxml">"image/svg+xml"</a><span>, in §3.3.3</span>
    <li><a href="#abstract-opdef-initialize-a-documents-trusted-type-configuration-algorithm">Initialize a Document’s trusted type configuration algorithm</a><span>, in §3.2.1</span>
    <li><a href="#abstract-opdef-initialize-policy-factory-algorithm">Initialize policy factory algorithm</a><span>, in §2.2.5.1</span>
+   <li><a href="#dom-element-innerhtml">innerHTML</a><span>, in §3.3.1</span>
+   <li><a href="#dom-element-insertadjacenthtml">insertAdjacentHTML(position, text)</a><span>, in §3.3.1</span>
    <li><a href="#abstract-opdef-is-a-default-policy-algorithm">Is a default policy algorithm</a><span>, in §2.2.5.6</span>
    <li><a href="#dom-trustedtypepolicyfactory-ishtml">isHTML(checkedObject)</a><span>, in §2.2.3</span>
    <li><a href="#abstract-opdef-is-policy-name-allowed-algorithm">Is policy name allowed algorithm</a><span>, in §2.2.5.5</span>
@@ -2876,6 +2998,8 @@ appropriately.</p>
    <li><a href="#dom-document-open">open(url, name, features)</a><span>, in §3.2.3</span>
    <li><a href="#dom-window-open">open(url, target)</a><span>, in §3.2.2</span>
    <li><a href="#dom-window-open">open(url, target, features)</a><span>, in §3.2.2</span>
+   <li><a href="#dom-element-outerhtml">outerHTML</a><span>, in §3.3.1</span>
+   <li><a href="#dom-domparser-parsefromstring">parseFromString(str, type)</a><span>, in §3.3.3</span>
    <li>
     "reject"
     <ul>
@@ -2887,7 +3011,7 @@ appropriately.</p>
    <li><a href="#abstract-opdef-report-sink-type-mismatch-violation-algorithm">Report sink type mismatch violation algorithm</a><span>, in §2.2.9.1</span>
    <li><a href="#typedefdef-scriptstring">ScriptString</a><span>, in §3</span>
    <li><a href="#typedefdef-scripturlstring">ScriptURLString</a><span>, in §3</span>
-   <li><a href="#sink">sink</a><span>, in §4</span>
+   <li><a href="#sink">sink</a><span>, in §3.1.2</span>
    <li><a href="#enumdef-stringatsinkdisposition">StringAtSinkDisposition</a><span>, in §2.2.7</span>
    <li>
     stringification behavior
@@ -2897,6 +3021,9 @@ appropriately.</p>
      <li><a href="#TrustedScriptURL-stringification-behavior">dfn for TrustedScriptURL</a><span>, in §2.1.3</span>
      <li><a href="#TrustedURL-stringification-behavior">dfn for TrustedURL</a><span>, in §2.1.4</span>
     </ul>
+   <li><a href="#enumdef-supportedtype">SupportedType</a><span>, in §3.3.3</span>
+   <li><a href="#dom-supportedtype-text-html">"text/html"</a><span>, in §3.3.3</span>
+   <li><a href="#dom-supportedtype-text-xml">"text/xml"</a><span>, in §3.3.3</span>
    <li>
     TrustedHTML
     <ul>
@@ -2936,8 +3063,8 @@ appropriately.</p>
      <li><a href="#dictdef-trustedtypepolicyoptions">(dictionary)</a><span>, in §2.2.2</span>
      <li><a href="#typedef-trustedtypepolicyoptions">(type)</a><span>, in §2.2.2</span>
     </ul>
-   <li><a href="#http-headerdef-trusted-types">Trusted-Types</a><span>, in §2.2.8</span>
    <li><a href="#dom-window-trustedtypes">TrustedTypes</a><span>, in §3.2.2</span>
+   <li><a href="#http-headerdef-trusted-types">Trusted-Types</a><span>, in §2.2.8</span>
    <li><a href="#trusted-types-http-response-header">Trusted-Types HTTP response header</a><span>, in §2.2.8</span>
    <li>
     TrustedURL
@@ -2971,12 +3098,33 @@ appropriately.</p>
     <li><a href="#ref-for-document⑥">3.2.1. Initialize a Document’s trusted type configuration algorithm</a>
     <li><a href="#ref-for-document⑦">3.2.3. Extensions to the Document interface</a> <a href="#ref-for-document⑧">(2)</a>
     <li><a href="#ref-for-document⑨">3.2.5. Enforcement in Location navigation algorithm</a>
+    <li><a href="#ref-for-document①⓪">3.3.3. Extensions to the DOMParser interface</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-documentfragment">
+   <a href="https://dom.spec.whatwg.org/#documentfragment">https://dom.spec.whatwg.org/#documentfragment</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-documentfragment">3.3.2. Extensions to the Range interface</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-element">
+   <a href="https://dom.spec.whatwg.org/#element">https://dom.spec.whatwg.org/#element</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-element">3.3.1. Extensions to the Element interface</a> <a href="#ref-for-element①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-range">
+   <a href="https://dom.spec.whatwg.org/#range">https://dom.spec.whatwg.org/#range</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-range">3.3.2. Extensions to the Range interface</a> <a href="#ref-for-range①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-cereactions">
    <a href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions">https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-cereactions">3.2.3. Extensions to the Document interface</a> <a href="#ref-for-cereactions①">(2)</a>
+    <li><a href="#ref-for-cereactions②">3.3.1. Extensions to the Element interface</a> <a href="#ref-for-cereactions③">(2)</a> <a href="#ref-for-cereactions④">(3)</a>
+    <li><a href="#ref-for-cereactions⑤">3.3.2. Extensions to the Range interface</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-window">
@@ -3055,6 +3203,13 @@ appropriately.</p>
     <li><a href="#ref-for-idl-DOMString①⑥">3. Integrations</a> <a href="#ref-for-idl-DOMString①⑦">(2)</a>
     <li><a href="#ref-for-idl-DOMString①⑧">3.2.2. Extensions to the Window interface</a> <a href="#ref-for-idl-DOMString①⑨">(2)</a>
     <li><a href="#ref-for-idl-DOMString②⓪">3.2.3. Extensions to the Document interface</a> <a href="#ref-for-idl-DOMString②①">(2)</a>
+    <li><a href="#ref-for-idl-DOMString②②">3.3.1. Extensions to the Element interface</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-exceptiondef-evalerror">
+   <a href="https://heycam.github.io/webidl/#exceptiondef-evalerror">https://heycam.github.io/webidl/#exceptiondef-evalerror</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-exceptiondef-evalerror">3.2.10. String compilation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-Exposed">
@@ -3066,12 +3221,21 @@ appropriately.</p>
     <li><a href="#ref-for-Exposed③">2.1.4. TrustedURL</a>
     <li><a href="#ref-for-Exposed④">2.2.1. TrustedTypePolicy</a>
     <li><a href="#ref-for-Exposed⑤">2.2.3. TrustedTypePolicyFactory</a>
+    <li><a href="#ref-for-Exposed⑥">3.3.3. Extensions to the DOMParser interface</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-Function">
    <a href="https://heycam.github.io/webidl/#Function">https://heycam.github.io/webidl/#Function</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-Function">3.1.1. Get Trusted Type compliant string algorithm</a> <a href="#ref-for-Function①">(2)</a> <a href="#ref-for-Function②">(3)</a> <a href="#ref-for-Function③">(4)</a>
+    <li><a href="#ref-for-Function④">3.2.8. Enforcement in timer functions</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-NewObject">
+   <a href="https://heycam.github.io/webidl/#NewObject">https://heycam.github.io/webidl/#NewObject</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-NewObject">3.3.2. Extensions to the Range interface</a>
+    <li><a href="#ref-for-NewObject①">3.3.3. Extensions to the DOMParser interface</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-exceptiondef-typeerror">
@@ -3120,6 +3284,9 @@ appropriately.</p>
     <a data-link-type="biblio">[DOM]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-document" style="color:initial">Document</span>
+     <li><span class="dfn-paneled" id="term-for-documentfragment" style="color:initial">DocumentFragment</span>
+     <li><span class="dfn-paneled" id="term-for-element" style="color:initial">Element</span>
+     <li><span class="dfn-paneled" id="term-for-range" style="color:initial">Range</span>
     </ul>
    <li>
     <a data-link-type="biblio">[HTML]</a> defines the following terms:
@@ -3140,8 +3307,10 @@ appropriately.</p>
     <a data-link-type="biblio">[WebIDL]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-idl-DOMString" style="color:initial">DOMString</span>
+     <li><span class="dfn-paneled" id="term-for-exceptiondef-evalerror" style="color:initial">EvalError</span>
      <li><span class="dfn-paneled" id="term-for-Exposed" style="color:initial">Exposed</span>
      <li><span class="dfn-paneled" id="term-for-Function" style="color:initial">Function</span>
+     <li><span class="dfn-paneled" id="term-for-NewObject" style="color:initial">NewObject</span>
      <li><span class="dfn-paneled" id="term-for-exceptiondef-typeerror" style="color:initial">TypeError</span>
      <li><span class="dfn-paneled" id="term-for-idl-USVString" style="color:initial">USVString</span>
      <li><span class="dfn-paneled" id="term-for-Unforgeable" style="color:initial">Unforgeable</span>
@@ -3165,13 +3334,17 @@ appropriately.</p>
   </dl>
   <h3 class="no-num no-ref heading settled" id="informative"><span class="content">Informative References</span><a class="self-link" href="#informative"></a></h3>
   <dl>
+   <dt id="biblio-dom-parsing">[DOM-Parsing]
+   <dd>Travis Leithead. <a href="https://www.w3.org/TR/DOM-Parsing/">DOM Parsing and Serialization</a>. 17 May 2016. WD. URL: <a href="https://www.w3.org/TR/DOM-Parsing/">https://www.w3.org/TR/DOM-Parsing/</a>
+   <dt id="biblio-html-design-principles">[HTML-DESIGN-PRINCIPLES]
+   <dd>Anne van Kesteren; Maciej Stachowiak. <a href="https://www.w3.org/TR/html-design-principles/">HTML Design Principles</a>. 26 November 2007. WD. URL: <a href="https://www.w3.org/TR/html-design-principles/">https://www.w3.org/TR/html-design-principles/</a>
    <dt id="biblio-html5">[HTML5]
    <dd>Ian Hickson; et al. <a href="https://www.w3.org/TR/html5/">HTML5</a>. 27 March 2018. REC. URL: <a href="https://www.w3.org/TR/html5/">https://www.w3.org/TR/html5/</a>
    <dt id="biblio-http-jfv">[HTTP-JFV]
    <dd>J. Reschke. <a href="https://tools.ietf.org/html/draft-reschke-http-jfv">A JSON Encoding for HTTP Header Field Values</a>. 24 October 2017. Active Internet-Draft. URL: <a href="https://tools.ietf.org/html/draft-reschke-http-jfv">https://tools.ietf.org/html/draft-reschke-http-jfv</a>
   </dl>
   <h2 class="no-num no-ref heading settled" id="idl-index"><span class="content">IDL Index</span><a class="self-link" href="#idl-index"></a></h2>
-<pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed⑥"><c- g>Exposed</c-></a>=<c- n>Window</c->]
+<pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed⑦"><c- g>Exposed</c-></a>=<c- n>Window</c->]
 <c- b>interface</c-> <a href="#trustedhtml"><code><c- g>TrustedHTML</c-></code></a> {
   <a href="#TrustedHTML-stringification-behavior"><c- b>stringifier</c-></a>;
 };
@@ -3193,9 +3366,9 @@ appropriately.</p>
 
 [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed④①"><c- g>Exposed</c-></a>=<c- n>Window</c->]
 <c- b>interface</c-> <a href="#trustedtypepolicy"><code><c- g>TrustedTypePolicy</c-></code></a> {
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable①③"><c- g>Unforgeable</c-></a>] <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②③"><c- b>DOMString</c-></a> <a data-readonly data-type="DOMString" href="#dom-trustedtypepolicy-name"><code><c- g>name</c-></code></a>;
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable①④"><c- g>Unforgeable</c-></a>] <a class="n" data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml⑤"><c- n>TrustedHTML</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createhtml" id="ref-for-dom-trustedtypepolicy-createhtml①①"><c- g>createHTML</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①①⓪"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicy-createhtml-input-input"><code><c- g>input</c-></code></a>);
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable②①"><c- g>Unforgeable</c-></a>] <a class="n" data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript④"><c- n>TrustedScript</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createscript" id="ref-for-dom-trustedtypepolicy-createscript①①"><c- g>createScript</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②②"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicy-createscript-input-input"><code><c- g>input</c-></code></a>);
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable①③"><c- g>Unforgeable</c-></a>] <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②④"><c- b>DOMString</c-></a> <a data-readonly data-type="DOMString" href="#dom-trustedtypepolicy-name"><code><c- g>name</c-></code></a>;
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable①④"><c- g>Unforgeable</c-></a>] <a class="n" data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml⑧"><c- n>TrustedHTML</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createhtml" id="ref-for-dom-trustedtypepolicy-createhtml①①"><c- g>createHTML</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①①⓪"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicy-createhtml-input-input"><code><c- g>input</c-></code></a>);
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable②①"><c- g>Unforgeable</c-></a>] <a class="n" data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript⑧"><c- n>TrustedScript</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createscript" id="ref-for-dom-trustedtypepolicy-createscript①①"><c- g>createScript</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②③"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicy-createscript-input-input"><code><c- g>input</c-></code></a>);
   [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable③①"><c- g>Unforgeable</c-></a>] <a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl④"><c- n>TrustedScriptURL</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createscripturl" id="ref-for-dom-trustedtypepolicy-createscripturl①①"><c- g>createScriptURL</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString③①"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicy-createscripturl-input-input"><code><c- g>input</c-></code></a>);
   [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable④①"><c- g>Unforgeable</c-></a>] <a class="n" data-link-type="idl-name" href="#trustedurl" id="ref-for-trustedurl⑥"><c- n>TrustedURL</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createurl" id="ref-for-dom-trustedtypepolicy-createurl①①"><c- g>createURL</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString④①"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicy-createurl-input-input"><code><c- g>input</c-></code></a>);
 };
@@ -3259,8 +3432,33 @@ appropriately.</p>
 
 <c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#document" id="ref-for-document⑧①"><c- g>Document</c-></a> {
    <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/window-object.html#windowproxy" id="ref-for-windowproxy②①"><c- n>WindowProxy</c-></a>? <a href="#dom-document-open"><code><c- g>open</c-></code></a>(<a class="n" data-link-type="idl-name" href="#typedefdef-urlstring" id="ref-for-typedefdef-urlstring③①"><c- n>URLString</c-></a> <a href="#dom-document-open-url-name-features-url"><code><c- g>url</c-></code></a>, <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②⓪①"><c- b>DOMString</c-></a> <a href="#dom-document-open-url-name-features-name"><code><c- g>name</c-></code></a>, <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②①①"><c- b>DOMString</c-></a> <a href="#dom-document-open-url-name-features-features"><code><c- g>features</c-></code></a>);
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions②"><c- g>CEReactions</c-></a>] <c- b>void</c-> <a href="#dom-document-write"><code><c- g>write</c-></code></a>(<a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring①①"><c- n>HTMLString</c-></a>... <a href="#dom-document-write-text-text"><code><c- g>text</c-></code></a>);
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions⑥"><c- g>CEReactions</c-></a>] <c- b>void</c-> <a href="#dom-document-write"><code><c- g>write</c-></code></a>(<a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring①①"><c- n>HTMLString</c-></a>... <a href="#dom-document-write-text-text"><code><c- g>text</c-></code></a>);
   [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions①①"><c- g>CEReactions</c-></a>] <c- b>void</c-> <a href="#dom-document-writeln"><code><c- g>writeln</c-></code></a>(<a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring②①"><c- n>HTMLString</c-></a>... <a href="#dom-document-writeln-text-text"><code><c- g>text</c-></code></a>);
+};
+
+<c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#element" id="ref-for-element①①"><c- g>Element</c-></a> {
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions②①"><c- g>CEReactions</c-></a>/*, TreatNullAs=EmptyString */] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring⑥①"><c- n>HTMLString</c-></a> <a data-type="HTMLString" href="#dom-element-innerhtml"><code><c- g>innerHTML</c-></code></a>;
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions③①"><c- g>CEReactions</c-></a>/*, TreatNullAs=EmptyString */] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring⑦①"><c- n>HTMLString</c-></a> <a data-type="HTMLString" href="#dom-element-outerhtml"><code><c- g>outerHTML</c-></code></a>;
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions④①"><c- g>CEReactions</c-></a>] <c- b>void</c-> <a href="#dom-element-insertadjacenthtml"><code><c- g>insertAdjacentHTML</c-></code></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②②①"><c- b>DOMString</c-></a> <a href="#dom-element-insertadjacenthtml-position-text-position"><code><c- g>position</c-></code></a>, <a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring⑧①"><c- n>HTMLString</c-></a> <a href="#dom-element-insertadjacenthtml-position-text-text"><code><c- g>text</c-></code></a>);
+};
+
+<c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#range" id="ref-for-range①①"><c- g>Range</c-></a> {
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions⑤①"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#NewObject" id="ref-for-NewObject②"><c- g>NewObject</c-></a>] <a class="n" data-link-type="idl-name" href="https://dom.spec.whatwg.org/#documentfragment" id="ref-for-documentfragment①"><c- n>DocumentFragment</c-></a> <a href="#dom-range-createcontextualfragment"><code><c- g>createContextualFragment</c-></code></a>(<a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring⑨①"><c- n>HTMLString</c-></a> <a href="#dom-range-createcontextualfragment-fragment-fragment"><code><c- g>fragment</c-></code></a>);
+};
+
+[<a href="#dom-domparser-domparser"><code><c- g>Constructor</c-></code></a>, <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed⑥①"><c- g>Exposed</c-></a>=<c- n>Window</c->]
+<c- b>interface</c-> <a href="#domparser"><code><c- g>DOMParser</c-></code></a> {
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#NewObject" id="ref-for-NewObject①①"><c- g>NewObject</c-></a>] <a class="n" data-link-type="idl-name" href="https://dom.spec.whatwg.org/#document" id="ref-for-document①⓪①"><c- n>Document</c-></a> <a href="#dom-domparser-parsefromstring"><code><c- g>parseFromString</c-></code></a>(<a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring①⓪①"><c- n>HTMLString</c-></a> <a href="#dom-domparser-parsefromstring-str-type-str"><code><c- g>str</c-></code></a>, <a class="n" data-link-type="idl-name" href="#enumdef-supportedtype" id="ref-for-enumdef-supportedtype①"><c- n>SupportedType</c-></a> <a href="#dom-domparser-parsefromstring-str-type-type"><code><c- g>type</c-></code></a>);
+};
+
+// Not modified by this document, but bikeshed is not recognizing
+// SupportedType
+<c- b>enum</c-> <a href="#enumdef-supportedtype"><code><c- g>SupportedType</c-></code></a> {
+  <a href="#dom-supportedtype-text-html"><code><c- s>"text/html"</c-></code></a>,
+  <a href="#dom-supportedtype-text-xml"><code><c- s>"text/xml"</c-></code></a>,
+  <a href="#dom-supportedtype-application-xml"><code><c- s>"application/xml"</c-></code></a>,
+  <a href="#dom-supportedtype-application-xhtmlxml"><code><c- s>"application/xhtml+xml"</c-></code></a>,
+  <a href="#dom-supportedtype-image-svgxml"><code><c- s>"image/svg+xml"</c-></code></a>
 };
 
 </pre>
@@ -3320,6 +3518,19 @@ specifications unless ..."<a href="#issue-f74e9f32"> ↵ </a></div>
    <div class="issue"> Issue: Not defined.  Do we need to intercept HTMLElement.textContent? <a href="#issue-0a11068a"> ↵ </a></div>
    <div class="issue"> Issue: IDL linking does not recognize HTMLInputElement/formAction even though
     it is defined in <a data-link-type="biblio" href="#biblio-html5">[HTML5]</a>. <a href="#issue-f5fb6f99"> ↵ </a></div>
+   <div class="issue"> Should we be modifying
+[[HTML5#hostensurecancompilestrings(callerrealm,-calleerealm)|HostEnsureCanCompileStrings]]
+or EnsureCSPDoesNotBlockStringCompilation?<a href="#issue-f24e404a"> ↵ </a></div>
+   <div class="issue"> do we need to specify that type argument should be <code class="idl"><a data-link-type="idl" href="#trustedhtml">TrustedHTML</a></code> twice herein.<a href="#issue-171d5237"> ↵ </a></div>
+   <div class="issue"> removed <a href="https://heycam.github.io/webidl/#TreatNullAs">TreatNullAs=EmptyString</a> from
+features parameter which is not recognized by bikeshed.  Maybe there’s
+additional configuration required.  See "It should not be used in
+specifications unless ..."<a href="#issue-f74e9f32①"> ↵ </a></div>
+   <div class="issue"> Do we need to specify that the enforcement type is <code class="idl"><a data-link-type="idl" href="#trustedhtml">TrustedHTML</a></code>?<a href="#issue-f3900e0a"> ↵ </a></div>
+   <div class="issue"> IDL linkage broken for SupportedType but I don’t want DOMParser to not
+show up in the IDL summary.<a href="#issue-8efca2f1"> ↵ </a></div>
+   <div class="issue"> Do we need to specify that the enforcement type is <code class="idl"><a data-link-type="idl" href="#trustedhtml">TrustedHTML</a></code>, or
+that it is dependent on <em>type</em> which may be <code>"image/svg+xml"</code> or generic XML?<a href="#issue-4b9885e1"> ↵ </a></div>
    <div class="issue"> Go through and identify non-normative sections and mark them
 appropriately.<a href="#issue-72dfcf5b"> ↵ </a></div>
   </div>
@@ -3330,6 +3541,8 @@ appropriately.<a href="#issue-72dfcf5b"> ↵ </a></div>
     <li><a href="#ref-for-trusted-type①">2.2.2. TrustedTypePolicyOptions</a>
     <li><a href="#ref-for-trusted-type②">2.2.3. TrustedTypePolicyFactory</a>
     <li><a href="#ref-for-trusted-type③">2.2.7. TrustedTypeConfiguration</a>
+    <li><a href="#ref-for-trusted-type④">3.1.1. Get Trusted Type compliant string algorithm</a>
+    <li><a href="#ref-for-trusted-type⑤">3.1.2. Enforce a Trusted Type algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="trustedhtml">
@@ -3338,7 +3551,10 @@ appropriately.<a href="#issue-72dfcf5b"> ↵ </a></div>
     <li><a href="#ref-for-trustedhtml">2.2.1. TrustedTypePolicy</a>
     <li><a href="#ref-for-trustedhtml①">3. Integrations</a> <a href="#ref-for-trustedhtml②">(2)</a>
     <li><a href="#ref-for-trustedhtml③">3.1.2. Enforce a Trusted Type algorithm</a>
-    <li><a href="#ref-for-trustedhtml④">3.2.6. Enforcement in document write steps algorithm</a>
+    <li><a href="#ref-for-trustedhtml④">3.2.6. Enforcement in document write steps</a>
+    <li><a href="#ref-for-trustedhtml⑤">3.3.1. Extensions to the Element interface</a>
+    <li><a href="#ref-for-trustedhtml⑥">3.3.2. Extensions to the Range interface</a>
+    <li><a href="#ref-for-trustedhtml⑦">3.3.3. Extensions to the DOMParser interface</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="trustedscript">
@@ -3347,6 +3563,9 @@ appropriately.<a href="#issue-72dfcf5b"> ↵ </a></div>
     <li><a href="#ref-for-trustedscript">2.2.1. TrustedTypePolicy</a>
     <li><a href="#ref-for-trustedscript①">3. Integrations</a> <a href="#ref-for-trustedscript②">(2)</a>
     <li><a href="#ref-for-trustedscript③">3.1.2. Enforce a Trusted Type algorithm</a>
+    <li><a href="#ref-for-trustedscript④">3.2.8. Enforcement in timer functions</a> <a href="#ref-for-trustedscript⑤">(2)</a>
+    <li><a href="#ref-for-trustedscript⑥">3.2.9. Enforcement in event handler content attributes</a>
+    <li><a href="#ref-for-trustedscript⑦">3.2.10. String compilation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="trustedscripturl">
@@ -3531,6 +3750,7 @@ appropriately.<a href="#issue-72dfcf5b"> ↵ </a></div>
     <li><a href="#ref-for-default-policy">2.2.5.4. Get default policy algorithm</a>
     <li><a href="#ref-for-default-policy①">2.2.8.1. Obtain a Trusted Type Configuration for a response algorithm</a>
     <li><a href="#ref-for-default-policy②">3. Integrations</a>
+    <li><a href="#ref-for-default-policy③">4.1. Vendor-specific Extensions and Addons</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="abstract-opdef-initialize-policy-factory-algorithm">
@@ -3599,6 +3819,7 @@ appropriately.<a href="#issue-72dfcf5b"> ↵ </a></div>
     <li><a href="#ref-for-dictdef-trustedtypeconfiguration③">2.2.8.1. Obtain a Trusted Type Configuration for a response algorithm</a>
     <li><a href="#ref-for-dictdef-trustedtypeconfiguration④">2.2.9.1. Report sink type mismatch violation algorithm</a>
     <li><a href="#ref-for-dictdef-trustedtypeconfiguration⑤">3.2. Integration with HTML</a>
+    <li><a href="#ref-for-dictdef-trustedtypeconfiguration⑥">4.1. Vendor-specific Extensions and Addons</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-trustedtypeconfiguration-unknownpolicyname">
@@ -3619,7 +3840,7 @@ appropriately.<a href="#issue-72dfcf5b"> ↵ </a></div>
    <b><a href="#dom-trustedtypeconfiguration-allowednames">#dom-trustedtypeconfiguration-allowednames</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-trustedtypeconfiguration-allowednames">2.2.5.5. Is policy name allowed algorithm</a>
-    <li><a href="#ref-for-dom-trustedtypeconfiguration-allowednames①">2.2.8.1. Obtain a Trusted Type Configuration for a response algorithm</a>
+    <li><a href="#ref-for-dom-trustedtypeconfiguration-allowednames①">2.2.8.1. Obtain a Trusted Type Configuration for a response algorithm</a> <a href="#ref-for-dom-trustedtypeconfiguration-allowednames②">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-trustedtypeconfiguration-reportinggroup">
@@ -3653,8 +3874,11 @@ appropriately.<a href="#issue-72dfcf5b"> ↵ </a></div>
    <ul>
     <li><a href="#ref-for-typedefdef-htmlstring">3.1.2. Enforce a Trusted Type algorithm</a>
     <li><a href="#ref-for-typedefdef-htmlstring①">3.2.3. Extensions to the Document interface</a> <a href="#ref-for-typedefdef-htmlstring②">(2)</a>
-    <li><a href="#ref-for-typedefdef-htmlstring③">3.2.6. Enforcement in document write steps algorithm</a>
+    <li><a href="#ref-for-typedefdef-htmlstring③">3.2.6. Enforcement in document write steps</a>
     <li><a href="#ref-for-typedefdef-htmlstring④">3.2.7. Enforcement in property sinks</a> <a href="#ref-for-typedefdef-htmlstring⑤">(2)</a>
+    <li><a href="#ref-for-typedefdef-htmlstring⑥">3.3.1. Extensions to the Element interface</a> <a href="#ref-for-typedefdef-htmlstring⑦">(2)</a> <a href="#ref-for-typedefdef-htmlstring⑧">(3)</a>
+    <li><a href="#ref-for-typedefdef-htmlstring⑨">3.3.2. Extensions to the Range interface</a>
+    <li><a href="#ref-for-typedefdef-htmlstring①⓪">3.3.3. Extensions to the DOMParser interface</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="typedefdef-scriptstring">
@@ -3687,13 +3911,35 @@ appropriately.<a href="#issue-72dfcf5b"> ↵ </a></div>
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string-algorithm">3.1.2. Enforce a Trusted Type algorithm</a>
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string-algorithm①">3.2.4. Enforcement in window open steps algorithm</a>
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string-algorithm②">3.2.5. Enforcement in Location navigation algorithm</a>
-    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string-algorithm③">3.2.6. Enforcement in document write steps algorithm</a>
+    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string-algorithm③">3.2.6. Enforcement in document write steps</a>
+    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string-algorithm④">3.2.8. Enforcement in timer functions</a>
+    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string-algorithm⑤">3.2.9. Enforcement in event handler content attributes</a>
+    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string-algorithm⑥">3.2.10. String compilation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="abstract-opdef-enforce-a-trusted-type-algorithm">
    <b><a href="#abstract-opdef-enforce-a-trusted-type-algorithm">#abstract-opdef-enforce-a-trusted-type-algorithm</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-abstract-opdef-enforce-a-trusted-type-algorithm">3.2.7. Enforcement in property sinks</a>
+    <li><a href="#ref-for-abstract-opdef-enforce-a-trusted-type-algorithm①">3.3.1. Extensions to the Element interface</a> <a href="#ref-for-abstract-opdef-enforce-a-trusted-type-algorithm②">(2)</a>
+    <li><a href="#ref-for-abstract-opdef-enforce-a-trusted-type-algorithm③">3.3.2. Extensions to the Range interface</a>
+    <li><a href="#ref-for-abstract-opdef-enforce-a-trusted-type-algorithm④">3.3.3. Extensions to the DOMParser interface</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="enforcement">
+   <b><a href="#enforcement">#enforcement</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-enforcement">2.2. Policies</a> <a href="#ref-for-enforcement①">(2)</a>
+    <li><a href="#ref-for-enforcement②">2.2.4. Default policy</a>
+    <li><a href="#ref-for-enforcement③">2.2.7. TrustedTypeConfiguration</a>
+    <li><a href="#ref-for-enforcement④">2.2.8.1. Obtain a Trusted Type Configuration for a response algorithm</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="sink">
+   <b><a href="#sink">#sink</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sink">1. Introduction</a>
+    <li><a href="#ref-for-sink①">3.1.1. Get Trusted Type compliant string algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-window-trustedtypes">
@@ -3710,31 +3956,46 @@ appropriately.<a href="#issue-72dfcf5b"> ↵ </a></div>
     <li><a href="#ref-for-dom-window-open">3.2.2. Extensions to the Window interface</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="callback-this-value">
-   <b><a href="#callback-this-value">#callback-this-value</a></b><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="dom-element-innerhtml">
+   <b><a href="#dom-element-innerhtml">#dom-element-innerhtml</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-callback-this-value">2.2.5.7. Create a Trusted Type algorithm</a>
+    <li><a href="#ref-for-dom-element-innerhtml">3.3.1. Extensions to the Element interface</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="capabilities">
-   <b><a href="#capabilities">#capabilities</a></b><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="dom-element-outerhtml">
+   <b><a href="#dom-element-outerhtml">#dom-element-outerhtml</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-capabilities">2.2. Policies</a>
+    <li><a href="#ref-for-dom-element-outerhtml">3.3.1. Extensions to the Element interface</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="enforcement">
-   <b><a href="#enforcement">#enforcement</a></b><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="dom-element-insertadjacenthtml">
+   <b><a href="#dom-element-insertadjacenthtml">#dom-element-insertadjacenthtml</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-enforcement">2.2. Policies</a> <a href="#ref-for-enforcement①">(2)</a>
-    <li><a href="#ref-for-enforcement②">2.2.4. Default policy</a>
-    <li><a href="#ref-for-enforcement③">2.2.7. TrustedTypeConfiguration</a>
-    <li><a href="#ref-for-enforcement④">2.2.8.1. Obtain a Trusted Type Configuration for a response algorithm</a>
+    <li><a href="#ref-for-dom-element-insertadjacenthtml">3.3.1. Extensions to the Element interface</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="sink">
-   <b><a href="#sink">#sink</a></b><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="dom-range-createcontextualfragment">
+   <b><a href="#dom-range-createcontextualfragment">#dom-range-createcontextualfragment</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-sink">1. Introduction</a>
+    <li><a href="#ref-for-dom-range-createcontextualfragment">3.3.2. Extensions to the Range interface</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="domparser">
+   <b><a href="#domparser">#domparser</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-domparser">3.3.3. Extensions to the DOMParser interface</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="dom-domparser-parsefromstring">
+   <b><a href="#dom-domparser-parsefromstring">#dom-domparser-parsefromstring</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-domparser-parsefromstring">3.3.3. Extensions to the DOMParser interface</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="enumdef-supportedtype">
+   <b><a href="#enumdef-supportedtype">#enumdef-supportedtype</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-enumdef-supportedtype">3.3.3. Extensions to the DOMParser interface</a>
    </ul>
   </aside>
 <script>/* script-dfn-panel */

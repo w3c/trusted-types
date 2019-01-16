@@ -8,7 +8,7 @@ URL: https://wicg.github.io/trusted-types/dist/spec/index.html
 Editor: Krzysztof Kotowicz, Google LLC https://google.com, koto@google.com
 Editor: Mike West, Google LLC https://google.com, mkwst@google.com
 Repository: WICG/trusted-types
-Abstract: an API that allows the applications to lock down the DOM XSS sinks to only accept non-spoofable, typed values in place of strings.
+Abstract: an API that allows applications to lock down DOM XSS sinks to only accept non-spoofable, typed values in place of strings.
 Markup Shorthands: algorithm yes, biblio yes, css no, dfn yes, markdown yes, markup yes
 Ignored Terms: h1, h2, h3, h4, h5, h6, xmp
 Complain About: missing-example-ids yes
@@ -39,14 +39,13 @@ given program - as such, DOM XSS is often missed during manual code
 reviews, and automated code analysis. As an example,
 `foo[bar] = aString` is a statement that potentially introduces DOM XSS.
 
-This document defines Trusted Types - an API that allows the
-applications to lock down the DOM XSS sinks to only accept
-non-spoofable, typed values in place of strings. These values can in
-turn only be created from application-defined policies, allowing the
-authors to define rules guarding writing values to the DOM, and
-reducing the DOM XSS attack surface to small, isolated parts of the
-web application codebase, which are substantially easier to safeguard,
-monitor and review.
+This document defines Trusted Types - an API that allows applications
+to lock down DOM XSS sinks to only accept non-spoofable, typed values
+in place of strings. These values can in turn only be created from
+application-defined policies, allowing the authors to define rules
+guarding writing values to the DOM, and reducing the DOM XSS attack
+surface to small, isolated parts of the web application codebase,
+which are substantially easier to safeguard, monitor and review.
 
 
 ## Goals ## {#goals}
@@ -277,9 +276,11 @@ code plugin loading subsystem each will likely need full control over
 HTML or URLs. The API design facilitates that - each policy may only
 be used if the callsite can obtain a reference to the policy (a return
 value from {{TrustedTypePolicyFactory/createPolicy()}}). As such, policy
-references can be treated as [=capabilities=], access to which can be
-controlled using JavaScript techniques (e.g. via closures, internal
-function variables, or modules).
+references can be treated as
+<a href="https://en.wikipedia.org/wiki/Object-capability_model">capabilities</a>,
+access to which can be controlled using JavaScript techniques
+(e.g. via closures, internal function variables, or modules).
+
 
 ### <dfn type>TrustedTypePolicy</dfn> ### {#trusted-type-policy}
 
@@ -418,7 +419,7 @@ Type and has its `[[Data]]` internal slot set, or return false otherwise.
 Note: These functions are used to check if a given object is indeed a legitimate
 [=Trusted Type=] object (e.g. it was created via one of the configured
 policies). This is to be able to detect a forgery of the objects via
-e.g. [http://www.ecma-international.org/ecma-262/6.0/#sec-object.create|Object.create]
+e.g. [[ECMASCRIPT#sec-object.create|Object.create]]
 or prototype chains manipulation.
 
 <div class="example" id="create-and-used-unexposed-policy">
@@ -602,7 +603,8 @@ and a string *value*, execute the following steps:
 1.  Let *function* be the value of the property in *options* named *functionName*.
 1.  If *function* is null, throw a *TypeError*.
 1.  Let *policyValue* be the result of invoking *function* with
-    *value* as a first argument, and [=callback this value=] set to null.
+    *value* as a first argument, and [[ECMASCRIPT#sec-method|callback **this** value]]
+    set to null.
 1.  If *policyValue* is an error, return error.
 1.  Let *dataString* be the result of stringifying *policyValue*.
 1.  Let *trustedObject* be a new instance of an interface with a type
@@ -821,12 +823,12 @@ Given a response (*response&), perform the following steps:
 1.  If *list* is not empty, then set *hasWildcardPolicy* to false and set
     defaultSinkDisposition to `“reject”`.
 1.  For each *item* in *list*:
-    1.  If *item* is a [https://tools.ietf.org/html/rfc8259#section-7|string]:
+    1.  If *item* is a <a href="https://tools.ietf.org/html/rfc8259#section-7">string</a> :
         1.  If *item* is equal to `“*”`, then set *hasWildcardPolicy* to true.
         1.  Otherwise, add *item* to *config*'s
-            {{TrustedTypeConfiguration/allowedNames|allowedNames} set.
+            {{TrustedTypeConfiguration/allowedNames|allowedNames}} set.
     1.  Otherwise, if *item* is an
-        [https://tools.ietf.org/html/rfc8259#section-4|object],
+        <a href="https://tools.ietf.org/html/rfc8259#section-4">object</a>,
         for each *name* → *value* of item, execute the following steps:
         1.  Let *propertyName* be the result of running ASCII lowercase on name.
         1.  Execute the first statement, switching on *propertyName*:
@@ -834,9 +836,9 @@ Given a response (*response&), perform the following steps:
                 If value is a valid {{StringAtSinkDisposition}}, set
                 *defaultSinkDisposition* to that value. Otherwise, throw
                 an error.
-
             1.  case `“report”`:
-                If value is a [https://tools.ietf.org/html/rfc8259#section-7|string],
+                If value is a
+                <a href="https://tools.ietf.org/html/rfc8259#section-7">string</a>,
                 set *config*'s
                 {{TrustedTypeConfiguration/reportingGroup|reportingGroup}}
                 to that value.
@@ -898,7 +900,7 @@ typedef (TrustedHTML or TrustedScript or TrustedScriptURL or TrustedURL) Trusted
 ### <dfn abstract-op>Get Trusted Type compliant string algorithm</dfn> ### {#get-trusted-type-compliant-string-algorithm}
 
 This algorithm will return a string that can be assigned to a DOM
-[:sink:], optionally unwrapping it from a matching [:Trusted Type:].
+[=sink=], optionally unwrapping it from a matching [=Trusted Type=].
 It will ensure that the Trusted Type enforcement setting was respected.
 
 Given a TrustedType type (*expectedType*), a {{Document}}
@@ -911,8 +913,7 @@ ISSUE: Make it clear that no reporting is done when *disposition* is `unsafe-all
 
 ISSUE: In step 1, refer to the internal slot in Document or the IDL additions to document that store the configuration.
 
-1.  Let *disposition* be *document*’s
-    [:Document trusted type policy configuration|TrustedTypeConfiguration:]'s
+1.  Let *disposition* be *document*’s TrustedTypeConfiguration's
     {{TrustedTypeConfiguration/domSinks}}.
 1.  If *disposition* is `“unsafe-allow”`, then run these steps:
     1.  If *passThroughFunctions* is true and *input* is a {{Function}},
@@ -948,13 +949,18 @@ ISSUE: In step 1, refer to the internal slot in Document or the IDL additions to
 
 ### <dfn abstract-op>Enforce a Trusted Type algorithm</dfn> ### {#enforce-a-trusted-type-algorithm}
 
+Note: <dfn>enforcement</dfn> is the process of checking that a value
+has an appropriate type before it reaches a <dfn>sink</dfn>, a function
+that could result in XSS if an assignment of an untrusted
+input reached it unmitigated.  Examples of sinks include
+setter functions on DOM XSS sink attributes.
+
 Enforce a Trusted Type algorithm describes a modification to the DOM
-XSS [:sink:] functions (e.g. setter functions on DOM XSS sink attributes),
-asserting that the input meets [:Trusted Type:] restrictions set for the
-current {{Document}}.  It accepts an input value that the original function
-would and will optionally pass-through to the original function -- all
-original arguments to the function apart from input are passed through
-without modification.
+XSS sink functions, asserting that the input meets [=Trusted Type=]
+restrictions set for the current {{Document}}.  It accepts an input
+value that the original function would and will optionally
+pass-through to the original function -- all original arguments to the
+function apart from input are passed through without modification.
 
 1.  Let *compliantValue* be the result of executing [$Get Trusted Type
     compliant string algorithm$] with
@@ -1067,10 +1073,10 @@ partial interface mixin Document {
 };
 </pre>
 
-The types of arguments were changed.
+Note: The types of arguments were changed.
 
 
-### <dfn abstract-op>Enforcement in window open steps algorithm</dfn> ### {#enforcement-in-window-open}
+### Enforcement in window open steps algorithm ### {#enforcement-in-window-open}
 
 Modify the [[HTML5#window-open-steps|window open steps]] to accept a
 {{URLString}} (*url*) (instead of a string url), and add the following
@@ -1087,9 +1093,10 @@ steps after step 9:
     and abort the following steps.
 
 
-### <dfn abstract-op>Enforcement in Location navigation</dfn> algorithm ### {#enforcement-in-location}
+### Enforcement in Location navigation algorithm ### {#enforcement-in-location}
 
-To the [[HTML5#location-object-navigate|Location-object navigate]] algorithm, add the following steps before step 1:
+To the [[HTML5#location-object-navigate|Location-object navigate]]
+algorithm, add the following steps before step 1:
 
 1.  Set *url* to the result of executing [$Get Trusted Type compliant string algorithm$] with:
     *   *document* being the Location object's {{Document}},
@@ -1100,7 +1107,7 @@ To the [[HTML5#location-object-navigate|Location-object navigate]] algorithm, ad
     exception, and abort the following steps.
 
 
-### <dfn abstract-op>Enforcement in document write steps</dfn> algorithm ### {#enforcement-document-write}
+### Enforcement in document write steps ### {#enforcement-document-write}
 
 Modify the [[HTML5#document-write-steps|document write steps]]
 algorithm to accept an {{HTMLString}} (*input*) (instead of a string
@@ -1246,15 +1253,155 @@ algorithm$].
 </table>
 
 
+### Enforcement in timer functions ### {#enforcement-in-timer-functions}
+
+To the [[HTML5#timer-initialisation-steps|timer initialization steps algorithm]],
+add a step between 7.1 and 7.2:
+
+1.  Set the first method argument to the result of executing
+    the [$Get Trusted Type compliant string algorithm$], with
+    *   *document* set to the document of the method content proxy.
+    *   *input* set to the first method argument,
+    *   *expectedType* set to {{TrustedScript}} and
+    *   *passThroughFunctions* set to true.
+
+Note: Makes sure that a {{TrustedScript}} is passed to timer
+functions in place of a string when Trusted Types are enforced, but
+also unconditionally accepts any {{Function}} object.
 
 
+### Enforcement in event handler content attributes ### {#enforcement-in-event-handler-content-attributes}
 
-# STILL TODO # {#more-todo}
+This document modifies the
+[[HTML5#event-handler-content-attributes|attribute change steps for an event handler content attribute]].
 
-*   <dfn>callback this value</dfn>
-*   <dfn>capabilities</dfn> link to ocaps
-*   <dfn>enforcement</dfn>
-*   <dfn>sink</dfn>
+At the beginning of step 5, insert the following steps:
+
+1.  Let *value* be the result of executing the
+    [$Get Trusted Type compliant string algorithm$], with
+    *   *document* set to the owner document of *eventTarget*,
+    *   *input* set to *value*,
+    *   *expectedType* set to {{TrustedScript}}, and
+    *   *passThroughFunctions* set to false.
+1.  If the algorithm throws an error, abort these steps.
+
+
+### String compilation ### {#string-compilation}
+
+Note: See <a href="https://github.com/tc39/ecma262/issues/938">TC39/ecma262 issue #938</a>
+(adding a string to be compiled to algorithm parameters)
+
+Issue: Should we be modifying
+[[HTML5#hostensurecancompilestrings(callerrealm,-calleerealm)|HostEnsureCanCompileStrings]]
+or EnsureCSPDoesNotBlockStringCompilation?
+
+Modify [[CSP#can-compile-strings|HostEnsureCanCompileStrings]]
+algorithm, adding the following steps before step 1:
+
+1.  Let *value* be the result of executing the
+    [$Get Trusted Type compliant string algorithm$], with:
+    *   *document* set to the *callerRealm*’s
+        [[HTML5#environment-settings-object|environment setting object]'s
+        [[HTML5#responsible-document|responsible document]],
+    *   *input* set to *codeToCompile*,
+    *   *expectedType* being {{TrustedScript}}, and
+    *   *passThroughFunctions* set to false
+1.  If the algorithm throws an error, throw an {{EvalError}}.
+
+## Integration with DOM Parsing ### {#integration-with-dom-parsing}
+
+Note: Re [[DOM-Parsing]].
+
+### Extensions to the Element interface ### {#extensions-to-element-interface}
+
+This document modifies the {{Element}} interface defined by DOM Parsing:
+
+<xmp class="idl">
+partial interface Element {
+  [CEReactions/*, TreatNullAs=EmptyString */] attribute HTMLString innerHTML;
+  [CEReactions/*, TreatNullAs=EmptyString */] attribute HTMLString outerHTML;
+  [CEReactions] void insertAdjacentHTML(DOMString position, HTMLString text);
+};
+</xmp>
+
+For {{Element/innerHTML}}'s and {{Element/outerHTML}}'s execute the
+[$Enforce a Trusted Type algorithm$].
+
+For the {{Element/insertAdjacentHTML()}} method, execute the
+[$Enforce a Trusted Type algorithm$] with input argument set to the *text*
+parameter value.
+
+Issue: do we need to specify that type argument should be {{TrustedHTML}}
+twice herein.
+
+Issue: removed [[webidl#TreatNullAs|TreatNullAs=EmptyString]] from
+features parameter which is not recognized by bikeshed.  Maybe there's
+additional configuration required.  See "It should not be used in
+specifications unless ..."
+
+
+### Extensions to the Range interface ### {#extensions-to-the-range-interface}
+
+This document modifies the {{Range}} interface defined by [[DOM-Parsing]]:
+
+<xmp class="idl">
+partial interface Range {
+  [CEReactions, NewObject] DocumentFragment createContextualFragment(HTMLString fragment);
+};
+</xmp>
+
+For {{Range/createContextualFragment()}} function, execute the
+[$Enforce a Trusted Type algorithm$] with the *input* argument set to
+the *fragment* value.
+
+Issue: Do we need to specify that the enforcement type is {{TrustedHTML}}?
+
+
+### Extensions to the DOMParser interface ### {#extensions-to-the-DOMParser}
+
+This document modifies the {{DOMParser}} interface defined by [[DOM-Parsing]]:
+
+<pre class="idl">
+[Constructor, Exposed=Window]
+interface DOMParser {
+  [NewObject] Document parseFromString(HTMLString str, SupportedType type);
+};
+</pre>
+
+Issue: IDL linkage broken for SupportedType but I don't want DOMParser to not
+show up in the IDL summary.
+
+<pre class="idl">
+// Not modified by this document, but bikeshed is not recognizing
+// <l>[[DOM-Parsing#idl-def-supportedtype|SupportedType]]</l>
+enum SupportedType {
+  "text/html",
+  "text/xml",
+  "application/xml",
+  "application/xhtml+xml",
+  "image/svg+xml"
+};
+</pre>
+
+For {{DOMParser/parseFromString()}} function, execute the [$Enforce a
+Trusted Type algorithm$] with *input* argument set to the *str* value.
+
+Issue: Do we need to specify that the enforcement type is {{TrustedHTML}}, or
+that it is dependent on *type* which may be `"image/svg+xml"` or generic XML?
+
+
+# Implementation Considerations # {#implementation-considerations}
+
+## Vendor-specific Extensions and Addons ## {#vendor-specific-extensions-and-addons}
+
+Restriction imposed by the {{TrustedTypeConfiguration}} objects SHOULD
+NOT interfere with the operation of user-agent features like addons,
+extensions, or bookmarklets. These kinds of features generally advance
+the user’s priority over page authors, as espoused in
+[[html-design-principles]]. Specifically, extensions SHOULD be able to pass strings
+to the DOM XSS sinks of the document without triggering [=default policy=]
+execution, [[#violation|violation]] generation, or the rejection of the value.
+
 
 Issue: Go through and identify non-normative sections and mark them
 appropriately.
