@@ -1213,8 +1213,8 @@ Possible extra rowspan handling
 	}
 </style>
   <meta content="Bikeshed version 86d51a2d9c3c0de4540c77189312f7e2393844af" name="generator">
-  <link href="https://raw.githack.com/WICG/trusted-types/master/dist/spec/index.bs.html" rel="canonical">
-  <meta content="eb66376b7c3067e20a69c06a7b79a34cbb615958" name="document-revision">
+  <link href="https://wicg.github.io/trusted-types/dist/spec/index.bs.html" rel="canonical">
+  <meta content="16215f674488931582e5915013bd186918a7b86b" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -1551,29 +1551,29 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
           <li><a href="#report-sink-type-mismatch-violation-algorithm"><span class="secno">2.2.9.1</span> <span class="content"><span>Report sink type mismatch violation algorithm</span></span></a>
          </ol>
        </ol>
+     </ol>
+    <li>
+     <a href="#integrations"><span class="secno">3</span> <span class="content">Integrations</span></a>
+     <ol class="toc">
       <li>
-       <a href="#integrations"><span class="secno">2.3</span> <span class="content">Integrations</span></a>
+       <a href="#integrations-algorithms"><span class="secno">3.1</span> <span class="content">Algorithms</span></a>
        <ol class="toc">
-        <li>
-         <a href="#integrations-algorithms"><span class="secno">2.3.1</span> <span class="content">Algorithms</span></a>
-         <ol class="toc">
-          <li><a href="#get-trusted-type-compliant-string-algorithm"><span class="secno">2.3.1.1</span> <span class="content"><span>Get Trusted Type compliant string algorithm</span></span></a>
-          <li><a href="#enforce-a-trusted-type-algorithm"><span class="secno">2.3.1.2</span> <span class="content"><span>Enforce a Trusted Type algorithm</span></span></a>
-         </ol>
-        <li>
-         <a href="#integration-with-html"><span class="secno">2.3.2</span> <span class="content">Integration with HTML</span></a>
-         <ol class="toc">
-          <li><a href="#initialize-a-documents-trusted-type-configuration-algorithm"><span class="secno">2.3.2.1</span> <span class="content"><span>Initialize a Document’s trusted type configuration algorithm</span></span></a>
-          <li><a href="#extensions-to-the-window-interface"><span class="secno">2.3.2.2</span> <span class="content">Extensions to the Window interface</span></a>
-          <li><a href="#extensions-to-the-document-interface"><span class="secno">2.3.2.3</span> <span class="content">Extensions to the Document interface</span></a>
-          <li><a href="#enforcement-in-window-open"><span class="secno">2.3.2.4</span> <span class="content"><span>Enforcement in window open steps algorithm</span></span></a>
-          <li><a href="#enforcement-in-location"><span class="secno">2.3.2.5</span> <span class="content"><span>Enforcement in Location navigation</span> algorithm</span></a>
-          <li><a href="#enforcement-document-write"><span class="secno">2.3.2.6</span> <span class="content"><span>Enforcement in document write steps</span> algorithm</span></a>
-          <li><a href="#enforcement-in-sinks"><span class="secno">2.3.2.7</span> <span class="content">Enforcement in property sinks</span></a>
-         </ol>
+        <li><a href="#get-trusted-type-compliant-string-algorithm"><span class="secno">3.1.1</span> <span class="content"><span>Get Trusted Type compliant string algorithm</span></span></a>
+        <li><a href="#enforce-a-trusted-type-algorithm"><span class="secno">3.1.2</span> <span class="content"><span>Enforce a Trusted Type algorithm</span></span></a>
+       </ol>
+      <li>
+       <a href="#integration-with-html"><span class="secno">3.2</span> <span class="content">Integration with HTML</span></a>
+       <ol class="toc">
+        <li><a href="#initialize-a-documents-trusted-type-configuration-algorithm"><span class="secno">3.2.1</span> <span class="content"><span>Initialize a Document’s trusted type configuration algorithm</span></span></a>
+        <li><a href="#extensions-to-the-window-interface"><span class="secno">3.2.2</span> <span class="content">Extensions to the Window interface</span></a>
+        <li><a href="#extensions-to-the-document-interface"><span class="secno">3.2.3</span> <span class="content">Extensions to the Document interface</span></a>
+        <li><a href="#enforcement-in-window-open"><span class="secno">3.2.4</span> <span class="content"><span>Enforcement in window open steps algorithm</span></span></a>
+        <li><a href="#enforcement-in-location"><span class="secno">3.2.5</span> <span class="content"><span>Enforcement in Location navigation</span> algorithm</span></a>
+        <li><a href="#enforcement-document-write"><span class="secno">3.2.6</span> <span class="content"><span>Enforcement in document write steps</span> algorithm</span></a>
+        <li><a href="#enforcement-in-sinks"><span class="secno">3.2.7</span> <span class="content">Enforcement in property sinks</span></a>
        </ol>
      </ol>
-    <li><a href="#more-todo"><span class="secno">3</span> <span class="content">STILL TODO</span></a>
+    <li><a href="#more-todo"><span class="secno">4</span> <span class="content">STILL TODO</span></a>
     <li><a href="#conformance"><span class="secno"></span> <span class="content"> Conformance</span></a>
     <li>
      <a href="#index"><span class="secno"></span> <span class="content">Index</span></a>
@@ -2328,7 +2328,7 @@ relevant settings object.</p>
        <p class="note" role="note"><span>Note:</span> The optional <em>url</em> parameter is not provided.</p>
      </ol>
    </ol>
-   <h3 class="heading settled" data-level="2.3" id="integrations"><span class="secno">2.3. </span><span class="content">Integrations</span><a class="self-link" href="#integrations"></a></h3>
+   <h2 class="heading settled" data-level="3" id="integrations"><span class="secno">3. </span><span class="content">Integrations</span><a class="self-link" href="#integrations"></a></h2>
    <p class="note" role="note"><span>Note:</span> DOM sink setters may accept these types to indicate that they accept
 the appropriate trusted type or a string when enforcement is off or when
 enforcement falls back to a <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy②">default policy</a>.</p>
@@ -2338,8 +2338,8 @@ enforcement falls back to a <a data-link-type="dfn" href="#default-policy" id="r
 <c- b>typedef</c-> (<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString③"><c- b>USVString</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="#trustedurl" id="ref-for-trustedurl①"><c- n>TrustedURL</c-></a>) <dfn class="dfn-paneled idl-code" data-dfn-type="typedef" data-export id="typedefdef-urlstring"><code><c- g>URLString</c-></code></dfn>;
 <c- b>typedef</c-> (<a class="n" data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml②"><c- n>TrustedHTML</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript②"><c- n>TrustedScript</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl②"><c- n>TrustedScriptURL</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="#trustedurl" id="ref-for-trustedurl②"><c- n>TrustedURL</c-></a>) <dfn class="idl-code" data-dfn-type="typedef" data-export id="typedefdef-trustedtype"><code><c- g>TrustedType</c-></code><a class="self-link" href="#typedefdef-trustedtype"></a></dfn>;
 </pre>
-   <h4 class="heading settled" data-level="2.3.1" id="integrations-algorithms"><span class="secno">2.3.1. </span><span class="content">Algorithms</span><a class="self-link" href="#integrations-algorithms"></a></h4>
-   <h5 class="heading settled" data-level="2.3.1.1" id="get-trusted-type-compliant-string-algorithm"><span class="secno">2.3.1.1. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-get-trusted-type-compliant-string-algorithm">Get Trusted Type compliant string algorithm</dfn></span><a class="self-link" href="#get-trusted-type-compliant-string-algorithm"></a></h5>
+   <h3 class="heading settled" data-level="3.1" id="integrations-algorithms"><span class="secno">3.1. </span><span class="content">Algorithms</span><a class="self-link" href="#integrations-algorithms"></a></h3>
+   <h4 class="heading settled" data-level="3.1.1" id="get-trusted-type-compliant-string-algorithm"><span class="secno">3.1.1. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-get-trusted-type-compliant-string-algorithm">Get Trusted Type compliant string algorithm</dfn></span><a class="self-link" href="#get-trusted-type-compliant-string-algorithm"></a></h4>
    <p>This algorithm will return a string that can be assigned to a DOM
 [:sink:], optionally unwrapping it from a matching [:Trusted Type:].
 It will ensure that the Trusted Type enforcement setting was respected.</p>
@@ -2403,7 +2403,7 @@ following steps.</p>
     <li data-md>
      <p>Throw a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror">TypeError</a></code>.</p>
    </ol>
-   <h5 class="heading settled" data-level="2.3.1.2" id="enforce-a-trusted-type-algorithm"><span class="secno">2.3.1.2. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-enforce-a-trusted-type-algorithm">Enforce a Trusted Type algorithm</dfn></span><a class="self-link" href="#enforce-a-trusted-type-algorithm"></a></h5>
+   <h4 class="heading settled" data-level="3.1.2" id="enforce-a-trusted-type-algorithm"><span class="secno">3.1.2. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-enforce-a-trusted-type-algorithm">Enforce a Trusted Type algorithm</dfn></span><a class="self-link" href="#enforce-a-trusted-type-algorithm"></a></h4>
    <p>Enforce a Trusted Type algorithm describes a modification to the DOM
 XSS [:sink:] functions (e.g. setter functions on DOM XSS sink attributes),
 asserting that the input meets [:Trusted Type:] restrictions set for the
@@ -2453,12 +2453,12 @@ original value.  If the original functions accepts other
 arguments, pass-them through to the original function.  Return the
 result.</p>
    </ol>
-   <h4 class="heading settled" data-level="2.3.2" id="integration-with-html"><span class="secno">2.3.2. </span><span class="content">Integration with HTML</span><a class="self-link" href="#integration-with-html"></a></h4>
+   <h3 class="heading settled" data-level="3.2" id="integration-with-html"><span class="secno">3.2. </span><span class="content">Integration with HTML</span><a class="self-link" href="#integration-with-html"></a></h3>
    <p><code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/window-object.html#window" id="ref-for-window①">Window</a></code> objects have a <code class="idl"><a data-link-type="idl" href="#dom-window-trustedtypes" id="ref-for-dom-window-trustedtypes">trusted type policy factory</a></code>,
 which is a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicyfactory" id="ref-for-trustedtypepolicyfactory②">TrustedTypePolicyFactory</a></code> object.</p>
    <p><code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document⑤">Document</a></code> objects have a trusted type configuration,
 which is a <code class="idl"><a data-link-type="idl" href="#dictdef-trustedtypeconfiguration" id="ref-for-dictdef-trustedtypeconfiguration⑤">TrustedTypeConfiguration</a></code> object.</p>
-   <h5 class="heading settled" data-level="2.3.2.1" id="initialize-a-documents-trusted-type-configuration-algorithm"><span class="secno">2.3.2.1. </span><span class="content"><dfn data-dfn-type="abstract-op" data-export id="abstract-opdef-initialize-a-documents-trusted-type-configuration-algorithm">Initialize a Document’s trusted type configuration algorithm<a class="self-link" href="#abstract-opdef-initialize-a-documents-trusted-type-configuration-algorithm"></a></dfn></span><a class="self-link" href="#initialize-a-documents-trusted-type-configuration-algorithm"></a></h5>
+   <h4 class="heading settled" data-level="3.2.1" id="initialize-a-documents-trusted-type-configuration-algorithm"><span class="secno">3.2.1. </span><span class="content"><dfn data-dfn-type="abstract-op" data-export id="abstract-opdef-initialize-a-documents-trusted-type-configuration-algorithm">Initialize a Document’s trusted type configuration algorithm<a class="self-link" href="#abstract-opdef-initialize-a-documents-trusted-type-configuration-algorithm"></a></dfn></span><a class="self-link" href="#initialize-a-documents-trusted-type-configuration-algorithm"></a></h4>
    <p>This algorithm should be executed during the <a href="https://www.w3.org/TR/html5/#initialise-the-document-object">Initializing a new Document
 object</a> algorithm.</p>
    <p>Given a <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document⑥">Document</a></code> (<em>document</em>), a <a href="https://www.w3.org/TR/html5/#concept-document-bc">browsing context</a> (<em>browsingContext</em>) and
@@ -2477,7 +2477,7 @@ factory algorithm</a> on <em>configuration</em>.</p>
     <li data-md>
      <p>Set <em>browsingContext</em>’s <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/window-object.html#windowproxy" id="ref-for-windowproxy">WindowProxy</a></code> object’s <code class="idl"><a data-link-type="idl" href="#dom-window-trustedtypes" id="ref-for-dom-window-trustedtypes①">TrustedTypes</a></code> attribute to <em>factory</em>.</p>
    </ol>
-   <h5 class="heading settled" data-level="2.3.2.2" id="extensions-to-the-window-interface"><span class="secno">2.3.2.2. </span><span class="content">Extensions to the Window interface</span><a class="self-link" href="#extensions-to-the-window-interface"></a></h5>
+   <h4 class="heading settled" data-level="3.2.2" id="extensions-to-the-window-interface"><span class="secno">3.2.2. </span><span class="content">Extensions to the Window interface</span><a class="self-link" href="#extensions-to-the-window-interface"></a></h4>
    <p>This document extends the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/window-object.html#window" id="ref-for-window②">Window</a></code> interface defined by <a data-link-type="biblio" href="#biblio-html5">HTML</a>:</p>
    <p class="issue" id="issue-f74e9f32"><a class="self-link" href="#issue-f74e9f32"></a> removed <a href="https://heycam.github.io/webidl/#TreatNullAs">TreatNullAs=EmptyString</a> from
 features parameter which is not recognized by bikeshed.  Maybe there’s
@@ -2496,7 +2496,7 @@ specifications unless ..."</p>
 type policy factory</a> of the current <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/window-object.html#window" id="ref-for-window④">Window</a></code>, if the current Window
 has a trusted type policy factory, or null otherwise.</p>
    <p><code class="idl"><a data-link-type="idl" href="#dom-window-open" id="ref-for-dom-window-open">open</a></code>: The type of the <em>url</em> argument changes from <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString④">USVString</a></code> to <code class="idl"><a data-link-type="idl" href="#typedefdef-urlstring" id="ref-for-typedefdef-urlstring②">URLString</a></code>.</p>
-   <h5 class="heading settled" data-level="2.3.2.3" id="extensions-to-the-document-interface"><span class="secno">2.3.2.3. </span><span class="content">Extensions to the Document interface</span><a class="self-link" href="#extensions-to-the-document-interface"></a></h5>
+   <h4 class="heading settled" data-level="3.2.3" id="extensions-to-the-document-interface"><span class="secno">3.2.3. </span><span class="content">Extensions to the Document interface</span><a class="self-link" href="#extensions-to-the-document-interface"></a></h4>
    <p>This document modifies the <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document⑦">Document</a></code> interface defined by <a data-link-type="biblio" href="#biblio-html5">HTML</a>:</p>
 <pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#document" id="ref-for-document⑧"><c- g>Document</c-></a> {
    <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/window-object.html#windowproxy" id="ref-for-windowproxy②"><c- n>WindowProxy</c-></a>? <dfn class="idl-code" data-dfn-for="Document" data-dfn-type="method" data-export data-lt="open(url, name, features)" id="dom-document-open"><code><c- g>open</c-></code><a class="self-link" href="#dom-document-open"></a></dfn>(<a class="n" data-link-type="idl-name" href="#typedefdef-urlstring" id="ref-for-typedefdef-urlstring③"><c- n>URLString</c-></a> <dfn class="idl-code" data-dfn-for="Document/open(url, name, features)" data-dfn-type="argument" data-export id="dom-document-open-url-name-features-url"><code><c- g>url</c-></code><a class="self-link" href="#dom-document-open-url-name-features-url"></a></dfn>, <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②⓪"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="Document/open(url, name, features)" data-dfn-type="argument" data-export id="dom-document-open-url-name-features-name"><code><c- g>name</c-></code><a class="self-link" href="#dom-document-open-url-name-features-name"></a></dfn>, <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②①"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="Document/open(url, name, features)" data-dfn-type="argument" data-export id="dom-document-open-url-name-features-features"><code><c- g>features</c-></code><a class="self-link" href="#dom-document-open-url-name-features-features"></a></dfn>);
@@ -2505,7 +2505,7 @@ has a trusted type policy factory, or null otherwise.</p>
 };
 </pre>
    <p>The types of arguments were changed.</p>
-   <h5 class="heading settled" data-level="2.3.2.4" id="enforcement-in-window-open"><span class="secno">2.3.2.4. </span><span class="content"><dfn data-dfn-type="abstract-op" data-export id="abstract-opdef-enforcement-in-window-open-steps-algorithm">Enforcement in window open steps algorithm<a class="self-link" href="#abstract-opdef-enforcement-in-window-open-steps-algorithm"></a></dfn></span><a class="self-link" href="#enforcement-in-window-open"></a></h5>
+   <h4 class="heading settled" data-level="3.2.4" id="enforcement-in-window-open"><span class="secno">3.2.4. </span><span class="content"><dfn data-dfn-type="abstract-op" data-export id="abstract-opdef-enforcement-in-window-open-steps-algorithm">Enforcement in window open steps algorithm<a class="self-link" href="#abstract-opdef-enforcement-in-window-open-steps-algorithm"></a></dfn></span><a class="self-link" href="#enforcement-in-window-open"></a></h4>
    <p>Modify the <a href="https://www.w3.org/TR/html5/#window-open-steps">window open steps</a> to accept a <code class="idl"><a data-link-type="idl" href="#typedefdef-urlstring" id="ref-for-typedefdef-urlstring④">URLString</a></code> (<em>url</em>) (instead of a string url), and add the following
 steps after step 9:</p>
    <ol>
@@ -2526,7 +2526,7 @@ string algorithm</a> with:</p>
      <p>If the previous algorithm throws an exception, rethrow the exception,
 and abort the following steps.</p>
    </ol>
-   <h5 class="heading settled" data-level="2.3.2.5" id="enforcement-in-location"><span class="secno">2.3.2.5. </span><span class="content"><dfn data-dfn-type="abstract-op" data-export id="abstract-opdef-enforcement-in-location-navigation">Enforcement in Location navigation<a class="self-link" href="#abstract-opdef-enforcement-in-location-navigation"></a></dfn> algorithm</span><a class="self-link" href="#enforcement-in-location"></a></h5>
+   <h4 class="heading settled" data-level="3.2.5" id="enforcement-in-location"><span class="secno">3.2.5. </span><span class="content"><dfn data-dfn-type="abstract-op" data-export id="abstract-opdef-enforcement-in-location-navigation">Enforcement in Location navigation<a class="self-link" href="#abstract-opdef-enforcement-in-location-navigation"></a></dfn> algorithm</span><a class="self-link" href="#enforcement-in-location"></a></h4>
    <p>To the <a href="https://www.w3.org/TR/html5/#location-object-navigate">Location-object navigate</a> algorithm, add the following steps before step 1:</p>
    <ol>
     <li data-md>
@@ -2545,7 +2545,7 @@ and abort the following steps.</p>
      <p>If the previous algorithm throws an exception, rethrow the
 exception, and abort the following steps.</p>
    </ol>
-   <h5 class="heading settled" data-level="2.3.2.6" id="enforcement-document-write"><span class="secno">2.3.2.6. </span><span class="content"><dfn data-dfn-type="abstract-op" data-export id="abstract-opdef-enforcement-in-document-write-steps">Enforcement in document write steps<a class="self-link" href="#abstract-opdef-enforcement-in-document-write-steps"></a></dfn> algorithm</span><a class="self-link" href="#enforcement-document-write"></a></h5>
+   <h4 class="heading settled" data-level="3.2.6" id="enforcement-document-write"><span class="secno">3.2.6. </span><span class="content"><dfn data-dfn-type="abstract-op" data-export id="abstract-opdef-enforcement-in-document-write-steps">Enforcement in document write steps<a class="self-link" href="#abstract-opdef-enforcement-in-document-write-steps"></a></dfn> algorithm</span><a class="self-link" href="#enforcement-document-write"></a></h4>
    <p>Modify the <a href="https://www.w3.org/TR/html5/#document-write-steps">document write steps</a> algorithm to accept an <code class="idl"><a data-link-type="idl" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring③">HTMLString</a></code> (<em>input</em>) (instead of a string
 input), and add the following steps before step 1:</p>
    <ol>
@@ -2566,7 +2566,7 @@ string algorithm</a> with:</p>
      <p>If the previous algorithm throws an exception, rethrow the
 exception, and abort the following steps.</p>
    </ol>
-   <h5 class="heading settled" data-level="2.3.2.7" id="enforcement-in-sinks"><span class="secno">2.3.2.7. </span><span class="content">Enforcement in property sinks</span><a class="self-link" href="#enforcement-in-sinks"></a></h5>
+   <h4 class="heading settled" data-level="3.2.7" id="enforcement-in-sinks"><span class="secno">3.2.7. </span><span class="content">Enforcement in property sinks</span><a class="self-link" href="#enforcement-in-sinks"></a></h4>
    <p>This document modifies the setters of the following properties of
 various DOM elements.  For each property in the list, modify the IDL
 to accept a given parameter type instead of the DOMString /
@@ -2662,7 +2662,7 @@ algorithm</a>.</p>
       <td><code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/media.html#dom-track-src" id="ref-for-dom-track-src">HTMLTrackElement.src</a></code>
       <td><code class="idl"><a data-link-type="idl" href="#typedefdef-urlstring" id="ref-for-typedefdef-urlstring①⑨">URLString</a></code>
    </table>
-   <h2 class="heading settled" data-level="3" id="more-todo"><span class="secno">3. </span><span class="content">STILL TODO</span><a class="self-link" href="#more-todo"></a></h2>
+   <h2 class="heading settled" data-level="4" id="more-todo"><span class="secno">4. </span><span class="content">STILL TODO</span><a class="self-link" href="#more-todo"></a></h2>
    <ul>
     <li data-md>
      <p><dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="callback-this-value">callback this value</dfn></p>
@@ -2827,8 +2827,8 @@ appropriately.</p>
   <ul class="index">
    <li><a href="#dom-unknownpolicynamedisposition-allow">"allow"</a><span>, in §2.2.7</span>
    <li><a href="#dom-trustedtypeconfiguration-allowednames">allowedNames</a><span>, in §2.2.7</span>
-   <li><a href="#callback-this-value">callback this value</a><span>, in §3</span>
-   <li><a href="#capabilities">capabilities</a><span>, in §3</span>
+   <li><a href="#callback-this-value">callback this value</a><span>, in §4</span>
+   <li><a href="#capabilities">capabilities</a><span>, in §4</span>
    <li><a href="#abstract-opdef-create-a-trusted-type-algorithm">Create a Trusted Type algorithm</a><span>, in §2.2.5.7</span>
    <li><a href="#abstract-opdef-create-a-trusted-type-policy-algorithm">Create a Trusted Type Policy algorithm</a><span>, in §2.2.5.2</span>
    <li><a href="#abstract-opdef-create-a-violation-for-algorithm">Create a Violation for algorithm</a><span>, in §2.2.6.1</span>
@@ -2849,19 +2849,19 @@ appropriately.</p>
    <li><a href="#dom-trustedtypepolicy-createurl">createURL(input)</a><span>, in §2.2.1</span>
    <li><a href="#default-policy">Default policy</a><span>, in §2.2.4</span>
    <li><a href="#dom-trustedtypeconfiguration-domsinks">domSinks</a><span>, in §2.2.7</span>
-   <li><a href="#abstract-opdef-enforce-a-trusted-type-algorithm">Enforce a Trusted Type algorithm</a><span>, in §2.3.1.2</span>
-   <li><a href="#enforcement">enforcement</a><span>, in §3</span>
-   <li><a href="#abstract-opdef-enforcement-in-document-write-steps">Enforcement in document write steps</a><span>, in §2.3.2.6</span>
-   <li><a href="#abstract-opdef-enforcement-in-location-navigation">Enforcement in Location navigation</a><span>, in §2.3.2.5</span>
-   <li><a href="#abstract-opdef-enforcement-in-window-open-steps-algorithm">Enforcement in window open steps algorithm</a><span>, in §2.3.2.4</span>
+   <li><a href="#abstract-opdef-enforce-a-trusted-type-algorithm">Enforce a Trusted Type algorithm</a><span>, in §3.1.2</span>
+   <li><a href="#enforcement">enforcement</a><span>, in §4</span>
+   <li><a href="#abstract-opdef-enforcement-in-document-write-steps">Enforcement in document write steps</a><span>, in §3.2.6</span>
+   <li><a href="#abstract-opdef-enforcement-in-location-navigation">Enforcement in Location navigation</a><span>, in §3.2.5</span>
+   <li><a href="#abstract-opdef-enforcement-in-window-open-steps-algorithm">Enforcement in window open steps algorithm</a><span>, in §3.2.4</span>
    <li><a href="#dom-trustedtypepolicyoptions-exposed">exposed</a><span>, in §2.2.2</span>
    <li><a href="#abstract-opdef-get-default-policy-algorithm">Get default policy algorithm</a><span>, in §2.2.5.4</span>
    <li><a href="#abstract-opdef-get-exposed-policy-algorithm">Get exposed policy algorithm</a><span>, in §2.2.5.3</span>
    <li><a href="#dom-trustedtypepolicyfactory-getexposedpolicy">getExposedPolicy(policyName)</a><span>, in §2.2.3</span>
    <li><a href="#dom-trustedtypepolicyfactory-getpolicynames">getPolicyNames()</a><span>, in §2.2.3</span>
-   <li><a href="#abstract-opdef-get-trusted-type-compliant-string-algorithm">Get Trusted Type compliant string algorithm</a><span>, in §2.3.1.1</span>
-   <li><a href="#typedefdef-htmlstring">HTMLString</a><span>, in §2.3</span>
-   <li><a href="#abstract-opdef-initialize-a-documents-trusted-type-configuration-algorithm">Initialize a Document’s trusted type configuration algorithm</a><span>, in §2.3.2.1</span>
+   <li><a href="#abstract-opdef-get-trusted-type-compliant-string-algorithm">Get Trusted Type compliant string algorithm</a><span>, in §3.1.1</span>
+   <li><a href="#typedefdef-htmlstring">HTMLString</a><span>, in §3</span>
+   <li><a href="#abstract-opdef-initialize-a-documents-trusted-type-configuration-algorithm">Initialize a Document’s trusted type configuration algorithm</a><span>, in §3.2.1</span>
    <li><a href="#abstract-opdef-initialize-policy-factory-algorithm">Initialize policy factory algorithm</a><span>, in §2.2.5.1</span>
    <li><a href="#abstract-opdef-is-a-default-policy-algorithm">Is a default policy algorithm</a><span>, in §2.2.5.6</span>
    <li><a href="#dom-trustedtypepolicyfactory-ishtml">isHTML(checkedObject)</a><span>, in §2.2.3</span>
@@ -2871,11 +2871,11 @@ appropriately.</p>
    <li><a href="#dom-trustedtypepolicyfactory-isurl">isURL(checkedObject)</a><span>, in §2.2.3</span>
    <li><a href="#dom-trustedtypepolicy-name">name</a><span>, in §2.2.1</span>
    <li><a href="#abstract-opdef-obtain-a-trusted-type-configuration-for-a-response-algorithm">Obtain a Trusted Type Configuration for a response algorithm</a><span>, in §2.2.8.1</span>
-   <li><a href="#dom-window-open">open()</a><span>, in §2.3.2.2</span>
-   <li><a href="#dom-window-open">open(url)</a><span>, in §2.3.2.2</span>
-   <li><a href="#dom-document-open">open(url, name, features)</a><span>, in §2.3.2.3</span>
-   <li><a href="#dom-window-open">open(url, target)</a><span>, in §2.3.2.2</span>
-   <li><a href="#dom-window-open">open(url, target, features)</a><span>, in §2.3.2.2</span>
+   <li><a href="#dom-window-open">open()</a><span>, in §3.2.2</span>
+   <li><a href="#dom-window-open">open(url)</a><span>, in §3.2.2</span>
+   <li><a href="#dom-document-open">open(url, name, features)</a><span>, in §3.2.3</span>
+   <li><a href="#dom-window-open">open(url, target)</a><span>, in §3.2.2</span>
+   <li><a href="#dom-window-open">open(url, target, features)</a><span>, in §3.2.2</span>
    <li>
     "reject"
     <ul>
@@ -2885,9 +2885,9 @@ appropriately.</p>
    <li><a href="#dom-stringatsinkdisposition-report">"report"</a><span>, in §2.2.7</span>
    <li><a href="#dom-trustedtypeconfiguration-reportinggroup">reportingGroup</a><span>, in §2.2.7</span>
    <li><a href="#abstract-opdef-report-sink-type-mismatch-violation-algorithm">Report sink type mismatch violation algorithm</a><span>, in §2.2.9.1</span>
-   <li><a href="#typedefdef-scriptstring">ScriptString</a><span>, in §2.3</span>
-   <li><a href="#typedefdef-scripturlstring">ScriptURLString</a><span>, in §2.3</span>
-   <li><a href="#sink">sink</a><span>, in §3</span>
+   <li><a href="#typedefdef-scriptstring">ScriptString</a><span>, in §3</span>
+   <li><a href="#typedefdef-scripturlstring">ScriptURLString</a><span>, in §3</span>
+   <li><a href="#sink">sink</a><span>, in §4</span>
    <li><a href="#enumdef-stringatsinkdisposition">StringAtSinkDisposition</a><span>, in §2.2.7</span>
    <li>
     stringification behavior
@@ -2915,7 +2915,7 @@ appropriately.</p>
      <li><a href="#trustedscripturl">(interface)</a><span>, in §2.1.3</span>
      <li><a href="#typedef-trustedscripturl">(type)</a><span>, in §2.1.3</span>
     </ul>
-   <li><a href="#typedefdef-trustedtype">TrustedType</a><span>, in §2.3</span>
+   <li><a href="#typedefdef-trustedtype">TrustedType</a><span>, in §3</span>
    <li><a href="#trusted-type">Trusted Type</a><span>, in §2.1</span>
    <li><a href="#dictdef-trustedtypeconfiguration">TrustedTypeConfiguration</a><span>, in §2.2.7</span>
    <li>
@@ -2937,7 +2937,7 @@ appropriately.</p>
      <li><a href="#typedef-trustedtypepolicyoptions">(type)</a><span>, in §2.2.2</span>
     </ul>
    <li><a href="#http-headerdef-trusted-types">Trusted-Types</a><span>, in §2.2.8</span>
-   <li><a href="#dom-window-trustedtypes">TrustedTypes</a><span>, in §2.3.2.2</span>
+   <li><a href="#dom-window-trustedtypes">TrustedTypes</a><span>, in §3.2.2</span>
    <li><a href="#trusted-types-http-response-header">Trusted-Types HTTP response header</a><span>, in §2.2.8</span>
    <li>
     TrustedURL
@@ -2948,11 +2948,11 @@ appropriately.</p>
    <li><a href="#dom-trustedtypeconfiguration-unknownpolicyname">unknownPolicyName</a><span>, in §2.2.7</span>
    <li><a href="#enumdef-unknownpolicynamedisposition">UnknownPolicyNameDisposition</a><span>, in §2.2.7</span>
    <li><a href="#dom-stringatsinkdisposition-unsafe-allow">"unsafe-allow"</a><span>, in §2.2.7</span>
-   <li><a href="#typedefdef-urlstring">URLString</a><span>, in §2.3</span>
-   <li><a href="#dom-document-write">write()</a><span>, in §2.3.2.3</span>
-   <li><a href="#dom-document-writeln">writeln()</a><span>, in §2.3.2.3</span>
-   <li><a href="#dom-document-writeln">writeln(...text)</a><span>, in §2.3.2.3</span>
-   <li><a href="#dom-document-write">write(...text)</a><span>, in §2.3.2.3</span>
+   <li><a href="#typedefdef-urlstring">URLString</a><span>, in §3</span>
+   <li><a href="#dom-document-write">write()</a><span>, in §3.2.3</span>
+   <li><a href="#dom-document-writeln">writeln()</a><span>, in §3.2.3</span>
+   <li><a href="#dom-document-writeln">writeln(...text)</a><span>, in §3.2.3</span>
+   <li><a href="#dom-document-write">write(...text)</a><span>, in §3.2.3</span>
   </ul>
   <aside class="dfn-panel" data-for="term-for-violation">
    <a href="https://w3c.github.io/webappsec-csp/#violation">https://w3c.github.io/webappsec-csp/#violation</a><b>Referenced in:</b>
@@ -2965,76 +2965,76 @@ appropriately.</p>
    <ul>
     <li><a href="#ref-for-document">2.2.6. Violation</a>
     <li><a href="#ref-for-document①">2.2.7. TrustedTypeConfiguration</a>
-    <li><a href="#ref-for-document②">2.3.1.1. Get Trusted Type compliant string algorithm</a>
-    <li><a href="#ref-for-document③">2.3.1.2. Enforce a Trusted Type algorithm</a> <a href="#ref-for-document④">(2)</a>
-    <li><a href="#ref-for-document⑤">2.3.2. Integration with HTML</a>
-    <li><a href="#ref-for-document⑥">2.3.2.1. Initialize a Document’s trusted type configuration algorithm</a>
-    <li><a href="#ref-for-document⑦">2.3.2.3. Extensions to the Document interface</a> <a href="#ref-for-document⑧">(2)</a>
-    <li><a href="#ref-for-document⑨">2.3.2.5. Enforcement in Location navigation algorithm</a>
+    <li><a href="#ref-for-document②">3.1.1. Get Trusted Type compliant string algorithm</a>
+    <li><a href="#ref-for-document③">3.1.2. Enforce a Trusted Type algorithm</a> <a href="#ref-for-document④">(2)</a>
+    <li><a href="#ref-for-document⑤">3.2. Integration with HTML</a>
+    <li><a href="#ref-for-document⑥">3.2.1. Initialize a Document’s trusted type configuration algorithm</a>
+    <li><a href="#ref-for-document⑦">3.2.3. Extensions to the Document interface</a> <a href="#ref-for-document⑧">(2)</a>
+    <li><a href="#ref-for-document⑨">3.2.5. Enforcement in Location navigation algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-cereactions">
    <a href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions">https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-cereactions">2.3.2.3. Extensions to the Document interface</a> <a href="#ref-for-cereactions①">(2)</a>
+    <li><a href="#ref-for-cereactions">3.2.3. Extensions to the Document interface</a> <a href="#ref-for-cereactions①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-window">
    <a href="https://html.spec.whatwg.org/multipage/window-object.html#window">https://html.spec.whatwg.org/multipage/window-object.html#window</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-window">2.3.1.1. Get Trusted Type compliant string algorithm</a>
-    <li><a href="#ref-for-window①">2.3.2. Integration with HTML</a>
-    <li><a href="#ref-for-window②">2.3.2.2. Extensions to the Window interface</a> <a href="#ref-for-window③">(2)</a> <a href="#ref-for-window④">(3)</a>
+    <li><a href="#ref-for-window">3.1.1. Get Trusted Type compliant string algorithm</a>
+    <li><a href="#ref-for-window①">3.2. Integration with HTML</a>
+    <li><a href="#ref-for-window②">3.2.2. Extensions to the Window interface</a> <a href="#ref-for-window③">(2)</a> <a href="#ref-for-window④">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-windowproxy">
    <a href="https://html.spec.whatwg.org/multipage/window-object.html#windowproxy">https://html.spec.whatwg.org/multipage/window-object.html#windowproxy</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-windowproxy">2.3.2.1. Initialize a Document’s trusted type configuration algorithm</a>
-    <li><a href="#ref-for-windowproxy①">2.3.2.2. Extensions to the Window interface</a>
-    <li><a href="#ref-for-windowproxy②">2.3.2.3. Extensions to the Document interface</a>
+    <li><a href="#ref-for-windowproxy">3.2.1. Initialize a Document’s trusted type configuration algorithm</a>
+    <li><a href="#ref-for-windowproxy①">3.2.2. Extensions to the Window interface</a>
+    <li><a href="#ref-for-windowproxy②">3.2.3. Extensions to the Document interface</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-fs-action">
    <a href="https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#dom-fs-action">https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#dom-fs-action</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-fs-action">2.3.2.7. Enforcement in property sinks</a>
+    <li><a href="#ref-for-dom-fs-action">3.2.7. Enforcement in property sinks</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-object-codebase">
    <a href="https://html.spec.whatwg.org/multipage/obsolete.html#dom-object-codebase">https://html.spec.whatwg.org/multipage/obsolete.html#dom-object-codebase</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-object-codebase">2.3.2.7. Enforcement in property sinks</a>
+    <li><a href="#ref-for-dom-object-codebase">3.2.7. Enforcement in property sinks</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-object-data">
    <a href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#dom-object-data">https://html.spec.whatwg.org/multipage/iframe-embed-object.html#dom-object-data</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-object-data">2.3.2.7. Enforcement in property sinks</a>
+    <li><a href="#ref-for-dom-object-data">3.2.7. Enforcement in property sinks</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-fs-formaction">
    <a href="https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#dom-fs-formaction">https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#dom-fs-formaction</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-fs-formaction">2.3.2.7. Enforcement in property sinks</a>
+    <li><a href="#ref-for-dom-fs-formaction">3.2.7. Enforcement in property sinks</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-link-href">
    <a href="https://html.spec.whatwg.org/multipage/semantics.html#dom-link-href">https://html.spec.whatwg.org/multipage/semantics.html#dom-link-href</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-link-href">2.3.2.7. Enforcement in property sinks</a>
+    <li><a href="#ref-for-dom-link-href">3.2.7. Enforcement in property sinks</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-track-src">
    <a href="https://html.spec.whatwg.org/multipage/media.html#dom-track-src">https://html.spec.whatwg.org/multipage/media.html#dom-track-src</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-track-src">2.3.2.7. Enforcement in property sinks</a>
+    <li><a href="#ref-for-dom-track-src">3.2.7. Enforcement in property sinks</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-iframe-srcdoc">
    <a href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#dom-iframe-srcdoc">https://html.spec.whatwg.org/multipage/iframe-embed-object.html#dom-iframe-srcdoc</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-iframe-srcdoc">2.3.2.7. Enforcement in property sinks</a>
+    <li><a href="#ref-for-dom-iframe-srcdoc">3.2.7. Enforcement in property sinks</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-script-text">
@@ -3042,7 +3042,7 @@ appropriately.</p>
    <ul>
     <li><a href="#ref-for-dom-script-text">2. Framework</a>
     <li><a href="#ref-for-dom-script-text①">2.1.2. TrustedScript</a>
-    <li><a href="#ref-for-dom-script-text②">2.3.2.7. Enforcement in property sinks</a>
+    <li><a href="#ref-for-dom-script-text②">3.2.7. Enforcement in property sinks</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idl-DOMString">
@@ -3052,9 +3052,9 @@ appropriately.</p>
     <li><a href="#ref-for-idl-DOMString⑤">2.2.2. TrustedTypePolicyOptions</a> <a href="#ref-for-idl-DOMString⑥">(2)</a> <a href="#ref-for-idl-DOMString⑦">(3)</a> <a href="#ref-for-idl-DOMString⑧">(4)</a> <a href="#ref-for-idl-DOMString⑨">(5)</a> <a href="#ref-for-idl-DOMString①⓪">(6)</a>
     <li><a href="#ref-for-idl-DOMString①①">2.2.3. TrustedTypePolicyFactory</a> <a href="#ref-for-idl-DOMString①②">(2)</a> <a href="#ref-for-idl-DOMString①③">(3)</a>
     <li><a href="#ref-for-idl-DOMString①④">2.2.7. TrustedTypeConfiguration</a> <a href="#ref-for-idl-DOMString①⑤">(2)</a>
-    <li><a href="#ref-for-idl-DOMString①⑥">2.3. Integrations</a> <a href="#ref-for-idl-DOMString①⑦">(2)</a>
-    <li><a href="#ref-for-idl-DOMString①⑧">2.3.2.2. Extensions to the Window interface</a> <a href="#ref-for-idl-DOMString①⑨">(2)</a>
-    <li><a href="#ref-for-idl-DOMString②⓪">2.3.2.3. Extensions to the Document interface</a> <a href="#ref-for-idl-DOMString②①">(2)</a>
+    <li><a href="#ref-for-idl-DOMString①⑥">3. Integrations</a> <a href="#ref-for-idl-DOMString①⑦">(2)</a>
+    <li><a href="#ref-for-idl-DOMString①⑧">3.2.2. Extensions to the Window interface</a> <a href="#ref-for-idl-DOMString①⑨">(2)</a>
+    <li><a href="#ref-for-idl-DOMString②⓪">3.2.3. Extensions to the Document interface</a> <a href="#ref-for-idl-DOMString②①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-Exposed">
@@ -3071,21 +3071,21 @@ appropriately.</p>
   <aside class="dfn-panel" data-for="term-for-Function">
    <a href="https://heycam.github.io/webidl/#Function">https://heycam.github.io/webidl/#Function</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-Function">2.3.1.1. Get Trusted Type compliant string algorithm</a> <a href="#ref-for-Function①">(2)</a> <a href="#ref-for-Function②">(3)</a> <a href="#ref-for-Function③">(4)</a>
+    <li><a href="#ref-for-Function">3.1.1. Get Trusted Type compliant string algorithm</a> <a href="#ref-for-Function①">(2)</a> <a href="#ref-for-Function②">(3)</a> <a href="#ref-for-Function③">(4)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-exceptiondef-typeerror">
    <a href="https://heycam.github.io/webidl/#exceptiondef-typeerror">https://heycam.github.io/webidl/#exceptiondef-typeerror</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-exceptiondef-typeerror">2.3.1.1. Get Trusted Type compliant string algorithm</a>
+    <li><a href="#ref-for-exceptiondef-typeerror">3.1.1. Get Trusted Type compliant string algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idl-USVString">
    <a href="https://heycam.github.io/webidl/#idl-USVString">https://heycam.github.io/webidl/#idl-USVString</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-idl-USVString">2.2.2. TrustedTypePolicyOptions</a> <a href="#ref-for-idl-USVString①">(2)</a>
-    <li><a href="#ref-for-idl-USVString②">2.3. Integrations</a> <a href="#ref-for-idl-USVString③">(2)</a>
-    <li><a href="#ref-for-idl-USVString④">2.3.2.2. Extensions to the Window interface</a>
+    <li><a href="#ref-for-idl-USVString②">3. Integrations</a> <a href="#ref-for-idl-USVString③">(2)</a>
+    <li><a href="#ref-for-idl-USVString④">3.2.2. Extensions to the Window interface</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-Unforgeable">
@@ -3093,7 +3093,7 @@ appropriately.</p>
    <ul>
     <li><a href="#ref-for-Unforgeable">2.2.1. TrustedTypePolicy</a> <a href="#ref-for-Unforgeable①">(2)</a> <a href="#ref-for-Unforgeable②">(3)</a> <a href="#ref-for-Unforgeable③">(4)</a> <a href="#ref-for-Unforgeable④">(5)</a>
     <li><a href="#ref-for-Unforgeable⑤">2.2.3. TrustedTypePolicyFactory</a> <a href="#ref-for-Unforgeable⑥">(2)</a> <a href="#ref-for-Unforgeable⑦">(3)</a> <a href="#ref-for-Unforgeable⑧">(4)</a> <a href="#ref-for-Unforgeable⑨">(5)</a> <a href="#ref-for-Unforgeable①⓪">(6)</a> <a href="#ref-for-Unforgeable①①">(7)</a>
-    <li><a href="#ref-for-Unforgeable①②">2.3.2.2. Extensions to the Window interface</a>
+    <li><a href="#ref-for-Unforgeable①②">3.2.2. Extensions to the Window interface</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idl-boolean">
@@ -3336,35 +3336,35 @@ appropriately.<a href="#issue-72dfcf5b"> ↵ </a></div>
    <b><a href="#trustedhtml">#trustedhtml</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-trustedhtml">2.2.1. TrustedTypePolicy</a>
-    <li><a href="#ref-for-trustedhtml①">2.3. Integrations</a> <a href="#ref-for-trustedhtml②">(2)</a>
-    <li><a href="#ref-for-trustedhtml③">2.3.1.2. Enforce a Trusted Type algorithm</a>
-    <li><a href="#ref-for-trustedhtml④">2.3.2.6. Enforcement in document write steps algorithm</a>
+    <li><a href="#ref-for-trustedhtml①">3. Integrations</a> <a href="#ref-for-trustedhtml②">(2)</a>
+    <li><a href="#ref-for-trustedhtml③">3.1.2. Enforce a Trusted Type algorithm</a>
+    <li><a href="#ref-for-trustedhtml④">3.2.6. Enforcement in document write steps algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="trustedscript">
    <b><a href="#trustedscript">#trustedscript</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-trustedscript">2.2.1. TrustedTypePolicy</a>
-    <li><a href="#ref-for-trustedscript①">2.3. Integrations</a> <a href="#ref-for-trustedscript②">(2)</a>
-    <li><a href="#ref-for-trustedscript③">2.3.1.2. Enforce a Trusted Type algorithm</a>
+    <li><a href="#ref-for-trustedscript①">3. Integrations</a> <a href="#ref-for-trustedscript②">(2)</a>
+    <li><a href="#ref-for-trustedscript③">3.1.2. Enforce a Trusted Type algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="trustedscripturl">
    <b><a href="#trustedscripturl">#trustedscripturl</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-trustedscripturl">2.2.1. TrustedTypePolicy</a>
-    <li><a href="#ref-for-trustedscripturl①">2.3. Integrations</a> <a href="#ref-for-trustedscripturl②">(2)</a>
-    <li><a href="#ref-for-trustedscripturl③">2.3.1.2. Enforce a Trusted Type algorithm</a>
+    <li><a href="#ref-for-trustedscripturl①">3. Integrations</a> <a href="#ref-for-trustedscripturl②">(2)</a>
+    <li><a href="#ref-for-trustedscripturl③">3.1.2. Enforce a Trusted Type algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="trustedurl">
    <b><a href="#trustedurl">#trustedurl</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-trustedurl">2.2.1. TrustedTypePolicy</a>
-    <li><a href="#ref-for-trustedurl①">2.3. Integrations</a> <a href="#ref-for-trustedurl②">(2)</a>
-    <li><a href="#ref-for-trustedurl③">2.3.1.2. Enforce a Trusted Type algorithm</a>
-    <li><a href="#ref-for-trustedurl④">2.3.2.4. Enforcement in window open steps algorithm</a>
-    <li><a href="#ref-for-trustedurl⑤">2.3.2.5. Enforcement in Location navigation algorithm</a>
+    <li><a href="#ref-for-trustedurl①">3. Integrations</a> <a href="#ref-for-trustedurl②">(2)</a>
+    <li><a href="#ref-for-trustedurl③">3.1.2. Enforce a Trusted Type algorithm</a>
+    <li><a href="#ref-for-trustedurl④">3.2.4. Enforcement in window open steps algorithm</a>
+    <li><a href="#ref-for-trustedurl⑤">3.2.5. Enforcement in Location navigation algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="trustedtypepolicy">
@@ -3478,8 +3478,8 @@ appropriately.<a href="#issue-72dfcf5b"> ↵ </a></div>
    <ul>
     <li><a href="#ref-for-trustedtypepolicyfactory">2.2.5.1. Initialize policy factory algorithm</a>
     <li><a href="#ref-for-trustedtypepolicyfactory①">2.2.5.2. Create a Trusted Type Policy algorithm</a>
-    <li><a href="#ref-for-trustedtypepolicyfactory②">2.3.2. Integration with HTML</a>
-    <li><a href="#ref-for-trustedtypepolicyfactory③">2.3.2.2. Extensions to the Window interface</a>
+    <li><a href="#ref-for-trustedtypepolicyfactory②">3.2. Integration with HTML</a>
+    <li><a href="#ref-for-trustedtypepolicyfactory③">3.2.2. Extensions to the Window interface</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-trustedtypepolicyfactory-createpolicy">
@@ -3530,13 +3530,13 @@ appropriately.<a href="#issue-72dfcf5b"> ↵ </a></div>
    <ul>
     <li><a href="#ref-for-default-policy">2.2.5.4. Get default policy algorithm</a>
     <li><a href="#ref-for-default-policy①">2.2.8.1. Obtain a Trusted Type Configuration for a response algorithm</a>
-    <li><a href="#ref-for-default-policy②">2.3. Integrations</a>
+    <li><a href="#ref-for-default-policy②">3. Integrations</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="abstract-opdef-initialize-policy-factory-algorithm">
    <b><a href="#abstract-opdef-initialize-policy-factory-algorithm">#abstract-opdef-initialize-policy-factory-algorithm</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-abstract-opdef-initialize-policy-factory-algorithm">2.3.2.1. Initialize a Document’s trusted type configuration algorithm</a>
+    <li><a href="#ref-for-abstract-opdef-initialize-policy-factory-algorithm">3.2.1. Initialize a Document’s trusted type configuration algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="abstract-opdef-create-a-trusted-type-policy-algorithm">
@@ -3555,7 +3555,7 @@ appropriately.<a href="#issue-72dfcf5b"> ↵ </a></div>
   <aside class="dfn-panel" data-for="abstract-opdef-get-default-policy-algorithm">
    <b><a href="#abstract-opdef-get-default-policy-algorithm">#abstract-opdef-get-default-policy-algorithm</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-abstract-opdef-get-default-policy-algorithm">2.3.1.1. Get Trusted Type compliant string algorithm</a>
+    <li><a href="#ref-for-abstract-opdef-get-default-policy-algorithm">3.1.1. Get Trusted Type compliant string algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="abstract-opdef-is-policy-name-allowed-algorithm">
@@ -3574,7 +3574,7 @@ appropriately.<a href="#issue-72dfcf5b"> ↵ </a></div>
    <b><a href="#abstract-opdef-create-a-trusted-type-algorithm">#abstract-opdef-create-a-trusted-type-algorithm</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-abstract-opdef-create-a-trusted-type-algorithm">2.2.1. TrustedTypePolicy</a> <a href="#ref-for-abstract-opdef-create-a-trusted-type-algorithm①">(2)</a> <a href="#ref-for-abstract-opdef-create-a-trusted-type-algorithm②">(3)</a> <a href="#ref-for-abstract-opdef-create-a-trusted-type-algorithm③">(4)</a>
-    <li><a href="#ref-for-abstract-opdef-create-a-trusted-type-algorithm④">2.3.1.1. Get Trusted Type compliant string algorithm</a>
+    <li><a href="#ref-for-abstract-opdef-create-a-trusted-type-algorithm④">3.1.1. Get Trusted Type compliant string algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="enumdef-stringatsinkdisposition">
@@ -3598,7 +3598,7 @@ appropriately.<a href="#issue-72dfcf5b"> ↵ </a></div>
     <li><a href="#ref-for-dictdef-trustedtypeconfiguration②">2.2.6. Violation</a>
     <li><a href="#ref-for-dictdef-trustedtypeconfiguration③">2.2.8.1. Obtain a Trusted Type Configuration for a response algorithm</a>
     <li><a href="#ref-for-dictdef-trustedtypeconfiguration④">2.2.9.1. Report sink type mismatch violation algorithm</a>
-    <li><a href="#ref-for-dictdef-trustedtypeconfiguration⑤">2.3.2. Integration with HTML</a>
+    <li><a href="#ref-for-dictdef-trustedtypeconfiguration⑤">3.2. Integration with HTML</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-trustedtypeconfiguration-unknownpolicyname">
@@ -3612,7 +3612,7 @@ appropriately.<a href="#issue-72dfcf5b"> ↵ </a></div>
    <b><a href="#dom-trustedtypeconfiguration-domsinks">#dom-trustedtypeconfiguration-domsinks</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-trustedtypeconfiguration-domsinks">2.2.8.1. Obtain a Trusted Type Configuration for a response algorithm</a>
-    <li><a href="#ref-for-dom-trustedtypeconfiguration-domsinks①">2.3.1.1. Get Trusted Type compliant string algorithm</a>
+    <li><a href="#ref-for-dom-trustedtypeconfiguration-domsinks①">3.1.1. Get Trusted Type compliant string algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-trustedtypeconfiguration-allowednames">
@@ -3639,75 +3639,75 @@ appropriately.<a href="#issue-72dfcf5b"> ↵ </a></div>
   <aside class="dfn-panel" data-for="abstract-opdef-obtain-a-trusted-type-configuration-for-a-response-algorithm">
    <b><a href="#abstract-opdef-obtain-a-trusted-type-configuration-for-a-response-algorithm">#abstract-opdef-obtain-a-trusted-type-configuration-for-a-response-algorithm</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-abstract-opdef-obtain-a-trusted-type-configuration-for-a-response-algorithm">2.3.2.1. Initialize a Document’s trusted type configuration algorithm</a>
+    <li><a href="#ref-for-abstract-opdef-obtain-a-trusted-type-configuration-for-a-response-algorithm">3.2.1. Initialize a Document’s trusted type configuration algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="abstract-opdef-report-sink-type-mismatch-violation-algorithm">
    <b><a href="#abstract-opdef-report-sink-type-mismatch-violation-algorithm">#abstract-opdef-report-sink-type-mismatch-violation-algorithm</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-abstract-opdef-report-sink-type-mismatch-violation-algorithm">2.3.1.1. Get Trusted Type compliant string algorithm</a>
+    <li><a href="#ref-for-abstract-opdef-report-sink-type-mismatch-violation-algorithm">3.1.1. Get Trusted Type compliant string algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="typedefdef-htmlstring">
    <b><a href="#typedefdef-htmlstring">#typedefdef-htmlstring</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-typedefdef-htmlstring">2.3.1.2. Enforce a Trusted Type algorithm</a>
-    <li><a href="#ref-for-typedefdef-htmlstring①">2.3.2.3. Extensions to the Document interface</a> <a href="#ref-for-typedefdef-htmlstring②">(2)</a>
-    <li><a href="#ref-for-typedefdef-htmlstring③">2.3.2.6. Enforcement in document write steps algorithm</a>
-    <li><a href="#ref-for-typedefdef-htmlstring④">2.3.2.7. Enforcement in property sinks</a> <a href="#ref-for-typedefdef-htmlstring⑤">(2)</a>
+    <li><a href="#ref-for-typedefdef-htmlstring">3.1.2. Enforce a Trusted Type algorithm</a>
+    <li><a href="#ref-for-typedefdef-htmlstring①">3.2.3. Extensions to the Document interface</a> <a href="#ref-for-typedefdef-htmlstring②">(2)</a>
+    <li><a href="#ref-for-typedefdef-htmlstring③">3.2.6. Enforcement in document write steps algorithm</a>
+    <li><a href="#ref-for-typedefdef-htmlstring④">3.2.7. Enforcement in property sinks</a> <a href="#ref-for-typedefdef-htmlstring⑤">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="typedefdef-scriptstring">
    <b><a href="#typedefdef-scriptstring">#typedefdef-scriptstring</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-typedefdef-scriptstring">2.3.1.2. Enforce a Trusted Type algorithm</a>
-    <li><a href="#ref-for-typedefdef-scriptstring①">2.3.2.7. Enforcement in property sinks</a> <a href="#ref-for-typedefdef-scriptstring②">(2)</a> <a href="#ref-for-typedefdef-scriptstring③">(3)</a>
+    <li><a href="#ref-for-typedefdef-scriptstring">3.1.2. Enforce a Trusted Type algorithm</a>
+    <li><a href="#ref-for-typedefdef-scriptstring①">3.2.7. Enforcement in property sinks</a> <a href="#ref-for-typedefdef-scriptstring②">(2)</a> <a href="#ref-for-typedefdef-scriptstring③">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="typedefdef-scripturlstring">
    <b><a href="#typedefdef-scripturlstring">#typedefdef-scripturlstring</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-typedefdef-scripturlstring">2.3.1.2. Enforce a Trusted Type algorithm</a>
-    <li><a href="#ref-for-typedefdef-scripturlstring①">2.3.2.7. Enforcement in property sinks</a> <a href="#ref-for-typedefdef-scripturlstring②">(2)</a> <a href="#ref-for-typedefdef-scripturlstring③">(3)</a> <a href="#ref-for-typedefdef-scripturlstring④">(4)</a>
+    <li><a href="#ref-for-typedefdef-scripturlstring">3.1.2. Enforce a Trusted Type algorithm</a>
+    <li><a href="#ref-for-typedefdef-scripturlstring①">3.2.7. Enforcement in property sinks</a> <a href="#ref-for-typedefdef-scripturlstring②">(2)</a> <a href="#ref-for-typedefdef-scripturlstring③">(3)</a> <a href="#ref-for-typedefdef-scripturlstring④">(4)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="typedefdef-urlstring">
    <b><a href="#typedefdef-urlstring">#typedefdef-urlstring</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-typedefdef-urlstring">2.3.1.2. Enforce a Trusted Type algorithm</a>
-    <li><a href="#ref-for-typedefdef-urlstring①">2.3.2.2. Extensions to the Window interface</a> <a href="#ref-for-typedefdef-urlstring②">(2)</a>
-    <li><a href="#ref-for-typedefdef-urlstring③">2.3.2.3. Extensions to the Document interface</a>
-    <li><a href="#ref-for-typedefdef-urlstring④">2.3.2.4. Enforcement in window open steps algorithm</a>
-    <li><a href="#ref-for-typedefdef-urlstring⑤">2.3.2.7. Enforcement in property sinks</a> <a href="#ref-for-typedefdef-urlstring⑥">(2)</a> <a href="#ref-for-typedefdef-urlstring⑦">(3)</a> <a href="#ref-for-typedefdef-urlstring⑧">(4)</a> <a href="#ref-for-typedefdef-urlstring⑨">(5)</a> <a href="#ref-for-typedefdef-urlstring①⓪">(6)</a> <a href="#ref-for-typedefdef-urlstring①①">(7)</a> <a href="#ref-for-typedefdef-urlstring①②">(8)</a> <a href="#ref-for-typedefdef-urlstring①③">(9)</a> <a href="#ref-for-typedefdef-urlstring①④">(10)</a> <a href="#ref-for-typedefdef-urlstring①⑤">(11)</a> <a href="#ref-for-typedefdef-urlstring①⑥">(12)</a> <a href="#ref-for-typedefdef-urlstring①⑦">(13)</a> <a href="#ref-for-typedefdef-urlstring①⑧">(14)</a> <a href="#ref-for-typedefdef-urlstring①⑨">(15)</a>
+    <li><a href="#ref-for-typedefdef-urlstring">3.1.2. Enforce a Trusted Type algorithm</a>
+    <li><a href="#ref-for-typedefdef-urlstring①">3.2.2. Extensions to the Window interface</a> <a href="#ref-for-typedefdef-urlstring②">(2)</a>
+    <li><a href="#ref-for-typedefdef-urlstring③">3.2.3. Extensions to the Document interface</a>
+    <li><a href="#ref-for-typedefdef-urlstring④">3.2.4. Enforcement in window open steps algorithm</a>
+    <li><a href="#ref-for-typedefdef-urlstring⑤">3.2.7. Enforcement in property sinks</a> <a href="#ref-for-typedefdef-urlstring⑥">(2)</a> <a href="#ref-for-typedefdef-urlstring⑦">(3)</a> <a href="#ref-for-typedefdef-urlstring⑧">(4)</a> <a href="#ref-for-typedefdef-urlstring⑨">(5)</a> <a href="#ref-for-typedefdef-urlstring①⓪">(6)</a> <a href="#ref-for-typedefdef-urlstring①①">(7)</a> <a href="#ref-for-typedefdef-urlstring①②">(8)</a> <a href="#ref-for-typedefdef-urlstring①③">(9)</a> <a href="#ref-for-typedefdef-urlstring①④">(10)</a> <a href="#ref-for-typedefdef-urlstring①⑤">(11)</a> <a href="#ref-for-typedefdef-urlstring①⑥">(12)</a> <a href="#ref-for-typedefdef-urlstring①⑦">(13)</a> <a href="#ref-for-typedefdef-urlstring①⑧">(14)</a> <a href="#ref-for-typedefdef-urlstring①⑨">(15)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="abstract-opdef-get-trusted-type-compliant-string-algorithm">
    <b><a href="#abstract-opdef-get-trusted-type-compliant-string-algorithm">#abstract-opdef-get-trusted-type-compliant-string-algorithm</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string-algorithm">2.3.1.2. Enforce a Trusted Type algorithm</a>
-    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string-algorithm①">2.3.2.4. Enforcement in window open steps algorithm</a>
-    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string-algorithm②">2.3.2.5. Enforcement in Location navigation algorithm</a>
-    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string-algorithm③">2.3.2.6. Enforcement in document write steps algorithm</a>
+    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string-algorithm">3.1.2. Enforce a Trusted Type algorithm</a>
+    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string-algorithm①">3.2.4. Enforcement in window open steps algorithm</a>
+    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string-algorithm②">3.2.5. Enforcement in Location navigation algorithm</a>
+    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string-algorithm③">3.2.6. Enforcement in document write steps algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="abstract-opdef-enforce-a-trusted-type-algorithm">
    <b><a href="#abstract-opdef-enforce-a-trusted-type-algorithm">#abstract-opdef-enforce-a-trusted-type-algorithm</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-abstract-opdef-enforce-a-trusted-type-algorithm">2.3.2.7. Enforcement in property sinks</a>
+    <li><a href="#ref-for-abstract-opdef-enforce-a-trusted-type-algorithm">3.2.7. Enforcement in property sinks</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-window-trustedtypes">
    <b><a href="#dom-window-trustedtypes">#dom-window-trustedtypes</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-window-trustedtypes">2.3.2. Integration with HTML</a>
-    <li><a href="#ref-for-dom-window-trustedtypes①">2.3.2.1. Initialize a Document’s trusted type configuration algorithm</a>
-    <li><a href="#ref-for-dom-window-trustedtypes②">2.3.2.2. Extensions to the Window interface</a>
+    <li><a href="#ref-for-dom-window-trustedtypes">3.2. Integration with HTML</a>
+    <li><a href="#ref-for-dom-window-trustedtypes①">3.2.1. Initialize a Document’s trusted type configuration algorithm</a>
+    <li><a href="#ref-for-dom-window-trustedtypes②">3.2.2. Extensions to the Window interface</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-window-open">
    <b><a href="#dom-window-open">#dom-window-open</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-window-open">2.3.2.2. Extensions to the Window interface</a>
+    <li><a href="#ref-for-dom-window-open">3.2.2. Extensions to the Window interface</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="callback-this-value">
