@@ -9,11 +9,11 @@ Shortname: trusted-types
 Group: WICG
 Level: none
 Status: ED
-URL: https://wicg.github.io/trusted-types/dist/spec/index.html
+URL: https://wicg.github.io/trusted-types/dist/spec/
 Editor: Krzysztof Kotowicz, Google LLC https://google.com, koto@google.com
 Editor: Mike West, Google LLC https://google.com, mkwst@google.com
 Repository: WICG/trusted-types
-Abstract: an API that allows applications to lock down DOM XSS sinks to only accept non-spoofable, typed values in place of strings.
+Abstract: An API that allows applications to lock down DOM XSS sinks to only accept non-spoofable, typed values in place of strings.
 Markup Shorthands: algorithm yes, biblio yes, css no, dfn yes, markdown yes, markup yes
 Ignored Terms: h1, h2, h3, h4, h5, h6, xmp
 Complain About: missing-example-ids yes
@@ -59,7 +59,6 @@ which are substantially easier to safeguard, monitor and review.
 
 *   Encourage a design in which XSS-related security decisions are
     encapsulated within a small part of the application.
-
 
 *   Reduce DOM XSS security review surface for complex web application codebases.
 
@@ -183,7 +182,6 @@ To stringify a TrustedScript object, return the DOMString from its
 The TrustedScriptURL interface represents a string that a developer
 can confidently insert into a context that will be parsed as URL of an
 external script resource ({{HTMLScriptElement/src|HTMLScriptElement.src}}'s
-
 setter, for example). These objects are immutable wrappers around a
 string, constructed via a {{TrustedTypePolicy}}'s
 {{TrustedTypePolicy/createScriptURL(input)|createScriptURL}} method.
@@ -265,7 +263,7 @@ the traditional DOM sinks, as User Agents [=enforcement|enforce=] that
 those sinks will only accept Trusted Type objects, and these in turn
 can only be created via policies.
 
-The {{TrustedTypePolicyFactory/createPolicy()|createPolicy} function in
+The {{TrustedTypePolicyFactory/createPolicy()|createPolicy}} function in
 factory (a factory object singleton is available as TrustedTypes in
 the global object) returns a policy object whose create\* functions
 will create Trusted Type objects after applying the policy
@@ -494,7 +492,7 @@ Issue: does configuration need to be defensively copied.
 
 #### <dfn abstract-op>Create a Trusted Type Policy algorithm</dfn> #### {#create-trusted-type-policy-algorithm}
 
-To create a {{TrustedTypePolicy} in a {{TrustedTypePolicyFactory|factory}},
+To create a {{TrustedTypePolicy}} in a {{TrustedTypePolicyFactory|factory}},
 given a DOMString (*policyName*), policy options dictionary (*options*)
 and exposed flag (*exposed*), run these steps:
 
@@ -671,7 +669,7 @@ dictionary TrustedTypeConfiguration {
 </xmp>
 
 Each Trusted Type Configuration has an associated
-{{StringAtSinkDisposition|string at sink disposition}
+{{StringAtSinkDisposition|string at sink disposition}}
 (for all DOM sinks).
 It is either “reject”, “report” or “unsafe-allow”.
 
