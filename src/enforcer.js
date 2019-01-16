@@ -96,6 +96,9 @@ let SET_ATTRIBUTE_TYPE_MAP = {
     'src': TrustedTypes.TrustedURL,
     'formaction': TrustedTypes.TrustedURL,
   },
+  'HTMLFormElement': {
+    'action': TrustedTypes.TrustedURL,
+  },
   'HTMLFrameElement': {
     'src': TrustedTypes.TrustedURL,
   },
