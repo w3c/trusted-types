@@ -1299,7 +1299,7 @@ algorithm, adding the following steps before step 1:
 1.  Let *value* be the result of executing the
     [$Get Trusted Type compliant string algorithm$], with:
     *   *document* set to the *callerRealm*’s
-        [[HTML5#environment-settings-object|environment setting object]'s
+        [[HTML5#environment-settings-object|environment setting object]]'s
         [[HTML5#responsible-document|responsible document]],
     *   *input* set to *codeToCompile*,
     *   *expectedType* being {{TrustedScript}}, and
