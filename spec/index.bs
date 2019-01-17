@@ -1306,7 +1306,7 @@ algorithm, adding the following steps before step 1:
     *   *passThroughFunctions* set to false
 1.  If the algorithm throws an error, throw an {{EvalError}}.
 
-## Integration with DOM Parsing ### {#integration-with-dom-parsing}
+## Integration with DOM Parsing ## {#integration-with-dom-parsing}
 
 Note: Re [[DOM-Parsing]].
 
