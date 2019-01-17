@@ -1251,23 +1251,6 @@ algorithm$].
 </table>
 
 
-### Enforcement in timer functions ### {#enforcement-in-timer-functions}
-
-To the [[HTML5#timer-initialisation-steps|timer initialization steps algorithm]],
-add a step between 7.1 and 7.2:
-
-1.  Set the first method argument to the result of executing
-    the [$Get Trusted Type compliant string algorithm$], with
-    *   *document* set to the document of the method content proxy.
-    *   *input* set to the first method argument,
-    *   *expectedType* set to {{TrustedScript}} and
-    *   *passThroughFunctions* set to true.
-
-Note: Makes sure that a {{TrustedScript}} is passed to timer
-functions in place of a string when Trusted Types are enforced, but
-also unconditionally accepts any {{Function}} object.
-
-
 ### Enforcement in event handler content attributes ### {#enforcement-in-event-handler-content-attributes}
 
 This document modifies the

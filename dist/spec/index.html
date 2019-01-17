@@ -1460,7 +1460,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Trusted Types Spec WIP</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2019-01-16">16 January 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2019-01-17">17 January 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1570,9 +1570,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
         <li><a href="#enforcement-in-location"><span class="secno">3.2.5</span> <span class="content">Enforcement in Location navigation algorithm</span></a>
         <li><a href="#enforcement-document-write"><span class="secno">3.2.6</span> <span class="content">Enforcement in document write steps</span></a>
         <li><a href="#enforcement-in-sinks"><span class="secno">3.2.7</span> <span class="content">Enforcement in property sinks</span></a>
-        <li><a href="#enforcement-in-timer-functions"><span class="secno">3.2.8</span> <span class="content">Enforcement in timer functions</span></a>
-        <li><a href="#enforcement-in-event-handler-content-attributes"><span class="secno">3.2.9</span> <span class="content">Enforcement in event handler content attributes</span></a>
-        <li><a href="#string-compilation"><span class="secno">3.2.10</span> <span class="content">String compilation</span></a>
+        <li><a href="#enforcement-in-event-handler-content-attributes"><span class="secno">3.2.8</span> <span class="content">Enforcement in event handler content attributes</span></a>
+        <li><a href="#string-compilation"><span class="secno">3.2.9</span> <span class="content">String compilation</span></a>
        </ol>
       <li>
        <a href="#integration-with-dom-parsing"><span class="secno">3.3</span> <span class="content">Integration with DOM Parsing #</span></a>
@@ -2670,47 +2669,26 @@ algorithm</a>.</p>
       <td><code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/media.html#dom-track-src" id="ref-for-dom-track-src">HTMLTrackElement.src</a></code>
       <td><code class="idl"><a data-link-type="idl" href="#typedefdef-urlstring" id="ref-for-typedefdef-urlstring①⑨">URLString</a></code>
    </table>
-   <h4 class="heading settled" data-level="3.2.8" id="enforcement-in-timer-functions"><span class="secno">3.2.8. </span><span class="content">Enforcement in timer functions</span><a class="self-link" href="#enforcement-in-timer-functions"></a></h4>
-   <p>To the <a href="https://www.w3.org/TR/html5/#timer-initialisation-steps">timer initialization steps algorithm</a>,
-add a step between 7.1 and 7.2:</p>
-   <ol>
-    <li data-md>
-     <p>Set the first method argument to the result of executing
-the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string-algorithm" id="ref-for-abstract-opdef-get-trusted-type-compliant-string-algorithm④">Get Trusted Type compliant string algorithm</a>, with</p>
-     <ul>
-      <li data-md>
-       <p><em>document</em> set to the document of the method content proxy.</p>
-      <li data-md>
-       <p><em>input</em> set to the first method argument,</p>
-      <li data-md>
-       <p><em>expectedType</em> set to <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript④">TrustedScript</a></code> and</p>
-      <li data-md>
-       <p><em>passThroughFunctions</em> set to true.</p>
-     </ul>
-   </ol>
-   <p class="note" role="note"><span>Note:</span> Makes sure that a <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript⑤">TrustedScript</a></code> is passed to timer
-functions in place of a string when Trusted Types are enforced, but
-also unconditionally accepts any <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#Function" id="ref-for-Function④">Function</a></code> object.</p>
-   <h4 class="heading settled" data-level="3.2.9" id="enforcement-in-event-handler-content-attributes"><span class="secno">3.2.9. </span><span class="content">Enforcement in event handler content attributes</span><a class="self-link" href="#enforcement-in-event-handler-content-attributes"></a></h4>
+   <h4 class="heading settled" data-level="3.2.8" id="enforcement-in-event-handler-content-attributes"><span class="secno">3.2.8. </span><span class="content">Enforcement in event handler content attributes</span><a class="self-link" href="#enforcement-in-event-handler-content-attributes"></a></h4>
    <p>This document modifies the <a href="https://www.w3.org/TR/html5/#event-handler-content-attributes">attribute change steps for an event handler content attribute</a>.</p>
    <p>At the beginning of step 5, insert the following steps:</p>
    <ol>
     <li data-md>
-     <p>Let <em>value</em> be the result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string-algorithm" id="ref-for-abstract-opdef-get-trusted-type-compliant-string-algorithm⑤">Get Trusted Type compliant string algorithm</a>, with</p>
+     <p>Let <em>value</em> be the result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string-algorithm" id="ref-for-abstract-opdef-get-trusted-type-compliant-string-algorithm④">Get Trusted Type compliant string algorithm</a>, with</p>
      <ul>
       <li data-md>
        <p><em>document</em> set to the owner document of <em>eventTarget</em>,</p>
       <li data-md>
        <p><em>input</em> set to <em>value</em>,</p>
       <li data-md>
-       <p><em>expectedType</em> set to <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript⑥">TrustedScript</a></code>, and</p>
+       <p><em>expectedType</em> set to <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript④">TrustedScript</a></code>, and</p>
       <li data-md>
        <p><em>passThroughFunctions</em> set to false.</p>
      </ul>
     <li data-md>
      <p>If the algorithm throws an error, abort these steps.</p>
    </ol>
-   <h4 class="heading settled" data-level="3.2.10" id="string-compilation"><span class="secno">3.2.10. </span><span class="content">String compilation</span><a class="self-link" href="#string-compilation"></a></h4>
+   <h4 class="heading settled" data-level="3.2.9" id="string-compilation"><span class="secno">3.2.9. </span><span class="content">String compilation</span><a class="self-link" href="#string-compilation"></a></h4>
    <p class="note" role="note"><span>Note:</span> See <a href="https://github.com/tc39/ecma262/issues/938">TC39/ecma262 issue #938</a> (adding a string to be compiled to algorithm parameters)</p>
    <p class="issue" id="issue-f24e404a"><a class="self-link" href="#issue-f24e404a"></a> Should we be modifying
 [[HTML5#hostensurecancompilestrings(callerrealm,-calleerealm)|HostEnsureCanCompileStrings]]
@@ -2718,7 +2696,7 @@ or EnsureCSPDoesNotBlockStringCompilation?</p>
    <p>Modify <a href="https://www.w3.org/TR/CSP3/#can-compile-strings">HostEnsureCanCompileStrings</a> algorithm, adding the following steps before step 1:</p>
    <ol>
     <li data-md>
-     <p>Let <em>value</em> be the result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string-algorithm" id="ref-for-abstract-opdef-get-trusted-type-compliant-string-algorithm⑥">Get Trusted Type compliant string algorithm</a>, with:</p>
+     <p>Let <em>value</em> be the result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string-algorithm" id="ref-for-abstract-opdef-get-trusted-type-compliant-string-algorithm⑤">Get Trusted Type compliant string algorithm</a>, with:</p>
      <ul>
       <li data-md>
        <p><em>document</em> set to the <em>callerRealm</em>’s
@@ -2726,7 +2704,7 @@ or EnsureCSPDoesNotBlockStringCompilation?</p>
       <li data-md>
        <p><em>input</em> set to <em>codeToCompile</em>,</p>
       <li data-md>
-       <p><em>expectedType</em> being <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript⑦">TrustedScript</a></code>, and</p>
+       <p><em>expectedType</em> being <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript⑤">TrustedScript</a></code>, and</p>
       <li data-md>
        <p><em>passThroughFunctions</em> set to false</p>
      </ul>
@@ -3206,7 +3184,7 @@ appropriately.</p>
   <aside class="dfn-panel" data-for="term-for-exceptiondef-evalerror">
    <a href="https://heycam.github.io/webidl/#exceptiondef-evalerror">https://heycam.github.io/webidl/#exceptiondef-evalerror</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-exceptiondef-evalerror">3.2.10. String compilation</a>
+    <li><a href="#ref-for-exceptiondef-evalerror">3.2.9. String compilation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-Exposed">
@@ -3225,7 +3203,6 @@ appropriately.</p>
    <a href="https://heycam.github.io/webidl/#Function">https://heycam.github.io/webidl/#Function</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-Function">3.1.1. Get Trusted Type compliant string algorithm</a> <a href="#ref-for-Function①">(2)</a> <a href="#ref-for-Function②">(3)</a> <a href="#ref-for-Function③">(4)</a>
-    <li><a href="#ref-for-Function④">3.2.8. Enforcement in timer functions</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-NewObject">
@@ -3365,7 +3342,7 @@ appropriately.</p>
 <c- b>interface</c-> <a href="#trustedtypepolicy"><code><c- g>TrustedTypePolicy</c-></code></a> {
   [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable①③"><c- g>Unforgeable</c-></a>] <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②④"><c- b>DOMString</c-></a> <a data-readonly data-type="DOMString" href="#dom-trustedtypepolicy-name"><code><c- g>name</c-></code></a>;
   [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable①④"><c- g>Unforgeable</c-></a>] <a class="n" data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml⑧"><c- n>TrustedHTML</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createhtml" id="ref-for-dom-trustedtypepolicy-createhtml①①"><c- g>createHTML</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①①⓪"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicy-createhtml-input-input"><code><c- g>input</c-></code></a>);
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable②①"><c- g>Unforgeable</c-></a>] <a class="n" data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript⑧"><c- n>TrustedScript</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createscript" id="ref-for-dom-trustedtypepolicy-createscript①①"><c- g>createScript</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②③"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicy-createscript-input-input"><code><c- g>input</c-></code></a>);
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable②①"><c- g>Unforgeable</c-></a>] <a class="n" data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript⑥"><c- n>TrustedScript</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createscript" id="ref-for-dom-trustedtypepolicy-createscript①①"><c- g>createScript</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②③"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicy-createscript-input-input"><code><c- g>input</c-></code></a>);
   [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable③①"><c- g>Unforgeable</c-></a>] <a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl④"><c- n>TrustedScriptURL</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createscripturl" id="ref-for-dom-trustedtypepolicy-createscripturl①①"><c- g>createScriptURL</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString③①"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicy-createscripturl-input-input"><code><c- g>input</c-></code></a>);
   [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable④①"><c- g>Unforgeable</c-></a>] <a class="n" data-link-type="idl-name" href="#trustedurl" id="ref-for-trustedurl⑥"><c- n>TrustedURL</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createurl" id="ref-for-dom-trustedtypepolicy-createurl①①"><c- g>createURL</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString④①"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicy-createurl-input-input"><code><c- g>input</c-></code></a>);
 };
@@ -3560,9 +3537,8 @@ appropriately.<a href="#issue-72dfcf5b"> ↵ </a></div>
     <li><a href="#ref-for-trustedscript">2.2.1. TrustedTypePolicy</a>
     <li><a href="#ref-for-trustedscript①">3. Integrations</a> <a href="#ref-for-trustedscript②">(2)</a>
     <li><a href="#ref-for-trustedscript③">3.1.2. Enforce a Trusted Type algorithm</a>
-    <li><a href="#ref-for-trustedscript④">3.2.8. Enforcement in timer functions</a> <a href="#ref-for-trustedscript⑤">(2)</a>
-    <li><a href="#ref-for-trustedscript⑥">3.2.9. Enforcement in event handler content attributes</a>
-    <li><a href="#ref-for-trustedscript⑦">3.2.10. String compilation</a>
+    <li><a href="#ref-for-trustedscript④">3.2.8. Enforcement in event handler content attributes</a>
+    <li><a href="#ref-for-trustedscript⑤">3.2.9. String compilation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="trustedscripturl">
@@ -3909,9 +3885,8 @@ appropriately.<a href="#issue-72dfcf5b"> ↵ </a></div>
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string-algorithm①">3.2.4. Enforcement in window open steps algorithm</a>
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string-algorithm②">3.2.5. Enforcement in Location navigation algorithm</a>
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string-algorithm③">3.2.6. Enforcement in document write steps</a>
-    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string-algorithm④">3.2.8. Enforcement in timer functions</a>
-    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string-algorithm⑤">3.2.9. Enforcement in event handler content attributes</a>
-    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string-algorithm⑥">3.2.10. String compilation</a>
+    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string-algorithm④">3.2.8. Enforcement in event handler content attributes</a>
+    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string-algorithm⑤">3.2.9. String compilation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="abstract-opdef-enforce-a-trusted-type-algorithm">
