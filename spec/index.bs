@@ -153,6 +153,7 @@ will never change during its lifetime.
 To stringify a TrustedHTML object, return the DOMString from its
 `[[Data]]` internal slot.
 
+Issue(WICG/trusted-types#95): Add TrustedHTML.EMPTY.
 
 ### <dfn type>TrustedScript</dfn> ### {#trusted-script}
 
@@ -226,6 +227,7 @@ will never change during its lifetime.
 To stringify a TrustedURL object, return the USVString from its
 `[[Data]]` internal slot.
 
+Issue(WICG/trusted-types#104): Consider adding new set of types, e.g. related to CSS.
 
 ## Policies ## {#policies}
 
@@ -674,10 +676,11 @@ Each Trusted Type Configuration has an associated allowed policy names set.
 
 Each Trusted Type Configuration has a related reporting group name.
 
+Issue(WICG/trusted-types#36): Decide if it should be possible from JS to determine if types are enforced without resorting to `try {} catch`.
 
 ### <dfn http-header>Trusted-Types</dfn> HTTP Response Header ### {#trusted-types-http-header}
 
-Note: In the current Chromium implementation, the enforcement mechanism is
+Issue(WICG/trusted-types#1): In the current Chromium implementation, the enforcement mechanism is
 configured in the `Content-Security-Policy` header (instead of `Trusted-Types`), with slightly different syntax. See [explainer](https://github.com/WICG/trusted-types#limiting-policies) and [platform test files](https://github.com/web-platform-tests/wpt/tree/master/trusted-types).
 
 Issue: +mkwst The header does not appear in the origin trials.  Can
@@ -782,6 +785,8 @@ header is present.
 Trusted-Types: "*", {"dom": "reject"}
 </pre>
 </div>
+
+Issue(WICG/trusted-types#66): Decide if separate per-type enforcement settings should be exposed to the authors.
 
 Issue: it seems to be the case that one object is allowed and it should
 appear last, it cannot contain an allowedNames property and the allowedNames
@@ -1244,6 +1249,7 @@ algorithm$].
   </tr>
 </table>
 
+Issue(WICG/trusted-types#43): Consider surfacing the DOM sink (node + attr) => type mapping in the API, to faciliate building HTML sanitizers.
 
 ### Enforcement in timer functions ### {#enforcement-in-timer-functions}
 
@@ -1324,6 +1330,7 @@ features parameter which is not recognized by bikeshed.  Maybe there's
 additional configuration required.  See "It should not be used in
 specifications unless ..."
 
+Issue(WICG/trusted-types#2): TreatNullAs is confusing, as for TrustedHTML, for some sinks a ull value will result in "", and "null" for others. This already caused problems in the polyfill.
 
 ### Extensions to the Range interface ### {#extensions-to-the-range-interface}
 
@@ -1372,6 +1379,19 @@ Trusted Type algorithm$] with *input* argument set to the *str* value.
 Issue: Do we need to specify that the enforcement type is {{TrustedHTML}}, or
 that it is dependent on *type* which may be `"image/svg+xml"` or generic XML?
 
+# Security Considerations # {#security-considerations}
+
+Issue(WICG/trusted-types#49): Mention node-adoption bypass vectors.
+
+Issue(WICG/trusted-types#78): Mention the policy is global state-dependant.
+
+Issue(WICG/trusted-types#64): Mention anchor element properties bypass.
+
+Issue(WICG/trusted-types#47): Mention text/attribute node copy bypass vectors.
+
+Issue(WICG/trusted-types#42): Mention bypass vectors with template elements.
+
+Issue(WICG/trusted-types#6): Mention corner cases with types that depend on a different attribute value.
 
 # Implementation Considerations # {#implementation-considerations}
 

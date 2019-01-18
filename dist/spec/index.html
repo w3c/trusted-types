@@ -1581,10 +1581,11 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
         <li><a href="#extensions-to-the-DOMParser"><span class="secno">3.3.3</span> <span class="content">Extensions to the DOMParser interface</span></a>
        </ol>
      </ol>
+    <li><a href="#security-considerations"><span class="secno">4</span> <span class="content">Security Considerations</span></a>
     <li>
-     <a href="#implementation-considerations"><span class="secno">4</span> <span class="content">Implementation Considerations</span></a>
+     <a href="#implementation-considerations"><span class="secno">5</span> <span class="content">Implementation Considerations</span></a>
      <ol class="toc">
-      <li><a href="#vendor-specific-extensions-and-addons"><span class="secno">4.1</span> <span class="content">Vendor-specific Extensions and Addons</span></a>
+      <li><a href="#vendor-specific-extensions-and-addons"><span class="secno">5.1</span> <span class="content">Vendor-specific Extensions and Addons</span></a>
      </ol>
     <li><a href="#conformance"><span class="secno"></span> <span class="content"> Conformance</span></a>
     <li>
@@ -1704,6 +1705,7 @@ wrappers around a string, constructed via a <code class="idl"><a data-link-type=
 DOMString. The slot’s value is set when the object is created, and
 will never change during its lifetime.</p>
    <p>To stringify a TrustedHTML object, return the DOMString from its <code>[[Data]]</code> internal slot.</p>
+   <p class="issue" id="issue-fee6a803"><a class="self-link" href="#issue-fee6a803"></a> Add TrustedHTML.EMPTY. <a href="https://github.com/WICG/trusted-types/issues/95">&lt;https://github.com/WICG/trusted-types/issues/95></a></p>
    <h4 class="heading settled" data-level="2.1.2" id="trusted-script"><span class="secno">2.1.2. </span><span class="content"><dfn class="css" data-dfn-type="type" data-export id="typedef-trustedscript">TrustedScript<a class="self-link" href="#typedef-trustedscript"></a></dfn></span><a class="self-link" href="#trusted-script"></a></h4>
    <p>The TrustedScript interface represents a string with an uncompiled
 script body that a developer can confidently execute (by passing it to
@@ -1750,6 +1752,7 @@ string, constructed via a <code class="idl"><a data-link-type="idl" href="#trust
 USVString.  The slot’s value is set when the object is created, and
 will never change during its lifetime.</p>
    <p>To stringify a TrustedURL object, return the USVString from its <code>[[Data]]</code> internal slot.</p>
+   <p class="issue" id="issue-a6d5e385"><a class="self-link" href="#issue-a6d5e385"></a> Consider adding new set of types, e.g. related to CSS. <a href="https://github.com/WICG/trusted-types/issues/104">&lt;https://github.com/WICG/trusted-types/issues/104></a></p>
    <h3 class="heading settled" data-level="2.2" id="policies"><span class="secno">2.2. </span><span class="content">Policies</span><a class="self-link" href="#policies"></a></h3>
    <p><a data-link-type="dfn" href="#trusted-type" id="ref-for-trusted-type">Trusted Type</a> objects wrap values that are explicitly trusted by
 the author to be inserted into the DOM (contrary to strings, trust in
@@ -2146,9 +2149,10 @@ It is either “reject”, “report” or “unsafe-allow”.</p>
 which is either “reject” or “allow”.</p>
    <p>Each Trusted Type Configuration has an associated allowed policy names set.</p>
    <p>Each Trusted Type Configuration has a related reporting group name.</p>
+   <p class="issue" id="issue-d8483bad"><a class="self-link" href="#issue-d8483bad"></a> Decide if it should be possible from JS to determine if types are enforced without resorting to <code>try {} catch</code>. <a href="https://github.com/WICG/trusted-types/issues/36">&lt;https://github.com/WICG/trusted-types/issues/36></a></p>
    <h4 class="heading settled" data-level="2.2.8" id="trusted-types-http-header"><span class="secno">2.2.8. </span><span class="content"><dfn data-dfn-type="http-header" data-export id="http-headerdef-trusted-types">Trusted-Types<a class="self-link" href="#http-headerdef-trusted-types"></a></dfn> HTTP Response Header</span><a class="self-link" href="#trusted-types-http-header"></a></h4>
-   <p class="note" role="note"><span>Note:</span> In the current Chromium implementation, the enforcement mechanism is
-configured in the <code>Content-Security-Policy</code> header (instead of <code>Trusted-Types</code>), with slightly different syntax. See <a href="https://github.com/WICG/trusted-types#limiting-policies">explainer</a> and <a href="https://github.com/web-platform-tests/wpt/tree/master/trusted-types">platform test files</a>.</p>
+   <p class="issue" id="issue-f6daf6e4"><a class="self-link" href="#issue-f6daf6e4"></a> In the current Chromium implementation, the enforcement mechanism is
+configured in the <code>Content-Security-Policy</code> header (instead of <code>Trusted-Types</code>), with slightly different syntax. See <a href="https://github.com/WICG/trusted-types#limiting-policies">explainer</a> and <a href="https://github.com/web-platform-tests/wpt/tree/master/trusted-types">platform test files</a>. <a href="https://github.com/WICG/trusted-types/issues/1">&lt;https://github.com/WICG/trusted-types/issues/1></a></p>
    <p class="issue" id="issue-559d4710"><a class="self-link" href="#issue-559d4710"></a> +mkwst The header does not appear in the origin trials.  Can
 the spec differ so much from the implementation, especially given the
 upcoming Origin Trials?</p>
@@ -2220,6 +2224,7 @@ header is present.</p>
 <pre class="http" id="unknown-policy-name-disposition-in-header">Trusted-Types: "*", {"dom": "reject"}
 </pre>
    </div>
+   <p class="issue" id="issue-20410262"><a class="self-link" href="#issue-20410262"></a> Decide if separate per-type enforcement settings should be exposed to the authors. <a href="https://github.com/WICG/trusted-types/issues/66">&lt;https://github.com/WICG/trusted-types/issues/66></a></p>
    <p class="issue" id="issue-cd9bcfb2"><a class="self-link" href="#issue-cd9bcfb2"></a> it seems to be the case that one object is allowed and it should
 appear last, it cannot contain an allowedNames property and the allowedNames
 set should be the string values.  Clarify.</p>
@@ -2662,6 +2667,7 @@ algorithm</a>.</p>
       <td><code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/media.html#dom-track-src" id="ref-for-dom-track-src">HTMLTrackElement.src</a></code>
       <td><code class="idl"><a data-link-type="idl" href="#typedefdef-urlstring" id="ref-for-typedefdef-urlstring①⑨">URLString</a></code>
    </table>
+   <p class="issue" id="issue-7a6e3d33"><a class="self-link" href="#issue-7a6e3d33"></a> Consider surfacing the DOM sink (node + attr) => type mapping in the API, to faciliate building HTML sanitizers. <a href="https://github.com/WICG/trusted-types/issues/43">&lt;https://github.com/WICG/trusted-types/issues/43></a></p>
    <h4 class="heading settled" data-level="3.2.8" id="enforcement-in-timer-functions"><span class="secno">3.2.8. </span><span class="content">Enforcement in timer functions</span><a class="self-link" href="#enforcement-in-timer-functions"></a></h4>
    <p>To the <a href="https://www.w3.org/TR/html5/#timer-initialisation-steps">timer initialization steps algorithm</a>,
 add a step between 7.1 and 7.2:</p>
@@ -2737,6 +2743,7 @@ also unconditionally accepts any <code class="idl"><a data-link-type="idl" href=
 features parameter which is not recognized by bikeshed.  Maybe there’s
 additional configuration required.  See "It should not be used in
 specifications unless ..."</p>
+   <p class="issue" id="issue-d48d676e"><a class="self-link" href="#issue-d48d676e"></a> TreatNullAs is confusing, as for TrustedHTML, for some sinks a ull value will result in "", and "null" for others. This already caused problems in the polyfill. <a href="https://github.com/WICG/trusted-types/issues/2">&lt;https://github.com/WICG/trusted-types/issues/2></a></p>
    <h4 class="heading settled" data-level="3.3.2" id="extensions-to-the-range-interface"><span class="secno">3.3.2. </span><span class="content">Extensions to the Range interface</span><a class="self-link" href="#extensions-to-the-range-interface"></a></h4>
    <p>This document modifies the <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#range" id="ref-for-range">Range</a></code> interface defined by <a data-link-type="biblio" href="#biblio-dom-parsing">[DOM-Parsing]</a>:</p>
 <pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#range" id="ref-for-range①"><c- g>Range</c-></a> {
@@ -2768,8 +2775,15 @@ show up in the IDL summary.</p>
 Trusted Type algorithm</a> with <em>input</em> argument set to the <em>str</em> value.</p>
    <p class="issue" id="issue-4b9885e1"><a class="self-link" href="#issue-4b9885e1"></a> Do we need to specify that the enforcement type is <code class="idl"><a data-link-type="idl" href="#trustedhtml" id="ref-for-trustedhtml⑤">TrustedHTML</a></code>, or
 that it is dependent on <em>type</em> which may be <code>"image/svg+xml"</code> or generic XML?</p>
-   <h2 class="heading settled" data-level="4" id="implementation-considerations"><span class="secno">4. </span><span class="content">Implementation Considerations</span><a class="self-link" href="#implementation-considerations"></a></h2>
-   <h3 class="heading settled" data-level="4.1" id="vendor-specific-extensions-and-addons"><span class="secno">4.1. </span><span class="content">Vendor-specific Extensions and Addons</span><a class="self-link" href="#vendor-specific-extensions-and-addons"></a></h3>
+   <h2 class="heading settled" data-level="4" id="security-considerations"><span class="secno">4. </span><span class="content">Security Considerations</span><a class="self-link" href="#security-considerations"></a></h2>
+   <p class="issue" id="issue-31966331"><a class="self-link" href="#issue-31966331"></a> Mention node-adoption bypass vectors. <a href="https://github.com/WICG/trusted-types/issues/49">&lt;https://github.com/WICG/trusted-types/issues/49></a></p>
+   <p class="issue" id="issue-fe3b0564"><a class="self-link" href="#issue-fe3b0564"></a> Mention the policy is global state-dependant. <a href="https://github.com/WICG/trusted-types/issues/78">&lt;https://github.com/WICG/trusted-types/issues/78></a></p>
+   <p class="issue" id="issue-1c3973fc"><a class="self-link" href="#issue-1c3973fc"></a> Mention anchor element properties bypass. <a href="https://github.com/WICG/trusted-types/issues/64">&lt;https://github.com/WICG/trusted-types/issues/64></a></p>
+   <p class="issue" id="issue-fb0cfdf0"><a class="self-link" href="#issue-fb0cfdf0"></a> Mention text/attribute node copy bypass vectors. <a href="https://github.com/WICG/trusted-types/issues/47">&lt;https://github.com/WICG/trusted-types/issues/47></a></p>
+   <p class="issue" id="issue-80906c67"><a class="self-link" href="#issue-80906c67"></a> Mention bypass vectors with template elements. <a href="https://github.com/WICG/trusted-types/issues/42">&lt;https://github.com/WICG/trusted-types/issues/42></a></p>
+   <p class="issue" id="issue-f9e3242a"><a class="self-link" href="#issue-f9e3242a"></a> Mention corner cases with types that depend on a different attribute value. <a href="https://github.com/WICG/trusted-types/issues/6">&lt;https://github.com/WICG/trusted-types/issues/6></a></p>
+   <h2 class="heading settled" data-level="5" id="implementation-considerations"><span class="secno">5. </span><span class="content">Implementation Considerations</span><a class="self-link" href="#implementation-considerations"></a></h2>
+   <h3 class="heading settled" data-level="5.1" id="vendor-specific-extensions-and-addons"><span class="secno">5.1. </span><span class="content">Vendor-specific Extensions and Addons</span><a class="self-link" href="#vendor-specific-extensions-and-addons"></a></h3>
    <p>Restriction imposed by the <code class="idl"><a data-link-type="idl" href="#dictdef-trustedtypeconfiguration" id="ref-for-dictdef-trustedtypeconfiguration⑥">TrustedTypeConfiguration</a></code> objects SHOULD
 NOT interfere with the operation of user-agent features like addons,
 extensions, or bookmarklets. These kinds of features generally advance
@@ -3449,6 +3463,8 @@ appropriately.</p>
    <div class="issue"> mention other solutions, like templating systems, or CSP for mitigating<a href="#issue-1f1f9f2b"> ↵ </a></div>
    <div class="issue"> figure out if we need this section here. CSP has none, SRI has one and it looks useful.<a href="#issue-d33261f4"> ↵ </a></div>
    <div class="issue"> Something about reducing the review surface<a href="#issue-5bedf486"> ↵ </a></div>
+   <div class="issue"> Add TrustedHTML.EMPTY. <a href="https://github.com/WICG/trusted-types/issues/95">&lt;https://github.com/WICG/trusted-types/issues/95></a><a href="#issue-fee6a803"> ↵ </a></div>
+   <div class="issue"> Consider adding new set of types, e.g. related to CSS. <a href="https://github.com/WICG/trusted-types/issues/104">&lt;https://github.com/WICG/trusted-types/issues/104></a><a href="#issue-a6d5e385"> ↵ </a></div>
    <div class="issue"> maybe note that library authors should not depend on the default policy.<a href="#issue-2b4a2597"> ↵ </a></div>
    <div class="issue"> should algorithms move after all type definitions instead of appearing in the middle?<a href="#issue-594c8990"> ↵ </a></div>
    <div class="issue"> does configuration need to be defensively copied.<a href="#issue-281b8e3f"> ↵ </a></div>
@@ -3460,10 +3476,14 @@ Each violation has a global object , which is a global object.<a href="#issue-cf
 the violation object, although reporting assumes the object should be
 serializable.<a href="#issue-621e48db"> ↵ </a></div>
    <div class="issue"> TODO: write<a href="#issue-28dcbd8e"> ↵ </a></div>
+   <div class="issue"> Decide if it should be possible from JS to determine if types are enforced without resorting to <code>try {} catch</code>. <a href="https://github.com/WICG/trusted-types/issues/36">&lt;https://github.com/WICG/trusted-types/issues/36></a><a href="#issue-d8483bad"> ↵ </a></div>
+   <div class="issue"> In the current Chromium implementation, the enforcement mechanism is
+configured in the <code>Content-Security-Policy</code> header (instead of <code>Trusted-Types</code>), with slightly different syntax. See <a href="https://github.com/WICG/trusted-types#limiting-policies">explainer</a> and <a href="https://github.com/web-platform-tests/wpt/tree/master/trusted-types">platform test files</a>. <a href="https://github.com/WICG/trusted-types/issues/1">&lt;https://github.com/WICG/trusted-types/issues/1></a><a href="#issue-f6daf6e4"> ↵ </a></div>
    <div class="issue"> +mkwst The header does not appear in the origin trials.  Can
 the spec differ so much from the implementation, especially given the
 upcoming Origin Trials?<a href="#issue-559d4710"> ↵ </a></div>
    <div class="issue"> Maybe move these examples to the section on the HTTP header.<a href="#issue-6535fddb"> ↵ </a></div>
+   <div class="issue"> Decide if separate per-type enforcement settings should be exposed to the authors. <a href="https://github.com/WICG/trusted-types/issues/66">&lt;https://github.com/WICG/trusted-types/issues/66></a><a href="#issue-20410262"> ↵ </a></div>
    <div class="issue"> it seems to be the case that one object is allowed and it should
 appear last, it cannot contain an allowedNames property and the allowedNames
 set should be the string values.  Clarify.<a href="#issue-cd9bcfb2"> ↵ </a></div>
@@ -3496,14 +3516,22 @@ specifications unless ..."<a href="#issue-f74e9f32"> ↵ </a></div>
    <div class="issue"> Issue: Might require modifying the more-generic <a href="https://dom.spec.whatwg.org/#dom-node-textcontent">DOM Standard §dom-node-textcontent</a> setter algorithm. <a href="#issue-7fe0f731①"> ↵ </a></div>
    <div class="issue"> Issue: IDL linking does not recognize HTMLInputElement/formAction even though
     it is defined in <a data-link-type="biblio" href="#biblio-html5">[HTML5]</a>. <a href="#issue-f5fb6f99"> ↵ </a></div>
+   <div class="issue"> Consider surfacing the DOM sink (node + attr) => type mapping in the API, to faciliate building HTML sanitizers. <a href="https://github.com/WICG/trusted-types/issues/43">&lt;https://github.com/WICG/trusted-types/issues/43></a><a href="#issue-7a6e3d33"> ↵ </a></div>
    <div class="issue"> removed <a href="https://heycam.github.io/webidl/#TreatNullAs">TreatNullAs=EmptyString</a> from
 features parameter which is not recognized by bikeshed.  Maybe there’s
 additional configuration required.  See "It should not be used in
 specifications unless ..."<a href="#issue-f74e9f32①"> ↵ </a></div>
+   <div class="issue"> TreatNullAs is confusing, as for TrustedHTML, for some sinks a ull value will result in "", and "null" for others. This already caused problems in the polyfill. <a href="https://github.com/WICG/trusted-types/issues/2">&lt;https://github.com/WICG/trusted-types/issues/2></a><a href="#issue-d48d676e"> ↵ </a></div>
    <div class="issue"> IDL linkage broken for SupportedType but I don’t want DOMParser to not
 show up in the IDL summary.<a href="#issue-8efca2f1"> ↵ </a></div>
    <div class="issue"> Do we need to specify that the enforcement type is <code class="idl"><a data-link-type="idl" href="#trustedhtml">TrustedHTML</a></code>, or
 that it is dependent on <em>type</em> which may be <code>"image/svg+xml"</code> or generic XML?<a href="#issue-4b9885e1"> ↵ </a></div>
+   <div class="issue"> Mention node-adoption bypass vectors. <a href="https://github.com/WICG/trusted-types/issues/49">&lt;https://github.com/WICG/trusted-types/issues/49></a><a href="#issue-31966331"> ↵ </a></div>
+   <div class="issue"> Mention the policy is global state-dependant. <a href="https://github.com/WICG/trusted-types/issues/78">&lt;https://github.com/WICG/trusted-types/issues/78></a><a href="#issue-fe3b0564"> ↵ </a></div>
+   <div class="issue"> Mention anchor element properties bypass. <a href="https://github.com/WICG/trusted-types/issues/64">&lt;https://github.com/WICG/trusted-types/issues/64></a><a href="#issue-1c3973fc"> ↵ </a></div>
+   <div class="issue"> Mention text/attribute node copy bypass vectors. <a href="https://github.com/WICG/trusted-types/issues/47">&lt;https://github.com/WICG/trusted-types/issues/47></a><a href="#issue-fb0cfdf0"> ↵ </a></div>
+   <div class="issue"> Mention bypass vectors with template elements. <a href="https://github.com/WICG/trusted-types/issues/42">&lt;https://github.com/WICG/trusted-types/issues/42></a><a href="#issue-80906c67"> ↵ </a></div>
+   <div class="issue"> Mention corner cases with types that depend on a different attribute value. <a href="https://github.com/WICG/trusted-types/issues/6">&lt;https://github.com/WICG/trusted-types/issues/6></a><a href="#issue-f9e3242a"> ↵ </a></div>
    <div class="issue"> Go through and identify non-normative sections and mark them
 appropriately.<a href="#issue-72dfcf5b"> ↵ </a></div>
   </div>
@@ -3722,7 +3750,7 @@ appropriately.<a href="#issue-72dfcf5b"> ↵ </a></div>
     <li><a href="#ref-for-default-policy">2.2.5.4. Get default policy algorithm</a>
     <li><a href="#ref-for-default-policy①">2.2.8.1. Obtain a Trusted Type Configuration for a response algorithm</a>
     <li><a href="#ref-for-default-policy②">3. Integrations</a>
-    <li><a href="#ref-for-default-policy③">4.1. Vendor-specific Extensions and Addons</a>
+    <li><a href="#ref-for-default-policy③">5.1. Vendor-specific Extensions and Addons</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="abstract-opdef-initialize-policy-factory-algorithm">
@@ -3791,7 +3819,7 @@ appropriately.<a href="#issue-72dfcf5b"> ↵ </a></div>
     <li><a href="#ref-for-dictdef-trustedtypeconfiguration③">2.2.8.1. Obtain a Trusted Type Configuration for a response algorithm</a>
     <li><a href="#ref-for-dictdef-trustedtypeconfiguration④">2.2.9.1. Report sink type mismatch violation algorithm</a>
     <li><a href="#ref-for-dictdef-trustedtypeconfiguration⑤">3.2. Integration with HTML</a>
-    <li><a href="#ref-for-dictdef-trustedtypeconfiguration⑥">4.1. Vendor-specific Extensions and Addons</a>
+    <li><a href="#ref-for-dictdef-trustedtypeconfiguration⑥">5.1. Vendor-specific Extensions and Addons</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-trustedtypeconfiguration-unknownpolicyname">
