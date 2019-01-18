@@ -1298,7 +1298,7 @@ Issue: Should we be modifying
 [[HTML5#hostensurecancompilestrings(callerrealm,-calleerealm)|HostEnsureCanCompileStrings]]
 or EnsureCSPDoesNotBlockStringCompilation?
 
-Modify [[CSP#can-compile-strings|HostEnsureCanCompileStrings]]
+Modify [[CSP#can-compile-strings|EnsureCSPDoesNotBlockStringCompilation]]
 algorithm, adding the following steps before step 1:
 
 1.  Let *value* be the result of executing the
