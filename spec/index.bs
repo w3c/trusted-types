@@ -1294,11 +1294,7 @@ At the beginning of step 5, insert the following steps:
 Note: See <a href="https://github.com/tc39/ecma262/issues/938">TC39/ecma262 issue #938</a>
 (adding a string to be compiled to algorithm parameters)
 
-Issue: Should we be modifying
-[[HTML5#hostensurecancompilestrings(callerrealm,-calleerealm)|HostEnsureCanCompileStrings]]
-or EnsureCSPDoesNotBlockStringCompilation?
-
-Modify [[CSP#can-compile-strings|HostEnsureCanCompileStrings]]
+Modify [[HTML5/webappapis#section-hostensurecancompilestrings|HostEnsureCanCompileStrings]]
 algorithm, adding the following steps before step 1:
 
 1.  Let *value* be the result of executing the

@@ -1212,9 +1212,7 @@ Possible extra rowspan handling
 		}
 	}
 </style>
-  <meta content="Bikeshed version 86d51a2d9c3c0de4540c77189312f7e2393844af" name="generator">
-  <link href="https://wicg.github.io/trusted-types/dist/spec/index.html" rel="canonical">
-  <meta content="b36b16cb9d7413acef339af531f783094fdf277c" name="document-revision">
+  <link href="https://wicg.github.io/trusted-types/dist/spec/" rel="canonical">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -1461,7 +1459,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Trusted Types Spec WIP</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2019-01-17">17 January 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2019-01-18">18 January 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -2713,10 +2711,7 @@ also unconditionally accepts any <code class="idl"><a data-link-type="idl" href=
    </ol>
    <h4 class="heading settled" data-level="3.2.10" id="string-compilation"><span class="secno">3.2.10. </span><span class="content">String compilation</span><a class="self-link" href="#string-compilation"></a></h4>
    <p class="note" role="note"><span>Note:</span> See <a href="https://github.com/tc39/ecma262/issues/938">TC39/ecma262 issue #938</a> (adding a string to be compiled to algorithm parameters)</p>
-   <p class="issue" id="issue-f24e404a"><a class="self-link" href="#issue-f24e404a"></a> Should we be modifying
-[[HTML5#hostensurecancompilestrings(callerrealm,-calleerealm)|HostEnsureCanCompileStrings]]
-or EnsureCSPDoesNotBlockStringCompilation?</p>
-   <p>Modify <a href="https://www.w3.org/TR/CSP3/#can-compile-strings">HostEnsureCanCompileStrings</a> algorithm, adding the following steps before step 1:</p>
+   <p>Modify <a href="https://www.w3.org/TR/html5//webappapis#section-hostensurecancompilestrings">HostEnsureCanCompileStrings</a> algorithm, adding the following steps before step 1:</p>
    <ol>
     <li data-md>
      <p>Let <em>value</em> be the result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string-algorithm" id="ref-for-abstract-opdef-get-trusted-type-compliant-string-algorithm⑥">Get Trusted Type compliant string algorithm</a>, with:</p>
@@ -3515,9 +3510,6 @@ specifications unless ..."<a href="#issue-f74e9f32"> ↵ </a></div>
    <div class="issue"> Issue: Not defined.  Do we need to intercept HTMLElement.textContent? <a href="#issue-0a11068a"> ↵ </a></div>
    <div class="issue"> Issue: IDL linking does not recognize HTMLInputElement/formAction even though
     it is defined in <a data-link-type="biblio" href="#biblio-html5">[HTML5]</a>. <a href="#issue-f5fb6f99"> ↵ </a></div>
-   <div class="issue"> Should we be modifying
-[[HTML5#hostensurecancompilestrings(callerrealm,-calleerealm)|HostEnsureCanCompileStrings]]
-or EnsureCSPDoesNotBlockStringCompilation?<a href="#issue-f24e404a"> ↵ </a></div>
    <div class="issue"> do we need to specify that type argument should be <code class="idl"><a data-link-type="idl" href="#trustedhtml">TrustedHTML</a></code> twice herein.<a href="#issue-171d5237"> ↵ </a></div>
    <div class="issue"> removed <a href="https://heycam.github.io/webidl/#TreatNullAs">TreatNullAs=EmptyString</a> from
 features parameter which is not recognized by bikeshed.  Maybe there’s
