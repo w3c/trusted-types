@@ -1,5 +1,7 @@
 # Explainer: Trusted Types for DOM Manipulation
 
+See the [specification draft](https://wicg.github.io/trusted-types/dist/spec/) for a more comprehensive description of the API.
+
 [![Build Status](https://travis-ci.org/WICG/trusted-types.svg)](https://travis-ci.org/WICG/trusted-types)
 
 ## The Problem
@@ -386,3 +388,11 @@ It can be tested by running:
 $ npm test
 ```
 The polyfill can also be run against the [web platform test suite](https://github.com/w3c/web-platform-tests), but that requires small patches to the suite - see [tests/platform-tests/platform-tests-runner.sh](tests/platform-tests/platform-tests-runner.sh).
+
+# Contributing
+
+See [CONTRIBUTING](CONTRIBUTING.md). 
+
+# Questions?
+
+File a Github issue, or head over to the [trusted-types Google group](https://groups.google.com/forum/#!forum/trusted-types)
