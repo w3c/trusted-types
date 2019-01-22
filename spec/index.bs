@@ -17,6 +17,7 @@ Abstract: An API that allows applications to lock down DOM XSS sinks to only acc
 Markup Shorthands: algorithm yes, biblio yes, css no, dfn yes, markdown yes, markup yes
 Ignored Terms: h1, h2, h3, h4, h5, h6, xmp
 Complain About: missing-example-ids yes
+<!-- WPT Path Prefix: /trusted-types/ # Cannot add this, as it requires all the tests to be referenced in the spec -->
 </pre>
 
 <!-- TODO
@@ -152,6 +153,7 @@ will never change during its lifetime.
 To stringify a TrustedHTML object, return the DOMString from its
 `[[Data]]` internal slot.
 
+Issue(WICG/trusted-types#95): Add TrustedHTML.EMPTY.
 
 ### <dfn type>TrustedScript</dfn> ### {#trusted-script}
 
@@ -225,6 +227,7 @@ will never change during its lifetime.
 To stringify a TrustedURL object, return the USVString from its
 `[[Data]]` internal slot.
 
+Issue(WICG/trusted-types#104): Consider adding new set of types, e.g. related to CSS.
 
 ## Policies ## {#policies}
 
@@ -304,8 +307,7 @@ interface TrustedTypePolicy {
 };
 </pre>
 
-Each TrustedTypePolicy object has an `[[options]]` internal slot,
-describing the actual behavior of the policy.
+Each TrustedTypePolicy object has an `[[options]]` internal slot, holding the {{TrustedTypePolicyOptions}} object describing the actual behavior of the policy.
 
 <dfn method for="TrustedTypePolicy">createHTML(input)</dfn> returns the
 result of executing the [$Create a Trusted Type algorithm$], with the
@@ -530,11 +532,9 @@ and exposed flag (*exposed*), run these steps:
     with the key *policyName*, return null.
 1.  Otherwise, let *policy* be the value of the *policyName* entry of
     *factory*'s `[[PolicyMap]]`.
-1.  If *policy*'s {{TrustedTypePolicyOptions/exposed|exposed}} attribute is false,
+1.  If *policy*'s `[[options]]`'s {{TrustedTypePolicyOptions/exposed|exposed}} attribute is false,
     return null.
 1.  Return *policy*.
-
-Issue: in step 4, exposed is not reachable from policy.  Should we first look up `[[options]]` internal slot.
 
 
 #### <dfn abstract-op>Get default policy algorithm</dfn> #### {#get-default-policy-algorithm}
@@ -608,23 +608,18 @@ and a string *value*, execute the following steps:
 1.  Let *policyValue* be the result of invoking *function* with
     *value* as a first argument, and [[ECMASCRIPT#sec-method|callback **this** value]]
     set to null.
-1.  If *policyValue* is an error, return error.
+1.  If *policyValue* is an error, return *policyValue* and abort the following steps.
 1.  Let *dataString* be the result of stringifying *policyValue*.
 1.  Let *trustedObject* be a new instance of an interface with a type
     name *trustedTypeName*, with its `[[Data]]` internal slot value
     set to *dataString*.
 1.  Return *trustedObject*.
 
-Issue: In step 6, "is an error, return error".  Should it return
-*policyValue* or raise a different error?
-
 
 ### Violation ### {#violation}
 
-A violation represents an action which goes against the set of
+A violation represents an action which is disallowed by the
 {{TrustedTypeConfiguration}} objects associated with the {{Document}}.
-
-Issue: rephrase in terms of "not allowed by any" or "disallowed by any"
 
 Issue: how does this relate to webappsec-csp/[=Violation=]?
 
@@ -681,8 +676,12 @@ Each Trusted Type Configuration has an associated allowed policy names set.
 
 Each Trusted Type Configuration has a related reporting group name.
 
+Issue(WICG/trusted-types#36): Decide if it should be possible from JS to determine if types are enforced without resorting to `try {} catch`.
 
 ### <dfn http-header>Trusted-Types</dfn> HTTP Response Header ### {#trusted-types-http-header}
+
+Issue(WICG/trusted-types#1): In the current Chromium implementation, the enforcement mechanism is
+configured in the `Content-Security-Policy` header (instead of `Trusted-Types`), with slightly different syntax. See [explainer](https://github.com/WICG/trusted-types#limiting-policies) and [platform test files](https://github.com/web-platform-tests/wpt/tree/master/trusted-types).
 
 Issue: +mkwst The header does not appear in the origin trials.  Can
 the spec differ so much from the implementation, especially given the
@@ -757,8 +756,6 @@ If the policy named `“default”` is present in the list, it refers to the
 all strings passed to DOM XSS sinks will be passed through it instead
 of being rejected outright.
 
-Issue: "unless otherwise configured" or "until otherwise configured"
-
 <div class="example" id="default-in-header">
 <pre class="http">
 Trusted-Types: "one", "two", "default"
@@ -788,6 +785,8 @@ header is present.
 Trusted-Types: "*", {"dom": "reject"}
 </pre>
 </div>
+
+Issue(WICG/trusted-types#66): Decide if separate per-type enforcement settings should be exposed to the authors.
 
 Issue: it seems to be the case that one object is allowed and it should
 appear last, it cannot contain an allowedNames property and the allowedNames
@@ -1146,22 +1145,17 @@ algorithm$].
     <td><a href="https://developer.mozilla.org/en-US/docs/Web/API/ShadowRoot/innerHTML">Non-standard property</a></td>
   </tr>
   <tr>
-    <td>{{HTMLScriptElement/text|HTMLScriptElement.text}}</td>
-    <td>{{ScriptString}}</td>
-    <td>[[HTML5#the-script-element]]</td>
-  </tr>
-  <tr>
     <td>HTMLScriptElement.innerText</td>
     <td>{{ScriptString}}</td>
     <td class="issue">
-    Issue: Not defined.  Do we need to intercept HTMLElement.innerText?
+    Issue: Might require modifying the more-generic [[HTML#dom-innertext]] setter algorithm.
     </td>
   </tr>
   <tr>
     <td>HTMLScriptElement.textContent</td>
     <td>{{ScriptString}}</td>
     <td class="issue">
-    Issue: Not defined.  Do we need to intercept HTMLElement.textContent?
+    Issue: Might require modifying the more-generic [[DOM#dom-node-textcontent]] setter algorithm.
     </td>
   </tr>
   <tr>
@@ -1211,7 +1205,7 @@ algorithm$].
     <td>{{URLString}}</td>
   </tr>
   <tr>
-    <td>HTMLInputElement.formAction</td>
+    <td>{{HTMLInputElement/formAction|HTMLInputElement.formAction}}</td>
     <td>{{URLString}}</td>
     <td class="issue">
     Issue: IDL linking does not recognize HTMLInputElement/formAction even though
@@ -1255,6 +1249,7 @@ algorithm$].
   </tr>
 </table>
 
+Issue(WICG/trusted-types#43): Consider surfacing the DOM sink (node + attr) => type mapping in the API, to faciliate building HTML sanitizers.
 
 ### Enforcement in timer functions ### {#enforcement-in-timer-functions}
 
@@ -1294,11 +1289,7 @@ At the beginning of step 5, insert the following steps:
 Note: See <a href="https://github.com/tc39/ecma262/issues/938">TC39/ecma262 issue #938</a>
 (adding a string to be compiled to algorithm parameters)
 
-Issue: Should we be modifying
-[[HTML5#hostensurecancompilestrings(callerrealm,-calleerealm)|HostEnsureCanCompileStrings]]
-or EnsureCSPDoesNotBlockStringCompilation?
-
-Modify [[CSP#can-compile-strings|HostEnsureCanCompileStrings]]
+Modify [[HTML5/webappapis#section-hostensurecancompilestrings|HostEnsureCanCompileStrings]]
 algorithm, adding the following steps before step 1:
 
 1.  Let *value* be the result of executing the
@@ -1334,14 +1325,12 @@ For the {{Element/insertAdjacentHTML()}} method, execute the
 [$Enforce a Trusted Type algorithm$] with input argument set to the *text*
 parameter value.
 
-Issue: do we need to specify that type argument should be {{TrustedHTML}}
-twice herein.
-
 Issue: removed [[webidl#TreatNullAs|TreatNullAs=EmptyString]] from
 features parameter which is not recognized by bikeshed.  Maybe there's
 additional configuration required.  See "It should not be used in
 specifications unless ..."
 
+Issue(WICG/trusted-types#2): TreatNullAs is confusing, as for TrustedHTML, for some sinks a ull value will result in "", and "null" for others. This already caused problems in the polyfill.
 
 ### Extensions to the Range interface ### {#extensions-to-the-range-interface}
 
@@ -1356,8 +1345,6 @@ partial interface Range {
 For {{Range/createContextualFragment()}} function, execute the
 [$Enforce a Trusted Type algorithm$] with the *input* argument set to
 the *fragment* value.
-
-Issue: Do we need to specify that the enforcement type is {{TrustedHTML}}?
 
 
 ### Extensions to the DOMParser interface ### {#extensions-to-the-DOMParser}
@@ -1392,6 +1379,19 @@ Trusted Type algorithm$] with *input* argument set to the *str* value.
 Issue: Do we need to specify that the enforcement type is {{TrustedHTML}}, or
 that it is dependent on *type* which may be `"image/svg+xml"` or generic XML?
 
+# Security Considerations # {#security-considerations}
+
+Issue(WICG/trusted-types#49): Mention node-adoption bypass vectors.
+
+Issue(WICG/trusted-types#78): Mention the policy is global state-dependant.
+
+Issue(WICG/trusted-types#64): Mention anchor element properties bypass.
+
+Issue(WICG/trusted-types#47): Mention text/attribute node copy bypass vectors.
+
+Issue(WICG/trusted-types#42): Mention bypass vectors with template elements.
+
+Issue(WICG/trusted-types#6): Mention corner cases with types that depend on a different attribute value.
 
 # Implementation Considerations # {#implementation-considerations}
 
