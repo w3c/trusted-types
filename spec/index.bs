@@ -519,7 +519,7 @@ and exposed flag (*exposed*), run these steps:
 1.  Set *policyOptions* {{TrustedTypePolicy/createURL()|createURL}}
     property to *option*'s
     {{TrustedTypePolicyOptions/createURL|createURL}} property value.
-1.  Set *policy*'s `[[options]]` internal slot value to *policyOptions*.
+1.  Set *policy*'s `[[options]]`'s internal slot value to *policyOptions*.
 1.  Set the velue for the *policyName* entry of *factory*'s `[[PolicyMap]]` to *policy*.
 1.  Return *policy*.
 
