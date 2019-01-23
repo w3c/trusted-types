@@ -1214,7 +1214,6 @@ Possible extra rowspan handling
 </style>
   <meta content="Bikeshed version 9c6ae748322940994300e90a77c34437364b40a6" name="generator">
   <link href="https://wicg.github.io/trusted-types/dist/spec/" rel="canonical">
-  <meta content="c4a390c51ec50b863c7136adfd10226df3f3a035" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -1461,7 +1460,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Trusted Types Spec WIP</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2019-01-22">22 January 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2019-01-23">23 January 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1809,7 +1808,7 @@ codebase.</p>
     <a class="self-link" href="#policy-reference"></a> Library initialized with a policy allowing it to load additional scripts from
 a given host. 
 <pre class="highlight"><c- kr>const</c-> cdnScriptsPolicy <c- o>=</c-> TrustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- t>'cdn-scripts'</c-><c- p>,</c-> <c- p>{</c->
-  createScriptURL <c- o>=</c-> url <c- p>=></c-> <c- p>{</c->
+  createScriptURL<c- p>(</c->url<c- p>)</c-> <c- p>{</c->
     <c- kr>const</c-> parsed <c- o>=</c-> <c- k>new</c-> URL<c- p>(</c->url<c- p>,</c-> document<c- p>.</c->baseURI<c- p>);</c->
     <c- k>if</c-> <c- p>(</c->parsed<c- p>.</c->origin <c- o>==</c-> <c- t>'https://mycdn.example'</c-><c- p>)</c-> <c- p>{</c->
       <c- k>return</c-> URL<c- p>.</c->toString<c- p>();</c->
