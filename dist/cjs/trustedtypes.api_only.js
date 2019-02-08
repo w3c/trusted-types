@@ -240,7 +240,7 @@ const trustedTypesBuilderTestOnly = function() {
       const policySpecificType = freeze(new Ctor(creatorSymbol, policyName));
       const factory = {
         [methodName](s) { // Trick to get methodName to show in stacktrace.
-          let result = method(s);
+          let result = method('' + s);
           if (result === undefined || result === null) {
             result = '';
           }
@@ -303,10 +303,19 @@ const trustedTypesBuilderTestOnly = function() {
    *   globally).
    * @return {TrustedTypePolicy} The policy that may create TT objects
    *   according to the policy rules.
-   * @todo Figure out if the return value (and the policy) can be typed.
    */
   function createPolicy(name, policy, expose = false) {
     const pName = '' + name; // Assert it's a string
+
+    if (pName == 'default' && !expose) {
+      const message = 'The default policy must be exposed';
+       if (DOMException) {
+        // Workaround for missing externs in Closure compiler.
+        throw new window['DOMException'](message, 'InvalidStateError');
+      } else {
+        throw new TypeError(message);
+      }
+    }
 
     if (enforceNameWhitelist && allowedNames.indexOf(pName) === -1) {
       throw new TypeError('Policy ' + pName + ' disallowed.');
