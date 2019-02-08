@@ -414,4 +414,5 @@ See [CONTRIBUTING](CONTRIBUTING.md).
 
 # Questions?
 
-File a Github issue, or head over to the [trusted-types Google group](https://groups.google.com/forum/#!forum/trusted-types)
+Our [wiki](https://github.com/WICG/trusted-types/wiki) or the [specification](https://wicg.github.io/trusted-types/dist/spec/) may already contain an answer
+to your question. If not, please [contact us](https://github.com/WICG/trusted-types/wiki/Contact)!
