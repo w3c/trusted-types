@@ -52,11 +52,11 @@ first step:
     would enable them to be automatically cast into strings when called on existing setters.
 
 3.  Introduce a mechanism for disabling the raw string version of each of the sinks identified
-    above. For example, something like a theoretical `Content-Security-Policy: trusted-types`
+    above. For example, `Content-Security-Policy: trusted-types`
     header could cause the `innerHTML` setter to throw a `TypeError` if a raw string was passed in.
 
-    This is a little more difficult to polyfill, but should be possible for many (all?) setters and
-    methods that aren't marked as [`[Unforgeable]`](https://heycam.github.io/webidl/#Unforgeable).
+    This is possible to polyfill for many setters and
+    methods, apart from the ones that aren't marked as [`[Unforgeable]`](https://heycam.github.io/webidl/#Unforgeable).
 
 ### Trusted Types
 
@@ -184,12 +184,20 @@ the polyfill code.
 
 We propose to allow for whitelisting policy names in a CSP, e.g. in a following fashion:
 ```
-Content-Security-Policy: trusted-types https://example.com#foo https://example.com#bar
+Content-Security-Policy: trusted-types foo bar
 ```
 
 That will assure that no additional policies are created at runtime. Creating a policy with a name
 that was already created, or was not specified in the CSP throws, so introduction of non-reviewed
 policies breaks the application functionally.
+
+#### Default policy
+
+There is an experimental support for a default policy that allows applications
+to use strings with the injection sinks. These strings would be passed to a single
+user-defined policy that sanitizes the value or rejects it. The intention is to
+allow for a gradual migration of the code from strings towards Trusted Types.
+Please check the [specification draft](https://wicg.github.io/trusted-types/dist/spec/#default-policy-hdr) for details.
 
 ### DOM Sinks
 
@@ -303,8 +311,6 @@ policies breaks the application functionally.
     };
     ```
 
-    TODO(slekies) - sinks enumeration.
-
 *   **JavaScript Contexts**: Replace `DOMString` in the following with something
     reasonable.
 
@@ -330,10 +336,10 @@ Some details have still not been sketched out - see [issues](https://github.com/
 
 ## Polyfill
 
-This repository contains a polyfill implementation. The compiled versions are stored in [dist] directory(dist/)
+This repository contains a polyfill implementation. The compiled versions are stored in [`dist` directory](dist/)
 
 ### Browsers
-The es5/es6 builds can be loaded directly in the browsers. There are two variants of the browser polyfill - *api_only* (light) and *full*. The *Api_only* variant defines the API, so you can create policies and types. *Full* version also enables the type enforcement in the DOM, based on the CSP policy it infers from the current document (see [src/polyfill/full.js](src/polyfill/full.js)).
+The es5/es6 builds can be loaded directly in the browsers. There are two variants of the browser polyfill - **api_only** (light) and **full**. The *api_only* variant defines the API, so you can create policies and types. *Full* version also enables the type enforcement in the DOM, based on the CSP policy it infers from the current document (see [src/polyfill/full.js](src/polyfill/full.js)).
 
 ```html
 <!-- API only -->
@@ -367,6 +373,19 @@ $ npm install trusted-types
 const tt = require('trusted-types');
 tt.createPolicy(...);
 ```
+### Tinyfill
+
+Due to the way the API is designed, it's possible to polyfill the most important
+API surface (`TrustedTypes.createPolicy` function) with the following snippet:
+
+```
+if(typeof TrustedTypes == “undefined”)TrustedTypes={createPolicy:(n, rules) => rules};
+```
+It does not enable the enforcement, but allows the creation of policies that
+return string values instead of Trusted Types in non-supporting browsers. Since
+the injection sinks in those browsers accept strings, the values will be accepted
+unless the policy throws an error. This tinyfill code allows most applications
+to work in both Trusted-Type-enforcing and a legacy environment.
 
 ## Building
 
@@ -391,7 +410,7 @@ The polyfill can also be run against the [web platform test suite](https://githu
 
 # Contributing
 
-See [CONTRIBUTING](CONTRIBUTING.md). 
+See [CONTRIBUTING](CONTRIBUTING.md).
 
 # Questions?
 
