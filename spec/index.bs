@@ -129,6 +129,11 @@ We introduce the following list of
 <dfn>Trusted Type</dfn>s indicating that a given value is
 trusted by the authors to be used with an [=injection sink=] in a certain context.
 
+Note: **Trusted** in this context signifies the fact that the application author
+is confident that a given value can be safely used with an injection sink - she
+*trusts* it does not introduce a vulnerability. That does not imply that the
+value is indeed *safe*.
+
 Note: This allows the authors to specify the intention when creating a given
 value, and the user agents to introduce checks based on the type of
 such value to preserve the authors' intent. For example, if the
@@ -1009,7 +1014,7 @@ This algorithm will return a string that can be assigned to a DOM
 It will ensure that the Trusted Type [=enforcement=] rules were respected.
 
 Given a TrustedType type (*expectedType*), a {{Document}}
-(*document*), a {TrustedType} (*input*), and a boolean
+(*document*), a {{TrustedType}} (*input*), and a boolean
 (*passThroughFunctions*) run these steps:
 
 ISSUE: *input* could also be a {{Function}}, e.g. for `setTimeout`.  Maybe add `or Function` to `ScriptString` and rename to avoid confusion.
@@ -1517,6 +1522,11 @@ that it is dependent on *type* which may be `"image/svg+xml"` or generic XML?
 
 # Security Considerations # {#security-considerations}
 
+Trusted Types are not intended to defend against XSS in an actively malicious
+execution environment. It's assumed that the application is written by
+non-malicious authors; the intent is to prevent developer mistakes that could
+result in security bugs, and not to defend against first-party malicious code actively trying to bypass policy restrictions.
+
 ## Bypass vectors
 
 Issue(WICG/trusted-types#49): Mention node-adoption bypass vectors.
@@ -1531,6 +1541,13 @@ Issue(WICG/trusted-types#42): Mention bypass vectors with template elements.
 Issue(WICG/trusted-types#6): Mention corner cases with types that depend on a different attribute value.
 
 ## Best practices for policy design
+
+Trusted Types limit the scope of the code that can introduce DOM XSS
+vulnerabilities to the implementation of [[#policies|policies]]. In this design,
+insecure policies can still enable XSS. Special emphasis needs to be taken by
+use policies that are either secure for all possible inputs, or limit the access
+to insecure policies, such that they are only called with non-attacker
+controlled inputs.
 
 Issue(WICG/trusted-types#78): Mention the policy is global state-dependant.
 

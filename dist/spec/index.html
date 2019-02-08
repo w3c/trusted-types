@@ -1212,7 +1212,7 @@ Possible extra rowspan handling
 		}
 	}
 </style>
-  <meta content="Bikeshed version 9c6ae748322940994300e90a77c34437364b40a6" name="generator">
+  <meta content="Bikeshed version d76ab51ece93be5af3a1621c820b89fd4f9cc432" name="generator">
   <link href="https://wicg.github.io/trusted-types/dist/spec/" rel="canonical">
 <style>/* style-md-lists */
 
@@ -1460,7 +1460,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Trusted Types Spec WIP</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2019-01-23">23 January 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2019-02-08">8 February 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1699,6 +1699,9 @@ sensitive DOM and JavaScript functions, we introduce Trusted Types.</p>
    <h3 class="heading settled" data-level="2.2" id="trusted-types"><span class="secno">2.2. </span><span class="content">Trusted Types</span><a class="self-link" href="#trusted-types"></a></h3>
    <p>We introduce the following list of <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="trusted-type">Trusted Type</dfn>s indicating that a given value is
 trusted by the authors to be used with an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①">injection sink</a> in a certain context.</p>
+   <p class="note" role="note"><span>Note:</span> <strong>Trusted</strong> in this context signifies the fact that the application author
+is confident that a given value can be safely used with an injection sink - she <em>trusts</em> it does not introduce a vulnerability. That does not imply that the
+value is indeed <em>safe</em>.</p>
    <p class="note" role="note"><span>Note:</span> This allows the authors to specify the intention when creating a given
 value, and the user agents to introduce checks based on the type of
 such value to preserve the authors' intent. For example, if the
@@ -2427,7 +2430,7 @@ set <em>config</em>’s domSinks to <em>defaultSinkDisposition</em>’s value.</
    <h4 class="heading settled" data-level="3.2.2" id="get-trusted-type-compliant-string-algorithm"><span class="secno">3.2.2. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-get-trusted-type-compliant-string">Get Trusted Type compliant string</dfn></span><a class="self-link" href="#get-trusted-type-compliant-string-algorithm"></a></h4>
    <p>This algorithm will return a string that can be assigned to a DOM <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⑤">injection sink</a>, optionally unwrapping it from a matching <a data-link-type="dfn" href="#trusted-type" id="ref-for-trusted-type⑤">Trusted Type</a>.
 It will ensure that the Trusted Type <a data-link-type="dfn" href="#enforcement①" id="ref-for-enforcement①⑤">enforcement</a> rules were respected.</p>
-   <p>Given a TrustedType type (<em>expectedType</em>), a <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document③">Document</a></code> (<em>document</em>), a {TrustedType} (<em>input</em>), and a boolean
+   <p>Given a TrustedType type (<em>expectedType</em>), a <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document③">Document</a></code> (<em>document</em>), a <code class="idl"><a data-link-type="idl" href="#typedefdef-trustedtype" id="ref-for-typedefdef-trustedtype">TrustedType</a></code> (<em>input</em>), and a boolean
 (<em>passThroughFunctions</em>) run these steps:</p>
    <p class="issue" id="issue-27865f4d"><a class="self-link" href="#issue-27865f4d"></a> <em>input</em> could also be a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#Function" id="ref-for-Function">Function</a></code>, e.g. for <code>setTimeout</code>.  Maybe add <code>or Function</code> to <code>ScriptString</code> and rename to avoid confusion.</p>
    <p class="issue" id="issue-5437ea14"><a class="self-link" href="#issue-5437ea14"></a> Make it clear that no reporting is done when <em>disposition</em> is <code>unsafe-allow</code>.</p>
@@ -2572,7 +2575,7 @@ relevant settings object.</p>
 <c- b>typedef</c-> (<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①⑦"><c- b>DOMString</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript③"><c- n>TrustedScript</c-></a>) <dfn class="dfn-paneled idl-code" data-dfn-type="typedef" data-export id="typedefdef-scriptstring"><code><c- g>ScriptString</c-></code></dfn>;
 <c- b>typedef</c-> (<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString②"><c- b>USVString</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl③"><c- n>TrustedScriptURL</c-></a>) <dfn class="dfn-paneled idl-code" data-dfn-type="typedef" data-export id="typedefdef-scripturlstring"><code><c- g>ScriptURLString</c-></code></dfn>;
 <c- b>typedef</c-> (<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString③"><c- b>USVString</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="#trustedurl" id="ref-for-trustedurl③"><c- n>TrustedURL</c-></a>) <dfn class="dfn-paneled idl-code" data-dfn-type="typedef" data-export id="typedefdef-urlstring"><code><c- g>URLString</c-></code></dfn>;
-<c- b>typedef</c-> (<a class="n" data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml⑤"><c- n>TrustedHTML</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript④"><c- n>TrustedScript</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl④"><c- n>TrustedScriptURL</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="#trustedurl" id="ref-for-trustedurl④"><c- n>TrustedURL</c-></a>) <dfn class="idl-code" data-dfn-type="typedef" data-export id="typedefdef-trustedtype"><code><c- g>TrustedType</c-></code><a class="self-link" href="#typedefdef-trustedtype"></a></dfn>;
+<c- b>typedef</c-> (<a class="n" data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml⑤"><c- n>TrustedHTML</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript④"><c- n>TrustedScript</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl④"><c- n>TrustedScriptURL</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="#trustedurl" id="ref-for-trustedurl④"><c- n>TrustedURL</c-></a>) <dfn class="dfn-paneled idl-code" data-dfn-type="typedef" data-export id="typedefdef-trustedtype"><code><c- g>TrustedType</c-></code></dfn>;
 </pre>
    <h3 class="heading settled" data-level="4.1" id="integration-with-html"><span class="secno">4.1. </span><span class="content">Integration with HTML</span><a class="self-link" href="#integration-with-html"></a></h3>
    <p><code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/window-object.html#window" id="ref-for-window①">Window</a></code> objects have a <code class="idl"><a data-link-type="idl" href="#dom-window-trustedtypes" id="ref-for-dom-window-trustedtypes">trusted type policy factory</a></code>,
@@ -2887,6 +2890,10 @@ Trusted Type</a> algorithm with <em>input</em> argument set to the <em>str</em> 
    <p class="issue" id="issue-4b9885e1"><a class="self-link" href="#issue-4b9885e1"></a> Do we need to specify that the enforcement type is <code class="idl"><a data-link-type="idl" href="#trustedhtml" id="ref-for-trustedhtml⑦">TrustedHTML</a></code>, or
 that it is dependent on <em>type</em> which may be <code>"image/svg+xml"</code> or generic XML?</p>
    <h2 class="heading settled" data-level="5" id="security-considerations"><span class="secno">5. </span><span class="content">Security Considerations</span><a class="self-link" href="#security-considerations"></a></h2>
+   <p>Trusted Types are not intended to defend against XSS in an actively malicious
+execution environment. It’s assumed that the application is written by
+non-malicious authors; the intent is to prevent developer mistakes that could
+result in security bugs, and not to defend against first-party malicious code actively trying to bypass policy restrictions.</p>
    <h3 class="heading settled" data-level="5.1" id="bypass-vectors"><span class="secno">5.1. </span><span class="content">Bypass vectors</span><a class="self-link" href="#bypass-vectors"></a></h3>
    <p class="issue" id="issue-31966331"><a class="self-link" href="#issue-31966331"></a> Mention node-adoption bypass vectors. <a href="https://github.com/WICG/trusted-types/issues/49">&lt;https://github.com/WICG/trusted-types/issues/49></a></p>
    <p class="issue" id="issue-1c3973fc"><a class="self-link" href="#issue-1c3973fc"></a> Mention anchor element properties bypass. <a href="https://github.com/WICG/trusted-types/issues/64">&lt;https://github.com/WICG/trusted-types/issues/64></a></p>
@@ -2894,6 +2901,12 @@ that it is dependent on <em>type</em> which may be <code>"image/svg+xml"</code> 
    <p class="issue" id="issue-80906c67"><a class="self-link" href="#issue-80906c67"></a> Mention bypass vectors with template elements. <a href="https://github.com/WICG/trusted-types/issues/42">&lt;https://github.com/WICG/trusted-types/issues/42></a></p>
    <p class="issue" id="issue-f9e3242a"><a class="self-link" href="#issue-f9e3242a"></a> Mention corner cases with types that depend on a different attribute value. <a href="https://github.com/WICG/trusted-types/issues/6">&lt;https://github.com/WICG/trusted-types/issues/6></a></p>
    <h3 class="heading settled" data-level="5.2" id="best-practices-for-policy-design"><span class="secno">5.2. </span><span class="content">Best practices for policy design</span><a class="self-link" href="#best-practices-for-policy-design"></a></h3>
+   <p>Trusted Types limit the scope of the code that can introduce DOM XSS
+vulnerabilities to the implementation of <a href="#policies">policies</a>. In this design,
+insecure policies can still enable XSS. Special emphasis needs to be taken by
+use policies that are either secure for all possible inputs, or limit the access
+to insecure policies, such that they are only called with non-attacker
+controlled inputs.</p>
    <p class="issue" id="issue-fe3b0564"><a class="self-link" href="#issue-fe3b0564"></a> Mention the policy is global state-dependant. <a href="https://github.com/WICG/trusted-types/issues/78">&lt;https://github.com/WICG/trusted-types/issues/78></a></p>
    <p class="issue" id="issue-2eb927d2"><a class="self-link" href="#issue-2eb927d2"></a> Refer to the external document on secure policy design.</p>
    <h2 class="heading settled" data-level="6" id="implementation-considerations"><span class="secno">6. </span><span class="content">Implementation Considerations</span><a class="self-link" href="#implementation-considerations"></a></h2>
@@ -4086,6 +4099,12 @@ that it is dependent on <em>type</em> which may be <code>"image/svg+xml"</code> 
     <li><a href="#ref-for-typedefdef-urlstring③">4.1.3. Extensions to the Document interface</a>
     <li><a href="#ref-for-typedefdef-urlstring④">4.1.4. Enforcement in window open steps algorithm</a>
     <li><a href="#ref-for-typedefdef-urlstring⑤">4.1.7. Enforcement in property sinks</a> <a href="#ref-for-typedefdef-urlstring⑥">(2)</a> <a href="#ref-for-typedefdef-urlstring⑦">(3)</a> <a href="#ref-for-typedefdef-urlstring⑧">(4)</a> <a href="#ref-for-typedefdef-urlstring⑨">(5)</a> <a href="#ref-for-typedefdef-urlstring①⓪">(6)</a> <a href="#ref-for-typedefdef-urlstring①①">(7)</a> <a href="#ref-for-typedefdef-urlstring①②">(8)</a> <a href="#ref-for-typedefdef-urlstring①③">(9)</a> <a href="#ref-for-typedefdef-urlstring①④">(10)</a> <a href="#ref-for-typedefdef-urlstring①⑤">(11)</a> <a href="#ref-for-typedefdef-urlstring①⑥">(12)</a> <a href="#ref-for-typedefdef-urlstring①⑦">(13)</a> <a href="#ref-for-typedefdef-urlstring①⑧">(14)</a> <a href="#ref-for-typedefdef-urlstring①⑨">(15)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="typedefdef-trustedtype">
+   <b><a href="#typedefdef-trustedtype">#typedefdef-trustedtype</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-typedefdef-trustedtype">3.2.2. Get Trusted Type compliant string</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-window-trustedtypes">
