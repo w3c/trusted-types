@@ -1,6 +1,6 @@
 {
   "name": "trusted-types",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Polyfill for the Trusted Types",
   "main": "dist/cjs/trustedtypes.api_only.js",
   "directories": {
