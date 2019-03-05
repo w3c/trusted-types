@@ -366,10 +366,10 @@ reference - see [[#extensions-to-the-window-interface]].
         optional boolean exposed = false);
     [Unforgeable] TrustedTypePolicy getExposedPolicy(DOMString policyName);
     [Unforgeable] sequence&lt;DOMString> getPolicyNames();
-    [Unforgeable] boolean isHTML(object? checkedObject);
-    [Unforgeable] boolean isScript(object? checkedObject);
-    [Unforgeable] boolean isScriptURL(object? checkedObject);
-    [Unforgeable] boolean isURL(object? checkedObject);
+    [Unforgeable] boolean isHTML(any value);
+    [Unforgeable] boolean isScript(any value);
+    [Unforgeable] boolean isScriptURL(any value);
+    [Unforgeable] boolean isURL(any value);
 };
 </pre>
 
@@ -439,8 +439,8 @@ to be applied for documents the factory is created for.
     </xmp>
     </div>
 
-: <dfn>isHTML(checkedObject)</dfn>
-:: Returns true if checkedObject is an instance of {{TrustedHTML}} and has its `[[Data]]`  internal slot set, false otherwise.
+: <dfn>isHTML(value)</dfn>
+:: Returns true if value is an instance of {{TrustedHTML}} and has its `[[Data]]`  internal slot set, false otherwise.
 
     Note: `is*` functions are used to check if a given object is truly a legitimate
     [=Trusted Type=] object (e.g. it was created via one of the configured
@@ -455,18 +455,20 @@ to be applied for documents the factory is created for.
 
     const fake = Object.create(TrustedHTML.prototype);
     TrustedTypes.isHTML(fake) // false
+
+    TrustedTypes.isHTML("<div>plain string</div>") // false
     </xmp>
     </div>
 
 
-: <dfn>isScript(checkedObject)</dfn>
-:: Returns true if checkedObject is an instance of {{TrustedScript}} and has its `[[Data]]` internal slot set, false otherwise.
+: <dfn>isScript(value)</dfn>
+:: Returns true if value is an instance of {{TrustedScript}} and has its `[[Data]]` internal slot set, false otherwise.
 
-: <dfn>isScriptURL(checkedObject)</dfn>
-:: Returns true if checkedObject is an instance of {{TrustedScriptURL}} and has its `[[Data]]` internal slot set, false otherwise.
+: <dfn>isScriptURL(value)</dfn>
+:: Returns true if value is an instance of {{TrustedScriptURL}} and has its `[[Data]]` internal slot set, false otherwise.
 
-: <dfn>isURL(checkedObject)</dfn>
-:: Returns true if checkedObject is an instance of {{TrustedURL}} and has its `[[Data]]` internal slot set, false otherwise.
+: <dfn>isURL(value)</dfn>
+:: Returns true if value is an instance of {{TrustedURL}} and has its `[[Data]]` internal slot set, false otherwise.
 
 </div>
 
