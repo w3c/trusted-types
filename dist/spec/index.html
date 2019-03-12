@@ -1212,9 +1212,9 @@ Possible extra rowspan handling
 		}
 	}
 </style>
-  <meta content="Bikeshed version 670c46b501fc025ae87a3398a195af35379ab37d" name="generator">
+  <meta content="Bikeshed version 9c6ae748322940994300e90a77c34437364b40a6" name="generator">
   <link href="https://wicg.github.io/trusted-types/dist/spec/" rel="canonical">
-  <meta content="52c1066985fa3beceb6dafbcb7ad7bfe5e38bfd6" name="document-revision">
+  <meta content="1c06989ea82f0e93e89da8f0cc7b159e42934752" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -1461,7 +1461,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Trusted Types Spec WIP</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2019-03-05">5 March 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2019-03-12">12 March 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1764,7 +1764,7 @@ USVString. The slot’s value is set when the object is created, and
 will never change during its lifetime.</p>
    <p>To stringify a TrustedScriptURL object, return the USVString from its <code>[[Data]]</code> internal slot.</p>
    <h4 class="heading settled" data-level="2.2.4" id="trusted-url"><span class="secno">2.2.4. </span><span class="content"><dfn class="css" data-dfn-type="type" data-export id="typedef-trustedurl">TrustedURL<a class="self-link" href="#typedef-trustedurl"></a></dfn></span><a class="self-link" href="#trusted-url"></a></h4>
-   <p>The TrustedScriptURL interface represents a string that a developer
+   <p>The TrustedURL interface represents a string that a developer
 can confidently pass into an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink⑤">injection sink</a> that will be parse it a URL of
 an external resource that is not scripted.
 These objects are immutable wrappers around a
