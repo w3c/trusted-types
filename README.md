@@ -1,6 +1,6 @@
 # Explainer: Trusted Types for DOM Manipulation
 
-See the [specification draft](https://wicg.github.io/trusted-types/dist/spec/) for a more comprehensive description of the API.
+See the [specification draft](https://wicg.github.io/trusted-types/dist/spec/) for a more comprehensive description of the API or [the blog post](https://developers.google.com/web/updates/2019/02/trusted-types) for a developer-friendly introduction.
 
 [![Build Status](https://travis-ci.org/WICG/trusted-types.svg)](https://travis-ci.org/WICG/trusted-types)
 
