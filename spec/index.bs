@@ -1145,7 +1145,19 @@ typedef (DOMString or TrustedScript) ScriptString;
 typedef (USVString or TrustedScriptURL) ScriptURLString;
 typedef (USVString or TrustedURL) URLString;
 typedef (TrustedHTML or TrustedScript or TrustedScriptURL or TrustedURL) TrustedType;
+
+typedef (([TreatNullAs=EmptyString] DOMString) or TrustedHTML) HTMLStringDefaultsEmpty;
 </pre>
+
+Note: {{HTMLStringDefaultsEmpty}} is a non-nullable variant that accepts *null* on set.
+Having this separate type allows [[webidl#TreatNullAs]] to attach to DOMString
+per heycam/webidl#441.
+
+Issue(WICG/trusted-types#2): [[webidl#TreatNullAs|TreatNullAs=EmptyString]] is confusing.
+See note "It should not be used in specifications unless ...".
+For some sinks a null value will result in "", and "null" for others.
+This already caused problems in the polyfill.
+
 
 ## Integration with HTML ## {#integration-with-html}
 
@@ -1184,11 +1196,6 @@ following steps in order to initialize
 
 This document extends the {{Window}} interface defined by [[HTML5|HTML]]:
 
-Issue: removed [[webidl#TreatNullAs|TreatNullAs=EmptyString]] from
-features parameter which is not recognized by bikeshed.  Maybe there's
-additional configuration required.  See "It should not be used in
-specifications unless ..."
-
 <pre class="idl">
 partial interface mixin Window {
   [Unforgeable] readonly attribute
@@ -1196,7 +1203,7 @@ partial interface mixin Window {
   WindowProxy? open(
       optional <b>URLString</b> url = "about:blank",
       optional DOMString target = "_blank",
-      optional /* [TreatNullAs=EmptyString] */ DOMString features = "");
+      optional ([TreatNullAs=EmptyString] DOMString) features = "");
 };
 </pre>
 
@@ -1455,8 +1462,8 @@ This document modifies the {{Element}} interface defined by DOM Parsing:
 
 <pre class="idl">
 partial interface Element {
-  [CEReactions/*, TreatNullAs=EmptyString */] attribute HTMLString innerHTML;
-  [CEReactions/*, TreatNullAs=EmptyString */] attribute HTMLString outerHTML;
+  [CEReactions] attribute HTMLStringDefaultsEmpty innerHTML;
+  [CEReactions] attribute HTMLStringDefaultsEmpty outerHTML;
   [CEReactions] void insertAdjacentHTML(DOMString position, HTMLString text);
 };
 </pre>
@@ -1467,13 +1474,6 @@ For {{Element/innerHTML}}'s and {{Element/outerHTML}}'s execute the
 For the {{Element/insertAdjacentHTML()}} method, execute the
 [$Enforce a Trusted Type$] algorithm with input argument set to the *text*
 parameter value.
-
-Issue: removed [[webidl#TreatNullAs|TreatNullAs=EmptyString]] from
-features parameter which is not recognized by bikeshed.  Maybe there's
-additional configuration required.  See "It should not be used in
-specifications unless ..."
-
-Issue(WICG/trusted-types#2): TreatNullAs is confusing, as for TrustedHTML, for some sinks a ull value will result in "", and "null" for others. This already caused problems in the polyfill.
 
 ### Extensions to the Range interface ### {#extensions-to-the-range-interface}
 
