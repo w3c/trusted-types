@@ -15,8 +15,12 @@ import {TrustedTypes, setAllowedPolicyNames} from './trustedtypes.js';
 import {installFunction, installSetter, installSetterAndGetter}
   from './utils/wrapper.js';
 
+import {parseSrcset, unparseSrcset} from './utils/srcset.js';
+
+const {isArray} = Array;
 const {apply} = Reflect;
 const {
+  create,
   getOwnPropertyNames,
   getOwnPropertyDescriptor,
   hasOwnProperty,
@@ -24,7 +28,7 @@ const {
   isPrototypeOf,
 } = Object;
 
-const {slice} = String.prototype;
+const {indexOf, slice} = String.prototype;
 
 const UrlConstructor = URL.prototype.constructor;
 
@@ -84,7 +88,7 @@ let SET_ATTRIBUTE_TYPE_MAP = {
   },
   'HTMLImageElement': {
     'src': TrustedTypes.TrustedURL,
-    // TODO(slekies): add special handling for srcset
+    'srcset': TrustedTypes.TrustedURL, // Modulo special handling
   },
   'HTMLTrackElement': {
     'src': TrustedTypes.TrustedURL,
@@ -118,9 +122,11 @@ let SET_ATTRIBUTE_TYPE_MAP = {
   },
   'HTMLScriptElement': {
     'src': TrustedTypes.TrustedScriptURL,
+    // 'srcset': TrustedTypes.TrustedScriptURL, // Eventually
     'text': TrustedTypes.TrustedScript,
   },
   'HTMLElement': {
+    // Event handlers handled specially
   },
 };
 
@@ -632,6 +638,25 @@ export class TrustedTypesEnforcer {
   }
 
   /**
+   * The name of the attribute being enforced.
+   * @param {string} propertyName
+   * @param {Array} args
+   * @return {string}
+   * @private
+   */
+  getAttributeName_(propertyName, args) {
+    if (propertyName === 'setAttribute') {
+      return (args[0] = String(args[0])).toLowerCase();
+    }
+    if (propertyName === 'setAttributeNS') {
+      const qname = (args[1] = String(args[1]));
+      const colon = apply(indexOf, qname, [':']);
+      return qname.substring(colon + 1).toLowerCase();
+    }
+    return propertyName;
+  }
+
+  /**
    * Logs and enforces TrustedTypes depending on the given configuration.
    * @template T
    * @param {!Object} context The object that the setter is called for.
@@ -655,9 +680,10 @@ export class TrustedTypesEnforcer {
 
     if (typeToEnforce === TrustedTypes.TrustedScript) {
       const isInlineEventHandler =
-          propertyName == 'setAttribute' ||
+          propertyName === 'setAttribute' ||
           propertyName === 'setAttributeNS' ||
-          apply(slice, propertyName, [0, 2]) === 'on';
+          'on' === apply(
+            slice, this.getAttributeName_(propertyName, args), [0, 2]);
       // If a function (instead of string) is passed to inline event attribute,
       // or set(Timeout|Interval), pass through.
       const propertyAcceptsFunctions =
@@ -670,6 +696,11 @@ export class TrustedTypesEnforcer {
       }
     }
 
+    if (isArray(value) &&
+        this.getAttributeName_(propertyName, args) === 'srcset') {
+      args[argNumber] = this.filterSrcset_(context, typeToEnforce, value);
+      return apply(originalSetter, context, args);
+    }
 
     // Apply url-allow-http
     if (typeToEnforce === TrustedTypes.TrustedURL &&
@@ -686,6 +717,13 @@ export class TrustedTypesEnforcer {
     if (fallback) {
       const fallbackPolicy = getExposedPolicy.call(TrustedTypes, fallback);
       if (fallbackPolicy && TYPE_CHECKER_MAP.hasOwnProperty(typeName)) {
+        if (this.getAttributeName_(propertyName, args) === 'srcset') {
+          const srcset = parseSrcset(String(value));
+          return apply(
+            originalSetter, context,
+            [this.filterSrcset_(context, typeToEnforce, srcset)]);
+        }
+
         let fallbackValue;
         let exceptionThrown;
         try {
@@ -746,5 +784,40 @@ export class TrustedTypesEnforcer {
     } else { // pass-through
       return apply(originalSetter, context, args);
     }
+  }
+
+  /**
+   * Given a structured srcset value, apply the policy to
+   * @param {!Object} context The object that the setter is called for.
+   * @param {!Function} typeToEnforce The type to enforce.
+   * @param {!Array} imageCandidates A list of image candidates similar
+   *     in structure to the output of parseSrcset but url property values
+   *     may be trusted values.
+   * @return {string} a valid srcset value string that only includes URLs
+   *     allowed by the policy.
+   */
+  filterSrcset_(context, typeToEnforce, imageCandidates) {
+    const filteredImageCandidates = [];
+    const identity = (x) => x;
+    for (let i = 0, n = imageCandidates.length; i < n; ++i) {
+      const imageCandidate = imageCandidates[i];
+      if (!apply(hasOwnProperty, imageCandidate, ['url'])) {
+        continue;
+      }
+      let url = imageCandidate.url;
+      try {
+        url = this.enforce_(context, 'src', typeToEnforce, identity, 0, [url]);
+      } catch (e) {
+        continue;
+      }
+      const filteredImageCandidate = create(null);
+      filteredImageCandidate.url = url;
+      if (apply(hasOwnProperty, imageCandidate, ['metadata'])) {
+        filteredImageCandidate.metadata = imageCandidate.metadata;
+      }
+      filteredImageCandidates[filteredImageCandidates.length] =
+        filteredImageCandidate;
+    }
+    return unparseSrcset(filteredImageCandidates);
   }
 }

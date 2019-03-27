@@ -1080,6 +1080,18 @@ describe('TrustedTypesEnforcer', function() {
       expect(el.getAttribute('src')).toEqual(TEST_URL);
     });
 
+    it('on Element.prototype.setAttribute with structured value', function() {
+      let el = document.createElement('img');
+
+      // TODO: what about 'http://www.w3.org/1999/xhtml'?
+      el.setAttributeNS(
+        'http://www.w3.org/1999/xhtml', 'srcset',
+        [{url: policy.createURL(TEST_URL)}]);
+
+      expect(el.getAttributeNS('http://www.w3.org/1999/xhtml', 'srcset')).toEqual(TEST_URL);
+      expect(el.getAttribute('srcset')).toEqual(TEST_URL);
+    });
+
     it('on object codebase', function() {
       let el = document.createElement('object');
 
@@ -1200,6 +1212,72 @@ describe('TrustedTypesEnforcer', function() {
           .toThrowError(TypeError);
 
       expect(el.innerHTML).toEqual('');
+    });
+
+    describe('is invoked on structured value parts', function() {
+      describe('on img srcset', function() {
+        // TODO: what should happen when given an unstructured TrustedURL?
+        // TODO: should multiple events be issues when multiple different URLs
+        // in a srcset are rejected?
+
+        // The default policy allows TEST_URL but not EVIL_URL.
+        let policy = null;
+
+        beforeEach(function() {
+          const fallbackName = `${ Math.random() }`;
+          enforcer = new TrustedTypesEnforcer(new TrustedTypeConfig(
+            /* isLoggingEnabled */ false,
+            /* isEnforcementEnabled */ true,
+            fallbackName, ['*']));
+          enforcer.install();
+          policy = TrustedTypes.createPolicy(Math.random(), noopPolicy, true);
+          TrustedTypes.createPolicy(fallbackName, {
+            'createURL': (s) => {
+              if (s === TEST_URL) {
+                return s;
+              }
+              throw new Error();
+            },
+          }, true);
+        });
+
+        it('with string', function() { // TODO: is there a default policy here?
+          let el = document.createElement('img');
+
+          expect(function() {
+            el.srcset = `${TEST_URL} 123x, javascript:bad() 1.5p, ${TEST_URL}`;
+          }).not.toThrow();
+
+          expect(el.srcset)
+            .toEqual(`${TEST_URL} 123x , ${TEST_URL}`);
+        });
+
+        it('with array', function() {
+          let el = document.createElement('img');
+
+          expect(function() {
+            el.srcset = [
+              {
+                // Passes via type check
+                url: policy.createURL('/ok'),
+                metadata: '123x',
+              },
+              {
+                // Rejected by fallback policy
+                url: 'javascript:evil()',
+                metadata: '1.5p',
+              },
+              {
+                // Accepted by fallback policy
+                url: TEST_URL,
+              },
+            ];
+          }).not.toThrow();
+
+          expect(el.srcset)
+            .toEqual(`/ok 123x , ${ TEST_URL }`);
+        });
+      });
     });
   });
 
