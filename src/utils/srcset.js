@@ -8,7 +8,7 @@
  */
 
 const {apply} = Reflect;
-const {exec} = RegExp.prototype;
+const {exec, test} = RegExp.prototype;
 
 /**
  * Given a valid srcset attribute value, returns an array where each element
@@ -16,10 +16,14 @@ const {exec} = RegExp.prototype;
  * element zero, and may contain image metadata in element one.
  *
  * For example, given "/url0 128w, /url1 1.5x, /url2" it returns
- * [ [ "/url0", "128w" ], [ "/url1", "1.5x" ], [ "/url2" ] ]
+ * [
+ *   { url: "/url0", metadata: "128w" },
+ *   { url: "/url1", metadata: "1.5x" },
+ *   { url: "/url2" }
+ * ]
  *
  * @param {string} str
- * @return {Array<Array<string>>}
+ * @return {!Array<!{ url: string, metadata: (string | undefined) }>}
  * @see https://html.spec.whatwg.org/multipage/images.html#srcset-attribute
  */
 export function parseSrcset(str) {
@@ -27,7 +31,7 @@ export function parseSrcset(str) {
  throw new TypeError(str);
 }
 
-  const pairs = [];
+  const imageCandidates = [];
   // Unfortunately, we can't regex split on commas because
   // http://example.com?a=b,c is valid as a URL part.
   const tokens = str.split(ASCII_SPACES_RE);
@@ -68,14 +72,14 @@ export function parseSrcset(str) {
     }
 
     if (metadata !== null) {
-      requireValidSrcsetMetadata(metadata);
+      requireValidSrcMetadata(metadata);
     }
     // Content checks for URLs are delayed until after policy applicaiton.
-    let pair = [url];
+    let imageCandidate = {url};
     if (metadata !== null) {
-      pair[1] = metadata;
+      imageCandidate.metadata = metadata;
     }
-    pairs.push(pair);
+    imageCandidates.push(imageCandidate);
 
     if (i === n) {
       // No comma or excess tokens.
@@ -106,7 +110,7 @@ export function parseSrcset(str) {
       `srcset includes unconsumed content: ${ tokens.slice(i).join(' ') }`);
   }
 
-  return pairs;
+  return imageCandidates;
 }
 
 /**
@@ -114,13 +118,14 @@ export function parseSrcset(str) {
  * This may throw on inputs that cannot be serialized, including some
  * inputs returned by parseSrcset.
  *
- * @param {Array<Array<string>>} imageCandidates
+ * @param {!Array<!{ url: string, metadata: (string | undefined) }>}
+ *        imageCandidates
  * @return {string}
  */
 export function unparseSrcset(imageCandidates) {
   let out = '';
   for (let i = 0, n = imageCandidates.length; i < n; ++i) {
-    let [url, metadata] = imageCandidates[i];
+    let {url, metadata} = imageCandidates[i];
     if (i) {
       out += ' , ';
     }
@@ -129,7 +134,7 @@ export function unparseSrcset(imageCandidates) {
     out += url;
     if (metadata) {
       metadata = `${ metadata }`;
-      requireValidSrcsetMetadata(metadata);
+      requireValidSrcMetadata(metadata);
       out += ' ' + metadata;
     }
   }
@@ -161,14 +166,14 @@ function isValidFloatingPointNumber(str) {
   if (typeof str !== 'string') {
     throw new TypeError(str);
   }
-  return FLOAT_RE.test(str);
+  return apply(test, FLOAT_RE, [str]);
 }
 
 /**
  * Throws if str is not a valid image metadata string.
  * @param {string} metadata
  */
-function requireValidSrcsetMetadata(metadata) {
+function requireValidSrcMetadata(metadata) {
   let numberPart = metadata;
   // Metadata may have a letter after the (integer | float) part.
   // Integers are lexically a subset of floats so just check that it floats.

@@ -24,26 +24,41 @@ describe('util/srcset', () => {
     });
 
     it('one url ok', () => {
-      deepEquals(parseSrcset('/'), [['/']]);
-      deepEquals(parseSrcset('https://example.com/'), [['https://example.com/']]);
+      deepEquals(
+        parseSrcset('/'),
+        [{url: '/'}]);
+      deepEquals(
+        parseSrcset('https://example.com/'),
+        [{url: 'https://example.com/'}]);
     });
 
     it('two urls', () => {
       deepEquals(
         parseSrcset('/url1 123x, /url2'),
-        [['/url1', '123x'], ['/url2']]);
+        [
+          {url: '/url1', metadata: '123x'},
+          {url: '/url2'},
+        ]);
     });
 
     it('three', () => {
       deepEquals(
         parseSrcset('/url1 123x, /url2 1.5p, /url3'),
-        [['/url1', '123x'], ['/url2', '1.5p'], ['/url3']]);
+        [
+          {url: '/url1', metadata: '123x'},
+          {url: '/url2', metadata: '1.5p'},
+          {url: '/url3'},
+        ]);
     });
 
     it('leading and trailing spaces', () => {
       deepEquals(
         parseSrcset('  /url1 123x , /url2 1.5p,/url3\n'),
-        [['/url1', '123x'], ['/url2', '1.5p'], ['/url3']]);
+        [
+          {url: '/url1', metadata: '123x'},
+          {url: '/url2', metadata: '1.5p'},
+          {url: '/url3'},
+        ]);
     });
 
     it('trailing commas', () => {
@@ -57,7 +72,7 @@ describe('util/srcset', () => {
     it('comma stuck to url and metadata ambiguity', () => {
       deepEquals(
         parseSrcset('/url, 123x'),
-        [['/url,', '123x']]);
+        [{url: '/url,', metadata: '123x'}]);
       // Also ok if this throws.
     });
 
@@ -97,15 +112,15 @@ describe('util/srcset', () => {
             '/ -123.456E+12f',
           ].join(' , ')),
         [
-          ['/', '1'],
-          ['/', '-1'],
-          ['/', '-1.0'],
-          ['/', '-123.456'],
-          ['/', '-123.456e1'],
-          ['/', '-123.456E1'],
-          ['/', '-123.456E-1'],
-          ['/', '-123.456E+12'],
-          ['/', '-123.456E+12f'],
+          {url: '/', metadata: '1'},
+          {url: '/', metadata: '-1'},
+          {url: '/', metadata: '-1.0'},
+          {url: '/', metadata: '-123.456'},
+          {url: '/', metadata: '-123.456e1'},
+          {url: '/', metadata: '-123.456E1'},
+          {url: '/', metadata: '-123.456E-1'},
+          {url: '/', metadata: '-123.456E+12'},
+          {url: '/', metadata: '-123.456E+12f'},
         ]);
     });
   });
@@ -120,68 +135,71 @@ describe('util/srcset', () => {
     });
 
     it('one url', () => {
-      expect(unparseSrcset([['/url']])).toEqual('/url');
+      expect(unparseSrcset([{url: '/url'}])).toEqual('/url');
     });
 
     it('url with metadata', () => {
-      expect(unparseSrcset([['/url', '123x']])).toEqual('/url 123x');
+      expect(unparseSrcset(
+        [
+          {url: '/url', metadata: '123x'},
+        ])).toEqual('/url 123x');
     });
 
     it('lots of urls', () => {
       expect(unparseSrcset(
         [
-          ['/url1', '123x'],
-          ['/url2', '-1.5e3p'],
-          ['/url3'],
+          {url: '/url1', metadata: '123x'},
+          {url: '/url2', metadata: '-1.5e3p'},
+          {url: '/url3'},
         ])).toEqual('/url1 123x , /url2 -1.5e3p , /url3');
     });
 
     it('extra stuff', () => {
       expect(unparseSrcset(
         [
-          ['/url', '123x', 'don\t mind me'],
+          {url: '/url', metadata: '123x', extra: 'don\t mind me'},
         ])).toEqual('/url 123x');
     });
 
     describe('reject ambiguity', () => {
       it('comma at front', () => {
-        expect(() => unparseSrcset([[',url']])).toThrow();
+        expect(() => unparseSrcset([{url: ',url'}])).toThrow();
       });
 
       it('comma at end', () => {
-        expect(() => unparseSrcset([['url,']])).toThrow();
+        expect(() => unparseSrcset([{url: 'url,'}])).toThrow();
       });
 
       it('comma in middle', () => {
-        expect(() => unparseSrcset([['ur,l']])).toThrow();
+        expect(() => unparseSrcset([{url: 'ur,l'}])).toThrow();
       });
 
       it('whitespace at front', () => {
-        expect(() => unparseSrcset([[' url']])).toThrow();
+        expect(() => unparseSrcset([{url: ' url'}])).toThrow();
       });
 
       it('whitespace at end', () => {
-        expect(() => unparseSrcset([['url\t']])).toThrow();
+        expect(() => unparseSrcset([{url: 'url\t'}])).toThrow();
       });
 
       it('whitespace in middle', () => {
-        expect(() => unparseSrcset([['ur\n123x']])).toThrow();
+        expect(() => unparseSrcset([{url: 'ur\n123x'}])).toThrow();
       });
     });
 
-    describe('predictable on sppoky', () => {
+    describe('predictable on spooky', () => {
       it('stringifier', () => {
         let callCount = 0;
 
         expect(unparseSrcset(
           [
-            [
-              {
+            {
+              url: {
                 toString() {
                   return callCount++ ? ',bar,' : 'foo';
                 },
               },
-            ],
+            },
           ]))
           .toEqual('foo');
 
@@ -189,17 +207,17 @@ describe('util/srcset', () => {
       });
 
       it('array', () => {
-        let callCounts = [0, 0];
-        let spookyArray = new Proxy(
-          [],
+        let callCounts = {url: 0, metadata: 0};
+        let spookyImageCandidate = new Proxy(
+          {},
           {
             get(target, prop) {
               return String(callCounts[prop]++);
             },
           });
 
-        expect(unparseSrcset([spookyArray])).toEqual('0 0');
-        deepEquals(callCounts, [1, 1]);
+        expect(unparseSrcset([spookyImageCandidate])).toEqual('0 0');
+        deepEquals(callCounts, {url: 1, metadata: 1});
       });
     });
   });
