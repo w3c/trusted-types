@@ -63,7 +63,7 @@ first step:
 *   **TrustedHTML**: This type would be used to represent a trusted snippet that could be passed
     into an HTML context.
 
-    ```
+    ```webidl
     interface TrustedHTML {
       stringifier;
     }
@@ -72,7 +72,7 @@ first step:
 *   **TrustedURL**: This type would be used to represent a trusted URL that could be used to load
     non-scripting resources or navigate a frame.
 
-    ```
+    ```webidl
     interface TrustedURL {
       stringifier;
     }
@@ -81,7 +81,7 @@ first step:
 *   **TrustedScriptURL**: This type would be used to represent a URL that could be used to load
     resources that may result in script execution in the current document.
 
-    ```
+    ```webidl
     interface TrustedScriptURL {
       stringifier;
     }
@@ -91,7 +91,7 @@ first step:
     something that is trusted by the author to be executed by adding it to a `<script>` element
     content, inline event handler or passing to an `eval` function family.
 
-    ```
+    ```webidl
     interface TrustedScript {
       stringifier;
     }
@@ -136,7 +136,7 @@ As valid trusted type objects must originate from a policy, those policies alone
 
 #### Policies API
 
-```
+```webidl
 interface TrustedTypePolicyFactory {
     TrustedTypePolicy createPolicy(DOMString policyName, TrustedTypeInnerPolicy policy, optional boolean expose = false);
     TrustedTypePolicy getExposedPolicy(DOMString policyName);
@@ -147,7 +147,7 @@ We propose to provide a `TrustedTypePolicyFactory` implementation under `window.
 
 The policy rules for creating individual types are configured via the properties of `TrustedTypeInnerPolicy` object. Note that the functions operate on strings. The actual type construction is provided by the private API, not exposed to the authors.
 
-```
+```webidl
 interface TrustedTypeInnerPolicy {
     string createHTML(string);
     string createURL(string);
@@ -183,7 +183,7 @@ the polyfill code.
 #### Limiting policies
 
 We propose to allow for whitelisting policy names in a CSP, e.g. in a following fashion:
-```
+```http
 Content-Security-Policy: trusted-types foo bar
 ```
 
@@ -204,7 +204,7 @@ Please check the [specification draft](https://wicg.github.io/trusted-types/dist
 *   **HTML Contexts**: Given something like `typedef (DOMString or TrustedHTML) HTMLString`, we'd
     poke at a number of methods and attribute setters to accept the new type:
 
-    ```
+    ```webidl
     partial interface Element {
         attribute HTMLString innerHTML;
         attribute HTMLString outerHTML;
@@ -212,26 +212,26 @@ Please check the [specification draft](https://wicg.github.io/trusted-types/dist
     };
     ```
 
-    ```
+    ```webidl
     partial interface Document {
         void write(HTMLString text);
         void writeln(HTMLString text);
     };
     ```
 
-    ```
+    ```webidl
     partial interface DOMParser {
         Document parseFromString(HTMLString str, SupportedType type);
     };
     ```
 
-    ```
+    ```webidl
     partial interface Range {
         DocumentFragment createContextualFragment(HTMLString fragment);
     };
     ```
 
-    ```
+    ```webidl
     partial interface HTMLIFrameElement {
          DOMString srcdoc;
     };
@@ -240,7 +240,7 @@ Please check the [specification draft](https://wicg.github.io/trusted-types/dist
 *   **URL Contexts**: Given something like `typedef (USVString or TrustedURL) URLString`, we'd poke
     at a number of methods and attribute setters to accept the new type:
 
-    ```
+    ```webidl
     partial interface Location {
         stringifier attribute URLString href;
         void assign(URLString url);
@@ -252,7 +252,7 @@ Please check the [specification draft](https://wicg.github.io/trusted-types/dist
     };
     ```
 
-    ```
+    ```webidl
     // A few element types go here. `HTMLBaseElement`, `HTMLLinkElement`
     // `HTMLHyperlinkElementUtils` from a quick skim through HTML.
     partial interface HTMLXXXElement : HTMLElement {
@@ -260,7 +260,7 @@ Please check the [specification draft](https://wicg.github.io/trusted-types/dist
     };
     ```
 
-    ```
+    ```webidl
     // A few element types go here. `HTMLSourceElement`, `HTMLImageElement`,
     // `HTMLIFrameElement`, `HTMLTrackElement`, `HTMLMediaElement`,
     // `HTMLInputElement`,  `HTMLFrameElement`
@@ -273,19 +273,20 @@ Please check the [specification draft](https://wicg.github.io/trusted-types/dist
     };
     ```
 
-    ```
+    ```webidl
     partial interface HTMLObjectElement : HTMLElement {
         attribute URLString data;
         attribute URLString codebase;
     };
     ```
-    ```
+
+    ```webidl
     partial interface Document {
         attribute URLString location;
     };
     ```
 
-    ```
+    ```webidl
     partial interface Window {
         attribute URLString location;
         void open(URLString location);
@@ -295,13 +296,13 @@ Please check the [specification draft](https://wicg.github.io/trusted-types/dist
 * **Script URL Context**: Given something like `typedef (USVString or TrustedScriptURL) ScriptURLString`,
     we'd poke at a number of methods and attribute setters to accept the new type:
 
-    ```
+    ```webidl
     partial interface WorkerGlobalScope {
         void importScripts(ScriptURLString... urls);
     };
     ```
 
-    ```
+    ```webidl
     // A few element types go here. `HTMLEmbedElement`, `HTMLScriptElement`
     // from a quick skim through HTML.
     //
@@ -314,7 +315,7 @@ Please check the [specification draft](https://wicg.github.io/trusted-types/dist
 *   **JavaScript Contexts**: Replace `DOMString` in the following with something
     reasonable.
 
-    ```
+    ```webidl
     partial interface Window {
         void eval(DOMString code);
         void setTimeout(DOMString code, int timeout);
@@ -322,7 +323,7 @@ Please check the [specification draft](https://wicg.github.io/trusted-types/dist
     };
     ```
 
-    ```
+    ```webidl
     partial interface HTMLScriptElement : HTMLElement {
         attribute DOMString innerText;
         attribute DOMString text;
@@ -365,7 +366,7 @@ The es5/es6 builds can be loaded directly in the browsers. There are two variant
 ### NodeJS
 CommonJS polyfill is published as an npm package [trusted-types](https://www.npmjs.com/package/trusted-types):
 
-```
+```sh
 $ npm install trusted-types
 ```
 
@@ -378,9 +379,10 @@ tt.createPolicy(...);
 Due to the way the API is designed, it's possible to polyfill the most important
 API surface (`TrustedTypes.createPolicy` function) with the following snippet:
 
-```
+```javascript
 if(typeof TrustedTypes == “undefined”)TrustedTypes={createPolicy:(n, rules) => rules};
 ```
+
 It does not enable the enforcement, but allows the creation of policies that
 return string values instead of Trusted Types in non-supporting browsers. Since
 the injection sinks in those browsers accept strings, the values will be accepted
@@ -391,7 +393,7 @@ to work in both Trusted-Type-enforcing and a legacy environment.
 
 To build the polyfill yourself (Java required):
 
-```
+```sh
 $ git clone https://github.com/mikewest/trusted-types/
 $ cd trusted-types
 $ npm install
@@ -403,7 +405,7 @@ To see the polyfill in action, visit the [demo page](https://wicg.github.io/trus
 
 ## Testing
 It can be tested by running:
-```
+```sh
 $ npm test
 ```
 The polyfill can also be run against the [web platform test suite](https://github.com/w3c/web-platform-tests), but that requires small patches to the suite - see [tests/platform-tests/platform-tests-runner.sh](tests/platform-tests/platform-tests-runner.sh).
