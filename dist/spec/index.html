@@ -1212,9 +1212,9 @@ Possible extra rowspan handling
 		}
 	}
 </style>
-  <meta content="Bikeshed version 9c6ae748322940994300e90a77c34437364b40a6" name="generator">
+  <link href="https://www.w3.org/StyleSheets/TR/2016/cg-draft" rel="stylesheet">
+  <meta content="Bikeshed version e0f6b8b749fa390ec1e89d64ac471d2710b038a2" name="generator">
   <link href="https://wicg.github.io/trusted-types/dist/spec/" rel="canonical">
-  <meta content="1c06989ea82f0e93e89da8f0cc7b159e42934752" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -1461,7 +1461,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Trusted Types Spec WIP</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2019-03-12">12 March 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-04-23">23 April 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1726,7 +1726,7 @@ These objects are immutable
 wrappers around a string, constructed via a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy">TrustedTypePolicy</a></code>'s <code class="idl"><a data-link-type="idl" href="#dom-trustedtypepolicy-createhtml" id="ref-for-dom-trustedtypepolicy-createhtml">createHTML</a></code> method.</p>
 <pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed"><c- g>Exposed</c-></a>=<c- n>Window</c->]
 <c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="trustedhtml"><code><c- g>TrustedHTML</c-></code></dfn> {
-  <dfn data-dfn-for="TrustedHTML" data-dfn-type="dfn" data-lt="stringification behavior" data-noexport id="TrustedHTML-stringification-behavior"><c- b>stringifier</c-><a class="self-link" href="#TrustedHTML-stringification-behavior"></a></dfn>;
+  <dfn data-dfn-for="TrustedHTML" data-dfn-type="dfn" data-export data-lt="stringification behavior" id="TrustedHTML-stringification-behavior"><c- b>stringifier</c-><a class="self-link" href="#TrustedHTML-stringification-behavior"></a></dfn>;
 };
 </pre>
    <p>TrustedHTML objects have a <code>[[Data]]</code> internal slot which holds a
@@ -1741,7 +1741,7 @@ These objects are immutable wrappers
 around a string, constructed via a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy①">TrustedTypePolicy</a></code>'s <code class="idl"><a data-link-type="idl" href="#dom-trustedtypepolicy-createscript" id="ref-for-dom-trustedtypepolicy-createscript">createScript</a></code> method.</p>
 <pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed①"><c- g>Exposed</c-></a>=<c- n>Window</c->]
 <c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="trustedscript"><code><c- g>TrustedScript</c-></code></dfn> {
-  <dfn data-dfn-for="TrustedScript" data-dfn-type="dfn" data-lt="stringification behavior" data-noexport id="TrustedScript-stringification-behavior"><c- b>stringifier</c-><a class="self-link" href="#TrustedScript-stringification-behavior"></a></dfn>;
+  <dfn data-dfn-for="TrustedScript" data-dfn-type="dfn" data-export data-lt="stringification behavior" id="TrustedScript-stringification-behavior"><c- b>stringifier</c-><a class="self-link" href="#TrustedScript-stringification-behavior"></a></dfn>;
 };
 </pre>
    <p>TrustedScript objects have a <code>[[Data]]</code> internal slot which holds a
@@ -1756,7 +1756,7 @@ These objects are immutable wrappers around a
 string, constructed via a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy②">TrustedTypePolicy</a></code>'s <code class="idl"><a data-link-type="idl" href="#dom-trustedtypepolicy-createscripturl" id="ref-for-dom-trustedtypepolicy-createscripturl">createScriptURL</a></code> method.</p>
 <pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed②"><c- g>Exposed</c-></a>=<c- n>Window</c->]
 <c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="trustedscripturl"><code><c- g>TrustedScriptURL</c-></code></dfn> {
-  <dfn data-dfn-for="TrustedScriptURL" data-dfn-type="dfn" data-lt="stringification behavior" data-noexport id="TrustedScriptURL-stringification-behavior"><c- b>stringifier</c-><a class="self-link" href="#TrustedScriptURL-stringification-behavior"></a></dfn>;
+  <dfn data-dfn-for="TrustedScriptURL" data-dfn-type="dfn" data-export data-lt="stringification behavior" id="TrustedScriptURL-stringification-behavior"><c- b>stringifier</c-><a class="self-link" href="#TrustedScriptURL-stringification-behavior"></a></dfn>;
 };
 </pre>
    <p>TrustedScriptURL objects have a <code>[[Data]]</code> internal slot which holds a
@@ -1771,7 +1771,7 @@ These objects are immutable wrappers around a
 string, constructed via a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy③">TrustedTypePolicy</a></code>'s <code class="idl"><a data-link-type="idl" href="#dom-trustedtypepolicy-createurl" id="ref-for-dom-trustedtypepolicy-createurl">createURL</a></code> method.</p>
 <pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed③"><c- g>Exposed</c-></a>=<c- n>Window</c->]
 <c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="trustedurl"><code><c- g>TrustedURL</c-></code></dfn> {
-  <dfn data-dfn-for="TrustedURL" data-dfn-type="dfn" data-lt="stringification behavior" data-noexport id="TrustedURL-stringification-behavior"><c- b>stringifier</c-><a class="self-link" href="#TrustedURL-stringification-behavior"></a></dfn>;
+  <dfn data-dfn-for="TrustedURL" data-dfn-type="dfn" data-export data-lt="stringification behavior" id="TrustedURL-stringification-behavior"><c- b>stringifier</c-><a class="self-link" href="#TrustedURL-stringification-behavior"></a></dfn>;
 };
 </pre>
    <p>TrustedURL objects have a <code>[[Data]]</code> internal slot which holds a
@@ -3468,7 +3468,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <dt id="biblio-rfc2119">[RFC2119]
    <dd>S. Bradner. <a href="https://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>. March 1997. Best Current Practice. URL: <a href="https://tools.ietf.org/html/rfc2119">https://tools.ietf.org/html/rfc2119</a>
    <dt id="biblio-webidl">[WebIDL]
-   <dd>Cameron McCormack; Boris Zbarsky; Tobie Langel. <a href="https://heycam.github.io/webidl/">Web IDL</a>. 15 December 2016. ED. URL: <a href="https://heycam.github.io/webidl/">https://heycam.github.io/webidl/</a>
+   <dd>Boris Zbarsky. <a href="https://heycam.github.io/webidl/">Web IDL</a>. 15 December 2016. ED. URL: <a href="https://heycam.github.io/webidl/">https://heycam.github.io/webidl/</a>
   </dl>
   <h3 class="no-num no-ref heading settled" id="informative"><span class="content">Informative References</span><a class="self-link" href="#informative"></a></h3>
   <dl>
