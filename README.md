@@ -1,4 +1,4 @@
-# Explainer: Trusted Types for DOM Manipulation
+# Trusted Types explainer
 
 First time here? This is a repository hosting the Trusted Types specification draft and the polyfill code. You might want to check out other resources about Trusted Types:
 
