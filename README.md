@@ -1,3 +1,9 @@
+[![Build Status](https://travis-ci.org/WICG/trusted-types.svg)](https://travis-ci.org/WICG/trusted-types)
+![npm bundle size](https://img.shields.io/bundlephobia/minzip/trusted-types.svg)
+![Libraries.io dependency status for latest release](https://img.shields.io/librariesio/release/npm/trusted-types.svg)
+![GitHub issues](https://img.shields.io/github/issues/WICG/trusted-types.svg)
+![npm](https://img.shields.io/npm/v/trusted-types.svg)
+
 # Trusted Types explainer
 
 First time here? This is a repository hosting the Trusted Types specification draft and the polyfill code. You might want to check out other resources about Trusted Types:
@@ -5,8 +11,6 @@ First time here? This is a repository hosting the Trusted Types specification dr
  * [Specification draft](https://wicg.github.io/trusted-types/dist/spec/) - a more comprehensive and formalized description of the API.
  * [Introduction for developers](https://developers.google.com/web/updates/2019/02/trusted-types).
  * [Origin trial for Trusted Typers](https://developers.chrome.com/origintrials/#/view_trial/171136785840078849) - use the native API in Chrome via [origin trials](https://github.com/GoogleChrome/OriginTrials/blob/gh-pages/developer-guide.md). 
-
-[![Build Status](https://travis-ci.org/WICG/trusted-types.svg)](https://travis-ci.org/WICG/trusted-types)
 
 ## The Problem
 
