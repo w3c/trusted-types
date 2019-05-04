@@ -27,9 +27,9 @@
   "author": "Google Inc.",
   "license": "W3C-20150513",
   "devDependencies": {
-    "babel-core": "^6.26.3",
-    "babel-preset-env": "^1.7.0",
-    "babelify": "^8.0.0",
+    "@babel/core": "^7.4.4",
+    "@babel/preset-env": "^7.4.4",
+    "babelify": "^10.0.0",
     "bikeshed-js": "^1.0.7",
     "browserify": "^16.2.3",
     "eslint": "^5.16.0",
