@@ -390,7 +390,7 @@ export class TrustedTypesEnforcer {
           return type;
         }
         // Explore the prototype chain.
-      } while (ctor = getPrototypeOf(ctor));
+      } while (ctor && (ctor = getPrototypeOf(ctor)));
 
       return null;
   }

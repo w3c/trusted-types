@@ -1,3 +1,4 @@
+/* eslint-disable require-jsdoc */
 /**
  * @license
  * Copyright 2017 Google Inc. All Rights Reserved.
@@ -10,35 +11,30 @@
 var path = require('path');
 var gulp = require('gulp');
 var bikeshed = require('bikeshed-js');
-var closureCompiler = require('gulp-closure-compiler');
+var sizereport = require('gulp-sizereport');
+var closureCompiler = require('google-closure-compiler').gulp();
+var sourcemaps = require('gulp-sourcemaps');
 
-gulp.task('default', ['es5']);
-
-function compileSettings(entryPoint, destDir, fileName, languageOut) {
-  return {
-    compilerPath: './node_modules/google-closure-compiler/compiler.jar',
-    fileName: fileName,
-    compilerFlags: Object.assign({}, flags, {
+function compileSettings(entryPoint, fileName, languageOut) {
+  return Object.assign({}, flags, {
+      js_output_file: fileName,
       language_out: languageOut,
       entry_point: entryPoint,
-      create_source_map: destDir + '/' + fileName + '.map',
-      source_map_include_content: null,
-      output_wrapper: '(function(){%output%}).call(window);//# sourceMappingURL=' + fileName + '.map',
-    }),
-    // gulp plugin for the closure-compiler considers any output as a warning, including debug info.
-    continueWithWarnings: true
-  }
+    });
 }
 
 var flags = {
   dependency_mode: 'STRICT',
-  compilation_level: 'ADVANCED_OPTIMIZATIONS',
+  isolation_mode: 'IIFE',
+  strict_mode_input: null,
+  compilation_level: 'ADVANCED',
   language_in: 'ECMASCRIPT6_STRICT',
   jscomp_warning: [],
   jscomp_error: [
     "accessControls",
     "ambiguousFunctionDecl",
     "checkDebuggerStatement",
+    "checkPrototypalTypes",
     "checkRegExp",
     "checkTypes",
     "checkVars",
@@ -85,65 +81,67 @@ var flags = {
     "unknownDefines",
     "unusedLocalVariables",
     "unusedPrivateMembers",
-    "uselessCode",
     "useOfGoogBase",
+    "uselessCode",
     "visibility",
   ],
   use_types_for_optimization: null,
+  assume_function_wrapper: null,
 };
-
-gulp.task('es5', ['es5.full', 'es5.api']);
-gulp.task('es6', ['es6.full', 'es6.api']);
 
 gulp.task('es5.api', function() {
   return gulp.src([
-      'src/**/*.js',
-    ])
+      './src/**/*.js',
+    ], {base: './'})
+    .pipe(sourcemaps.init())
     .pipe(closureCompiler(
       compileSettings(
-        'src/polyfill/api_only.js',
-        'dist/es5',
+        './src/polyfill/api_only.js',
         'trustedtypes.api_only.build.js',
         'ECMASCRIPT5')))
+    .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest('dist/es5'));
 });
 
-gulp.task('es5.full', function() {
+gulp.task('es5.full', function(done) {
   return gulp.src([
-      'src/**/*.js',
-    ])
+    './src/**/*.js',
+  ], {base: './'})
+    .pipe(sourcemaps.init())
     .pipe(closureCompiler(
       compileSettings(
         'src/polyfill/full.js',
-        'dist/es5',
         'trustedtypes.build.js',
         'ECMASCRIPT5')))
+    .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest('dist/es5'));
 });
 
 gulp.task('es6.api', function() {
   return gulp.src([
-      'src/**/*.js',
-    ])
+    './src/**/*.js',
+  ], {base: './'})
+    .pipe(sourcemaps.init())
     .pipe(closureCompiler(
       compileSettings(
         'src/polyfill/api_only.js',
-        'dist/es6',
         'trustedtypes.api_only.build.js',
         'ECMASCRIPT_2017')))
+    .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest('dist/es6'));
 });
 
 gulp.task('es6.full', function() {
   return gulp.src([
-      'src/**/*.js',
-    ])
+    './src/**/*.js',
+  ], {base: './'})
+    .pipe(sourcemaps.init())
     .pipe(closureCompiler(
       compileSettings(
         'src/polyfill/full.js',
-        'dist/es6',
         'trustedtypes.build.js',
         'ECMASCRIPT_2017')))
+    .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest('dist/es6'));
 });
 
@@ -164,3 +162,12 @@ gulp.task('spec.watch', function() {
           bikeshed(bspath, outfile);
       });
 });
+
+gulp.task('sizereport', function() {
+  return gulp.src('./dist/es*/*.js')
+      .pipe(sizereport({gzip: true}));
+});
+
+gulp.task('es5', gulp.parallel('es5.full', 'es5.api'));
+gulp.task('es6', gulp.parallel('es6.full', 'es6.api'));
+gulp.task('default', gulp.series('es5'));

@@ -14,6 +14,8 @@
     ],
     "rules": {
         "jasmine/no-spec-dupes": [1, "branch"],
-        "jasmine/no-suite-dupes": [1, "branch"]
+        "jasmine/no-suite-dupes": [1, "branch"],
+        "indent": 0,
+        "prefer-const": 0
     }
 }
