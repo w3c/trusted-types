@@ -4,7 +4,7 @@
 ![GitHub issues](https://img.shields.io/github/issues/WICG/trusted-types.svg)
 ![npm](https://img.shields.io/npm/v/trusted-types.svg)
 
-# Trusted Types polyfill
+# Trusted Types
 
 First time here? This is a repository hosting the Trusted Types specification draft and the polyfill code. You might want to check out other resources about Trusted Types:
 
