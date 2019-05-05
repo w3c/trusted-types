@@ -4,7 +4,7 @@ https://github.com/WICG/trusted-types/blob/master/README.md#spec-changes
 -->
 
 <pre class='metadata'>
-Title: Trusted Types Spec WIP
+Title: Trusted Types
 Shortname: trusted-types
 Group: WICG
 Level: none
