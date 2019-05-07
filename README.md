@@ -3,6 +3,7 @@
 ![Libraries.io dependency status for latest release](https://img.shields.io/librariesio/release/npm/trusted-types.svg)
 ![GitHub issues](https://img.shields.io/github/issues/WICG/trusted-types.svg)
 ![npm](https://img.shields.io/npm/v/trusted-types.svg)
+[![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=eGZQNXU1U09vZjkrZzYzU3YrQ2FsbUpheGczR0VmMTZUSjBydnNjd1pKTT0tLTZPMWVJTnU1UHJvYjFCb0pHQmlsaXc9PQ%3d%3d--295829245abf0dd0cd150f9ca4fe3198da38747b)](https://www.browserstack.com/automate/public-build/eGZQNXU1U09vZjkrZzYzU3YrQ2FsbUpheGczR0VmMTZUSjBydnNjd1pKTT0tLTZPMWVJTnU1UHJvYjFCb0pHQmlsaXc9PQ%3d%3d--295829245abf0dd0cd150f9ca4fe3198da38747b)
 
 # Trusted Types
 
@@ -88,6 +89,12 @@ It can be tested by running:
 $ npm test
 ```
 The polyfill can also be run against the [web platform test suite](https://github.com/w3c/web-platform-tests), but that requires small patches to the suite - see [tests/platform-tests/platform-tests-runner.sh](tests/platform-tests/platform-tests-runner.sh).
+
+Cross-browser testing provided by BrowserStack.
+
+<a href="https://www.browserstack.com">
+  <img height="70" src="assets/browserstack-logo.svg" alt="BrowserStack">
+</a>
 
 # Contributing
 

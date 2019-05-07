@@ -24,12 +24,22 @@ module.exports = function(config) {
       'tests/**/*.js': ['browserify'],
     },
 
+    // global config of your BrowserStack account
+    browserStack: {
+      username: 'afasfas1',
+      project: 'trusted-types-polyfill',
+    },
+
     browserify : {
             configure: function browserify(bundle) {
                 bundle.once('prebundle', function prebundle() {
-                    bundle.transform('babelify', {presets: ['@babel/preset-env']});
+                    bundle.transform('babelify', {
+                      presets: ['@babel/preset-env'],
+                      sourceMapsAbsolute: true,
+                    });
                 });
-            }
+            },
+            debug: true,
     },
 
     reporters: ['progress'],
@@ -42,12 +52,19 @@ module.exports = function(config) {
 
     autoWatch: true,
 
-    browsers: ['ChromeHeadlessNoSandbox', 'FirefoxHeadlessDev'],
+    browsers: ['ChromeHeadlessNoSandbox', 'FirefoxHeadlessDev', 'ChromeBrowserStack'],
 
     customLaunchers: {
+      ChromeBrowserStack: {
+        base: 'BrowserStack',
+        browser: 'chrome',
+        os: 'windows',
+        os_version: '10',
+      },
       ChromeHeadlessNoSandbox: {
         base: 'ChromeHeadless',
-        flags: ['--no-sandbox']
+        flags: ['--no-sandbox', '--remote-debugging-port=9222'],
+        debug: true,
       },
       FirefoxHeadlessDev: {
         base: 'FirefoxHeadless',
