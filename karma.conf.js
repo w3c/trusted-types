@@ -14,6 +14,7 @@ var browsers = ['ChromeHeadlessNoSandbox', 'FirefoxHeadlessDev'];
 if (!(process.env.TRAVIS && process.env.TRAVIS_SECURE_ENV_VARS === 'false')) {
    browsers.push('ChromeBrowserStack');
    browsers.push('EdgeBrowserStack');
+   browsers.push('SafariBrowserStack');
 }
 
 module.exports = function(config) {
@@ -75,6 +76,13 @@ module.exports = function(config) {
         browser: 'edge',
         os: 'windows',
         os_version: '10',
+      },
+      SafariBrowserStack: {
+        base: 'BrowserStack',
+        browser: 'safari',
+        browser_version: '12',
+        os: 'osx',
+        os_version: 'Mojave',
       },
       ChromeHeadlessNoSandbox: {
         base: 'ChromeHeadless',
