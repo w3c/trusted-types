@@ -26,6 +26,7 @@ module.exports = function(config) {
 
     // global config of your BrowserStack account
     browserStack: {
+      username: 'afasfas1',
       project: 'trusted-types-polyfill',
     },
 
