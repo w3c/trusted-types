@@ -1477,8 +1477,8 @@ Note: Recent drafts move `innerHTML` into a separate
 
 ### Extensions to the Range interface ### {#extensions-to-the-range-interface}
 
-This document modifies the [[DOM-Parsing#extensions-to-the-range-interface|Range]
-] interface defined by [[DOM-Parsing]]:
+This document modifies the [[DOM-Parsing#extensions-to-the-range-interface|Range]]
+interface defined by [[DOM-Parsing]]:
 
 <pre class="idl">
 partial interface Range {
