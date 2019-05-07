@@ -82,9 +82,39 @@ Issue: figure out if we need this section here. CSP has none, SRI has one and it
     libraries that perform auxiliary tasks (e.g. analytics, performance
     monitoring). To ensure that none of these components introduces DOM
     XSS vulnerabilities, author defines a Trusted Type policy in the
-    templating policy and enables the enforcement for the DOM sinks.
-*   Issue: Something about reducing the review surface
+    templating policy and enables enforcement for the DOM sinks.
+*   A large team maintains a complex client-side application.
+    They create a number of Trusted Types policies so that
+    *   A strict auto-escaping template system can
+        *   produces {{TrustedHTML}},
+        *   exempts {{TrustedHTML}} from extra escaping,
+        *   checks that values for HTML attributes like
+            {{HTMLHyperlinkElementUtils/href|href}} and
+            {{HTMLImageElement/src|HTMLImageElement.src}}
+            are {{TrustedURL}} or {{TrustedScriptURL}} or are
+            convertible to the same via the [=default policy=].
+    *   A carefully reviewed HTML sanitizer can
+        *   produce {{TrustedHTML}} from untrusted strings
+        *   exempt {{TrustedHTML}} values from extra sanitizing.
+    *   Thorny legacy code that has a long history of running in
+        production without reported vulnerabilities can continue to
+        run with enforcement enabled.
 
+    The team consolidates the policy implementations and the
+    safe abstractions that use them in a small number of heavily
+    reviewed files and requires extra approval for commits that
+    affect these files.
+
+    The need to create trusted values to affect [=injection sinks=],
+    combined with additional scrutiny on changes that affect policy
+    code, incents developers to find novel ways to use safe
+    abstractions instead of writing ad-hoc string composition code.
+
+    When considering the risk of DOM XSS, security auditors find a
+    small attack surface; they focus on the small amount of code that
+    crafts the [=Trusted-Types HTTP Response Header=] and provides the
+    safe abstractions, and ignore the bulk of client-side application
+    code.
 
 # Framework # {#framework}
 
@@ -97,7 +127,7 @@ string value in a way that could result in XSS if that value is untrusted.
 
 Examples of injection sinks include:
 
-  * Functions that parse & insert HTML strings into he document like
+  * Functions that parse & insert HTML strings into the document like
     [[DOM-Parsing#widl-Element-innerHTML|Element.innerHTML]] setter
   * Setters for {{Element}} attributes that accept a URL of the code to load
     like {{HTMLScriptElement/src!!attribute|HTMLScriptElement.src}}
