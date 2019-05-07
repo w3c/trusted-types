@@ -124,6 +124,11 @@ let SET_ATTRIBUTE_TYPE_MAP = {
   },
 };
 
+// Edge doesn't support srcdoc.
+if (!('srcdoc' in HTMLIFrameElement.prototype)) {
+  delete SET_ATTRIBUTE_TYPE_MAP['HTMLIFrameElement']['srcdoc'];
+}
+
 // Add inline event handlers property names.
 for (let name of getOwnPropertyNames(HTMLElement.prototype)) {
   if (name.slice(0, 2) === 'on') {
@@ -387,10 +392,10 @@ export class TrustedTypesEnforcer {
 
         if (type || ctor == HTMLElement) {
           // Stop at HTMLElement.
-          return type;
+          return /** @type {Function} */ (type);
         }
         // Explore the prototype chain.
-      } while (ctor && (ctor = getPrototypeOf(ctor)));
+      } while (ctor && (ctor = getPrototypeOf(ctor.prototype).constructor));
 
       return null;
   }

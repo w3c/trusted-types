@@ -13,6 +13,7 @@ var browsers = ['ChromeHeadlessNoSandbox', 'FirefoxHeadlessDev'];
 // https://docs.travis-ci.com/user/pull-requests/#pull-requests-and-security-restrictions
 if (!(process.env.TRAVIS && process.env.TRAVIS_SECURE_ENV_VARS === 'false')) {
    browsers.push('ChromeBrowserStack');
+   browsers.push('EdgeBrowserStack');
 }
 
 module.exports = function(config) {
@@ -66,6 +67,12 @@ module.exports = function(config) {
       ChromeBrowserStack: {
         base: 'BrowserStack',
         browser: 'chrome',
+        os: 'windows',
+        os_version: '10',
+      },
+      EdgeBrowserStack: {
+        base: 'BrowserStack',
+        browser: 'edge',
         os: 'windows',
         os_version: '10',
       },
