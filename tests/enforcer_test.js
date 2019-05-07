@@ -1,3 +1,4 @@
+/* eslint-disable require-jsdoc */
 /**
  * @license
  * Copyright 2017 Google Inc. All Rights Reserved.
@@ -48,6 +49,23 @@ describe('TrustedTypesEnforcer', function() {
       /* allowHttpUrls */ false,
       /* cspString */ 'script-src https:'
   );
+
+  function createSPVEvent(params) {
+    if (!window.SecurityPolicyViolationEvent) {
+      return false;
+    }
+
+    return new SecurityPolicyViolationEvent(
+        'securitypolicyviolation',
+        {
+          'disposition': 'report',
+          'documentURI': 'http://a.example',
+          'effectiveDirective': 'x',
+          'originalPolicy': 'y',
+          'statusCode': 'x',
+          'violatedDirective': 'x',
+        }, params);
+  }
 
   describe('install', function() {
     let enforcer;
@@ -279,7 +297,7 @@ describe('TrustedTypesEnforcer', function() {
         expect(caughtEvent).not.toBe(null);
       });
 
-      it('contains relevant properties', () => {
+      it('contains essential properties', () => {
         expect(function() {
           el.innerHTML = TEST_HTML;
         }).not.toThrow();
@@ -288,15 +306,49 @@ describe('TrustedTypesEnforcer', function() {
         expect(caughtEvent.type).toEqual('securitypolicyviolation');
         expect(caughtEvent.effectiveDirective).toEqual('trusted-types');
         expect(caughtEvent.violatedDirective).toEqual('trusted-types');
-        expect(caughtEvent.disposition).toEqual('report');
         expect(caughtEvent.documentURI).toEqual(document.location.href);
         expect(caughtEvent.blockedURI).toEqual('');
-        expect(caughtEvent.target).toBe(el);
+      });
+
+      it('contains disposition', () => {
+        expect(function() {
+          el.innerHTML = TEST_HTML;
+        }).not.toThrow();
+
+        // Edge doesn't support sample
+        let sampleEvent;
+        if (!(sampleEvent = createSPVEvent({'disposition': 'report'}))
+            || sampleEvent.disposition !== 'report') {
+          pending();
+        }
+
+        expect(caughtEvent.disposition).toEqual('report');
+      });
+
+      it('contains sample', () => {
+        expect(function() {
+          el.innerHTML = TEST_HTML;
+        }).not.toThrow();
+
+        // Edge doesn't support sample
+        let sampleEvent;
+        if (!(sampleEvent = createSPVEvent({'sample': 'foo'}))
+            || sampleEvent.sample !== 'foo') {
+          pending();
+        }
+
         expect(caughtEvent.sample).toEqual(
           'HTMLDivElement.innerHTML <b>html</b>');
       });
 
       it('trims sample', () => {
+        // Edge doesn't support sample
+        let sampleEvent;
+        if (!(sampleEvent = createSPVEvent({'sample': 'foo'}))
+            || sampleEvent.sample !== 'foo') {
+          pending();
+        }
+
         expect(function() {
           el.innerHTML = '<b>super long text maybe even user data:12345</b>';
         }).not.toThrow();
@@ -404,7 +456,7 @@ describe('TrustedTypesEnforcer', function() {
         expect(caughtEvent).not.toBe(null);
       });
 
-      it('contains relevant properties', () => {
+      it('contains essential properties', () => {
         expect(function() {
           el.innerHTML = TEST_HTML;
         }).toThrow();
@@ -412,13 +464,26 @@ describe('TrustedTypesEnforcer', function() {
         expect(caughtEvent.originalPolicy).toEqual(
             'script-src https:; trusted-types *');
 
-        expect(caughtEvent.target).toEqual(el);
         expect(caughtEvent.type).toEqual('securitypolicyviolation');
         expect(caughtEvent.effectiveDirective).toEqual('trusted-types');
         expect(caughtEvent.violatedDirective).toEqual('trusted-types');
-        expect(caughtEvent.disposition).toEqual('enforce');
         expect(caughtEvent.documentURI).toEqual(document.location.href);
         expect(caughtEvent.blockedURI).toEqual('');
+      });
+
+      it('contains disposition', () => {
+        expect(function() {
+          el.innerHTML = TEST_HTML;
+        }).toThrow();
+
+        // Edge doesn't support disposition control
+        let sampleEvent;
+        if (!(sampleEvent = createSPVEvent({'disposition': 'report'}))
+            || sampleEvent.disposition !== 'report') {
+          pending();
+        }
+
+        expect(caughtEvent.disposition).toEqual('enforce');
       });
 
       it('contains blocked URI when known', () => {
@@ -596,7 +661,7 @@ describe('TrustedTypesEnforcer', function() {
     it('on Shadow DOM ShadowRoot.innerHTML', function() {
       let wrap = document.createElement('div');
       if (!('attachShadow' in wrap)) {
-        return pending();
+        pending();
       }
       let shadow = wrap.attachShadow({mode: 'open'});
 
@@ -609,6 +674,10 @@ describe('TrustedTypesEnforcer', function() {
 
     it('on iframe srcdoc', function() {
       let el = document.createElement('iframe');
+      if (!('srcdoc' in el)) {
+        // No srcdoc support at all, skip test
+        pending();
+      }
 
       expect(function() {
         el.srcdoc = TEST_HTML;
@@ -732,7 +801,8 @@ describe('TrustedTypesEnforcer', function() {
         el.setAttributeNS('http://www.w3.org/1999/xhtml', 'src', TEST_URL);
       }).toThrow();
 
-      expect(el.getAttributeNS('http://www.w3.org/1999/xhtml', 'src')).toEqual(null);
+      // Null on some browsers, but empty string on Edge.
+      expect(el.getAttributeNS('http://www.w3.org/1999/xhtml', 'src')).toBeFalsy();
     });
 
     it('on document.write', function() {
@@ -908,6 +978,10 @@ describe('TrustedTypesEnforcer', function() {
 
     it('on iframe srcdoc', function() {
       let el = document.createElement('iframe');
+      if (!('srcdoc' in el)) {
+        // No srcdoc support at all, skip test
+        pending();
+      }
 
       expect(function() {
         el.srcdoc = policy.createHTML(TEST_HTML);
