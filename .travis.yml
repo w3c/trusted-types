@@ -9,4 +9,8 @@ cache:
 env:
   - MOZ_HEADLESS=1
 addons:
+  browserstack:
+    username: "afasfas1"
+    access_key:
+      secure: "HFTnJe5v8km054B2cVq/VRjvKOw6IkZOeBQebh++oTi6p4yTUoIbFjR7TcJYGgy/9BNTNLwBlJ5helGcy7rwqXbU/jbtzk6JrBwF/644VW/ldgv5VpeYLbI1yjuaqxO4rZ+05rjz1F96a2CXkJb3V1o1n+FTEwr3rWdACjNpIiaCN4XIhy9cQ6PryIIUe4sZO+PrLsJnE9oqJtrYhVAhVMCuTKmeTkIN9uMBLmqGEbpN9EwfpykibF+E2CgR9bSHNO5awW8+IfWTDe4pIXIZ/nFg3UQ076gHHkJzSFt8yA7TPpj9Yi5MCGbVKnMu9lEXK2NoFloU2FOTgVUzYPP1/O+YtsBySOj4v6eUPj4bQIdNScPeLIiFQHNYwsQa6lUzC4UfxQL6UB1+OgXd0FVFH2Jp5SXm+/Fwz31g1+1QdhtJK4HX9o2UPsuC+83SdMyTWCA95ppCpvqQBCzmkGfgpdILKtJZxSQ2wUab8LfXbh6QbtdztCjGijfRGnBON77oF4M/0KgzI8Sq7PfZ76Dl7b3V8ArmmE0Iqjarwv8Sxrb86CLfaqLeR8uxN7k60EFcgUdPSlIe9bRM6UvB2dibNA5oYbramTzV2q5jI2xYWkNPfabxjz0YWLUrgkovgIz7tmigYgI635lzB5i7j1b/ftu+3VnRAesqoBs01S69pKY="
   chrome: stable
