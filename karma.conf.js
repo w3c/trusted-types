@@ -7,6 +7,16 @@
  *  https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
  */
 
+var browsers = ['ChromeHeadlessNoSandbox', 'FirefoxHeadlessDev'];
+
+// Don't use BrowserStack browsers when running on Travis from a pull request.
+// https://docs.travis-ci.com/user/pull-requests/#pull-requests-and-security-restrictions
+if (!(process.env.TRAVIS && process.env.TRAVIS_SECURE_ENV_VARS === 'false')) {
+   browsers.push('ChromeBrowserStack');
+   browsers.push('EdgeBrowserStack');
+   browsers.push('SafariBrowserStack');
+}
+
 module.exports = function(config) {
   config.set({
     basePath: '',
@@ -52,7 +62,7 @@ module.exports = function(config) {
 
     autoWatch: true,
 
-    browsers: ['ChromeHeadlessNoSandbox', 'FirefoxHeadlessDev', 'ChromeBrowserStack'],
+    browsers: browsers,
 
     customLaunchers: {
       ChromeBrowserStack: {
@@ -60,6 +70,19 @@ module.exports = function(config) {
         browser: 'chrome',
         os: 'windows',
         os_version: '10',
+      },
+      EdgeBrowserStack: {
+        base: 'BrowserStack',
+        browser: 'edge',
+        os: 'windows',
+        os_version: '10',
+      },
+      SafariBrowserStack: {
+        base: 'BrowserStack',
+        browser: 'safari',
+        browser_version: '12',
+        os: 'osx',
+        os_version: 'Mojave',
       },
       ChromeHeadlessNoSandbox: {
         base: 'ChromeHeadless',

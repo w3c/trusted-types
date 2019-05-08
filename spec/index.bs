@@ -1175,7 +1175,18 @@ typedef (DOMString or TrustedScript) ScriptString;
 typedef (USVString or TrustedScriptURL) ScriptURLString;
 typedef (USVString or TrustedURL) URLString;
 typedef (TrustedHTML or TrustedScript or TrustedScriptURL or TrustedURL) TrustedType;
+
+typedef (([TreatNullAs=EmptyString] DOMString) or TrustedHTML) HTMLStringDefaultsEmpty;
 </pre>
+
+Note: {{HTMLStringDefaultsEmpty}} is a non-nullable variant that accepts *null* on set.
+Having this separate type allows [[webidl#TreatNullAs]] to attach to DOMString
+per heycam/webidl#441.
+
+Issue(WICG/trusted-types#2): [[webidl#TreatNullAs|TreatNullAs=EmptyString]] is confusing.
+See note "It should not be used in specifications unless ...".
+For some sinks a null value will result in "", and "null" for others.
+This already caused problems in the polyfill.
 
 ## Integration with HTML ## {#integration-with-html}
 
@@ -1214,19 +1225,15 @@ following steps in order to initialize
 
 This document extends the {{Window}} interface defined by [[HTML5|HTML]]:
 
-Issue: removed [[webidl#TreatNullAs|TreatNullAs=EmptyString]] from
-features parameter which is not recognized by bikeshed.  Maybe there's
-additional configuration required.  See "It should not be used in
-specifications unless ..."
-
 <pre class="idl">
 partial interface mixin Window {
   [Unforgeable] readonly attribute
       TrustedTypePolicyFactory TrustedTypes;
+
   WindowProxy? open(
       optional <b>URLString</b> url = "about:blank",
       optional DOMString target = "_blank",
-      optional /* [TreatNullAs=EmptyString] */ DOMString features = "");
+      optional ([TreatNullAs=EmptyString] DOMString) features = "");
 };
 </pre>
 
@@ -1252,6 +1259,8 @@ partial interface mixin Document {
 
 Note: The types of arguments were changed.
 
+Note: This document does not affect the two argument form of
+[[HTML/dynamic-markup-insertion#dom-document-open|document.open]].
 
 ### Enforcement in window open steps algorithm ### {#enforcement-in-window-open}
 
@@ -1380,12 +1389,8 @@ algorithm$].
     <td>{{URLString}}</td>
   </tr>
   <tr>
-    <td>{{HTMLInputElement/formAction|HTMLInputElement.formAction}}</td>
+    <td>[[HTML/form-control-infrastructure#dom-fs-formaction|HTMLInputElement.formAction]]</td>
     <td>{{URLString}}</td>
-    <td class="issue">
-    Issue: IDL linking does not recognize HTMLInputElement/formAction even though
-    it is defined in [[HTML5]].
-    </td>
   </tr>
   <tr>
     <td>{{HTMLHyperlinkElementUtils/href|HTMLAnchorElement.href}}</td>
@@ -1477,37 +1482,33 @@ algorithm, adding the following steps before step 1:
 
 ## Integration with DOM Parsing ## {#integration-with-dom-parsing}
 
-Note: Re [[DOM-Parsing]].
-
 ### Extensions to the Element interface ### {#extensions-to-element-interface}
 
-This document modifies the {{Element}} interface defined by DOM Parsing:
+This document modifies the [[DOM-Parsing#extensions-to-the-element-interface|Element]]
+interface defined by [[DOM-Parsing]]:
 
 <pre class="idl">
 partial interface Element {
-  [CEReactions/*, TreatNullAs=EmptyString */] attribute HTMLString innerHTML;
-  [CEReactions/*, TreatNullAs=EmptyString */] attribute HTMLString outerHTML;
+  [CEReactions] attribute HTMLStringDefaultsEmpty outerHTML;
+  [CEReactions] attribute HTMLStringDefaultsEmpty innerHTML;
   [CEReactions] void insertAdjacentHTML(DOMString position, HTMLString text);
 };
 </pre>
 
-For {{Element/innerHTML}}'s and {{Element/outerHTML}}'s execute the
+For {{Element/innerHTML}} and {{Element/outerHTML}} execute the
 [$Enforce a Trusted Type$] algorithm.
 
 For the {{Element/insertAdjacentHTML()}} method, execute the
 [$Enforce a Trusted Type$] algorithm with input argument set to the *text*
 parameter value.
 
-Issue: removed [[webidl#TreatNullAs|TreatNullAs=EmptyString]] from
-features parameter which is not recognized by bikeshed.  Maybe there's
-additional configuration required.  See "It should not be used in
-specifications unless ..."
-
-Issue(WICG/trusted-types#2): TreatNullAs is confusing, as for TrustedHTML, for some sinks a ull value will result in "", and "null" for others. This already caused problems in the polyfill.
+Note: Recent drafts move `innerHTML` into a separate
+ <a href="https://w3c.github.io/DOM-Parsing/#dom-innerhtml">mixin InnerHTML</a>.
 
 ### Extensions to the Range interface ### {#extensions-to-the-range-interface}
 
-This document modifies the {{Range}} interface defined by [[DOM-Parsing]]:
+This document modifies the [[DOM-Parsing#extensions-to-the-range-interface|Range]]
+interface defined by [[DOM-Parsing]]:
 
 <pre class="idl">
 partial interface Range {
@@ -1522,7 +1523,8 @@ the *fragment* value.
 
 ### Extensions to the DOMParser interface ### {#extensions-to-the-DOMParser}
 
-This document modifies the {{DOMParser}} interface defined by [[DOM-Parsing]]:
+This document modifies the [[DOM-Parsing#the-domparser-interface|DOMParser]] interface
+defined by [[DOM-Parsing]]:
 
 <pre class="idl">
 [Constructor, Exposed=Window]
