@@ -29,6 +29,7 @@
   "license": "W3C-20150513",
   "devDependencies": {
     "@babel/core": "^7.4.4",
+    "@babel/polyfill": "^7.4.4",
     "@babel/preset-env": "^7.4.4",
     "babelify": "^10.0.0",
     "bikeshed-js": "^1.0.7",

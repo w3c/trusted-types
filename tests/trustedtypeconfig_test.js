@@ -6,6 +6,7 @@
  *
  *  https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
  */
+import '@babel/polyfill';
 import {TrustedTypeConfig} from '../src/data/trustedtypeconfig.js';
 
 describe('TrustedTypeConfig', () => {

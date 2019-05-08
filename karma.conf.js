@@ -15,6 +15,7 @@ if (!(process.env.TRAVIS && process.env.TRAVIS_SECURE_ENV_VARS === 'false')) {
    browsers.push('ChromeBrowserStack');
    browsers.push('EdgeBrowserStack');
    browsers.push('SafariBrowserStack');
+   browsers.push('InternetExplorer11BrowserStack');
 }
 
 module.exports = function(config) {
@@ -74,6 +75,13 @@ module.exports = function(config) {
       EdgeBrowserStack: {
         base: 'BrowserStack',
         browser: 'edge',
+        os: 'windows',
+        os_version: '10',
+      },
+      InternetExplorer11BrowserStack: {
+        base: 'BrowserStack',
+        browser: 'ie',
+        vesion: '11',
         os: 'windows',
         os_version: '10',
       },

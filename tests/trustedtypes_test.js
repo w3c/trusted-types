@@ -6,6 +6,7 @@
  *
  *  https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
  */
+import '@babel/polyfill';
 import {trustedTypesBuilderTestOnly} from '../src/trustedtypes.js';
 
 describe('v2 TrustedTypes', () => {
@@ -267,6 +268,10 @@ describe('v2 TrustedTypes', () => {
       }));
 
       it('return frozen values', () => {
+        if (!window.Proxy) {
+          pending();
+        }
+
         const p = TrustedTypes.createPolicy('policy', noopPolicy);
 
         let html = p.createHTML('foo');
