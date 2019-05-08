@@ -13,35 +13,35 @@ import {TrustedTypesEnforcer} from '../src/enforcer.js';
 import {TrustedTypes} from '../src/trustedtypes.js';
 
 describe('TrustedTypesEnforcer', function() {
-  let TEST_HTML = '<b>html</b>';
+  const TEST_HTML = '<b>html</b>';
 
-  let TEST_URL = 'http://example.com/script';
+  const TEST_URL = 'http://example.com/script';
 
-  let EVIL_URL = 'http://evil.example.com/script';
+  const EVIL_URL = 'http://evil.example.com/script';
 
   const noopPolicy = {
-          createHTML: (s) => s,
-          createScriptURL: (s) => s,
-          createURL: (s) => s,
-          createScript: (s) => s,
+    createHTML: (s) => s,
+    createScriptURL: (s) => s,
+    createURL: (s) => s,
+    createScript: (s) => s,
   };
 
-  let ENFORCING_CONFIG = new TrustedTypeConfig(
+  const ENFORCING_CONFIG = new TrustedTypeConfig(
       /* isLoggingEnabled */ false,
       /* isEnforcementEnabled */ true,
       /* fallbackPolicy */ null,
       /* allowedPolicyNames */ ['*'],
       /* cspString */ 'script-src https:; trusted-types *'
-      );
+  );
 
-  let NOOP_CONFIG = new TrustedTypeConfig(
+  const NOOP_CONFIG = new TrustedTypeConfig(
       /* isLoggingEnabled */ false,
       /* isEnforcementEnabled */ false,
       /* fallbackPolicy */ null,
       /* allowedPolicyNames */ ['*']
   );
 
-  let LOGGING_CONFIG = new TrustedTypeConfig(
+  const LOGGING_CONFIG = new TrustedTypeConfig(
       /* isLoggingEnabled */ true,
       /* isEnforcementEnabled */ false,
       /* fallbackPolicy */ null,
@@ -87,7 +87,7 @@ describe('TrustedTypesEnforcer', function() {
 
     it('starts enforcing only after being called', function() {
       enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
-      let el = document.createElement('div');
+      const el = document.createElement('div');
 
       expect(function() {
         el.innerHTML = TEST_HTML;
@@ -104,8 +104,8 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('does not enforce if no logging and no enforcement is required', () => {
-      let enforcer = new TrustedTypesEnforcer(NOOP_CONFIG);
-      let el = document.createElement('div');
+      const enforcer = new TrustedTypesEnforcer(NOOP_CONFIG);
+      const el = document.createElement('div');
 
       expect(function() {
         el.innerHTML = TEST_HTML;
@@ -146,7 +146,7 @@ describe('TrustedTypesEnforcer', function() {
 
     it('allows for uninstalling policies', function() {
       enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
-      let el = document.createElement('div');
+      const el = document.createElement('div');
       enforcer.install();
 
       expect(function() {
@@ -179,7 +179,7 @@ describe('TrustedTypesEnforcer', function() {
 
     it('restores the script getters & setters', function() {
       enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
-      let el = document.createElement('script');
+      const el = document.createElement('script');
       el.textContent = 'foo';
 
       enforcer.install();
@@ -245,9 +245,9 @@ describe('TrustedTypesEnforcer', function() {
       }).not.toThrow();
       // eslint-disable-next-line no-console
       expect(console.warn).toHaveBeenCalledWith(
-        'Failed to set innerHTML on HTMLDivElement: This ' +
+          'Failed to set innerHTML on HTMLDivElement: This ' +
         'property requires TrustedHTML.', 'innerHTML',
-        jasmine.any(HTMLDivElement), TrustedTypes.TrustedHTML, TEST_HTML);
+          jasmine.any(HTMLDivElement), TrustedTypes.TrustedHTML, TEST_HTML);
     });
 
     describe('securitypolicyviolation event', () => {
@@ -287,7 +287,7 @@ describe('TrustedTypesEnforcer', function() {
       });
 
       it('dispatches if element is not in any document', () => {
-        let standaloneEl = document.createElement('div');
+        const standaloneEl = document.createElement('div');
 
         expect(function() {
           standaloneEl.innerHTML = TEST_HTML;
@@ -337,7 +337,7 @@ describe('TrustedTypesEnforcer', function() {
         }
 
         expect(caughtEvent.sample).toEqual(
-          'HTMLDivElement.innerHTML <b>html</b>');
+            'HTMLDivElement.innerHTML <b>html</b>');
       });
 
       it('trims sample', () => {
@@ -353,7 +353,8 @@ describe('TrustedTypesEnforcer', function() {
         }).not.toThrow();
 
         expect(caughtEvent.sample).toEqual(
-          'HTMLDivElement.innerHTML <b>super long text maybe even user data:');
+            // eslint-disable-next-line max-len
+            'HTMLDivElement.innerHTML <b>super long text maybe even user data:');
       });
 
       it('contains blocked URI when known', () => {
@@ -408,8 +409,8 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('allows for assigning function to event handler properties', () => {
-      let el = document.createElement('div');
-      let spy = spyOn(window, 'alert');
+      const el = document.createElement('div');
+      const spy = spyOn(window, 'alert');
       el.onclick = window.alert;
       el.onclick();
 
@@ -417,9 +418,23 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('allows for assigning null to event handler properties', () => {
-      let el = document.createElement('div');
+      const el = document.createElement('div');
       el.onclick = null;
     });
+
+    it('allows for Element.prototype.setAttributeNS for unknown namespaces',
+        function() {
+          const el = document.createElement('iframe');
+
+          expect(function() {
+            el.setAttributeNS('http://foo.bar', 'src', TEST_URL);
+          }).not.toThrow();
+
+          expect(el.getAttributeNS('http://foo.bar', 'src')).toEqual(TEST_URL);
+          expect(el.getAttribute('src')).toEqual(TEST_URL);
+          // It's not actually an XHTML src
+          expect(el.getAttributeNode('src').namespaceURI).toEqual('http://foo.bar');
+        });
 
     describe('securitypolicyviolation event', () => {
       let caughtEvent;
@@ -550,7 +565,7 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('on innerHTML', function() {
-      let el = document.createElement('div');
+      const el = document.createElement('div');
 
       expect(function() {
         el.innerHTML = TEST_HTML;
@@ -560,8 +575,8 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('on outerHTML', function() {
-      let wrap = document.createElement('div');
-      let el = document.createElement('div');
+      const wrap = document.createElement('div');
+      const el = document.createElement('div');
       wrap.appendChild(el);
 
       expect(function() {
@@ -572,11 +587,11 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('on Shadow DOM ShadowRoot.innerHTML', function() {
-      let wrap = document.createElement('div');
+      const wrap = document.createElement('div');
       if (!('attachShadow' in wrap)) {
         pending();
       }
-      let shadow = wrap.attachShadow({mode: 'open'});
+      const shadow = wrap.attachShadow({mode: 'open'});
 
       expect(function() {
         shadow.innerHTML = TEST_HTML;
@@ -586,7 +601,7 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('on iframe srcdoc', function() {
-      let el = document.createElement('iframe');
+      const el = document.createElement('iframe');
       if (!('srcdoc' in el)) {
         // No srcdoc support at all, skip test
         pending();
@@ -600,7 +615,7 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('on a href', function() {
-      let el = document.createElement('a');
+      const el = document.createElement('a');
 
       expect(function() {
         el.href = TEST_URL;
@@ -610,7 +625,7 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('on object codebase', function() {
-      let el = document.createElement('object');
+      const el = document.createElement('object');
 
       expect(function() {
         el.setAttribute('codebase', TEST_URL);
@@ -620,7 +635,7 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('on Range.createContextualFragment', function() {
-      let range = document.createRange();
+      const range = document.createRange();
 
       expect(function() {
         range.createContextualFragment(TEST_HTML);
@@ -628,7 +643,7 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('on Element.insertAdjacentHTML', function() {
-      let el = document.createElement('div');
+      const el = document.createElement('div');
 
       expect(function() {
         el.insertAdjacentHTML('afterbegin', TEST_HTML);
@@ -638,7 +653,7 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('on HTMLScriptElement.src', function() {
-      let el = document.createElement('script');
+      const el = document.createElement('script');
 
       expect(function() {
         el.src = TEST_URL;
@@ -647,8 +662,28 @@ describe('TrustedTypesEnforcer', function() {
       expect(el.src).toEqual('');
     });
 
+    it('on audio.src', function() {
+      const el = document.createElement('audio');
+
+      expect(function() {
+        el.src = TEST_URL;
+      }).toThrow();
+
+      expect(el.src).toEqual('');
+    });
+
+    it('on audio.src via setAttribute', function() {
+      const el = document.createElement('audio');
+
+      expect(function() {
+        el.setAttribute('src', TEST_URL);
+      }).toThrow();
+
+      expect(el.src).toEqual('');
+    });
+
     it('on inline event handlers via setAttribute', function() {
-      let el = document.createElement('a');
+      const el = document.createElement('a');
 
       expect(function() {
         el.setAttribute('onclick', 'console.log(1)');
@@ -658,7 +693,7 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('on inert element inline event handlers via setAttribute', function() {
-      let el = document.createElement('section');
+      const el = document.createElement('section');
 
       expect(function() {
         el.setAttribute('onclick', 'console.log(1)');
@@ -668,7 +703,7 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('on HTMLScriptElement.innerText', function() {
-      let el = document.createElement('script');
+      const el = document.createElement('script');
 
       expect(function() {
         el.innerText = 'console.log(1)';
@@ -678,7 +713,7 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('on HTMLScriptElement.text', function() {
-      let el = document.createElement('script');
+      const el = document.createElement('script');
 
       expect(function() {
         el.text = 'console.log(1)';
@@ -688,7 +723,7 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('on HTMLScriptElement.textContent', function() {
-      let el = document.createElement('script');
+      const el = document.createElement('script');
 
       expect(function() {
         el.textContent = 'console.log(1)';
@@ -698,7 +733,7 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('on Element.prototype.setAttribute', function() {
-      let el = document.createElement('iframe');
+      const el = document.createElement('iframe');
 
       expect(function() {
         el.setAttribute('src', TEST_URL);
@@ -708,7 +743,7 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('on Element.prototype.setAttributeNS', function() {
-      let el = document.createElement('iframe');
+      const el = document.createElement('iframe');
 
       expect(function() {
         el.setAttributeNS('http://www.w3.org/1999/xhtml', 'src', TEST_URL);
@@ -716,6 +751,76 @@ describe('TrustedTypesEnforcer', function() {
 
       // Null on some browsers, but empty string on Edge.
       expect(el.getAttributeNS('http://www.w3.org/1999/xhtml', 'src')).toBeFalsy();
+    });
+
+    it('on Element.prototype.setAttributeNS (empty ns)', function() {
+      const el = document.createElement('iframe');
+
+      expect(function() {
+        el.setAttributeNS('', 'src', TEST_URL);
+      }).toThrow();
+
+      // Null on some browsers, but empty string on Edge.
+      expect(el.getAttributeNS('http://www.w3.org/1999/xhtml', 'src')).toBeFalsy();
+    });
+
+    it('on svg:a xlink:href', function() {
+      // This works in FF & Chrome
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      const a = document.createElementNS('http://www.w3.org/2000/svg', 'a');
+      const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+
+      svg.appendChild(a);
+      a.appendChild(rect);
+
+      rect.setAttributeNS(null, 'height', 200);
+      rect.setAttributeNS(null, 'width', 300);
+
+      expect(function() {
+        a.setAttributeNS('http://www.w3.org/1999/xlink', 'href', 'javascript:alert(1)');
+      }).toThrow();
+    });
+
+    it('on svg:a href', function() {
+      // This works in FF & Chrome. xlink is deprecated.
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      const a = document.createElementNS('http://www.w3.org/2000/svg', 'a');
+      const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+
+      svg.appendChild(a);
+      a.appendChild(rect);
+
+      rect.setAttributeNS(null, 'height', 200);
+      rect.setAttributeNS(null, 'width', 300);
+
+      expect(function() {
+        a.setAttribute('href', 'javascript:alert(1)');
+      }).toThrow();
+
+      expect(function() {
+        a.setAttributeNS(null, 'href', 'javascript:alert(1)');
+      }).toThrow();
+
+      expect(function() {
+        a.setAttributeNS('http://foobar', 'href', 'javascript:alert(1)');
+      }).not.toThrow();
+
+      expect(function() {
+        a.setAttributeNS('http://www.w3.org/2000/svg', 'href', 'javascript:alert(1)');
+      }).toThrow();
+    });
+
+    it('on svg:a innerHTML', function() {
+      // This works in FF & Chrome. xlink is deprecated.
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      const a = document.createElementNS('http://www.w3.org/2000/svg', 'a');
+
+      svg.appendChild(a);
+
+      // Not checking for throwing, as on IE it does not throw, but innerHTML
+      // is ignored. Adding a proper throwing would increase the size of the
+      // polyfill, but should not be needed for security.
+      expect(a.childNodes.length).toEqual(0);
     });
 
     it('on document.write', function() {
@@ -770,11 +875,11 @@ describe('TrustedTypesEnforcer', function() {
     // TODO: fix #47
     // eslint-disable-next-line jasmine/no-disabled-tests
     xit('on copy attribute crossing types', function() {
-      let div = document.createElement('div');
-      let img = document.createElement('img');
+      const div = document.createElement('div');
+      const img = document.createElement('img');
 
       div.setAttribute('src', TEST_URL);
-      let attr = div.getAttributeNode('src');
+      const attr = div.getAttributeNode('src');
       div.removeAttributeNode(attr);
 
       expect(function() {
@@ -785,11 +890,11 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('on copy innocuous attribute', function() {
-      let div = document.createElement('div');
-      let span = document.createElement('span');
+      const div = document.createElement('div');
+      const span = document.createElement('span');
 
       div.setAttribute('src', TEST_URL);
-      let attr = div.getAttributeNode('src');
+      const attr = div.getAttributeNode('src');
       div.removeAttributeNode(attr);
       span.setAttributeNode(attr);
 
@@ -797,7 +902,7 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('on non-lowercase Element.prototype.setAttribute', function() {
-      let el = document.createElement('iframe');
+      const el = document.createElement('iframe');
 
       expect(function() {
         el.setAttribute('SrC', TEST_URL);
@@ -820,7 +925,7 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('passes through inert attributes', function() {
-      let el = document.createElement('link');
+      const el = document.createElement('link');
       el.setAttribute('rel', 'stylesheet');
 
       expect(el.getAttribute('rel')).toEqual('stylesheet');
@@ -828,7 +933,7 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('passes through inert elements', function() {
-      let el = document.createElement('section');
+      const el = document.createElement('section');
       el.setAttribute('id', 'foo');
 
       expect(el.getAttribute('id')).toEqual('foo');
@@ -836,7 +941,7 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('passes through on attributes if the event is unknown', function() {
-      let el = document.createElement('section');
+      const el = document.createElement('section');
       el.setAttribute('ontotallyfakeevent', 'foo');
 
       expect(el.getAttribute('ontotallyfakeevent')).toEqual('foo');
@@ -858,15 +963,15 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('on innerHTML', function() {
-      let el = document.createElement('div');
+      const el = document.createElement('div');
       el.innerHTML = policy.createHTML(TEST_HTML);
 
       expect(el.innerHTML).toEqual(TEST_HTML);
     });
 
     it('on outerHTML', function() {
-      let wrap = document.createElement('div');
-      let el = document.createElement('div');
+      const wrap = document.createElement('div');
+      const el = document.createElement('div');
       wrap.appendChild(el);
 
       expect(function() {
@@ -875,11 +980,11 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('on Shadow DOM ShadowRoot.innerHTML', function() {
-      let wrap = document.createElement('div');
+      const wrap = document.createElement('div');
       if (!('attachShadow' in wrap)) {
         return pending();
       }
-      let shadow = wrap.attachShadow({mode: 'open'});
+      const shadow = wrap.attachShadow({mode: 'open'});
 
       expect(function() {
         shadow.innerHTML = policy.createHTML(TEST_HTML);
@@ -889,7 +994,7 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('on iframe srcdoc', function() {
-      let el = document.createElement('iframe');
+      const el = document.createElement('iframe');
       if (!('srcdoc' in el)) {
         // No srcdoc support at all, skip test
         pending();
@@ -903,9 +1008,9 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('on Range.createContextualFragment', function() {
-      let range = document.createRange();
+      const range = document.createRange();
 
-      let fragment = range.createContextualFragment(
+      const fragment = range.createContextualFragment(
           policy.createHTML(TEST_HTML));
 
       expect(fragment.childNodes[0].outerHTML).toEqual(TEST_HTML);
@@ -913,7 +1018,7 @@ describe('TrustedTypesEnforcer', function() {
 
 
     it('on Element.insertAdjacentHTML', function() {
-      let el = document.createElement('div');
+      const el = document.createElement('div');
 
       el.insertAdjacentHTML('afterbegin', policy.createHTML('bar'));
       el.insertAdjacentHTML('afterbegin', policy.createHTML('foo'));
@@ -922,15 +1027,31 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('on HTMLScriptElement.src', function() {
-      let el = document.createElement('script');
+      const el = document.createElement('script');
 
       el.src = policy.createScriptURL(TEST_URL);
 
       expect(el.src).toEqual(TEST_URL);
     });
 
+    it('on audio.src', function() {
+      const el = document.createElement('audio');
+
+      el.src = policy.createURL(TEST_URL);
+
+      expect(el.src).toEqual(TEST_URL);
+    });
+
+    it('on audio.src via setAttribute', function() {
+      const el = document.createElement('audio');
+
+      el.setAttribute('src', policy.createURL(TEST_URL));
+
+      expect(el.src).toEqual(TEST_URL);
+    });
+
     it('on inline event handlers via setAttribute', function() {
-      let el = document.createElement('a');
+      const el = document.createElement('a');
       const alert = spyOn(window, 'alert');
 
       expect(function() {
@@ -947,13 +1068,31 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('on HTMLScriptElement.innerText', function() {
-      let el = document.createElement('script');
+      const el = document.createElement('script');
 
       expect(function() {
         el.innerText = policy.createScript('console.log(1)');
       }).not.toThrow();
 
       expect(el.innerText).toEqual('console.log(1)');
+    });
+
+    it('on svg:a href', function() {
+      // This works in FF & Chrome. xlink is deprecated.
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      const a = document.createElementNS('http://www.w3.org/2000/svg', 'a');
+      const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+
+      svg.appendChild(a);
+      a.appendChild(rect);
+
+      rect.setAttributeNS(null, 'height', 200);
+      rect.setAttributeNS(null, 'width', 300);
+
+      a.setAttribute('href', policy.createURL(TEST_URL));
+      a.setAttributeNS(null, 'href', policy.createURL(TEST_URL));
+      a.setAttributeNS('http://foobar', 'href', policy.createURL(TEST_URL));
+      a.setAttributeNS('http://www.w3.org/2000/svg', 'href', policy.createURL(TEST_URL));
     });
 
     it('on document.write', function() {
@@ -970,7 +1109,7 @@ describe('TrustedTypesEnforcer', function() {
       enforcer.uninstall();
       const mockOpen = spyOn(window, 'open');
       enforcer.install();
-      let url = policy.createURL('/');
+      const url = policy.createURL('/');
 
       expect(function() {
         window.open(url, 'foo', 'bar');
@@ -1002,11 +1141,11 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('independent of String(...)', function() {
-      let el = document.createElement('script');
+      const el = document.createElement('script');
 
       // String(...) is a common, confusable idiom for converting to a
       // string.
-      let originalString = String;
+      const originalString = String;
       try {
         try {
           // eslint-disable-next-line no-global-assign
@@ -1026,10 +1165,10 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('independent of valueOf()', function() {
-      let el = document.createElement('script');
+      const el = document.createElement('script');
 
       // The idiom ('' + obj) actually invokes valueOf first, not toString.
-      let originalValueOf = Object.prototype.valueOf;
+      const originalValueOf = Object.prototype.valueOf;
       try {
         try {
           // eslint-disable-next-line no-extend-native
@@ -1049,7 +1188,7 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('on Element.prototype.setAttribute', function() {
-      let el = document.createElement('iframe');
+      const el = document.createElement('iframe');
 
       el.setAttribute('src', policy.createURL(TEST_URL));
 
@@ -1057,17 +1196,24 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('on Element.prototype.setAttributeNS', function() {
-      let el = document.createElement('img');
+      const el = document.createElement('img');
 
-      // TODO: what about 'http://www.w3.org/1999/xhtml'?
       el.setAttributeNS('http://www.w3.org/1999/xhtml', 'src', policy.createURL(TEST_URL));
 
       expect(el.getAttributeNS('http://www.w3.org/1999/xhtml', 'src')).toEqual(TEST_URL);
       expect(el.getAttribute('src')).toEqual(TEST_URL);
     });
 
+    it('on Element.prototype.setAttributeNS (xlink)', function() {
+      const a = document.createElementNS('http://www.w3.org/2000/svg', 'a');
+      a.setAttributeNS('http://www.w3.org/1999/xlink', 'href', policy.createURL(TEST_URL));
+
+      expect(a.getAttributeNS('http://www.w3.org/1999/xlink', 'href')).toEqual(TEST_URL);
+      expect(a.getAttribute('src')).toEqual(null);
+    });
+
     it('on object codebase', function() {
-      let el = document.createElement('object');
+      const el = document.createElement('object');
 
       el.setAttribute('codebase', policy.createScriptURL(TEST_URL));
 
@@ -1086,9 +1232,9 @@ describe('TrustedTypesEnforcer', function() {
     it('is respected on createPolicy', function() {
       enforcer = new TrustedTypesEnforcer(new TrustedTypeConfig(
       /* isLoggingEnabled */ false,
-      /* isEnforcementEnabled */ true,
-      'fallback1',
-      ['foo']));
+          /* isEnforcementEnabled */ true,
+          'fallback1',
+          ['foo']));
       enforcer.install();
 
       expect(() => TrustedTypes.createPolicy('foo', {
@@ -1111,14 +1257,14 @@ describe('TrustedTypesEnforcer', function() {
     it('is used on strings', function() {
       enforcer = new TrustedTypesEnforcer(new TrustedTypeConfig(
       /* isLoggingEnabled */ false,
-      /* isEnforcementEnabled */ true,
-      'fallback1',
-      ['*']));
+          /* isEnforcementEnabled */ true,
+          'fallback1',
+          ['*']));
       enforcer.install();
       TrustedTypes.createPolicy('fallback1', {
         'createHTML': (s) => 'fallback:' + s,
       }, true);
-      let el = document.createElement('div');
+      const el = document.createElement('div');
       el.innerHTML = TEST_HTML;
 
       expect(el.innerHTML).toEqual('fallback:' + TEST_HTML);
@@ -1127,13 +1273,13 @@ describe('TrustedTypesEnforcer', function() {
     it('has to be exposed', function() {
       enforcer = new TrustedTypesEnforcer(new TrustedTypeConfig(
       /* isLoggingEnabled */ false,
-      /* isEnforcementEnabled */ true,
-      'fallback10', ['*']));
+          /* isEnforcementEnabled */ true,
+          'fallback10', ['*']));
       enforcer.install();
       TrustedTypes.createPolicy('fallback10', {
         'createHTML': (s) => 'fallback:' + s,
       });
-      let el = document.createElement('div');
+      const el = document.createElement('div');
 
       expect(() => el.innerHTML = TEST_HTML).toThrow();
       expect(el.innerHTML).toEqual('');
@@ -1142,14 +1288,14 @@ describe('TrustedTypesEnforcer', function() {
     it('is not used on typed values', function() {
       enforcer = new TrustedTypesEnforcer(new TrustedTypeConfig(
       /* isLoggingEnabled */ false,
-      /* isEnforcementEnabled */ true,
-      'fallback2', ['*']));
+          /* isEnforcementEnabled */ true,
+          'fallback2', ['*']));
       enforcer.install();
       TrustedTypes.createPolicy('fallback2', {
         'createHTML': (s) => 'fallback:' + s,
       }, true);
       const policy = TrustedTypes.createPolicy(Math.random(), noopPolicy);
-      let el = document.createElement('div');
+      const el = document.createElement('div');
       el.innerHTML = policy.createHTML(TEST_HTML);
 
       expect(el.innerHTML).toEqual(TEST_HTML);
@@ -1158,11 +1304,11 @@ describe('TrustedTypesEnforcer', function() {
     it('fails when fallback is not installed', function() {
       enforcer = new TrustedTypesEnforcer(new TrustedTypeConfig(
       /* isLoggingEnabled */ false,
-      /* isEnforcementEnabled */ true,
-      'fallback3', ['*']));
+          /* isEnforcementEnabled */ true,
+          'fallback3', ['*']));
       enforcer.install();
       TrustedTypes.createPolicy(Math.random(), noopPolicy);
-      let el = document.createElement('div');
+      const el = document.createElement('div');
 
       expect(() => el.innerHTML = TEST_HTML).toThrowError(TypeError);
       expect(el.innerHTML).toEqual('');
@@ -1171,15 +1317,15 @@ describe('TrustedTypesEnforcer', function() {
     it('fails if policy throws an error', function() {
       enforcer = new TrustedTypesEnforcer(new TrustedTypeConfig(
       /* isLoggingEnabled */ false,
-      /* isEnforcementEnabled */ true,
-      'fallback4', ['*']));
+          /* isEnforcementEnabled */ true,
+          'fallback4', ['*']));
       enforcer.install();
       TrustedTypes.createPolicy('fallback4', {
         'createHTML': (s) => {
           throw new Error();
         },
       }, true);
-      let el = document.createElement('div');
+      const el = document.createElement('div');
 
       // Throws a generic enforcement error, not the one from the policy.
       expect(() => el.innerHTML = 'html')
@@ -1204,7 +1350,7 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('on innerHTML', function() {
-      let el = document.createElement('div');
+      const el = document.createElement('div');
 
       expect(() => {
         el.innerHTML = policy.createURL(TEST_URL);
@@ -1218,7 +1364,7 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('on Element.insertAdjacentHTML', function() {
-      let el = document.createElement('div');
+      const el = document.createElement('div');
 
       expect(() => {
         el.insertAdjacentHTML('afterbegin', policy.createURL('bar'));
@@ -1232,35 +1378,35 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('on HTMLScriptElement.src', function() {
-      let el = document.createElement('script');
+      const el = document.createElement('script');
 
       expect(() => {
-       el.src = policy.createHTML(TEST_URL);
+        el.src = policy.createHTML(TEST_URL);
       }).toThrow();
 
       expect(() => {
-       el.src = policy.createURL(TEST_URL);
+        el.src = policy.createURL(TEST_URL);
       }).toThrow();
 
       expect(el.src).toEqual('');
     });
 
     it('on Element.prototype.setAttribute', function() {
-      let el = document.createElement('iframe');
+      const el = document.createElement('iframe');
 
       expect(() => {
-       el.src = policy.createHTML(TEST_URL);
+        el.src = policy.createHTML(TEST_URL);
       }).toThrow();
 
       expect(() => {
-       el.src = policy.createScript(TEST_URL);
+        el.src = policy.createScript(TEST_URL);
       }).toThrow();
 
       expect(el.src).toEqual('');
     });
 
     it('on HTMLElement innocuous attribute', function() {
-      let el = document.createElement('div');
+      const el = document.createElement('div');
 
       el.title = policy.createHTML(TEST_URL);
 

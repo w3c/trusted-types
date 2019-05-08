@@ -11,6 +11,12 @@ const rejectInputFn = (s) => {
   throw new TypeError('undefined conversion');
 };
 
+const {toLowerCase, toUpperCase} = String.prototype;
+
+export const HTML_NS = 'http://www.w3.org/1999/xhtml';
+export const XLINK_NS = 'http://www.w3.org/1999/xlink';
+export const SVG_NS = 'http://www.w3.org/2000/svg';
+
 /**
  * @constructor
  * @property {!function(string):TrustedHTML} createHTML
@@ -38,7 +44,14 @@ export const TrustedTypePolicyFactory = function() {
  * @property {function(string):string} createScriptURL
  * @property {function(string):string} createScript
  */
-let TrustedTypesInnerPolicy = {};
+const TrustedTypesInnerPolicy = {};
+
+/**
+ * @typedef {!Object<string, {
+ *   attributes: !Object<string, string>,
+ *   properties: !Object<string, string>}>}
+ */
+const TrustedTypesTypeMap = {};
 /* eslint-enable no-unused-vars */
 
 
@@ -48,6 +61,8 @@ export const trustedTypesBuilderTestOnly = function() {
     assign, create, defineProperty, freeze, getOwnPropertyNames,
     getPrototypeOf, prototype: ObjectPrototype,
   } = Object;
+
+  const {hasOwnProperty} = ObjectPrototype;
 
   const {
     forEach, push,
@@ -82,7 +97,7 @@ export const trustedTypesBuilderTestOnly = function() {
     if (proto == null || getPrototypeOf(proto) !== ObjectPrototype) {
       throw new Error(); // Loop below is insufficient.
     }
-    for (let key of getOwnPropertyNames(proto)) {
+    for (const key of getOwnPropertyNames(proto)) {
       defineProperty(collection, key, {value: collection[key]});
     }
     return collection;
@@ -139,7 +154,7 @@ export const trustedTypesBuilderTestOnly = function() {
         throw new Error('cannot call the constructor');
       }
       defineProperty(this, 'policyName',
-                     {value: '' + policyName, enumerable: true});
+          {value: '' + policyName, enumerable: true});
     }
 
     /**
@@ -208,6 +223,170 @@ export const trustedTypesBuilderTestOnly = function() {
   lockdownTrustedType(TrustedType, 'TrustedType');
 
   /**
+   * A map of attribute / property names to allowed types
+   * for known namespaces.
+   * @type {!Object<string,!TrustedTypesTypeMap>}
+   * @export
+   */
+  const TYPE_MAP = {
+    [HTML_NS]: {
+      // TODO(koto): Figure out what to to with <link>
+      'A': {
+        'attributes': {
+          'href': TrustedURL.name,
+        },
+      },
+      'AREA': {
+        'attributes': {
+          'href': TrustedURL.name,
+        },
+      },
+      'AUDIO': {
+        'attributes': {
+          'src': TrustedURL.name,
+        },
+      },
+      'BASE': {
+        'attributes': {
+          'href': TrustedURL.name,
+        },
+      },
+      'BUTTON': {
+        'attributes': {
+          'formaction': TrustedURL.name,
+        },
+      },
+      'EMBED': {
+        'attributes': {
+          'src': TrustedScriptURL.name,
+        },
+      },
+      'FORM': {
+        'attributes': {
+          'action': TrustedURL.name,
+        },
+      },
+      'FRAME': {
+        'attributes': {
+          'src': TrustedURL.name,
+        },
+      },
+      'IFRAME': {
+        'attributes': {
+          'src': TrustedURL.name,
+          'srcdoc': TrustedHTML.name,
+        },
+      },
+      'IMG': {
+        'attributes': {
+          'src': TrustedURL.name,
+          // TODO(slekies): add special handling for srcset
+        },
+      },
+      'INPUT': {
+        'attributes': {
+          'src': TrustedURL.name,
+          'formaction': TrustedURL.name,
+        },
+      },
+      'LINK': {
+        'attributes': {
+          'href': TrustedURL.name,
+        },
+      },
+      'OBJECT': {
+        'attributes': {
+          'data': TrustedScriptURL.name,
+          'codebase': TrustedScriptURL.name,
+        },
+      },
+      // TODO(koto): Figure out what to do with portals.
+      'SCRIPT': {
+        'attributes': {
+          'src': TrustedScriptURL.name,
+          'text': TrustedScript.name,
+        },
+        'properties': {
+          'innerText': TrustedScript.name,
+          'textContent': TrustedScript.name,
+          'text': TrustedScript.name,
+        },
+      },
+      'SOURCE': {
+        'attributes': {
+          'src': TrustedURL.name,
+        },
+      },
+      'TRACK': {
+        'attributes': {
+          'src': TrustedURL.name,
+        },
+      },
+      'VIDEO': {
+        'attributes': {
+          'src': TrustedURL.name,
+        },
+      },
+      '*': {
+        'attributes': {},
+        'properties': {
+          'innerHTML': TrustedHTML.name,
+          'outerHTML': TrustedHTML.name,
+        },
+      },
+    },
+    [XLINK_NS]: {
+      '*': {
+        'attributes': {
+          'href': TrustedURL.name,
+        },
+        'properties': {},
+      },
+    },
+    [SVG_NS]: {
+      '*': {
+        'attributes': {
+          'href': TrustedURL.name,
+        },
+        'properties': {},
+      },
+    },
+  };
+
+  /**
+   * A map of element property to HTML attribute names.
+   * @type {!Object<string, string>}
+   */
+  const ATTR_PROPERTY_MAP = {
+    'codebase': 'codeBase',
+    'formaction': 'formAction',
+  };
+
+  // Edge doesn't support srcdoc.
+  if (!('srcdoc' in HTMLIFrameElement.prototype)) {
+    delete TYPE_MAP[HTML_NS]['IFRAME']['attributes']['srcdoc'];
+  }
+
+  // in HTML, clone attributes into properties.
+  for (const tag of Object.keys(TYPE_MAP[HTML_NS])) {
+    if (!TYPE_MAP[HTML_NS][tag]['properties']) {
+      TYPE_MAP[HTML_NS][tag]['properties'] = {};
+    }
+    for (const attr of Object.keys(TYPE_MAP[HTML_NS][tag]['attributes'])) {
+      TYPE_MAP[HTML_NS][tag]['properties'][
+          ATTR_PROPERTY_MAP[attr] ? ATTR_PROPERTY_MAP[attr] : attr
+      ] = TYPE_MAP[HTML_NS][tag]['attributes'][attr];
+    }
+  }
+
+  // Add inline event handlers attribute names.
+  for (const name of getOwnPropertyNames(HTMLElement.prototype)) {
+    if (name.slice(0, 2) === 'on') {
+      TYPE_MAP[HTML_NS]['*']['attributes'][name] = 'TrustedScript';
+    }
+  }
+
+  /**
    * @type {!Object<string,!Function>}
    */
   const createTypeMapping = {
@@ -261,16 +440,16 @@ export const trustedTypesBuilderTestOnly = function() {
       return freeze(factory);
     }
 
-    let policy = create(TrustedTypePolicy.prototype);
+    const policy = create(TrustedTypePolicy.prototype);
 
     for (const name of getOwnPropertyNames(createTypeMapping)) {
       policy[name] = creator(createTypeMapping[name], name);
     }
     defineProperty(policy, 'name', {
-        value: policyName,
-        writable: false,
-        configurable: false,
-        enumerable: true,
+      value: policyName,
+      writable: false,
+      configurable: false,
+      enumerable: true,
     });
 
     return /** @type {!TrustedTypePolicy} */ (freeze(policy));
@@ -284,6 +463,106 @@ export const trustedTypesBuilderTestOnly = function() {
   function getExposedPolicy(name) {
     const pName = '' + name;
     return exposedPolicies.get(pName) || null;
+  }
+
+  /**
+   * Returns the name of the trusted type required for a given element
+   *   attribute.
+   * @param {string} tagName The name of the tag of the element.
+   * @param {string} attribute The name of the attribute.
+   * @param {string=} elementNs Element namespace.
+   * @param {string=} attributeNs The attribute namespace.
+   * @return {string|undefined} Required type name or undefined, if a Trusted
+   *   Type is not required.
+   */
+  function getAttributeType(tagName, attribute, elementNs = '',
+      attributeNs = '') {
+    const canonicalAttr = toLowerCase.apply(String(attribute));
+    return getTypeInternal_(tagName, 'attributes', canonicalAttr,
+        elementNs, attributeNs);
+  }
+
+  /**
+   * Returns a type name from a type map.
+   * @param {string} tag A tag name.
+   * @param {string} container 'attributes' or 'properties'
+   * @param {string} name The attribute / property name.
+   * @param {string=} elNs Element namespace.
+   * @param {string=} attrNs Attribute namespace.
+   * @return {string|undefined}
+   * @private
+   */
+  function getTypeInternal_(tag, container, name, elNs = '', attrNs = '') {
+    const canonicalTag = toUpperCase.apply(String(tag));
+
+    let ns = attrNs ? attrNs : elNs;
+    if (!ns) {
+      ns = HTML_NS;
+    }
+    const map = hasOwnProperty.apply(TYPE_MAP, [ns]) ? TYPE_MAP[ns] : null;
+    if (!map) {
+      return;
+    }
+    if (hasOwnProperty.apply(map, [canonicalTag]) &&
+        map[canonicalTag] &&
+        hasOwnProperty.apply(map[canonicalTag][container], [name]) &&
+        map[canonicalTag][container][name]) {
+      return map[canonicalTag][container][name];
+    }
+
+    if (hasOwnProperty.apply(map, ['*']) &&
+        hasOwnProperty.apply(map['*'][container], [name]) &&
+        map['*'][container][name]) {
+      return map['*'][container][name];
+    }
+  }
+
+  /**
+   * Returns the name of the trusted type required for a given element property.
+   * @param {string} tagName The name of the tag of the element.
+   * @param {string} property The property.
+   * @param {string=} elementNs Element namespace.
+   * @return {string|undefined} Required type name or undefined, if a Trusted
+   *   Type is not required.
+   */
+  function getPropertyType(tagName, property, elementNs = '') {
+    // TODO: Support namespaces.
+    return getTypeInternal_(tagName, 'properties', String(property), elementNs);
+  }
+
+  /**
+   * Returns the type map-like object, that resolves a name of a type for a
+   * given tag + attribute / property in a given namespace.
+   * The keys of the map are uppercase tag names. Map entry has mappings between
+   * a lowercase attribute name / case-sensitive property name and a name of the
+   * type that is required for that attribute / property.
+   * Example entry for 'IMG': {"attributes": {"src": "TrustedHTML"}}
+   * @param {string=} namespaceUri The namespace URI (will use the current
+   *   document namespace URI if omitted).
+   * @return {TrustedTypesTypeMap}
+   */
+  function getTypeMapping(namespaceUri = '') {
+    if (!namespaceUri) {
+      try {
+        namespaceUri = document.documentElement.namespaceURI;
+      } catch (e) {
+        namespaceUri = HTML_NS;
+      }
+    }
+    /**
+     * @template T
+     * @private
+     * @param {T} o
+     * @return {T}
+     */
+    function deepClone(o) {
+      return JSON.parse(JSON.stringify(o));
+    }
+    const map = TYPE_MAP[namespaceUri];
+    if (!map) {
+      return {};
+    }
+    return deepClone(map);
   }
 
   /**
@@ -317,7 +596,7 @@ export const trustedTypesBuilderTestOnly = function() {
 
     if (pName == 'default' && !expose) {
       const message = 'The default policy must be exposed';
-       if (DOMException) {
+      if (DOMException) {
         // Workaround for missing externs in Closure compiler.
         throw new window['DOMException'](message, 'InvalidStateError');
       } else {
@@ -395,6 +674,10 @@ export const trustedTypesBuilderTestOnly = function() {
     isURL: isTrustedTypeChecker(TrustedURL),
     isScriptURL: isTrustedTypeChecker(TrustedScriptURL),
     isScript: isTrustedTypeChecker(TrustedScript),
+
+    getAttributeType,
+    getPropertyType,
+    getTypeMapping,
 
     TrustedHTML: TrustedHTML,
     TrustedURL: TrustedURL,

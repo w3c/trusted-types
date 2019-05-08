@@ -93,7 +93,7 @@ export class TrustedTypeConfig {
     const policy = TrustedTypeConfig.parseCSP(cspString);
     const enforce = DIRECTIVE_NAME in policy;
     let policies = ['*'];
-    let fallbackPolicyName = 'default';
+    const fallbackPolicyName = 'default';
     if (enforce) {
       policies = policy[DIRECTIVE_NAME].filter((p) => p.charAt(0) !== '\'');
     }

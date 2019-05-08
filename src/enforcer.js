@@ -9,7 +9,8 @@
 
 /* eslint-disable no-unused-vars */
 import {DIRECTIVE_NAME, TrustedTypeConfig} from './data/trustedtypeconfig.js';
-import {TrustedTypes, setAllowedPolicyNames} from './trustedtypes.js';
+import {TrustedTypes, setAllowedPolicyNames, HTML_NS} from
+  './trustedtypes.js';
 
 /* eslint-enable no-unused-vars */
 import {installFunction, installSetter, installSetterAndGetter}
@@ -19,10 +20,13 @@ const {apply} = Reflect;
 const {
   getOwnPropertyNames,
   getOwnPropertyDescriptor,
-  hasOwnProperty,
   getPrototypeOf,
-  isPrototypeOf,
 } = Object;
+
+const {
+  hasOwnProperty,
+  isPrototypeOf,
+} = Object.prototype;
 
 const {slice} = String.prototype;
 
@@ -55,12 +59,6 @@ const windowOpenObject = getOwnPropertyDescriptor(window, 'open') ?
   window :
   window.constructor.prototype;
 
-// IE has innerHTML on HTMLElement.
-const innerHTMLObject =
-    apply(hasOwnProperty, Element.prototype, ['innerHTML']) ?
-    Element.prototype :
-    HTMLElement.prototype;
-
 // In IE 11, insertAdjacentHTML is on HTMLElement prototype
 const insertAdjacentHTMLObject = apply(hasOwnProperty, Element.prototype,
   ['insertAdjacentHTML']) ? Element.prototype : HTMLElement.prototype;
@@ -84,79 +82,35 @@ function parseUrl_(url) {
   }
 }
 
-/**
- * A map of attribute names to allowed types.
- * @type {!Object<string, !Object<string, !Function>>}
- */
-let SET_ATTRIBUTE_TYPE_MAP = {
-  // TODO(slekies): Add SVG Elements here
-  // TODO(koto): Figure out what to to with <link>
-  'HTMLAnchorElement': {
-    'href': TrustedTypes.TrustedURL,
-  },
-  'HTMLAreaElement': {
-    'href': TrustedTypes.TrustedURL,
-  },
-  'HTMLBaseElement': {
-    'href': TrustedTypes.TrustedURL,
-  },
-  'HTMLButtonElement': {
-    'formaction': TrustedTypes.TrustedURL,
-  },
-  'HTMLSourceElement': {
-    'src': TrustedTypes.TrustedURL,
-  },
-  'HTMLImageElement': {
-    'src': TrustedTypes.TrustedURL,
-    // TODO(slekies): add special handling for srcset
-  },
-  'HTMLTrackElement': {
-    'src': TrustedTypes.TrustedURL,
-  },
-  'HTMLMediaElement': {
-    'src': TrustedTypes.TrustedURL,
-  },
-  'HTMLInputElement': {
-    'src': TrustedTypes.TrustedURL,
-    'formaction': TrustedTypes.TrustedURL,
-  },
-  'HTMLFormElement': {
-    'action': TrustedTypes.TrustedURL,
-  },
-  'HTMLFrameElement': {
-    'src': TrustedTypes.TrustedURL,
-  },
-  'HTMLIFrameElement': {
-    'src': TrustedTypes.TrustedURL,
-    'srcdoc': TrustedTypes.TrustedHTML,
-  },
-  'HTMLLinkElement': {
-    'href': TrustedTypes.TrustedURL,
-  },
-  'HTMLObjectElement': {
-    'data': TrustedTypes.TrustedScriptURL,
-    'codebase': TrustedTypes.TrustedScriptURL,
-  },
-  'HTMLEmbedElement': {
-    'src': TrustedTypes.TrustedScriptURL,
-  },
-  'HTMLScriptElement': {
-    'src': TrustedTypes.TrustedScriptURL,
-    'text': TrustedTypes.TrustedScript,
-  },
-  'HTMLElement': {
-  },
+// We don't actually need other namespaces.
+// setAttribute is hooked on Element.prototype, which all elements inherit from,
+// and all sensitive property wrappers are hooked directly on Element as well.
+const typeMap = TrustedTypes.getTypeMapping(HTML_NS);
+
+const STRING_TO_TYPE = {
+  'TrustedHTML': TrustedTypes.TrustedHTML,
+  'TrustedScript': TrustedTypes.TrustedScript,
+  'TrustedScriptURL': TrustedTypes.TrustedScriptURL,
+  'TrustedURL': TrustedTypes.TrustedURL,
 };
 
-// Edge doesn't support srcdoc.
-if (!('srcdoc' in HTMLIFrameElement.prototype)) {
-  delete SET_ATTRIBUTE_TYPE_MAP['HTMLIFrameElement']['srcdoc'];
+/**
+ * Converts an uppercase tag name to an element constructor function name.
+ * Used for property setter hijacking only.
+ * @param {string} tagName
+ * @return {string}
+ */
+function convertTagToConstructor(tagName) {
+  if (tagName == '*') {
+    return 'HTMLElement';
+  }
+  return getConstructorName_(document.createElement(tagName).constructor);
 }
 
-// Add inline event handlers property names.
-for (let name of getOwnPropertyNames(HTMLElement.prototype)) {
-  if (name.slice(0, 2) === 'on') {
-    SET_ATTRIBUTE_TYPE_MAP['HTMLElement'][name] = TrustedTypes.TrustedScript;
+for (const tagName of Object.keys(typeMap)) {
+  const attrs = typeMap[tagName]['properties'];
+  for (const [k, v] of Object.entries(attrs)) {
+    attrs[k] = STRING_TO_TYPE[v];
   }
 }
 
@@ -195,17 +149,9 @@ const getExposedPolicy = TrustedTypes.getExposedPolicy;
  * @property {function(string):TrustedScriptURL} createScriptURL
  * @property {function(string):TrustedScript} createScript
  */
-let TrustedTypePolicy = {};
+const TrustedTypePolicy = {};
 /* eslint-enable no-unused-vars */
 
-/**
- * A map of HTML attribute to element property names.
- * @type {!Object<string, string>}
- */
-const ATTR_PROPERTY_MAP = {
-  'codebase': 'codeBase',
-  'formaction': 'formAction',
-};
 
 /**
  * An object for enabling trusted type enforcement.
@@ -239,11 +185,9 @@ export class TrustedTypesEnforcer {
       return;
     }
 
-    this.wrapSetter_(innerHTMLObject, 'innerHTML', TrustedTypes.TrustedHTML);
-    this.wrapSetter_(innerHTMLObject, 'outerHTML', TrustedTypes.TrustedHTML);
     if ('ShadowRoot' in window) {
       this.wrapSetter_(ShadowRoot.prototype, 'innerHTML',
-         TrustedTypes.TrustedHTML);
+          TrustedTypes.TrustedHTML);
     }
     this.wrapWithEnforceFunction_(Range.prototype, 'createContextualFragment',
         TrustedTypes.TrustedHTML, 0);
@@ -261,7 +205,7 @@ export class TrustedTypesEnforcer {
     } else {
       // Firefox
       this.wrapWithEnforceFunction_(HTMLDocument.prototype, 'write',
-        TrustedTypes.TrustedHTML, 0);
+          TrustedTypes.TrustedHTML, 0);
       this.wrapWithEnforceFunction_(HTMLDocument.prototype, 'open',
           TrustedTypes.TrustedURL, 0);
     }
@@ -278,7 +222,6 @@ export class TrustedTypesEnforcer {
     this.wrapWithEnforceFunction_(window, 'setTimeout',
         TrustedTypes.TrustedScript, 0);
     this.wrapSetAttribute_();
-    this.installScriptWrappers_();
     this.installPropertySetWrappers_();
   }
 
@@ -292,8 +235,6 @@ export class TrustedTypesEnforcer {
       return;
     }
 
-    this.restoreSetter_(innerHTMLObject, 'innerHTML');
-    this.restoreSetter_(innerHTMLObject, 'outerHTML');
     if ('ShadowRoot' in window) {
       this.restoreSetter_(ShadowRoot.prototype, 'innerHTML');
     }
@@ -317,67 +258,44 @@ export class TrustedTypesEnforcer {
     this.restoreFunction_(window, 'setTimeout');
     this.restoreFunction_(window, 'setInterval');
     this.uninstallPropertySetWrappers_();
-    this.uninstallScriptWrappers_();
-  }
-
-  /**
-   * Installs wrappers for setting properties of script elements.
-   */
-  installScriptWrappers_() {
-    // HTMLScript element has no own setters for crucial properties, we have to
-    // reuse ones from HTMLElement.
-    this.wrapSetter_(HTMLScriptElement.prototype, 'innerText',
-        TrustedTypes.TrustedScript, HTMLElement.prototype);
-    this.wrapSetter_(HTMLScriptElement.prototype, 'textContent',
-        TrustedTypes.TrustedScript, Node.prototype);
-  }
-
-  /**
-   * Uninstalls wrappers for setting properties of script elements.
-   */
-  uninstallScriptWrappers_() {
-    this.restoreSetter_(HTMLScriptElement.prototype, 'innerText',
-        HTMLElement.prototype);
-    this.restoreSetter_(HTMLScriptElement.prototype, 'textContent',
-        Node.prototype);
   }
 
   /**
    * Installs wrappers for directly setting properties
-   * based on SET_ATTRIBUTE_TYPE_MAP.
+   * based on the type map.
    * @private
    */
   installPropertySetWrappers_() {
     /* eslint-disable guard-for-in */
-    for (let type of getOwnPropertyNames(SET_ATTRIBUTE_TYPE_MAP)) {
-      for (let attribute of getOwnPropertyNames(SET_ATTRIBUTE_TYPE_MAP[type])) {
-        const property = apply(hasOwnProperty, ATTR_PROPERTY_MAP, [attribute]) ?
-              ATTR_PROPERTY_MAP[attribute] : attribute;
-        this.wrapSetter_(window[type].prototype, property,
-                         SET_ATTRIBUTE_TYPE_MAP[type][attribute]);
+    for (const tag of getOwnPropertyNames(typeMap)) {
+      for (const property of getOwnPropertyNames(typeMap[tag]['properties'])) {
+        this.wrapSetter_(
+            window[convertTagToConstructor(tag)].prototype,
+            property,
+            typeMap[tag]['properties'][property]);
       }
     }
   }
 
   /**
    * Uninstalls wrappers for directly setting properties
-   * based on SET_ATTRIBUTE_TYPE_MAP.
+   * based on the type map.
    * @private
    */
   uninstallPropertySetWrappers_() {
     /* eslint-disable guard-for-in */
-    for (let type of getOwnPropertyNames(SET_ATTRIBUTE_TYPE_MAP)) {
-      for (let attribute of getOwnPropertyNames(SET_ATTRIBUTE_TYPE_MAP[type])) {
-        const property = attribute in ATTR_PROPERTY_MAP ?
-              ATTR_PROPERTY_MAP[attribute] : attribute;
-        this.restoreSetter_(window[type].prototype, property);
+    for (const tag of getOwnPropertyNames(typeMap)) {
+      for (const property of getOwnPropertyNames(typeMap[tag]['properties'])) {
+        this.restoreSetter_(
+            window[convertTagToConstructor(tag)].prototype,
+            property);
       }
     }
   }
 
   /** Wraps set attribute with an enforcement function. */
   wrapSetAttribute_() {
-    let that = this;
+    const that = this;
     this.wrapFunction_(
         Element.prototype,
         'setAttribute',
@@ -392,9 +310,9 @@ export class TrustedTypesEnforcer {
               .apply(that, args);
         });
     this.wrapFunction_(
-      Element.prototype,
-      'setAttributeNS',
-      /**
+        Element.prototype,
+        'setAttributeNS',
+        /**
          * @this {TrustedTypesEnforcer}
          * @param {function(!Function, ...*)} originalFn
          * @return {*}
@@ -404,30 +322,6 @@ export class TrustedTypesEnforcer {
               .bind(that, this, originalFn)
               .apply(that, args);
         });
-  }
-
-  /**
-   * Returns the required type for the setAtrtibute call.
-   * @param  {!Object} context The object to infer the type of attribute of.
-   * @param  {string} attrName The attribute name.
-   * @return {Function} The type to enforce, or null if no contract is found.
-   */
-  getRequiredTypeForAttribute_(context, attrName) {
-      let ctor = context.constructor;
-      do {
-        let name;
-        let type = ctor && (name = getConstructorName_(ctor)) &&
-            SET_ATTRIBUTE_TYPE_MAP[name] &&
-            SET_ATTRIBUTE_TYPE_MAP[name][attrName];
-
-        if (type || ctor == HTMLElement) {
-          // Stop at HTMLElement.
-          return /** @type {Function} */ (type);
-        }
-        // Explore the prototype chain.
-      } while (ctor && (ctor = getPrototypeOf(ctor.prototype).constructor));
-
-      return null;
   }
 
   /**
@@ -442,16 +336,17 @@ export class TrustedTypesEnforcer {
     // determine whether a special type is required. In order to not break the
     // application, we will not do any further type checks and pass the call
     // to setAttribute.
-    if (context.constructor !== null) {
-      let attrName = (args[0] = String(args[0])).toLowerCase();
-      let type = this.getRequiredTypeForAttribute_(context, attrName);
-
-      if (type instanceof Function) {
+    if (context.constructor !== null && context instanceof Element) {
+      const attrName = (args[0] = String(args[0])).toLowerCase();
+      const requiredType = TrustedTypes.getAttributeType(context.tagName,
+          attrName, context.namespaceURI);
+      if (requiredType && apply(hasOwnProperty, STRING_TO_TYPE,
+          [requiredType])) {
         return this.enforce_(
-          context, 'setAttribute', type, originalFn, 1, args);
+            context, 'setAttribute', STRING_TO_TYPE[requiredType],
+            originalFn, 1, args);
       }
     }
-
     return originalFn.apply(context, args);
   }
 
@@ -462,35 +357,22 @@ export class TrustedTypesEnforcer {
    * @return {*}
    */
   setAttributeNSWrapper_(context, originalFn, ...args) {
-    /**
-     * @param {string} ns the namespace URL.
-     * @return {boolean} true iff the given argument is an HTML namespace.
-     */
-    function isHtmlNamespace(ns) {
-      return true; // TODO(msamuel): implement me
-    }
     // See the note from setAttributeWrapper_ above.
-    if (context.constructor !== null) {
-      let ns = (args[0] = String(args[0])).toLowerCase();
-      let attrName = (args[1] = String(args[1])).toLowerCase();
-      if (isHtmlNamespace(ns)) {
-        let name;
-        let type = context.constructor &&
-            (name = getConstructorName_(context.constructor)) &&
-            SET_ATTRIBUTE_TYPE_MAP[name] &&
-            SET_ATTRIBUTE_TYPE_MAP[name][attrName];
-
-        if (type instanceof Function) {
-          return this.enforce_(
-            context, 'setAttributeNS', type, originalFn, 2, args);
-        }
+    if (context.constructor !== null && context instanceof Element) {
+      const ns = args[0] ? String(args[0]) : null;
+      args[0] = ns;
+      const attrName = (args[1] = String(args[1])).toLowerCase();
+      const requiredType = TrustedTypes.getAttributeType(context.tagName,
+          attrName, context.namespaceURI, ns);
+      if (requiredType && apply(hasOwnProperty, STRING_TO_TYPE,
+          [requiredType])) {
+        return this.enforce_(context, 'setAttributeNS',
+            STRING_TO_TYPE[requiredType],
+            originalFn, 2, args);
       }
-      // TODO(msamuel): handle SVG namespace.  See TODO(slekies) above.
     }
-
     return originalFn.apply(context, args);
   }
-
 
   /**
    * Wraps a setter with the enforcement wrapper.
@@ -501,7 +383,7 @@ export class TrustedTypesEnforcer {
    * @private
    */
   wrapWithEnforceFunction_(object, name, type, argNumber) {
-    let that = this;
+    const that = this;
     this.wrapFunction_(
         object,
         name,
@@ -512,7 +394,7 @@ export class TrustedTypesEnforcer {
          */
         function(originalFn, ...args) {
           return that.enforce_.call(that, this, name, type, originalFn,
-                                    argNumber, args);
+              argNumber, args);
         });
   }
 
@@ -525,8 +407,8 @@ export class TrustedTypesEnforcer {
    * @param {function(!Function, ...*)} functionBody The wrapper function.
    */
   wrapFunction_(object, name, functionBody) {
-    let descriptor = getOwnPropertyDescriptor(object, name);
-    let originalFn = /** @type function(*):* */ (
+    const descriptor = getOwnPropertyDescriptor(object, name);
+    const originalFn = /** @type function(*):* */ (
         descriptor ? descriptor.value : null);
 
     if (!(originalFn instanceof Function)) {
@@ -534,7 +416,7 @@ export class TrustedTypesEnforcer {
           'Property ' + name + ' on object' + object + ' is not a function');
     }
 
-    let key = this.getKey_(object, name);
+    const key = this.getKey_(object, name);
     if (this.originalSetters_[key]) {
       throw new Error(
           `TrustedTypesEnforcer: Double installation detected: ${key} ${name}`);
@@ -568,31 +450,39 @@ export class TrustedTypesEnforcer {
     }
 
     let useObject = descriptorObject || object;
+    let descriptor;
+    let originalSetter;
+    const stopAt = getPrototypeOf(Node.prototype);
 
-    let descriptor = getOwnPropertyDescriptor(useObject, name);
-
-    let originalSetter = /** @type {function(*):*} */ (descriptor ?
-        descriptor.set : null);
+    // Find the descriptor on the object or its prototypes, stopping at Node.
+    do {
+      descriptor = getOwnPropertyDescriptor(useObject, name);
+      originalSetter = /** @type {function(*):*} */ (descriptor ?
+          descriptor.set : null);
+      if (!originalSetter) {
+        useObject = getPrototypeOf(useObject) || stopAt;
+      }
+    } while (!(originalSetter || useObject === stopAt || !useObject));
 
     if (!(originalSetter instanceof Function)) {
       throw new TypeError(
           'No setter for property ' + name + ' on object' + object);
     }
 
-    let key = this.getKey_(object, name);
+    const key = this.getKey_(object, name);
     if (this.originalSetters_[key]) {
       throw new Error(
           `TrustedTypesEnforcer: Double installation detected: ${key} ${name}`);
     }
-    let that = this;
+    const that = this;
     /**
      * @this {TrustedTypesEnforcer}
      * @param {*} value
      */
-    let enforcingSetter = function(value) {
-          that.enforce_.call(that, this, name, type, originalSetter, 0,
-                             [value]);
-        };
+    const enforcingSetter = function(value) {
+      that.enforce_.call(that, this, name, type, originalSetter, 0,
+          [value]);
+    };
 
     if (useObject === object) {
       installSetter(
@@ -622,7 +512,7 @@ export class TrustedTypesEnforcer {
    * @private
    */
   restoreSetter_(object, name, descriptorObject = undefined) {
-    let key = this.getKey_(object, name);
+    const key = this.getKey_(object, name);
     if (descriptorObject && !isPrototypeOf.call(descriptorObject, object)) {
       throw new Error('Invalid prototype chain');
     }
@@ -648,7 +538,7 @@ export class TrustedTypesEnforcer {
    * @private
    */
   restoreFunction_(object, name) {
-    let key = this.getKey_(object, name);
+    const key = this.getKey_(object, name);
     if (!this.originalSetters_[key]) {
       throw new Error(
           // eslint-disable-next-line max-len
@@ -690,8 +580,8 @@ export class TrustedTypesEnforcer {
    * @private
    */
   enforce_(context, propertyName, typeToEnforce, originalSetter, argNumber,
-           args) {
-    let value = args[argNumber];
+      args) {
+    const value = args[argNumber];
     const typeName = '' + typeToEnforce.name;
     // If typed value is given, pass through.
     if (TYPE_CHECKER_MAP.hasOwnProperty(typeName) &&
@@ -761,20 +651,20 @@ export class TrustedTypesEnforcer {
       }
       const valueSlice = apply(slice, '' + value, [0, 40]);
       const event = new SecurityPolicyViolationEvent(
-        'securitypolicyviolation',
-        {
-          'bubbles': true,
-          'blockedURI': blockedURI,
-          'disposition': this.config_.isEnforcementEnabled ?
+          'securitypolicyviolation',
+          {
+            'bubbles': true,
+            'blockedURI': blockedURI,
+            'disposition': this.config_.isEnforcementEnabled ?
               'enforce' : 'report',
-          'documentURI': document.location.href,
-          'effectiveDirective': DIRECTIVE_NAME,
-          'originalPolicy': this.config_.cspString,
-          'statusCode': 0,
-          'violatedDirective': DIRECTIVE_NAME,
-          'sample': `${contextName}.${propertyName} ${valueSlice}`,
-        });
-      if (context.isConnected) {
+            'documentURI': document.location.href,
+            'effectiveDirective': DIRECTIVE_NAME,
+            'originalPolicy': this.config_.cspString,
+            'statusCode': 0,
+            'violatedDirective': DIRECTIVE_NAME,
+            'sample': `${contextName}.${propertyName} ${valueSlice}`,
+          });
+      if (context instanceof Node && context.isConnected) {
         context.dispatchEvent(event);
       } else { // Fallback - dispatch an event on base document.
         document.dispatchEvent(event);

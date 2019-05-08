@@ -59,13 +59,13 @@ describe('TrustedTypeConfig', () => {
     it('always enabled logging', () => {
       expect(TrustedTypeConfig.fromCSP('').isLoggingEnabled).toBe(true);
       expect(TrustedTypeConfig.fromCSP('trusted-types').isLoggingEnabled)
-        .toBe(true);
+          .toBe(true);
     });
 
     it('enforces iif trusted-types directive is present', () => {
       expect(TrustedTypeConfig.fromCSP('').isEnforcementEnabled).toBe(false);
       expect(TrustedTypeConfig.fromCSP('trusted-types').isEnforcementEnabled)
-        .toBe(true);
+          .toBe(true);
     });
 
     it('uses whitelisted directive names from the directive', () => {

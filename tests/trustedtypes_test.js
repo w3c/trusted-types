@@ -43,14 +43,14 @@ describe('v2 TrustedTypes', () => {
     });
 
     [null, undefined, () => {}].forEach((i) =>
-    it('creates empty policies if ' + i + ' is passed', () => {
-      const warn = spyOn(console, 'warn');
-      const p = TrustedTypes.createPolicy('policy', i);
+      it('creates empty policies if ' + i + ' is passed', () => {
+        const warn = spyOn(console, 'warn');
+        const p = TrustedTypes.createPolicy('policy', i);
 
-      expect(warn).toHaveBeenCalledWith(jasmine.anything());
-      expect(p.createHTML instanceof Function).toBe(true);
-      expect(() => p.createHTML('foo')).toThrow();
-    }));
+        expect(warn).toHaveBeenCalledWith(jasmine.anything());
+        expect(p.createHTML instanceof Function).toBe(true);
+        expect(() => p.createHTML('foo')).toThrow();
+      }));
 
     it('returns a policy object with a name', () => {
       const p = TrustedTypes.createPolicy('policy_has_name', {});
@@ -87,11 +87,11 @@ describe('v2 TrustedTypes', () => {
       TrustedTypes.createPolicy('conflicting', {});
 
       expect(() => TrustedTypes.createPolicy('conflicting', {}))
-        .toThrow();
+          .toThrow();
     });
 
     it('returns a frozen policy object', () => {
-      let p = TrustedTypes.createPolicy('frozencheck', {});
+      const p = TrustedTypes.createPolicy('frozencheck', {});
 
       expect(Object.isFrozen(p)).toBe(true);
       expect(() => {
@@ -130,16 +130,16 @@ describe('v2 TrustedTypes', () => {
   describe('is* methods', () => {
     it('require the object to be created via policy', () => {
       const p = TrustedTypes.createPolicy('foo', noopPolicy);
-      let html = p.createHTML('test');
+      const html = p.createHTML('test');
 
       expect(TrustedTypes.isHTML(html)).toEqual(true);
-      let html2 = Object.create(html);
+      const html2 = Object.create(html);
 
       // instanceof can pass, but we rely on isHTML
       expect(html2 instanceof TrustedTypes.TrustedHTML).toEqual(true);
       expect(TrustedTypes.isHTML(html2)).toEqual(false);
 
-      let html3 = Object.assign({}, html, {toString: () => 'fake'});
+      const html3 = Object.assign({}, html, {toString: () => 'fake'});
 
       expect(TrustedTypes.isHTML(html3)).toEqual(false);
     });
@@ -147,6 +147,146 @@ describe('v2 TrustedTypes', () => {
     it('cannot be redefined', () => {
       expect(() => TrustedTypes.isHTML = () => true).toThrow();
       expect(TrustedTypes.isHTML({})).toBe(false);
+    });
+  });
+
+  describe('getAttributeType', () => {
+    it('returns the proper type', () => {
+      expect(TrustedTypes.getAttributeType('script', 'src')).toEqual(
+          'TrustedScriptURL');
+
+      expect(TrustedTypes.getAttributeType('img', 'src')).toEqual('TrustedURL');
+    });
+
+    it('supports xlink attributes', () => {
+      expect(TrustedTypes.getAttributeType(
+          'foo', 'href', '', 'http://www.w3.org/1999/xlink')).toEqual(
+          'TrustedURL');
+    });
+
+    it('ignores attributes from unknown namespaces', () => {
+      expect(TrustedTypes.getAttributeType(
+          'a', 'href', '', 'http://foo.bar')).toBe(undefined);
+    });
+
+    it('is case insensitive for element names', () => {
+      expect(TrustedTypes.getAttributeType('SCRIPT', 'src')).toEqual(
+          'TrustedScriptURL');
+
+      expect(TrustedTypes.getAttributeType('imG', 'src')).toEqual('TrustedURL');
+    });
+
+    it('is case insensitive for the attribute names', () => {
+      expect(TrustedTypes.getAttributeType('script', 'SRC')).toEqual(
+          'TrustedScriptURL');
+
+      expect(TrustedTypes.getAttributeType('imG', 'srC')).toEqual('TrustedURL');
+    });
+
+    it('supports the inline event handlers', () => {
+      expect(TrustedTypes.getAttributeType('img', 'onerror')).toEqual(
+          'TrustedScript');
+
+      expect(TrustedTypes.getAttributeType('unknown', 'onerror')).toEqual(
+          'TrustedScript');
+    });
+
+    it('defaults to undefined', () => {
+      expect(TrustedTypes.getAttributeType('unknown', 'src')).toBe(undefined);
+
+      expect(TrustedTypes.getAttributeType('img', 'bar')).toBe(undefined);
+    });
+  });
+
+  describe('getPropertyType', () => {
+    it('returns the proper type for attribute-related properties', () => {
+      expect(TrustedTypes.getPropertyType('script', 'src')).toEqual(
+          'TrustedScriptURL');
+
+      expect(TrustedTypes.getPropertyType('img', 'src')).toEqual('TrustedURL');
+    });
+
+    it('is case insensitive for tag names', () => {
+      expect(TrustedTypes.getPropertyType('SCRIPT', 'src')).toEqual(
+          'TrustedScriptURL');
+
+      expect(TrustedTypes.getPropertyType('ImG', 'src')).toEqual('TrustedURL');
+    });
+
+    it('is case sensitive for property names', () => {
+      expect(TrustedTypes.getPropertyType('script', 'sRc')).toBe(
+          undefined);
+
+      expect(TrustedTypes.getPropertyType('div', 'innerhtml')).toBe(
+          undefined);
+    });
+
+    it('returns the proper type for innerHTML', () => {
+      expect(TrustedTypes.getPropertyType('div', 'innerHTML')).toEqual(
+          'TrustedHTML');
+    });
+
+    it('returns the proper type for outerHTML', () => {
+      expect(TrustedTypes.getPropertyType('div', 'outerHTML')).toEqual(
+          'TrustedHTML');
+    });
+
+    ['text', 'innerText', 'textContent'].forEach(
+        (prop) => it('returns the proper type for script.' + prop, () => {
+          expect(TrustedTypes.getPropertyType('script', prop)).toEqual(
+              'TrustedScript');
+        }));
+  });
+
+  describe('getTypeMapping', () => {
+    it('returns a map', () => {
+      const map = TrustedTypes.getTypeMapping();
+
+      expect(map['SCRIPT'].attributes.src).toEqual('TrustedScriptURL');
+
+      expect(map['IMG'].attributes.src).toEqual('TrustedURL');
+    });
+
+    it('returns a map that has a wildcard entry', () => {
+      const map = TrustedTypes.getTypeMapping();
+
+      expect(map['*'].properties.innerHTML).toEqual('TrustedHTML');
+    });
+
+    it('returns a map that is aware of inline event handlers', () => {
+      const map = TrustedTypes.getTypeMapping();
+
+      expect(map['*'].attributes.onclick).toEqual('TrustedScript');
+    });
+
+    it('returns a fresh map', () => {
+      const map1 = TrustedTypes.getTypeMapping();
+      map1['*'].attributes['onfoo'] = 'bar';
+      const map2 = TrustedTypes.getTypeMapping();
+
+      expect(map2['*'].onfoo).toBe(undefined);
+    });
+
+    it('defaults to current document namespace', () => {
+      const HTML_NS = 'http://www.w3.org/1999/xhtml';
+      const mockNsGetter = spyOnProperty(document.documentElement,
+          'namespaceURI', 'get').and.returnValues(HTML_NS, 'http://foo.bar');
+      // Called once...
+      const mapInferredHtml = TrustedTypes.getTypeMapping();
+      // And the second time...
+      const mapInferredFoo = TrustedTypes.getTypeMapping();
+      // Call skipped.
+      const mapExplicitHtml = TrustedTypes.getTypeMapping(HTML_NS);
+
+      expect(mapInferredHtml).toEqual(mapExplicitHtml);
+      expect(mapInferredFoo).not.toEqual(mapExplicitHtml);
+      expect(mockNsGetter.calls.count()).toEqual(2);
+    });
+
+    it('returns empty object to unknown namespaces', () => {
+      const map = TrustedTypes.getTypeMapping('http://foo/bar');
+
+      expect(map).toEqual({});
     });
   });
 
@@ -169,6 +309,32 @@ describe('v2 TrustedTypes', () => {
         if (poisonedProto) {
           // eslint-disable-next-line no-extend-native
           WeakMap.prototype.has = originalHas;
+        }
+      }
+    });
+
+    it('Object.prototype for property lookup', () => {
+      const poisonedProto = false;
+      // eslint-disable-next-line no-extend-native
+      Object.prototype['FOO'] = {
+        attributes: {
+          'bar': 'TrustedHTML',
+        },
+        properties: {
+          'baz': 'TrustedHTML',
+        },
+      };
+      // eslint-disable-next-line no-extend-native
+      Object.prototype['newattr'] = 'TrustedHTML';
+      try {
+        expect(TrustedTypes.getPropertyType('foo', 'baz')).toBeUndefined();
+        expect(TrustedTypes.getAttributeType('foo', 'bar')).toBeUndefined();
+        expect(TrustedTypes.getAttributeType('SCRIPT', 'newattr'))
+            .toBeUndefined();
+      } finally {
+        if (poisonedProto) {
+          delete Object.prototype.FOO;
+          delete Object.prototype.newattr;
         }
       }
     });
@@ -258,14 +424,14 @@ describe('v2 TrustedTypes', () => {
       });
 
       [null, undefined].forEach((i) =>
-      it('cast ' + i + ' to an empty string', () => {
-        const policyRules = {
-          createHTML: (s) => i,
-        };
-        const p = TrustedTypes.createPolicy('transform', policyRules);
+        it('cast ' + i + ' to an empty string', () => {
+          const policyRules = {
+            createHTML: (s) => i,
+          };
+          const p = TrustedTypes.createPolicy('transform', policyRules);
 
-        expect('' + p.createHTML('<foo>')).toBe('');
-      }));
+          expect('' + p.createHTML('<foo>')).toBe('');
+        }));
 
       it('return frozen values', () => {
         if (!window.Proxy) {
@@ -274,7 +440,7 @@ describe('v2 TrustedTypes', () => {
 
         const p = TrustedTypes.createPolicy('policy', noopPolicy);
 
-        let html = p.createHTML('foo');
+        const html = p.createHTML('foo');
 
         expect(Object.isFrozen(html)).toBe(true);
         expect(() => html.toString = () => 'fake').toThrow();
@@ -283,11 +449,12 @@ describe('v2 TrustedTypes', () => {
 
         // Prevent sanitizer that passes javascript:... from masquerading.
         expect(
-          () => Object.setPrototypeOf(html, TrustedTypes.TrustedURL.prototype))
-          .toThrow();
+            () => Object.setPrototypeOf(html,
+                TrustedTypes.TrustedURL.prototype))
+            .toThrow();
 
         // Proxy that traps get of toString.
-        let proxyHtml = new Proxy(html, {
+        const proxyHtml = new Proxy(html, {
           get: (target, key, receiver) => {
             if (key === 'toString') {
               return () => 'fake';
@@ -296,7 +463,7 @@ describe('v2 TrustedTypes', () => {
         });
 
         expect(proxyHtml.toString() !== 'foo' && TrustedTypes.isHTML(proxyHtml))
-          .toBe(false);
+            .toBe(false);
 
         // Check that the attacks above don't succeed and throw.
         expect(TrustedTypes.isHTML(html)).toBe(true);
