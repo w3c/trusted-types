@@ -12,7 +12,7 @@
  * (i.e. no enforcement logic).
  */
 import {TrustedTypes, TrustedTypePolicy, TrustedTypePolicyFactory} from
-    '../trustedtypes.js';
+  '../trustedtypes.js';
 
 const tt = TrustedTypes;
 
@@ -35,6 +35,9 @@ function setupPolyfill() {
     'createPolicy': tt.createPolicy,
     'getExposedPolicy': tt.getExposedPolicy,
     'getPolicyNames': tt.getPolicyNames,
+    'getAttributeType': tt.getAttributeType,
+    'getPropertyType': tt.getPropertyType,
+    'getTypeMapping': tt.getTypeMapping,
     '_isPolyfill_': true,
   });
   window['TrustedTypes'] = Object.freeze(publicApi);

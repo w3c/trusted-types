@@ -79,6 +79,49 @@ TrustedTypePolicyFactory.prototype.getExposedPolicy = function(name){};
 TrustedTypePolicyFactory.prototype.getPolicyNames = function(){};
 
 /**
+ * Returns the name of the Trusted Type required for a given element
+ *   attribute.
+ * @param {string} tagName The name of the tag of the element.
+ * @param {string} attribute The name of the attribute.
+ * @param {string=} elementNs Element namespace URI.
+ * @param {string=} attributeNs The attribute namespace URI.
+ * @return {string|undefined} Required type name or undefined, if a
+ *   Trusted Type is not required.
+ */
+TrustedTypePolicyFactory.prototype.getAttributeType = function(tagName,
+  attribute, elementNs = '', attributeNs = ''){};
+
+/**
+ * Returns the name of the Trusted Type required for a given element property.
+ * @param {string} tagName The name of the tag of the element.
+ * @param {string} property The property.
+ * @param {string=} elementNs Element namespace URI.
+ * @param {string=} attributeNs The attribute namespace URI.
+ * @return {string|undefined} Required type name or undefined, if a
+ *   Trusted Type is not required.
+ */
+TrustedTypePolicyFactory.prototype.getPropertyType = function(tagName,
+    property, elementNs = ''){};
+
+/**
+ * Returns the type map-like object, that resolves a name of a type for a given
+ * tag + attribute / property in a given namespace.
+ * The keys of the map are uppercase tag names. Map entry has mappings between
+ * a lowercase attribute name / case-sensitive property name and a name of the
+ * type that is required for that attribute / property.
+ *
+ * Example entry for 'IMG': {"attributes": {"src": "TrustedHTML"}}
+ *
+ * The "*" entry contains the type mapping for every other element in a namespace
+ * not listed separately.
+ * @param {string=} namespaceUri The namespace URI (will use the current
+ *   document namespace URI if omitted).
+ * @return {!Object<string, {
+ *   attributes: !Object<string, string>,
+ *   properties: !Object<string, string>}>}
+ */
+TrustedTypePolicyFactory.prototype.getTypeMapping = function(namespaceUri = ''){};
+/**
  * Object that represents a Trusted HTML code, safe to be inserted into DOM into
  * HTML context.
  * @constructor

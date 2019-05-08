@@ -26,30 +26,30 @@ import TrustedTypes from './api_only.js';
  * @return {?string} Guessed CSP value, or null.
  */
 function detectPolicy() {
-    try {
-        const currentScript = document.currentScript || (function() {
-          let scripts = document.getElementsByTagName('script');
-          return scripts[scripts.length - 1];
-        })();
+  try {
+    const currentScript = document.currentScript || (function() {
+      const scripts = document.getElementsByTagName('script');
+      return scripts[scripts.length - 1];
+    })();
 
-        const bodyPrefix = 'Content-Security-Policy:';
-        if (currentScript &&
+    const bodyPrefix = 'Content-Security-Policy:';
+    if (currentScript &&
             currentScript.textContent.trim().substr(0, bodyPrefix.length) ==
                 bodyPrefix) {
-            return currentScript.textContent.trim().slice(bodyPrefix.length);
-        }
-        if (currentScript.dataset['csp']) {
-            return currentScript.dataset['csp'];
-        }
-        const cspInMeta = document.head.querySelector(
-            'meta[http-equiv^="Content-Security-Policy"]');
-        if (cspInMeta) {
-            return cspInMeta['content'].trim();
-        }
-    } catch (e) {
-        return null;
+      return currentScript.textContent.trim().slice(bodyPrefix.length);
     }
+    if (currentScript.dataset['csp']) {
+      return currentScript.dataset['csp'];
+    }
+    const cspInMeta = document.head.querySelector(
+        'meta[http-equiv^="Content-Security-Policy"]');
+    if (cspInMeta) {
+      return cspInMeta['content'].trim();
+    }
+  } catch (e) {
     return null;
+  }
+  return null;
 }
 
 /**
@@ -58,10 +58,10 @@ function detectPolicy() {
 export function bootstrap() {
   const csp = detectPolicy();
   const config = csp ? TrustedTypeConfig.fromCSP(csp) : new TrustedTypeConfig(
-    /* isLoggingEnabled */ false,
-    /* isEnforcementEnabled */ false,
-    /* fallbackPolicyName */ 'default',
-    /* allowedPolicyNames */ ['*']);
+      /* isLoggingEnabled */ false,
+      /* isEnforcementEnabled */ false,
+      /* fallbackPolicyName */ 'default',
+      /* allowedPolicyNames */ ['*']);
 
   const trustedTypesEnforcer = new TrustedTypesEnforcer(config);
 
@@ -83,5 +83,5 @@ function shouldBootstrap() {
 
 // Bootstrap only if native implementation is missing.
 if (shouldBootstrap()) {
-    bootstrap();
+  bootstrap();
 }
