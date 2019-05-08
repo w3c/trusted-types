@@ -31,7 +31,6 @@ describe('TrustedTypesEnforcer', function() {
       /* isEnforcementEnabled */ true,
       /* fallbackPolicy */ null,
       /* allowedPolicyNames */ ['*'],
-      /* allowHttpUrls */ false,
       /* cspString */ 'script-src https:; trusted-types *'
       );
 
@@ -47,7 +46,6 @@ describe('TrustedTypesEnforcer', function() {
       /* isEnforcementEnabled */ false,
       /* fallbackPolicy */ null,
       /* allowedPolicyNames */ ['*'],
-      /* allowHttpUrls */ false,
       /* cspString */ 'script-src https:'
   );
 
@@ -517,96 +515,6 @@ describe('TrustedTypesEnforcer', function() {
 
         expect(caughtEvent).toBe(null);
       });
-    });
-  });
-
-  describe('url-allow-http config', () => {
-    let enforcer;
-    let el;
-    let policy;
-
-    beforeEach(function() {
-      if (typeof window.URL !== 'function') {
-        // Skip on IE, url-allow-http relies on URL parsing.
-        pending();
-      }
-      el = document.createElement('a');
-      enforcer = new TrustedTypesEnforcer(new TrustedTypeConfig(
-      /* isLoggingEnabled */ false,
-      /* isEnforcementEnabled */ true,
-      /* fallbackPolicy */ null,
-      /* allowedPolicyNames */ ['*'],
-      /* allowHttpUrls */ true));
-      enforcer.install();
-      policy = TrustedTypes.createPolicy(Math.random(), noopPolicy);
-    });
-
-    afterEach(function() {
-      enforcer.uninstall();
-    });
-
-    it('allows typed values for url sinks', () => {
-      el.href = policy.createURL('http://example.com/');
-
-      expect(el.href).toEqual('http://example.com/');
-    });
-
-    it('allows typed values for with javascript: protocol', () => {
-      el.href = policy.createURL('javascript:alert(1)');
-
-      expect(el.href).toEqual('javascript:alert(1)');
-    });
-
-    it('allows strings with http urls', () => {
-      el.href = 'http://example.com/';
-
-      expect(el.href).toEqual('http://example.com/');
-    });
-
-    it('allows strings with https urls', () => {
-      el.href = 'https://example.com/';
-
-      expect(el.href).toEqual('https://example.com/');
-    });
-
-    it('allows strings with relative urls', () => {
-      el.href = 'foo/bar';
-
-      expect(el.href).toEqual(location.origin + '/foo/bar');
-    });
-
-    it('rejects strings with javascript: URLs', () => {
-      expect(() => {
-        el.href = 'javascript:alert(1)';
-      }).toThrowError(TypeError);
-
-      expect(el.href).toEqual('');
-    });
-
-    it('rejects strings with data: URLs', () => {
-      expect(() => {
-        el.href = 'data:text/html,<script>alert(1)</scrip' + 't>';
-      }).toThrowError(TypeError);
-
-      expect(el.href).toEqual('');
-    });
-
-    it('rejects malformed URLs', () => {
-      expect(() => {
-        el.href = 'https://example.com:demo';
-      }).toThrowError(TypeError);
-
-      expect(el.href).toEqual('');
-    });
-
-    it('rejects http urls for TrustedScriptURL sinks', () => {
-      const el = document.createElement('script');
-
-      expect(() => {
-        el.src = 'https://evil.com';
-      }).toThrowError(TypeError);
-
-      expect(el.src).toEqual('');
     });
   });
 
