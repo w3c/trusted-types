@@ -83,16 +83,6 @@ describe('TrustedTypeConfig', () => {
           .allowedPolicyNames).toEqual([]);
     });
 
-    it('does not allow http urls by default', () => {
-      expect(TrustedTypeConfig.fromCSP('trusted-types')
-          .allowHttpUrls).toEqual(false);
-    });
-
-    it('recognizes url-allow-http', () => {
-      expect(TrustedTypeConfig.fromCSP('trusted-types \'url-allow-http\'')
-          .allowHttpUrls).toEqual(true);
-    });
-
     it('passes the CSP string to config object', () => {
       const csp = 'trusted-types a b c; script-src foo';
 

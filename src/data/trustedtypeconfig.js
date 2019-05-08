@@ -25,16 +25,12 @@ export class TrustedTypeConfig {
    * @param {?string} fallbackPolicyName If present, direct DOM sink usage
    *   will be passed through this policy (has to be exposed).
    * @param {Array<string>} allowedPolicyNames Whitelisted policy names.
-   * @param {boolean=} allowHttpUrls if true, HTTP(s) urls will be transparently
-   *   treated like TrustedURLs. Applied only if enforcement or logging is
-   *   enabled.
    * @param {?string} cspString String with the CSP policy.
    */
   constructor(isLoggingEnabled,
       isEnforcementEnabled,
       fallbackPolicyName,
       allowedPolicyNames,
-      allowHttpUrls = false,
       cspString = null) {
     /**
       * True if logging is enabled.
@@ -59,12 +55,6 @@ export class TrustedTypeConfig {
      * @type {Array<string>}
      */
     this.allowedPolicyNames = allowedPolicyNames;
-
-    /**
-     * True if http(s) URLs should be implicitly treated as TrustedURLs.
-     * @type {boolean}
-     */
-    this.allowHttpUrls = allowHttpUrls;
 
     /**
      * CSP string that defined the policy.
@@ -102,12 +92,9 @@ export class TrustedTypeConfig {
     const isLoggingEnabled = true;
     const policy = TrustedTypeConfig.parseCSP(cspString);
     const enforce = DIRECTIVE_NAME in policy;
-    let allowHttpUrls = false;
     let policies = ['*'];
     let fallbackPolicyName = 'default';
     if (enforce) {
-      allowHttpUrls = policy[DIRECTIVE_NAME]
-          .indexOf('\'url-allow-http\'') !== -1;
       policies = policy[DIRECTIVE_NAME].filter((p) => p.charAt(0) !== '\'');
     }
 
@@ -116,7 +103,6 @@ export class TrustedTypeConfig {
       enforce, /* isEnforcementEnabled */
       fallbackPolicyName, /* fallbackPolicyName */
       policies, /* allowedPolicyNames */
-      allowHttpUrls,
       cspString
     );
   }

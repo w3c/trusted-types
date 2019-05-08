@@ -85,19 +85,6 @@ function parseUrl_(url) {
 }
 
 /**
- * Checks if the URL is a HTTP(s) URL.
- * @param  {string}  url The URL to check.
- * @return {boolean} True iff the value is a http(s) URL.
- */
-function isHttpUrl_(url) {
-  const parsedUrl = parseUrl_(url);
-  if (!parsedUrl) {
-    return false;
-  }
-  return parsedUrl.protocol == 'http:' || parsedUrl.protocol == 'https:';
-}
-
-/**
  * A map of attribute names to allowed types.
  * @type {!Object<string, !Object<string, !Function>>}
  */
@@ -730,17 +717,6 @@ export class TrustedTypesEnforcer {
           isInlineEventHandler;
       if ((propertyAcceptsFunctions && typeof value === 'function') ||
           (isInlineEventHandler && value === null)) {
-        return apply(originalSetter, context, args);
-      }
-    }
-
-
-    // Apply url-allow-http
-    if (typeToEnforce === TrustedTypes.TrustedURL &&
-        this.config_.allowHttpUrls) {
-      const url = '' + value;
-      if (isHttpUrl_(url)) {
-        args[argNumber] = url;
         return apply(originalSetter, context, args);
       }
     }
