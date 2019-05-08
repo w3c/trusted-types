@@ -7,6 +7,7 @@
  *
  *  https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
  */
+import '@babel/polyfill';
 import {TrustedTypeConfig} from '../src/data/trustedtypeconfig.js';
 import {TrustedTypesEnforcer} from '../src/enforcer.js';
 import {TrustedTypes} from '../src/trustedtypes.js';
@@ -525,6 +526,10 @@ describe('TrustedTypesEnforcer', function() {
     let policy;
 
     beforeEach(function() {
+      if (typeof window.URL !== 'function') {
+        // Skip on IE, url-allow-http relies on URL parsing.
+        pending();
+      }
       el = document.createElement('a');
       enforcer = new TrustedTypesEnforcer(new TrustedTypeConfig(
       /* isLoggingEnabled */ false,
@@ -814,15 +819,14 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('on window.open', function() {
-      enforcer.uninstall();
-      const mockOpen = spyOn(window, 'open');
-      enforcer.install();
+      // I can't mock it under IE11 :(
+      let w = 'open_never_called';
 
       expect(function() {
-        window.open('/');
+        w = window.open('/');
       }).toThrow();
 
-      expect(mockOpen).not.toHaveBeenCalled();
+      expect(w).toEqual('open_never_called');
     });
 
     it('on setTimeout', function(done) {
@@ -996,7 +1000,7 @@ describe('TrustedTypesEnforcer', function() {
       let fragment = range.createContextualFragment(
           policy.createHTML(TEST_HTML));
 
-      expect(fragment.children[0].outerHTML).toEqual(TEST_HTML);
+      expect(fragment.childNodes[0].outerHTML).toEqual(TEST_HTML);
     });
 
 

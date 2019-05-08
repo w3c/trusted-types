@@ -26,7 +26,44 @@ const {
 
 const {slice} = String.prototype;
 
-const UrlConstructor = URL.prototype.constructor;
+// No URL in IE 11.
+const UrlConstructor = typeof window.URL == 'function' ?
+    URL.prototype.constructor :
+    null;
+
+const stringifyForRangeHack = (function(doc) {
+  const r = doc.createRange();
+  // In IE 11 Range.createContextualFragment doesn't stringify its argument.
+  const f = r.createContextualFragment(/** @type {string} */ (
+      {toString: () => '<div></div>'}));
+  return f.childNodes.length == 0;
+})(document);
+
+/**
+ * Return object constructor name
+ * (their function.name is not available in IE 11).
+ * @param {*} fn
+ * @return {string}
+ * @private
+ */
+const getConstructorName_ = document.createElement('div').constructor.name ?
+    (fn) => fn.name :
+    (fn) => ('' + fn).match(/^\[object (\S+)\]$/)[1];
+
+// window.open on IE 11 is set on WindowPrototype
+const windowOpenObject = getOwnPropertyDescriptor(window, 'open') ?
+  window :
+  window.constructor.prototype;
+
+// IE has innerHTML on HTMLElement.
+const innerHTMLObject =
+    apply(hasOwnProperty, Element.prototype, ['innerHTML']) ?
+    Element.prototype :
+    HTMLElement.prototype;
+
+// In IE 11, insertAdjacentHTML is on HTMLElement prototype
+const insertAdjacentHTMLObject = apply(hasOwnProperty, Element.prototype,
+  ['insertAdjacentHTML']) ? Element.prototype : HTMLElement.prototype;
 
 // This is not available in release Firefox :(
 // https://developer.mozilla.org/en-US/docs/Web/API/SecurityPolicyViolationEvent
@@ -215,15 +252,17 @@ export class TrustedTypesEnforcer {
       return;
     }
 
-    this.wrapSetter_(Element.prototype, 'innerHTML', TrustedTypes.TrustedHTML);
-    this.wrapSetter_(Element.prototype, 'outerHTML', TrustedTypes.TrustedHTML);
+    this.wrapSetter_(innerHTMLObject, 'innerHTML', TrustedTypes.TrustedHTML);
+    this.wrapSetter_(innerHTMLObject, 'outerHTML', TrustedTypes.TrustedHTML);
     if ('ShadowRoot' in window) {
       this.wrapSetter_(ShadowRoot.prototype, 'innerHTML',
          TrustedTypes.TrustedHTML);
     }
     this.wrapWithEnforceFunction_(Range.prototype, 'createContextualFragment',
         TrustedTypes.TrustedHTML, 0);
-    this.wrapWithEnforceFunction_(Element.prototype, 'insertAdjacentHTML',
+
+    this.wrapWithEnforceFunction_(insertAdjacentHTMLObject,
+        'insertAdjacentHTML',
         TrustedTypes.TrustedHTML, 1);
 
     if (getOwnPropertyDescriptor(Document.prototype, 'write')) {
@@ -240,7 +279,9 @@ export class TrustedTypesEnforcer {
           TrustedTypes.TrustedURL, 0);
     }
 
-    this.wrapWithEnforceFunction_(window, 'open', TrustedTypes.TrustedURL, 0);
+    this.wrapWithEnforceFunction_(windowOpenObject, 'open',
+        TrustedTypes.TrustedURL, 0);
+
     if ('DOMParser' in window) {
       this.wrapWithEnforceFunction_(DOMParser.prototype, 'parseFromString',
           TrustedTypes.TrustedHTML, 0);
@@ -264,13 +305,13 @@ export class TrustedTypesEnforcer {
       return;
     }
 
-    this.restoreSetter_(Element.prototype, 'innerHTML');
-    this.restoreSetter_(Element.prototype, 'outerHTML');
+    this.restoreSetter_(innerHTMLObject, 'innerHTML');
+    this.restoreSetter_(innerHTMLObject, 'outerHTML');
     if ('ShadowRoot' in window) {
       this.restoreSetter_(ShadowRoot.prototype, 'innerHTML');
     }
     this.restoreFunction_(Range.prototype, 'createContextualFragment');
-    this.restoreFunction_(Element.prototype, 'insertAdjacentHTML');
+    this.restoreFunction_(insertAdjacentHTMLObject, 'insertAdjacentHTML');
     this.restoreFunction_(Element.prototype, 'setAttribute');
     this.restoreFunction_(Element.prototype, 'setAttributeNS');
 
@@ -281,7 +322,8 @@ export class TrustedTypesEnforcer {
       this.restoreFunction_(HTMLDocument.prototype, 'write');
       this.restoreFunction_(HTMLDocument.prototype, 'open');
     }
-    this.restoreFunction_(window, 'open');
+    this.restoreFunction_(windowOpenObject, 'open');
+
     if ('DOMParser' in window) {
       this.restoreFunction_(DOMParser.prototype, 'parseFromString');
     }
@@ -386,9 +428,10 @@ export class TrustedTypesEnforcer {
   getRequiredTypeForAttribute_(context, attrName) {
       let ctor = context.constructor;
       do {
-        let type = ctor && ctor.name &&
-            SET_ATTRIBUTE_TYPE_MAP[ctor.name] &&
-            SET_ATTRIBUTE_TYPE_MAP[ctor.name][attrName];
+        let name;
+        let type = ctor && (name = getConstructorName_(ctor)) &&
+            SET_ATTRIBUTE_TYPE_MAP[name] &&
+            SET_ATTRIBUTE_TYPE_MAP[name][attrName];
 
         if (type || ctor == HTMLElement) {
           // Stop at HTMLElement.
@@ -444,9 +487,11 @@ export class TrustedTypesEnforcer {
       let ns = (args[0] = String(args[0])).toLowerCase();
       let attrName = (args[1] = String(args[1])).toLowerCase();
       if (isHtmlNamespace(ns)) {
-        let type = context.constructor && context.constructor.name &&
-            SET_ATTRIBUTE_TYPE_MAP[context.constructor.name] &&
-            SET_ATTRIBUTE_TYPE_MAP[context.constructor.name][attrName];
+        let name;
+        let type = context.constructor &&
+            (name = getConstructorName_(context.constructor)) &&
+            SET_ATTRIBUTE_TYPE_MAP[name] &&
+            SET_ATTRIBUTE_TYPE_MAP[name][attrName];
 
         if (type instanceof Function) {
           return this.enforce_(
@@ -504,7 +549,8 @@ export class TrustedTypesEnforcer {
 
     let key = this.getKey_(object, name);
     if (this.originalSetters_[key]) {
-      throw new Error('TrustedTypesEnforcer: Double installation detected');
+      throw new Error(
+          `TrustedTypesEnforcer: Double installation detected: ${key} ${name}`);
     }
     installFunction(
         object,
@@ -548,7 +594,8 @@ export class TrustedTypesEnforcer {
 
     let key = this.getKey_(object, name);
     if (this.originalSetters_[key]) {
-      throw new Error('TrustedTypesEnforcer: Double installation detected');
+      throw new Error(
+          `TrustedTypesEnforcer: Double installation detected: ${key} ${name}`);
     }
     let that = this;
     /**
@@ -594,7 +641,8 @@ export class TrustedTypesEnforcer {
     }
     if (!this.originalSetters_[key]) {
       throw new Error(
-          'TrustedTypesEnforcer: Cannot restore (double uninstallation?)');
+          // eslint-disable-next-line max-len
+          `TrustedTypesEnforcer: Cannot restore (double uninstallation?): ${key} ${name}`);
     }
     if (descriptorObject) {
       // We have to also overwrite a getter.
@@ -616,7 +664,8 @@ export class TrustedTypesEnforcer {
     let key = this.getKey_(object, name);
     if (!this.originalSetters_[key]) {
       throw new Error(
-          'TrustedTypesEnforcer: Cannot restore (double uninstallation?)');
+          // eslint-disable-next-line max-len
+          `TrustedTypesEnforcer: Cannot restore (double uninstallation?): ${key} ${name}`);
     }
     installFunction(object, name, this.originalSetters_[key]);
     delete this.originalSetters_[key];
@@ -633,7 +682,12 @@ export class TrustedTypesEnforcer {
     // TODO(msamuel): Can we use Object.prototype.toString.call(object)
     // to get an unspoofable string here?
     // TODO(msamuel): fail on '-' in object.constructor.name?
-    return '' + object.constructor.name + '-' + name;
+    // No Function.name in IE 11
+    const ctrName = '' + (
+      object.constructor.name ?
+      object.constructor.name :
+      object.constructor);
+    return ctrName + '-' + name;
   }
 
   /**
@@ -655,6 +709,11 @@ export class TrustedTypesEnforcer {
     // If typed value is given, pass through.
     if (TYPE_CHECKER_MAP.hasOwnProperty(typeName) &&
         TYPE_CHECKER_MAP[typeName](value)) {
+        if (stringifyForRangeHack &&
+            propertyName == 'createContextualFragment') {
+          // IE 11 hack, somehow the value is not stringified implicitly.
+          args[argNumber] = args[argNumber].toString();
+        }
       return apply(originalSetter, context, args);
     }
 
@@ -705,7 +764,7 @@ export class TrustedTypesEnforcer {
       }
     }
 
-    let contextName = context.constructor.name || '' + context;
+    let contextName = getConstructorName_(context.constructor) || '' + context;
     let message = `Failed to set ${propertyName} on ${contextName}: `
         + `This property requires ${typeName}.`;
 
