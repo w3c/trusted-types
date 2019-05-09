@@ -150,18 +150,18 @@ gulp.task('spec', function() {
 });
 
 gulp.task('spec.watch', function() {
-  return gulp.watch(
-      'spec/**\/*.bs',
-      ({ path: bspath }) => {
-          const reldir = path.relative(__dirname, path.dirname(bspath));
-          const outfile = path.join(
-              __dirname,
-              'dist',
-              reldir,
-              `${ path.basename(bspath, '.bs') }.html`);
-          bikeshed(bspath, outfile);
-      });
+  const watcher = gulp.watch('spec/**\/*.bs');
+  watcher.on('change', (bspath) => {
+    const reldir = path.relative(__dirname, path.dirname(bspath));
+    const outfile = path.join(
+        __dirname,
+        'dist',
+        reldir,
+        `${ path.basename(bspath, '.bs') }.html`);
+    bikeshed(bspath, outfile);
+  });
 });
+
 
 gulp.task('sizereport', function() {
   return gulp.src('./dist/es*/*.js')
