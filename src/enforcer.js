@@ -39,7 +39,7 @@ const stringifyForRangeHack = (function(doc) {
   const r = doc.createRange();
   // In IE 11 Range.createContextualFragment doesn't stringify its argument.
   const f = r.createContextualFragment(/** @type {string} */ (
-      {toString: () => '<div></div>'}));
+    {toString: () => '<div></div>'}));
   return f.childNodes.length == 0;
 })(document);
 
@@ -61,7 +61,7 @@ const windowOpenObject = getOwnPropertyDescriptor(window, 'open') ?
 
 // In IE 11, insertAdjacentHTML is on HTMLElement prototype
 const insertAdjacentHTMLObject = apply(hasOwnProperty, Element.prototype,
-  ['insertAdjacentHTML']) ? Element.prototype : HTMLElement.prototype;
+    ['insertAdjacentHTML']) ? Element.prototype : HTMLElement.prototype;
 
 // This is not available in release Firefox :(
 // https://developer.mozilla.org/en-US/docs/Web/API/SecurityPolicyViolationEvent
@@ -586,11 +586,11 @@ export class TrustedTypesEnforcer {
     // If typed value is given, pass through.
     if (TYPE_CHECKER_MAP.hasOwnProperty(typeName) &&
         TYPE_CHECKER_MAP[typeName](value)) {
-        if (stringifyForRangeHack &&
+      if (stringifyForRangeHack &&
             propertyName == 'createContextualFragment') {
-          // IE 11 hack, somehow the value is not stringified implicitly.
-          args[argNumber] = args[argNumber].toString();
-        }
+        // IE 11 hack, somehow the value is not stringified implicitly.
+        args[argNumber] = args[argNumber].toString();
+      }
       return apply(originalSetter, context, args);
     }
 
@@ -630,8 +630,9 @@ export class TrustedTypesEnforcer {
       }
     }
 
-    let contextName = getConstructorName_(context.constructor) || '' + context;
-    let message = `Failed to set ${propertyName} on ${contextName}: `
+    const contextName = getConstructorName_(context.constructor) ||
+        '' + context;
+    const message = `Failed to set ${propertyName} on ${contextName}: `
         + `This property requires ${typeName}.`;
 
     if (this.config_.isLoggingEnabled) {
