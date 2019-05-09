@@ -58,7 +58,7 @@
   "dependencies": {},
   "pre-commit": [
     "lint",
-    "test:localonly",
+    "test",
     "build",
     "spec",
     "add_build"

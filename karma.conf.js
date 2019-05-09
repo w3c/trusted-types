@@ -11,11 +11,13 @@ var browsers = ['ChromeHeadlessNoSandbox', 'FirefoxHeadlessDev'];
 
 // Don't use BrowserStack browsers when running on Travis from a pull request.
 // https://docs.travis-ci.com/user/pull-requests/#pull-requests-and-security-restrictions
-if (!(process.env.TRAVIS && process.env.TRAVIS_SECURE_ENV_VARS === 'false')) {
+if (process.env.BROWSERSTACK_ACCESS_KEY) {
    browsers.push('ChromeBrowserStack');
    browsers.push('EdgeBrowserStack');
    browsers.push('SafariBrowserStack');
    browsers.push('InternetExplorer11BrowserStack');
+} else {
+  console.log('Skipping BrowserStack tests due to missing BROWSERSTACK_ACCESS_KEY environment variable.');
 }
 
 module.exports = function(config) {
