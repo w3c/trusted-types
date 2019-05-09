@@ -153,6 +153,26 @@ producing types in parts of the application, while still using and
 accepting strings in other parts of the codebase). In that sense,
 Trusted Types are backwards-compatible with the regular DOM APIs.
 
+### TrustedTypes extended attribute
+
+To ensure that Trusted Types are required in DOM property setters [=injection sinks=], we introduce 
+<dfn data-dfn-type="extended-attribute" data-x="TrustedTypes" data-lt="TrustedTypes"><code>[TrustedTypes]</code></dfn>
+IDL [=extended attributes|extended attribute=]. It indicates that the relevant setter algorithm is to be supplemented with additional 
+enforing steps.
+
+The {{TrustedTypes}} extended attribute [=extended attribute/takes an identifier=] as an argument. 
+The only valid values for the identifier are {{TrustedHTML}}, {{TrustedScript}}, {{TrustedScriptURL} or {{TrustedURL}}. 
+This extended attribute must not appear on anything other than an attribute.
+Additionally, it must not appear on readonly attributes.
+
+The setters for attributes annotated with the {{TrustedTypes}} extended attributes must run the following steps in place of the ones specified in their description:
+
+ 1. Set *value* to the result of running the [$Enforce a Trusted Type$] algoritm, with *input* being the new value and *expectedType* being the {{TrustedType}} extended attribute [=identifier=]. 
+ 
+ 1. If an exception was thrown, rethrow exception and abort further steps.
+
+ 1. Run the originally specified steps for this construct, using *value* as a new value to set.
+
 
 ### <dfn type>TrustedHTML</dfn> ### {#trusted-html}
 
@@ -1032,35 +1052,15 @@ value that the original function would and will optionally
 pass-through to the original function -- all original arguments to the
 function apart from input are passed through without modification.
 
+Given *input* and *expectedType*, perform the following steps.
+
 1.  Let *compliantValue* be the result of executing [$Get Trusted Type
     compliant string$] algorithm with
     *  *document* being the current {{Document}}
-    *  *input* being the new attribute value
+    *  *input*
     *  *passThroughFunctions* being false, and
-    *  *expectedType* being the entry in the following table based on the sink type:
+    *  *expectedType*
 
-       <table border="1">
-         <tr>
-           <th>Sink parameter type</th>
-           <th>*expectedType*</th>
-         </tr>
-         <tr>
-           <td>{{HTMLString}}</td>
-           <td>{{TrustedHTML}}</td>
-         </tr>
-         <tr>
-           <td>{{ScriptString}}</td>
-           <td>{{TrustedScript}}</td>
-         </tr>
-         <tr>
-           <td>{{ScriptURLString}}</td>
-           <td>{{TrustedScriptURL}}</td>
-         </tr>
-         <tr>
-           <td>{{URLString}}</td>
-           <td>{{TrustedURL}}</td>
-         </tr>
-       </table>
 1.  If the previous algorithm throws an exception, rethrow the exception,
     and abort these steps.
 
@@ -1182,7 +1182,7 @@ This document modifies the {{Document}} interface defined by [[HTML5|HTML]]:
 
 <pre class="idl">
 partial interface mixin Document {
-   WindowProxy? open(<b>URLString</b> url, DOMString name, DOMString features);
+  WindowProxy? open(<b>URLString</b> url, DOMString name, DOMString features);
   [CEReactions] void write(<b>HTMLString</b>... text);
   [CEReactions] void writeln(<b>HTMLString</b>... text);
 };
@@ -1243,24 +1243,27 @@ input), and add the following steps before step 1:
 ### Enforcement in property sinks ### {#enforcement-in-sinks}
 
 This document modifies the setters of the following properties of
-various DOM elements.  For each property in the list, modify the IDL
-to accept a given parameter type instead of the DOMString /
-USVString. The setters will execute the [$Enforce a Trusted Type
-algorithm$].
+various DOM elements.  For each IDL attribute in the first column of the following table:
+
+ * Add the {{TrustedType}} [=extended attributes|extended attribute=] in the 2nd column of the following table to the attribute IDL entry. 
+ * Change the attribute type to the value in 3rd column of the following table (instead of the DOMString / USVString),
 
 <table id="sink-setters-table" border="1">
   <tr>
-    <th>Sink setter</th>
-    <th>Parameter type</th>
+    <th>IDL attribute</th>
+    <th>Extended attribute</th>
+    <th>Attribute type</th>
     <th>Notes</th>
   </tr>
   <tr>
     <td>ShadowRoot.innerHTML</td>
+    <td>[{{TrustedTypes}}={{TrustedHTML}}]</td>
     <td>{{HTMLString}}</td>
     <td><a href="https://developer.mozilla.org/en-US/docs/Web/API/ShadowRoot/innerHTML">Non-standard property</a></td>
   </tr>
   <tr>
     <td>HTMLScriptElement.innerText</td>
+    <td>[{{TrustedTypes}}={{TrustedScript}}]</td>
     <td>{{ScriptString}}</td>
     <td class="issue">
     Issue: Might require modifying the more-generic [[HTML#dom-innertext]] setter algorithm.
@@ -1268,6 +1271,7 @@ algorithm$].
   </tr>
   <tr>
     <td>HTMLScriptElement.textContent</td>
+    <td>[{{TrustedTypes}}={{TrustedScript}}]</td>
     <td>{{ScriptString}}</td>
     <td class="issue">
     Issue: Might require modifying the more-generic [[DOM#dom-node-textcontent]] setter algorithm.
@@ -1275,87 +1279,107 @@ algorithm$].
   </tr>
   <tr>
     <td>{{HTMLIFrameElement/srcdoc|HTMLIFrameElement.srcdoc}}</td>
+    <td>[{{TrustedTypes}}={{TrustedHTML}}]</td>
     <td>{{HTMLString}}</td>
     <td>[[HTML5#attr-iframe-srcdoc]]</td>
   </tr>
   <tr>
     <td>{{HTMLEmbedElement/src|HTMLEmbedElement.src}}</td>
+    <td>[{{TrustedTypes}}={{TrustedScriptURL}}]</td>
     <td>{{ScriptURLString}}</td>
     <td>[[HTML5#attr-embed-src]]
   </tr>
   <tr>
     <td>{{HTMLObjectElement/data|HTMLObjectElement.data}}</td>
+    <td>[{{TrustedTypes}}={{TrustedScriptURL}}]</td>
     <td>{{ScriptURLString}}</td>
   </tr>
   <tr>
     <td>{{HTMLObjectElement/codeBase|HTMLObjectElement.codeBase}}</td>
+    <td>[{{TrustedTypes}}={{TrustedScriptURL}}]</td>
     <td>{{ScriptURLString}}</td>
   </tr>
   <tr>
     <td>{{HTMLScriptElement/src|HTMLScriptElement.src}}</td>
+    <td>[{{TrustedTypes}}={{TrustedScriptURL}}]</td>
     <td>{{ScriptURLString}}</td>
   </tr>
   <tr>
     <td>{{HTMLLinkElement/href|HTMLLinkElement.href}}</td>
+    <td>[{{TrustedTypes}}={{TrustedURL}}]</td>    
     <td>{{URLString}}</td>
   </tr>
   <tr>
     <td>{{HTMLFrameElement/src|HTMLFrameElement.src}}</td>
+    <td>[{{TrustedTypes}}={{TrustedURL}}]</td>        
     <td>{{URLString}}</td>
   </tr>
   <tr>
     <td>{{HTMLIFrameElement/src|HTMLIFrameElement.src}}</td>
+    <td>[{{TrustedTypes}}={{TrustedURL}}]</td>        
     <td>{{URLString}}</td>
   </tr>
   <tr>
     <td>{{HTMLImageElement/src|HTMLImageElement.src}}</td>
+    <td>[{{TrustedTypes}}={{TrustedURL}}]</td>        
     <td>{{URLString}}</td>
   </tr>
   <tr>
     <td>{{HTMLFormElement/action|HTMLFormElement.action}}</td>
+    <td>[{{TrustedTypes}}={{TrustedURL}}]</td>        
     <td>{{URLString}}</td>
   </tr>
   <tr>
     <td>{{HTMLInputElement/src|HTMLInputElement.src}}</td>
+    <td>[{{TrustedTypes}}={{TrustedURL}}]</td>        
     <td>{{URLString}}</td>
   </tr>
   <tr>
     <td>[[HTML/form-control-infrastructure#dom-fs-formaction|HTMLInputElement.formAction]]</td>
+    <td>[{{TrustedTypes}}={{TrustedURL}}]</td>        
     <td>{{URLString}}</td>
   </tr>
   <tr>
     <td>{{HTMLHyperlinkElementUtils/href|HTMLAnchorElement.href}}</td>
+    <td>[{{TrustedTypes}}={{TrustedURL}}]</td>        
     <td>{{URLString}}</td>
     <td>`href` actually defined via include</td>
   </tr>
   <tr>
     <td>{{HTMLHyperlinkElementUtils/href|HTMLAreaElement.href}}</td>
+    <td>[{{TrustedTypes}}={{TrustedURL}}]</td>        
     <td>{{URLString}}</td>
     <td>`href` actually defined via include</td>
   </tr>
   <tr>
     <td>{{HTMLBaseElement/href|HTMLBaseElement.href}}</td>
+    <td>[{{TrustedTypes}}={{TrustedURL}}]</td>        
     <td>{{URLString}}</td>
   </tr>
   <tr>
     <td>{{HTMLButtonElement/formAction|HTMLButtonElement.formAction}}</td>
+    <td>[{{TrustedTypes}}={{TrustedURL}}]</td>        
     <td>{{URLString}}</td>
   </tr>
   <tr>
     <td>{{HTMLMediaElement/src|HTMLMediaElement.src}}</td>
+    <td>[{{TrustedTypes}}={{TrustedURL}}]</td>        
     <td>{{URLString}}</td>
   </tr>
   <tr>
     <td><a href="https://github.com/WICG/portals">WICG/portals</a>'s HTMLPortalElement.src</td>
+    <td>[{{TrustedTypes}}={{TrustedURL}}]</td>        
     <td>{{URLString}}</td>
     <td></td>
   </tr>
   <tr>
     <td>{{HTMLSourceElement/src|HTMLSourceElement.src}}</td>
+    <td>[{{TrustedTypes}}={{TrustedURL}}]</td>        
     <td>{{URLString}}</td>
   </tr>
   <tr>
     <td>{{HTMLTrackElement/src|HTMLTrackElement.src}}</td>
+    <td>[{{TrustedTypes}}={{TrustedURL}}]</td>        
     <td>{{URLString}}</td>
   </tr>
 </table>
@@ -1420,18 +1444,18 @@ interface defined by [[DOM-Parsing]]:
 
 <pre class="idl">
 partial interface Element {
-  [CEReactions] attribute HTMLStringDefaultsEmpty outerHTML;
-  [CEReactions] attribute HTMLStringDefaultsEmpty innerHTML;
+  [CEReactions, TrustedTypes=TrustedHTML] attribute HTMLStringDefaultsEmpty outerHTML;
+  [CEReactions, TrustedTypes=TrustedHTML] attribute HTMLStringDefaultsEmpty innerHTML;
   [CEReactions] void insertAdjacentHTML(DOMString position, HTMLString text);
 };
 </pre>
 
 For {{Element/innerHTML}} and {{Element/outerHTML}} execute the
-[$Enforce a Trusted Type$] algorithm.
+[$Enforce a Trusted Type$] algorithm as documented in {{TrustedTypes}} extended attribute.
 
 For the {{Element/insertAdjacentHTML()}} method, execute the
-[$Enforce a Trusted Type$] algorithm with input argument set to the *text*
-parameter value.
+[$Enforce a Trusted Type$] algorithm with *input* argument set to the *text*
+parameter value, and *expectedType* being {{TrustedHTML}}.
 
 Note: Recent drafts move `innerHTML` into a separate
  <a href="https://w3c.github.io/DOM-Parsing/#dom-innerhtml">mixin InnerHTML</a>.
@@ -1449,7 +1473,7 @@ partial interface Range {
 
 For {{Range/createContextualFragment()}} function, execute the
 [$Enforce a Trusted Type$] algorithm with the *input* argument set to
-the *fragment* value.
+the *fragment* value and *expectedType* being {{TrustedHTML}}.
 
 
 ### Extensions to the DOMParser interface ### {#extensions-to-the-DOMParser}
