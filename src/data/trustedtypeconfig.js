@@ -99,11 +99,11 @@ export class TrustedTypeConfig {
     }
 
     return new TrustedTypeConfig(
-      isLoggingEnabled,
-      enforce, /* isEnforcementEnabled */
-      fallbackPolicyName, /* fallbackPolicyName */
-      policies, /* allowedPolicyNames */
-      cspString
+        isLoggingEnabled,
+        enforce, /* isEnforcementEnabled */
+        fallbackPolicyName, /* fallbackPolicyName */
+        policies, /* allowedPolicyNames */
+        cspString
     );
   }
 }
