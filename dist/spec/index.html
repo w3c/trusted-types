@@ -1213,8 +1213,9 @@ Possible extra rowspan handling
 	}
 </style>
   <link href="https://www.w3.org/StyleSheets/TR/2016/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version 872cce6d3026423d677f3bd5837f1a1a46299a04" name="generator">
+  <meta content="Bikeshed version 10ff3eb4050069e20bb9b943c8b76fe5bfe3a48f" name="generator">
   <link href="https://wicg.github.io/trusted-types/dist/spec/" rel="canonical">
+  <meta content="75970371b11da83f35f49000690e366def93f766" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -1461,7 +1462,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Trusted Types</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-06-24">24 June 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-07-01">1 July 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1572,9 +1573,13 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
         <li><a href="#enforcement-in-script-text"><span class="secno">4.1.6</span> <span class="content">Enforcement for script child text contents</span></a>
         <li><a href="#enforcement-in-timer-functions"><span class="secno">4.1.7</span> <span class="content">Enforcement in timer functions</span></a>
         <li><a href="#enforcement-in-event-handler-content-attributes"><span class="secno">4.1.8</span> <span class="content">Enforcement in event handler content attributes</span></a>
-        <li><a href="#string-compilation"><span class="secno">4.1.9</span> <span class="content">String compilation</span></a>
        </ol>
       <li><a href="#integration-with-dom-parsing"><span class="secno">4.2</span> <span class="content">Integration with DOM Parsing</span></a>
+      <li>
+       <a href="#integration-with-content-security-policy"><span class="secno">4.3</span> <span class="content">Integration with Content-Security-Policy</span></a>
+       <ol class="toc">
+        <li><a href="#is-source-exempt-algorithm"><span class="secno">4.3.1</span> <span class="content"><span>IsSourceExempt</span> Algorithm</span></a>
+       </ol>
      </ol>
     <li>
      <a href="#security-considerations"><span class="secno">5</span> <span class="content">Security Considerations</span></a>
@@ -1688,7 +1693,7 @@ without appropriate validation, sanitization or escaping.</p>
 of <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink">injection sinks</a>, as the strings do not carry the information about the
 provenance of their value. To allow the authors to control values reaching
 sensitive DOM and JavaScript functions, we introduce Trusted Types.</p>
-   <p class="note" role="note"><span>Note:</span> The exact list of injection sinks covered by this document is defined in <a href="#integrations">§ 4 Integrations</a>.</p>
+   <p class="note" role="note"><span>Note:</span> The exact list of injection sinks covered by this document is defined in <a href="#integrations">§4 Integrations</a>.</p>
    <p class="issue" id="issue-7a6e3d33"><a class="self-link" href="#issue-7a6e3d33"></a> Consider surfacing the DOM sink (node + attr) => type mapping in the API, to faciliate building HTML sanitizers. <a href="https://github.com/WICG/trusted-types/issues/43">&lt;https://github.com/WICG/trusted-types/issues/43></a></p>
    <h3 class="heading settled" data-level="2.2" id="trusted-types"><span class="secno">2.2. </span><span class="content">Trusted Types</span><a class="self-link" href="#trusted-types"></a></h3>
    <p>We introduce the following list of <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="trusted-type">Trusted Type</dfn>s indicating that a given value is
@@ -1888,7 +1893,7 @@ that it’s called only with no attacker-controlled values.
    <h4 class="heading settled" data-level="2.3.1" id="trusted-type-policy-factory"><span class="secno">2.3.1. </span><span class="content"><dfn class="css" data-dfn-type="type" data-export id="typedef-trustedtypepolicyfactory">TrustedTypePolicyFactory<a class="self-link" href="#typedef-trustedtypepolicyfactory"></a></dfn></span><a class="self-link" href="#trusted-type-policy-factory"></a></h4>
    <p>TrustedTypePolicyFactory creates <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy④">policies</a></code> and verifies that Trusted Type object instances
 were created via one of the policies.</p>
-   <p class="note" role="note"><span>Note:</span> This factory object is exposed to JavaScript through <code>window.TrustedTypes</code> reference - see <a href="#extensions-to-the-window-interface">§ 4.1.2 Extensions to the Window interface</a>.</p>
+   <p class="note" role="note"><span>Note:</span> This factory object is exposed to JavaScript through <code>window.TrustedTypes</code> reference - see <a href="#extensions-to-the-window-interface">§4.1.2 Extensions to the Window interface</a>.</p>
 <pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed④"><c- g>Exposed</c-></a>=<c- n>Window</c->] <c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="trustedtypepolicyfactory"><code><c- g>TrustedTypePolicyFactory</c-></code></dfn> {
     [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable"><c- g>Unforgeable</c-></a>] <a class="n" data-link-type="idl-name" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy⑤"><c- n>TrustedTypePolicy</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicyfactory-createpolicy" id="ref-for-dom-trustedtypepolicyfactory-createpolicy②"><c- g>createPolicy</c-></a>(
         <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="TrustedTypePolicyFactory/createPolicy(policyName, policyOptions), TrustedTypePolicyFactory/createPolicy(policyName)" data-dfn-type="argument" data-export id="dom-trustedtypepolicyfactory-createpolicy-policyname-policyoptions-policyname"><code><c- g>policyName</c-></code><a class="self-link" href="#dom-trustedtypepolicyfactory-createpolicy-policyname-policyoptions-policyname"></a></dfn>, <c- b>optional</c-> <a class="n" data-link-type="idl-name" href="#dictdef-trustedtypepolicyoptions" id="ref-for-dictdef-trustedtypepolicyoptions"><c- n>TrustedTypePolicyOptions</c-></a> <dfn class="idl-code" data-dfn-for="TrustedTypePolicyFactory/createPolicy(policyName, policyOptions), TrustedTypePolicyFactory/createPolicy(policyName)" data-dfn-type="argument" data-export id="dom-trustedtypepolicyfactory-createpolicy-policyname-policyoptions-policyoptions"><code><c- g>policyOptions</c-></code><a class="self-link" href="#dom-trustedtypepolicyfactory-createpolicy-policyname-policyoptions-policyoptions"></a></dfn>);
@@ -2094,7 +2099,7 @@ security posture back to the pre-Trusted Types level. If possible,
 authors should resort to a default policy in a transitional period
 only, use it to detect and rewrite "raw DOM writes" dependencies and
 eventually phase out its usage entirely.</p>
-   <p class="note" role="note"><span>Note:</span> See <a href="#get-trusted-type-compliant-string-algorithm">§ 3.2.2 Get Trusted Type compliant string</a> for details on how
+   <p class="note" role="note"><span>Note:</span> See <a href="#get-trusted-type-compliant-string-algorithm">§3.2.2 Get Trusted Type compliant string</a> for details on how
 the default policy is applied.</p>
    <h3 class="heading settled" data-level="2.4" id="enforcement-hdr"><span class="secno">2.4. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="enforcement">Enforcement</dfn></span><a class="self-link" href="#enforcement-hdr"></a></h3>
    <p>This section describes how applications may require <a data-link-type="dfn" href="#trusted-type" id="ref-for-trusted-type③">Trusted Types</a> values for
@@ -2103,7 +2108,7 @@ actions should be undertaken if a string value is used instead.</p>
    <p class="note" role="note"><span>Note:</span> Enforcement is the process of checking that a value
 has an appropriate type before it reaches an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⓪">injection sink</a>.</p>
    <p class="note" role="note"><span>Note:</span> Most of the enforcement rules are defined as modifications of the algorithms
-in other specifiactions, see <a href="#integrations">§ 4 Integrations</a>.</p>
+in other specifiactions, see <a href="#integrations">§4 Integrations</a>.</p>
    <h4 class="heading settled" data-level="2.4.1" id="trusted-type-configuration-hdr"><span class="secno">2.4.1. </span><span class="content">TrustedTypeConfiguration</span><a class="self-link" href="#trusted-type-configuration-hdr"></a></h4>
    <p>A Trusted Type Configuration defines <a data-link-type="dfn" href="#enforcement" id="ref-for-enforcement③">enforcement</a> setting for <a data-link-type="dfn" href="#trusted-type" id="ref-for-trusted-type④">Trusted Types</a> and restrictions on policy names that can be applied
 to a <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document①">Document</a></code>.</p>
@@ -2250,6 +2255,9 @@ given a DOMString (<em>policyName</em>) and policy options dictionary (<em>optio
     <li data-md>
      <p>If <em>policyAllowed</em> is False, throw a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror①">TypeError</a></code>.</p>
     <li data-md>
+     <p>If <a data-link-type="abstract-op" href="#abstract-opdef-is-a-default-policy" id="ref-for-abstract-opdef-is-a-default-policy">Is a default policy</a> algorithm returns True and <em>exposed</em> is False, then
+throw a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror②">TypeError</a></code>.</p>
+    <li data-md>
      <p>Let <em>policy</em> be a new <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy⑧">TrustedTypePolicy</a></code> object.</p>
     <li data-md>
      <p>Set policy’s <code>name</code> property value to <em>policyName</em>.</p>
@@ -2296,7 +2304,7 @@ contains <em>policyName</em>, return true.</p>
     <li data-md>
      <p>Return false.</p>
    </ol>
-   <h4 class="heading settled" data-level="3.1.5" id="is-default-policy-algorithm"><span class="secno">3.1.5. </span><span class="content"><dfn data-dfn-type="abstract-op" data-export id="abstract-opdef-is-a-default-policy">Is a default policy<a class="self-link" href="#abstract-opdef-is-a-default-policy"></a></dfn></span><a class="self-link" href="#is-default-policy-algorithm"></a></h4>
+   <h4 class="heading settled" data-level="3.1.5" id="is-default-policy-algorithm"><span class="secno">3.1.5. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-is-a-default-policy">Is a default policy</dfn></span><a class="self-link" href="#is-default-policy-algorithm"></a></h4>
    <p>Let <em>policyName</em> be the same variable as that of the same name in the
 algorithm that invoked these steps.</p>
    <ol>
@@ -2335,9 +2343,9 @@ based on the following table:</p>
     <li data-md>
      <p>Let <var>function</var> be the value of the property in <var>options</var> named <var>functionName</var>.</p>
     <li data-md>
-     <p>If <var>function</var> is <code class="idl"><a data-link-type="idl">null</a></code>, throw a <em>TypeError</em>.</p>
+     <p>If <var>function</var> is null, throw a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror③">TypeError</a></code>.</p>
     <li data-md>
-     <p>Let <var>policyValue</var> be the result of invoking <var>function</var> with <var>value</var> as a first argument, and <a href="https://tc39.github.io/ecma262/#sec-method">callback **this** value</a> set to <code class="idl"><a data-link-type="idl">null</a></code>.</p>
+     <p>Let <var>policyValue</var> be the result of invoking <var>function</var> with <var>value</var> as a first argument, and <a href="https://tc39.github.io/ecma262/#sec-method">callback **this** value</a> set to null.</p>
     <li data-md>
      <p>If <var>policyValue</var> is an error, return <var>policyValue</var> and abort the following steps.</p>
     <li data-md>
@@ -2463,7 +2471,7 @@ stringified <var>convertedInput</var> and abort the following steps.</p>
     <li data-md>
      <p>If <var>disposition</var> is <code>“report”</code>, then return stringified <var>input</var> and abort these steps.</p>
     <li data-md>
-     <p>Throw a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror②">TypeError</a></code>.</p>
+     <p>Throw a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror④">TypeError</a></code>.</p>
    </ol>
    <h4 class="heading settled" data-level="3.2.3" id="enforce-a-trusted-type-algorithm"><span class="secno">3.2.3. </span><span class="content"><dfn data-dfn-type="abstract-op" data-export id="abstract-opdef-enforce-a-trusted-type">Enforce a Trusted Type<a class="self-link" href="#abstract-opdef-enforce-a-trusted-type"></a></dfn></span><a class="self-link" href="#enforce-a-trusted-type-algorithm"></a></h4>
    <p>Enforce a Trusted Type algorithm describes a modification to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⑧">injection sinks</a>,
@@ -2721,25 +2729,6 @@ also unconditionally accepts any <code class="idl"><a data-link-type="idl" href=
     <li data-md>
      <p>If the algorithm throws an error, abort these steps.</p>
    </ol>
-   <h4 class="heading settled" data-level="4.1.9" id="string-compilation"><span class="secno">4.1.9. </span><span class="content">String compilation</span><a class="self-link" href="#string-compilation"></a></h4>
-   <p class="note" role="note"><span>Note:</span> See <a href="https://github.com/tc39/ecma262/issues/938">TC39/ecma262 issue #938</a> (adding a string to be compiled to algorithm parameters)</p>
-   <p>Modify <a href="https://www.w3.org/TR/html5//webappapis#section-hostensurecancompilestrings">HostEnsureCanCompileStrings</a> algorithm, adding the following steps before step 1:</p>
-   <ol>
-    <li data-md>
-     <p>Let <em>value</em> be the result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string⑤">Get Trusted Type compliant string</a> algorithm, with:</p>
-     <ul>
-      <li data-md>
-       <p><em>document</em> set to the <em>callerRealm</em>’s <a href="https://www.w3.org/TR/html5/#environment-settings-object">environment setting object</a>'s <a href="https://www.w3.org/TR/html5/#responsible-document">responsible document</a>,</p>
-      <li data-md>
-       <p><em>input</em> set to <em>codeToCompile</em>,</p>
-      <li data-md>
-       <p><em>expectedType</em> being <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①①">TrustedScript</a></code>, and</p>
-      <li data-md>
-       <p><em>passThroughFunctions</em> set to false</p>
-     </ul>
-    <li data-md>
-     <p>If the algorithm throws an error, throw an <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-evalerror" id="ref-for-exceptiondef-evalerror">EvalError</a></code>.</p>
-   </ol>
    <h3 class="heading settled" data-level="4.2" id="integration-with-dom-parsing"><span class="secno">4.2. </span><span class="content">Integration with DOM Parsing</span><a class="self-link" href="#integration-with-dom-parsing"></a></h3>
    <p>This document modifies the following interfaces defined by <a data-link-type="biblio" href="#biblio-dom-parsing">[DOM-Parsing]</a>:</p>
 <pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#element" id="ref-for-element②"><c- g>Element</c-></a> {
@@ -2760,6 +2749,184 @@ also unconditionally accepts any <code class="idl"><a data-link-type="idl" href=
   [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#NewObject" id="ref-for-NewObject①"><c- g>NewObject</c-></a>] <a class="n" data-link-type="idl-name" href="https://dom.spec.whatwg.org/#document" id="ref-for-document①⓪"><c- n>Document</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="DOMParser" data-dfn-type="method" data-export data-lt="parseFromString(str, type)" id="dom-domparser-parsefromstring"><code><c- g>parseFromString</c-></code></dfn>([<a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes③④"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml①⑦"><c- n>TrustedHTML</c-></a>] <a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring⑤"><c- n>HTMLString</c-></a> <dfn class="idl-code" data-dfn-for="DOMParser/parseFromString(str, type)" data-dfn-type="argument" data-export id="dom-domparser-parsefromstring-str-type-str"><code><c- g>str</c-></code><a class="self-link" href="#dom-domparser-parsefromstring-str-type-str"></a></dfn>, <a class="n" data-link-type="idl-name" href="https://www.w3.org/TR/DOM-Parsing/#h-the-domparser-interface" id="ref-for-h-the-domparser-interface"><c- n>SupportedType</c-></a> <dfn class="idl-code" data-dfn-for="DOMParser/parseFromString(str, type)" data-dfn-type="argument" data-export id="dom-domparser-parsefromstring-str-type-type"><code><c- g>type</c-></code><a class="self-link" href="#dom-domparser-parsefromstring-str-type-type"></a></dfn>);
 };
 </pre>
+   <h3 class="heading settled" data-level="4.3" id="integration-with-content-security-policy"><span class="secno">4.3. </span><span class="content">Integration with Content-Security-Policy</span><a class="self-link" href="#integration-with-content-security-policy"></a></h3>
+   <p class="note" role="note"><span>Note:</span> See <a href="https://github.com/tc39/ecma262/issues/938">TC39/ecma262 issue #938</a> (adding the value to be compiled to algorithm parameters).</p>
+   <p>This document modifies the <a href="https://www.w3.org/TR/CSP3/#can-compile-strings">EnsureCSPDoesNotBlockStringCompilation</a> which is reproduced in its entirety below with additions and deletions.</p>
+   <div class="note" role="note">
+    Note: EcmaScript code may call <code>Function()</code> and <code>eval</code> cross realm. 
+<pre class="highlight"><c- a>let</c-> f <c- o>=</c-> <c- k>new</c-> self<c- p>.</c->top<c- p>.</c->Function<c- p>(</c->source<c- p>);</c->
+</pre>
+    <p>In this case, the <var>callerRealm</var>’s Window is <code>self</code> and the <var>calleeRealm</var>’s Window is <code>self.top</code>.
+The Trusted Types portion of this algorithm uses <var>calleeRealm</var> for consistency with other sinks.</p>
+<pre class="highlight"><c- c1>// Assigning a string to another Realm’s DOM sink uses that Realm’s default policy.</c->
+self<c- p>.</c->top<c- p>.</c->body<c- p>.</c->innerHTML <c- o>=</c-> <c- t>'Hello, World!'</c-><c- p>;</c->
+<c- c1>// Using another Realm’s builtin Function constructor should analogously use that</c->
+<c- c1>// Realm’s default policy.</c->
+<c- k>new</c-> self<c- p>.</c->top<c- p>.</c->Function<c- p>(</c-><c- t>'alert(1)'</c-><c- p>)()</c->
+</pre>
+    <p>This is subtly different from the CSP directive enforcement portion which rejects if either
+the <var>calleeRealm</var> or <var>callerRealm</var>’s Content-Security-Policy rejects string compilation.</p>
+   </div>
+   <p>
+    Given two <a href="https://tc39.github.io/ecma262/#realm">realms</a> (<var>callerRealm</var> and <var>calleeRealm</var>), and a 
+    <del>string</del>
+    <ins>value</ins>
+     (<var>source</var>), this algorithm returns 
+    <del>normally</del>
+   </p>
+   <ins>the source string to compile</ins>
+    if compilation is allowed, and
+throws an "<code>EvalError</code>" if not: 
+   <ol>
+    <li data-md>
+     <ins>Let <var>document</var> be <var>calleeRealm</var>’s <a href="https://www.w3.org/TR/html5/#environment-settings-object">environment setting object</a>'s <a href="https://www.w3.org/TR/html5/#responsible-document">responsible document</a>.</ins>
+    <li data-md>
+     <ins>
+      Let <var>sourceString</var> be the result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string⑤">Get Trusted Type compliant string</a> algorithm, with: 
+      <ul>
+       <li data-md>
+        <p><var>document</var> as <var>document</var>,</p>
+       <li data-md>
+        <p><var>source</var> as <var>input</var>,</p>
+       <li data-md>
+        <p><code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①①">TrustedScript</a></code> as <var>expectedType</var>, and</p>
+       <li data-md>
+        <p>false as <var>passThroughFunctions</var>.</p>
+      </ul>
+     </ins>
+    <li data-md>
+     <ins>If the algorithm throws an error, throw an <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-evalerror" id="ref-for-exceptiondef-evalerror">EvalError</a></code>.</ins>
+    <li data-md>
+     <p>Let <var>globals</var> be a list containing <var>calleeRealm</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global">global object</a> and <var>calleeRealm</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global①">global object</a>.</p>
+    <li data-md>
+     <ins>Let <var>cspPolicies</var> be an empty list.</ins>
+    <li data-md>
+     <ins>
+      For each <var>global</var> in <var>globals</var>: 
+      <ol>
+       <li data-md>
+        <p>For each <var>policy</var> in <var>global</var>’s <a href="https://www.w3.org/TR/CSP3/#global-object-csp-list">CSP list</a>:</p>
+        <ol>
+         <li data-md>
+          <p>Add <var>policy</var> to <var>cspPolicies</var>.</p>
+        </ol>
+      </ol>
+     </ins>
+    <li data-md>
+     <ins>
+      Let <var>isExempt</var> be the result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-issourceexempt" id="ref-for-abstract-opdef-issourceexempt">IsSourceExempt</a> algorithm with: 
+      <ul>
+       <li data-md>
+        <p><var>cspPolicies</var> as <var>cspPolicies</var>, and</p>
+       <li data-md>
+        <p><var>document</var>’s <code class="idl"><a data-link-type="idl" href="#dictdef-trustedtypeconfiguration" id="ref-for-dictdef-trustedtypeconfiguration⑦">TrustedTypeConfiguration</a></code> as <var>ttConfig</var>.</p>
+      </ul>
+     </ins>
+    <li data-md>
+     <ins>If <var>isExempt</var> is true, then return <var>sourceString</var>.</ins>
+    <li data-md>
+     <p>For each <var>global</var> in <var>globals</var>:</p>
+     <ol>
+      <li data-md>
+       <p>Let <var>result</var> be "<code>Allowed</code>".</p>
+      <li data-md>
+       <p>For each <var>policy</var> in <var>global</var>’s <a href="https://www.w3.org/TR/CSP3/#global-object-csp-list">CSP list</a>:</p>
+       <ol>
+        <li data-md>
+         <p>Let <var>source-list</var> be <code>null</code>.</p>
+        <li data-md>
+         <p>If <var>policy</var> contains a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives">directive</a> whose <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-name" id="ref-for-directive-name">name</a> is "<code>script-src</code>", then
+set <var>source-list</var> to that <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives①">directive</a>'s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-value" id="ref-for-directive-value">value</a>.</p>
+         <p>Otherwise if <var>policy</var> contains a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives②">directive</a> whose <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-name" id="ref-for-directive-name①">name</a> is
+"<code>default-src</code>", then set <var>source-list</var> to that directive’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-value" id="ref-for-directive-value①">value</a>.</p>
+        <li data-md>
+         <p>If <var>source-list</var> is not <code>null</code>, and does not contain a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#source-expression" id="ref-for-source-expression">source expression</a> which is
+an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ascii-case-insensitive" id="ref-for-ascii-case-insensitive">ASCII case-insensitive</a> match for the string "<a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-unsafe-eval" id="ref-for-grammardef-unsafe-eval"><code>'unsafe-eval'</code></a>",
+then:</p>
+         <ol>
+          <li data-md>
+           <p>Let <var>violation</var> be the result of executing <a href="https://www.w3.org/TR/CSP3/#create-violation-for-global">Content Security Policy Level 3 §create-violation-for-global</a> on <var>global</var>, <var>policy</var>, and "<code>script-src</code>".</p>
+          <li data-md>
+           <p>Set <var>violation</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation-resource" id="ref-for-violation-resource">resource</a> to "<code>inline</code>".</p>
+          <li data-md>
+           <p>
+            If <var>source-list</var> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain">contains</a> the expression
+"<a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-report-sample" id="ref-for-grammardef-report-sample"><code>'report-sample'</code></a>", then set <var>violation</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation-sample" id="ref-for-violation-sample">sample</a> to
+the substring of 
+            <del><var>source</var></del>
+            <ins><var>sourceString</var></ins>
+             containing its first
+40 characters.
+           </p>
+          <li data-md>
+           <p>Execute <a href="https://www.w3.org/TR/CSP3/#report-violation">Content Security Policy Level 3 §report-violation</a> on <var>violation</var>.</p>
+          <li data-md>
+           <p>If <var>policy</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#policy-disposition" id="ref-for-policy-disposition">disposition</a> is "<code>enforce</code>", then set <var>result</var> to
+"<code>Blocked</code>".</p>
+         </ol>
+       </ol>
+      <li data-md>
+       <p>If <var>result</var> is "<code>Blocked</code>", throw an <code>EvalError</code> exception.</p>
+     </ol>
+    <li data-md>
+     <ins>Return <var>sourceString</var>.</ins>
+   </ol>
+   <p class="note" role="note"><span>Note:</span> returning <var>sourceString</var> means that the string that gets
+compiled is that returned by any <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy②">default policy</a> in the course of
+executing <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string⑥">Get Trusted Type compliant string</a>.</p>
+   <p class="issue" id="issue-e28ea232"><a class="self-link" href="#issue-e28ea232"></a> This depends on a solution to <a href="https://github.com/WICG/trusted-types/issues/144">issue #144</a> like <a href="https://mikesamuel.github.io/proposal-hostensurecancompilestrings-passthru/">TC39 HostBeforeCompile</a></p>
+   <p class="issue" id="issue-649f8da4"><a class="self-link" href="#issue-649f8da4"></a> In some cases, the violation "<code>'report-sample'</code>" contain the result of
+applying the default policy to a string argument which differs.
+Specifically when, there is a <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy③">default policy</a>, <var>isExempt</var> is false,
+and <var>source</var> there is a CSP policy for either the <var>callerRealm</var> or <var>callerRealm</var> that disallows "<code>'unsafe-eval'"</code>.
+Is this a feature or a bug?</p>
+   <p class="note" role="note"><span>Note:</span> The previous algorithm reports violations via both report-uris where
+callerRealm != calleeRealm.  If <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string⑦">Get Trusted Type compliant string</a> reports an
+error, it only reports it via its <var>calleeRealm</var>’s report-uri.</p>
+   <h4 class="heading settled" data-level="4.3.1" id="is-source-exempt-algorithm"><span class="secno">4.3.1. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-issourceexempt">IsSourceExempt</dfn> Algorithm</span><a class="self-link" href="#is-source-exempt-algorithm"></a></h4>
+   <p>The IsSourceExempt algorithm takes a list of <a href="https://www.w3.org/TR/CSP3/#content-security-policy-object">policies</a> (<var>cspPolicies</var>),
+and a <code class="idl"><a data-link-type="idl" href="#dictdef-trustedtypeconfiguration" id="ref-for-dictdef-trustedtypeconfiguration⑧">TrustedTypeConfiguration</a></code> (<var>ttConfig</var>) and executes the
+following steps:</p>
+   <ol>
+    <li data-md>
+     <p>Let <var>isTTStrict</var> = <code>true</code>.</p>
+    <li data-md>
+     <p>If <var>ttConfig</var>’s <code class="idl"><a data-link-type="idl" href="#dom-trustedtypeconfiguration-unknownpolicyname" id="ref-for-dom-trustedtypeconfiguration-unknownpolicyname②">unknownPolicyName</a></code> is <code class="idl"><a data-link-type="idl" href="#enumdef-unknownpolicynamedisposition" id="ref-for-enumdef-unknownpolicynamedisposition②">"allow"</a></code> then
+set <var>isTTStrict</var> to <code>false</code>.</p>
+    <li data-md>
+     <p>Otherwise if <var>ttConfig</var>’s <code class="idl"><a data-link-type="idl" href="#dom-trustedtypeconfiguration-allowednames" id="ref-for-dom-trustedtypeconfiguration-allowednames③">allowedNames</a></code> contains <code>'*'</code> then
+set <var>isTTStrict</var> to <code>false</code>.</p>
+    <li data-md>
+     <p>Let <var>isTTEnforced</var> = <code>false</code>.</p>
+    <li data-md>
+     <p>If <var>ttConfig</var>’s <code class="idl"><a data-link-type="idl" href="#dom-trustedtypeconfiguration-domsinks" id="ref-for-dom-trustedtypeconfiguration-domsinks②">domSinks</a></code> is <code class="idl"><a data-link-type="idl" href="#enumdef-stringatsinkdisposition" id="ref-for-enumdef-stringatsinkdisposition③">"reject"</a></code> then
+set <var>isTTEnforced</var> to <code>true</code>.</p>
+    <li data-md>
+     <p>Let <var>isCSPEnforced</var> = <code>false</code>.</p>
+    <li data-md>
+     <p>For each <var>policy</var> in <var>cspPolicies</var>:</p>
+     <ol>
+      <li data-md>
+       <p>Let <var>source-list</var> be <code>null</code>.</p>
+      <li data-md>
+       <p>If <var>policy</var> contains a <a href="https://www.w3.org/TR/CSP3/#directive">directive</a> whose <a href="https://www.w3.org/TR/CSP3/#directive-name">name</a> is "<code>script-src</code>", then set <var>source-list</var> to that <a href="https://www.w3.org/TR/CSP3/#directive">directive</a>'s <a href="https://www.w3.org/TR/CSP3/#directive-value">value</a>.</p>
+       <p>Otherwise if <var>policy</var> contains a <a href="https://www.w3.org/TR/CSP3/#directive">directive</a> whose <a href="https://www.w3.org/TR/CSP3/#directive-name">name</a> is "<code>default-src</code>", then set <var>source-list</var> to that <a href="https://www.w3.org/TR/CSP3/#directive">directive</a>'s <a href="https://www.w3.org/TR/CSP3/#directive-value">value</a>.</p>
+      <li data-md>
+       <p>If <var>source-list</var> is not <code>null</code>, and does not contain a <a href="https://www.w3.org/TR/CSP3/#source-expression">source expression</a> which as an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ascii-case-insensitive" id="ref-for-ascii-case-insensitive①">ASCII case-insensitive</a> match for
+the string "<a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-unsafe-eval" id="ref-for-grammardef-unsafe-eval①">'unsafe-eval'</a>", then
+set <var>isCSPEnforced</var> to <code>true</code>.</p>
+     </ol>
+    <li data-md>
+     <p>If <var>isTTStrict</var> is <code>true</code> and <var>isCSPEnforced</var> is equal to <var>isTTEnforced</var> then return <code>true</code>.</p>
+    <li data-md>
+     <p>Return <code>false</code>.</p>
+   </ol>
+   <p class="note" role="note"><span>Note:</span> We want to allow progressive enhancement via dynamic code loading
+without requiring servers to serve <code>'unsafe-eval</code> only to user-agents
+that don’t implement TrustedTypes without allowing <code class="idl"><a data-link-type="idl" href="#dom-trustedtypepolicyfactory-createpolicy" id="ref-for-dom-trustedtypepolicyfactory-createpolicy③">createPolicy()</a></code> to bypass CSP without opt-in.
+This algorithm returns true if CSP and TrustedTypes agree on whether
+to enforce and the <code class="idl"><a data-link-type="idl" href="#dictdef-trustedtypeconfiguration" id="ref-for-dictdef-trustedtypeconfiguration⑨">TrustedTypeConfiguration</a></code> places meaningful limits
+(<var>isTTStrict</var>) on <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy①⓪">TrustedTypePolicy</a></code> creation.</p>
    <h2 class="heading settled" data-level="5" id="security-considerations"><span class="secno">5. </span><span class="content">Security Considerations</span><a class="self-link" href="#security-considerations"></a></h2>
    <p>Trusted Types are not intended to defend against XSS in an actively malicious
 execution environment. It’s assumed that the application is written by
@@ -2782,11 +2949,11 @@ controlled inputs.</p>
    <p class="issue" id="issue-2eb927d2"><a class="self-link" href="#issue-2eb927d2"></a> Refer to the external document on secure policy design.</p>
    <h2 class="heading settled" data-level="6" id="implementation-considerations"><span class="secno">6. </span><span class="content">Implementation Considerations</span><a class="self-link" href="#implementation-considerations"></a></h2>
    <h3 class="heading settled" data-level="6.1" id="vendor-specific-extensions-and-addons"><span class="secno">6.1. </span><span class="content">Vendor-specific Extensions and Addons</span><a class="self-link" href="#vendor-specific-extensions-and-addons"></a></h3>
-   <p>Restriction imposed by the <code class="idl"><a data-link-type="idl" href="#dictdef-trustedtypeconfiguration" id="ref-for-dictdef-trustedtypeconfiguration⑦">TrustedTypeConfiguration</a></code> objects SHOULD
+   <p>Restriction imposed by the <code class="idl"><a data-link-type="idl" href="#dictdef-trustedtypeconfiguration" id="ref-for-dictdef-trustedtypeconfiguration①⓪">TrustedTypeConfiguration</a></code> objects SHOULD
 NOT interfere with the operation of user-agent features like addons,
 extensions, or bookmarklets. These kinds of features generally advance
 the user’s priority over page authors, as espoused in <a data-link-type="biblio" href="#biblio-html-design-principles">[html-design-principles]</a>. Specifically, extensions SHOULD be able to pass strings
-to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⑨">injection sinks</a> of the document without triggering <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy②">default policy</a> execution, <a href="#violation">violation</a> generation, or the rejection of the value.</p>
+to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⑨">injection sinks</a> of the document without triggering <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy④">default policy</a> execution, <a href="#violation">violation</a> generation, or the rejection of the value.</p>
   </main>
   <div data-fill-with="conformance">
    <h2 class="no-ref no-num heading settled" id="conformance"><span class="content"> Conformance</span><a class="self-link" href="#conformance"></a></h2>
@@ -2998,6 +3165,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <li><a href="#abstract-opdef-is-policy-name-allowed">Is policy name allowed</a><span>, in §3.1.4</span>
    <li><a href="#dom-trustedtypepolicyfactory-isscripturl">isScriptURL(value)</a><span>, in §2.3.1</span>
    <li><a href="#dom-trustedtypepolicyfactory-isscript">isScript(value)</a><span>, in §2.3.1</span>
+   <li><a href="#abstract-opdef-issourceexempt">IsSourceExempt</a><span>, in §4.3.1</span>
    <li><a href="#dom-trustedtypepolicyfactory-isurl">isURL(value)</a><span>, in §2.3.1</span>
    <li><a href="#dom-trustedtypepolicy-name">name</a><span>, in §2.3.2</span>
    <li><a href="#abstract-opdef-obtain-a-trusted-type-configuration-for-a-response">Obtain a Trusted Type Configuration for a response</a><span>, in §3.2.1</span>
@@ -3116,6 +3284,61 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <li><a href="#dom-document-writeln">writeln(...text)</a><span>, in §4.1.3</span>
    <li><a href="#dom-document-write">write(...text)</a><span>, in §4.1.3</span>
   </ul>
+  <aside class="dfn-panel" data-for="term-for-grammardef-report-sample">
+   <a href="https://w3c.github.io/webappsec-csp/#grammardef-report-sample">https://w3c.github.io/webappsec-csp/#grammardef-report-sample</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-grammardef-report-sample">4.3. Integration with Content-Security-Policy</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-grammardef-unsafe-eval">
+   <a href="https://w3c.github.io/webappsec-csp/#grammardef-unsafe-eval">https://w3c.github.io/webappsec-csp/#grammardef-unsafe-eval</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-grammardef-unsafe-eval">4.3. Integration with Content-Security-Policy</a>
+    <li><a href="#ref-for-grammardef-unsafe-eval①">4.3.1. IsSourceExempt Algorithm</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-directives">
+   <a href="https://w3c.github.io/webappsec-csp/#directives">https://w3c.github.io/webappsec-csp/#directives</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-directives">4.3. Integration with Content-Security-Policy</a> <a href="#ref-for-directives①">(2)</a> <a href="#ref-for-directives②">(3)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-policy-disposition">
+   <a href="https://w3c.github.io/webappsec-csp/#policy-disposition">https://w3c.github.io/webappsec-csp/#policy-disposition</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-policy-disposition">4.3. Integration with Content-Security-Policy</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-directive-name">
+   <a href="https://w3c.github.io/webappsec-csp/#directive-name">https://w3c.github.io/webappsec-csp/#directive-name</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-directive-name">4.3. Integration with Content-Security-Policy</a> <a href="#ref-for-directive-name①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-violation-resource">
+   <a href="https://w3c.github.io/webappsec-csp/#violation-resource">https://w3c.github.io/webappsec-csp/#violation-resource</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-violation-resource">4.3. Integration with Content-Security-Policy</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-violation-sample">
+   <a href="https://w3c.github.io/webappsec-csp/#violation-sample">https://w3c.github.io/webappsec-csp/#violation-sample</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-violation-sample">4.3. Integration with Content-Security-Policy</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-source-expression">
+   <a href="https://w3c.github.io/webappsec-csp/#source-expression">https://w3c.github.io/webappsec-csp/#source-expression</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-source-expression">4.3. Integration with Content-Security-Policy</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-directive-value">
+   <a href="https://w3c.github.io/webappsec-csp/#directive-value">https://w3c.github.io/webappsec-csp/#directive-value</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-directive-value">4.3. Integration with Content-Security-Policy</a> <a href="#ref-for-directive-value①">(2)</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-violation">
    <a href="https://w3c.github.io/webappsec-csp/#violation">https://w3c.github.io/webappsec-csp/#violation</a><b>Referenced in:</b>
    <ul>
@@ -3332,6 +3555,12 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
     <li><a href="#ref-for-concept-document-window">2.2.1. TrustedTypes extended attribute</a> <a href="#ref-for-concept-document-window①">(2)</a> <a href="#ref-for-concept-document-window②">(3)</a> <a href="#ref-for-concept-document-window③">(4)</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-realm-global">
+   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global">https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-realm-global">4.3. Integration with Content-Security-Policy</a> <a href="#ref-for-concept-realm-global①">(2)</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-dom-innertext">
    <a href="https://html.spec.whatwg.org/multipage/dom.html#dom-innertext">https://html.spec.whatwg.org/multipage/dom.html#dom-innertext</a><b>Referenced in:</b>
    <ul>
@@ -3342,6 +3571,19 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global">https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-relevant-global">2.2.1. TrustedTypes extended attribute</a> <a href="#ref-for-concept-relevant-global①">(2)</a> <a href="#ref-for-concept-relevant-global②">(3)</a> <a href="#ref-for-concept-relevant-global③">(4)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-ascii-case-insensitive">
+   <a href="https://infra.spec.whatwg.org/#ascii-case-insensitive">https://infra.spec.whatwg.org/#ascii-case-insensitive</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-ascii-case-insensitive">4.3. Integration with Content-Security-Policy</a>
+    <li><a href="#ref-for-ascii-case-insensitive①">4.3.1. IsSourceExempt Algorithm</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-list-contain">
+   <a href="https://infra.spec.whatwg.org/#list-contain">https://infra.spec.whatwg.org/#list-contain</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-list-contain">4.3. Integration with Content-Security-Policy</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idl-DOMString">
@@ -3361,7 +3603,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
   <aside class="dfn-panel" data-for="term-for-exceptiondef-evalerror">
    <a href="https://heycam.github.io/webidl/#exceptiondef-evalerror">https://heycam.github.io/webidl/#exceptiondef-evalerror</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-exceptiondef-evalerror">4.1.9. String compilation</a>
+    <li><a href="#ref-for-exceptiondef-evalerror">4.3. Integration with Content-Security-Policy</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-Exposed">
@@ -3399,8 +3641,9 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
   <aside class="dfn-panel" data-for="term-for-exceptiondef-typeerror">
    <a href="https://heycam.github.io/webidl/#exceptiondef-typeerror">https://heycam.github.io/webidl/#exceptiondef-typeerror</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-exceptiondef-typeerror">3.1.2. Create a Trusted Type Policy</a> <a href="#ref-for-exceptiondef-typeerror①">(2)</a>
-    <li><a href="#ref-for-exceptiondef-typeerror②">3.2.2. Get Trusted Type compliant string</a>
+    <li><a href="#ref-for-exceptiondef-typeerror">3.1.2. Create a Trusted Type Policy</a> <a href="#ref-for-exceptiondef-typeerror①">(2)</a> <a href="#ref-for-exceptiondef-typeerror②">(3)</a>
+    <li><a href="#ref-for-exceptiondef-typeerror③">3.1.6. Create a Trusted Type</a>
+    <li><a href="#ref-for-exceptiondef-typeerror④">3.2.2. Get Trusted Type compliant string</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idl-USVString">
@@ -3454,6 +3697,15 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <li>
     <a data-link-type="biblio">[csp-3]</a> defines the following terms:
     <ul>
+     <li><span class="dfn-paneled" id="term-for-grammardef-report-sample" style="color:initial">'report-sample'</span>
+     <li><span class="dfn-paneled" id="term-for-grammardef-unsafe-eval" style="color:initial">'unsafe-eval'</span>
+     <li><span class="dfn-paneled" id="term-for-directives" style="color:initial">directives</span>
+     <li><span class="dfn-paneled" id="term-for-policy-disposition" style="color:initial">disposition</span>
+     <li><span class="dfn-paneled" id="term-for-directive-name" style="color:initial">name</span>
+     <li><span class="dfn-paneled" id="term-for-violation-resource" style="color:initial">resource</span>
+     <li><span class="dfn-paneled" id="term-for-violation-sample" style="color:initial">sample</span>
+     <li><span class="dfn-paneled" id="term-for-source-expression" style="color:initial">source expression</span>
+     <li><span class="dfn-paneled" id="term-for-directive-value" style="color:initial">value</span>
      <li><span class="dfn-paneled" id="term-for-violation" style="color:initial">violation</span>
     </ul>
    <li>
@@ -3507,8 +3759,15 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
      <li><span class="dfn-paneled" id="term-for-windoworworkerglobalscope" style="color:initial">WindowOrWorkerGlobalScope</span>
      <li><span class="dfn-paneled" id="term-for-windowproxy" style="color:initial">WindowProxy</span>
      <li><span class="dfn-paneled" id="term-for-concept-document-window" style="color:initial">associated document</span>
+     <li><span class="dfn-paneled" id="term-for-concept-realm-global" style="color:initial">global object</span>
      <li><span class="dfn-paneled" id="term-for-dom-innertext" style="color:initial">innerText</span>
      <li><span class="dfn-paneled" id="term-for-concept-relevant-global" style="color:initial">relevant global object</span>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[INFRA]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-ascii-case-insensitive" style="color:initial">ascii case-insensitive</span>
+     <li><span class="dfn-paneled" id="term-for-list-contain" style="color:initial">contain</span>
     </ul>
    <li>
     <a data-link-type="biblio">[WebIDL]</a> defines the following terms:
@@ -3544,6 +3803,8 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <dd>Anne van Kesteren. <a href="https://fetch.spec.whatwg.org/">Fetch Standard</a>. Living Standard. URL: <a href="https://fetch.spec.whatwg.org/">https://fetch.spec.whatwg.org/</a>
    <dt id="biblio-html">[HTML]
    <dd>Anne van Kesteren; et al. <a href="https://html.spec.whatwg.org/multipage/">HTML Standard</a>. Living Standard. URL: <a href="https://html.spec.whatwg.org/multipage/">https://html.spec.whatwg.org/multipage/</a>
+   <dt id="biblio-infra">[INFRA]
+   <dd>Anne van Kesteren; Domenic Denicola. <a href="https://infra.spec.whatwg.org/">Infra Standard</a>. Living Standard. URL: <a href="https://infra.spec.whatwg.org/">https://infra.spec.whatwg.org/</a>
    <dt id="biblio-rfc2119">[RFC2119]
    <dd>S. Bradner. <a href="https://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>. March 1997. Best Current Practice. URL: <a href="https://tools.ietf.org/html/rfc2119">https://tools.ietf.org/html/rfc2119</a>
    <dt id="biblio-webidl">[WebIDL]
@@ -3622,8 +3883,8 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
 };
 
 <c- b>dictionary</c-> <a href="#dictdef-trustedtypeconfiguration"><code><c- g>TrustedTypeConfiguration</c-></code></a> {
-  <a class="n" data-link-type="idl-name" href="#enumdef-unknownpolicynamedisposition" id="ref-for-enumdef-unknownpolicynamedisposition②"><c- n>UnknownPolicyNameDisposition</c-></a> <a data-default="&quot;allow&quot;" data-type="UnknownPolicyNameDisposition " href="#dom-trustedtypeconfiguration-unknownpolicyname"><code><c- g>unknownPolicyName</c-></code></a> = "allow";
-  <a class="n" data-link-type="idl-name" href="#enumdef-stringatsinkdisposition" id="ref-for-enumdef-stringatsinkdisposition③"><c- n>StringAtSinkDisposition</c-></a>? <a data-type="StringAtSinkDisposition? " href="#dom-trustedtypeconfiguration-domsinks"><code><c- g>domSinks</c-></code></a>;
+  <a class="n" data-link-type="idl-name" href="#enumdef-unknownpolicynamedisposition" id="ref-for-enumdef-unknownpolicynamedisposition③"><c- n>UnknownPolicyNameDisposition</c-></a> <a data-default="&quot;allow&quot;" data-type="UnknownPolicyNameDisposition " href="#dom-trustedtypeconfiguration-unknownpolicyname"><code><c- g>unknownPolicyName</c-></code></a> = "allow";
+  <a class="n" data-link-type="idl-name" href="#enumdef-stringatsinkdisposition" id="ref-for-enumdef-stringatsinkdisposition④"><c- n>StringAtSinkDisposition</c-></a>? <a data-type="StringAtSinkDisposition? " href="#dom-trustedtypeconfiguration-domsinks"><code><c- g>domSinks</c-></code></a>;
   <c- b>sequence</c->&lt;<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①③①"><c- b>DOMString</c-></a>> <a data-type="sequence<DOMString> " href="#dom-trustedtypeconfiguration-allowednames"><code><c- g>allowedNames</c-></code></a>;
   <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①④①"><c- b>DOMString</c-></a> <a data-default="&quot;default&quot;" data-type="DOMString " href="#dom-trustedtypeconfiguration-reportinggroup"><code><c- g>reportingGroup</c-></code></a> = "default";
 };
@@ -3806,6 +4067,12 @@ See note "It should not be used in specifications unless ...".
 For some sinks a <code class="idl"><a data-link-type="idl">null</a></code> value will result in "", and "null" for others.
 This already caused problems in the polyfill. <a href="https://github.com/WICG/trusted-types/issues/2">&lt;https://github.com/WICG/trusted-types/issues/2></a><a href="#issue-52d7d8d6"> ↵ </a></div>
    <div class="issue"> Define more generic restrictions for script texts. <a href="https://github.com/WICG/trusted-types/issues/133">&lt;https://github.com/WICG/trusted-types/issues/133></a><a href="#issue-4d991f00"> ↵ </a></div>
+   <div class="issue"> This depends on a solution to <a href="https://github.com/WICG/trusted-types/issues/144">issue #144</a> like <a href="https://mikesamuel.github.io/proposal-hostensurecancompilestrings-passthru/">TC39 HostBeforeCompile</a><a href="#issue-e28ea232"> ↵ </a></div>
+   <div class="issue"> In some cases, the violation "<code>'report-sample'</code>" contain the result of
+applying the default policy to a string argument which differs.
+Specifically when, there is a <a data-link-type="dfn" href="#default-policy">default policy</a>, <var>isExempt</var> is false,
+and <var>source</var> there is a CSP policy for either the <var>callerRealm</var> or <var>callerRealm</var> that disallows "<code>'unsafe-eval'"</code>.
+Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
    <div class="issue"> Mention node-adoption bypass vectors. <a href="https://github.com/WICG/trusted-types/issues/49">&lt;https://github.com/WICG/trusted-types/issues/49></a><a href="#issue-31966331"> ↵ </a></div>
    <div class="issue"> Mention anchor element properties bypass. <a href="https://github.com/WICG/trusted-types/issues/64">&lt;https://github.com/WICG/trusted-types/issues/64></a><a href="#issue-1c3973fc"> ↵ </a></div>
    <div class="issue"> Mention text/attribute node copy bypass vectors. <a href="https://github.com/WICG/trusted-types/issues/47">&lt;https://github.com/WICG/trusted-types/issues/47></a><a href="#issue-fb0cfdf0"> ↵ </a></div>
@@ -3881,7 +4148,7 @@ This already caused problems in the polyfill. <a href="https://github.com/WICG/t
     <li><a href="#ref-for-trustedscript⑥">4.1.6. Enforcement for script child text contents</a> <a href="#ref-for-trustedscript⑦">(2)</a>
     <li><a href="#ref-for-trustedscript⑧">4.1.7. Enforcement in timer functions</a> <a href="#ref-for-trustedscript⑨">(2)</a>
     <li><a href="#ref-for-trustedscript①⓪">4.1.8. Enforcement in event handler content attributes</a>
-    <li><a href="#ref-for-trustedscript①①">4.1.9. String compilation</a>
+    <li><a href="#ref-for-trustedscript①①">4.3. Integration with Content-Security-Policy</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="trustedscripturl">
@@ -3921,6 +4188,7 @@ This already caused problems in the polyfill. <a href="https://github.com/WICG/t
    <ul>
     <li><a href="#ref-for-dom-trustedtypepolicyfactory-createpolicy">2.3. Policies</a> <a href="#ref-for-dom-trustedtypepolicyfactory-createpolicy①">(2)</a>
     <li><a href="#ref-for-dom-trustedtypepolicyfactory-createpolicy②">2.3.1. TrustedTypePolicyFactory</a>
+    <li><a href="#ref-for-dom-trustedtypepolicyfactory-createpolicy③">4.3.1. IsSourceExempt Algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-trustedtypepolicyfactory-getpolicynames">
@@ -3970,6 +4238,7 @@ This already caused problems in the polyfill. <a href="https://github.com/WICG/t
     <li><a href="#ref-for-trustedtypepolicy⑥">2.3.3. TrustedTypePolicyOptions</a>
     <li><a href="#ref-for-trustedtypepolicy⑦">3.1.2. Create a Trusted Type Policy</a> <a href="#ref-for-trustedtypepolicy⑧">(2)</a>
     <li><a href="#ref-for-trustedtypepolicy⑨">3.1.6. Create a Trusted Type</a>
+    <li><a href="#ref-for-trustedtypepolicy①⓪">4.3.1. IsSourceExempt Algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-trustedtypepolicy-createhtml">
@@ -4065,7 +4334,8 @@ This already caused problems in the polyfill. <a href="https://github.com/WICG/t
    <ul>
     <li><a href="#ref-for-default-policy">2.4.2. Trusted-Types HTTP Response Header</a>
     <li><a href="#ref-for-default-policy①">3.1.3. Get default policy</a>
-    <li><a href="#ref-for-default-policy②">6.1. Vendor-specific Extensions and Addons</a>
+    <li><a href="#ref-for-default-policy②">4.3. Integration with Content-Security-Policy</a> <a href="#ref-for-default-policy③">(2)</a>
+    <li><a href="#ref-for-default-policy④">6.1. Vendor-specific Extensions and Addons</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="enforcement">
@@ -4083,12 +4353,14 @@ This already caused problems in the polyfill. <a href="https://github.com/WICG/t
    <ul>
     <li><a href="#ref-for-enumdef-stringatsinkdisposition">2.4.1. TrustedTypeConfiguration</a> <a href="#ref-for-enumdef-stringatsinkdisposition①">(2)</a>
     <li><a href="#ref-for-enumdef-stringatsinkdisposition②">3.2.1. Obtain a Trusted Type Configuration for a response</a>
+    <li><a href="#ref-for-enumdef-stringatsinkdisposition③">4.3.1. IsSourceExempt Algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="enumdef-unknownpolicynamedisposition">
    <b><a href="#enumdef-unknownpolicynamedisposition">#enumdef-unknownpolicynamedisposition</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-enumdef-unknownpolicynamedisposition">2.4.1. TrustedTypeConfiguration</a> <a href="#ref-for-enumdef-unknownpolicynamedisposition①">(2)</a>
+    <li><a href="#ref-for-enumdef-unknownpolicynamedisposition②">4.3.1. IsSourceExempt Algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dictdef-trustedtypeconfiguration">
@@ -4101,7 +4373,9 @@ This already caused problems in the polyfill. <a href="https://github.com/WICG/t
     <li><a href="#ref-for-dictdef-trustedtypeconfiguration④">3.2.2. Get Trusted Type compliant string</a>
     <li><a href="#ref-for-dictdef-trustedtypeconfiguration⑤">3.2.5. Report sink type mismatch violation</a>
     <li><a href="#ref-for-dictdef-trustedtypeconfiguration⑥">4.1. Integration with HTML</a>
-    <li><a href="#ref-for-dictdef-trustedtypeconfiguration⑦">6.1. Vendor-specific Extensions and Addons</a>
+    <li><a href="#ref-for-dictdef-trustedtypeconfiguration⑦">4.3. Integration with Content-Security-Policy</a>
+    <li><a href="#ref-for-dictdef-trustedtypeconfiguration⑧">4.3.1. IsSourceExempt Algorithm</a> <a href="#ref-for-dictdef-trustedtypeconfiguration⑨">(2)</a>
+    <li><a href="#ref-for-dictdef-trustedtypeconfiguration①⓪">6.1. Vendor-specific Extensions and Addons</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-trustedtypeconfiguration-unknownpolicyname">
@@ -4109,6 +4383,7 @@ This already caused problems in the polyfill. <a href="https://github.com/WICG/t
    <ul>
     <li><a href="#ref-for-dom-trustedtypeconfiguration-unknownpolicyname">3.1.4. Is policy name allowed</a>
     <li><a href="#ref-for-dom-trustedtypeconfiguration-unknownpolicyname①">3.2.1. Obtain a Trusted Type Configuration for a response</a>
+    <li><a href="#ref-for-dom-trustedtypeconfiguration-unknownpolicyname②">4.3.1. IsSourceExempt Algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-trustedtypeconfiguration-domsinks">
@@ -4116,6 +4391,7 @@ This already caused problems in the polyfill. <a href="https://github.com/WICG/t
    <ul>
     <li><a href="#ref-for-dom-trustedtypeconfiguration-domsinks">3.2.1. Obtain a Trusted Type Configuration for a response</a>
     <li><a href="#ref-for-dom-trustedtypeconfiguration-domsinks①">3.2.2. Get Trusted Type compliant string</a>
+    <li><a href="#ref-for-dom-trustedtypeconfiguration-domsinks②">4.3.1. IsSourceExempt Algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-trustedtypeconfiguration-allowednames">
@@ -4123,6 +4399,7 @@ This already caused problems in the polyfill. <a href="https://github.com/WICG/t
    <ul>
     <li><a href="#ref-for-dom-trustedtypeconfiguration-allowednames">3.1.4. Is policy name allowed</a>
     <li><a href="#ref-for-dom-trustedtypeconfiguration-allowednames①">3.2.1. Obtain a Trusted Type Configuration for a response</a> <a href="#ref-for-dom-trustedtypeconfiguration-allowednames②">(2)</a>
+    <li><a href="#ref-for-dom-trustedtypeconfiguration-allowednames③">4.3.1. IsSourceExempt Algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-trustedtypeconfiguration-reportinggroup">
@@ -4163,6 +4440,12 @@ This already caused problems in the polyfill. <a href="https://github.com/WICG/t
     <li><a href="#ref-for-abstract-opdef-is-policy-name-allowed">3.1.2. Create a Trusted Type Policy</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="abstract-opdef-is-a-default-policy">
+   <b><a href="#abstract-opdef-is-a-default-policy">#abstract-opdef-is-a-default-policy</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-abstract-opdef-is-a-default-policy">3.1.2. Create a Trusted Type Policy</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="abstract-opdef-create-a-trusted-type">
    <b><a href="#abstract-opdef-create-a-trusted-type">#abstract-opdef-create-a-trusted-type</a></b><b>Referenced in:</b>
    <ul>
@@ -4183,7 +4466,7 @@ This already caused problems in the polyfill. <a href="https://github.com/WICG/t
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string②">3.2.3. Enforce a Trusted Type</a>
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string③">4.1.7. Enforcement in timer functions</a>
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string④">4.1.8. Enforcement in event handler content attributes</a>
-    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑤">4.1.9. String compilation</a>
+    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑤">4.3. Integration with Content-Security-Policy</a> <a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑥">(2)</a> <a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑦">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="abstract-opdef-report-sink-type-mismatch-violation">
@@ -4268,6 +4551,12 @@ This already caused problems in the polyfill. <a href="https://github.com/WICG/t
    <b><a href="#dom-domparser-parsefromstring">#dom-domparser-parsefromstring</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-domparser-parsefromstring">2.1. Injection sinks</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="abstract-opdef-issourceexempt">
+   <b><a href="#abstract-opdef-issourceexempt">#abstract-opdef-issourceexempt</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-abstract-opdef-issourceexempt">4.3. Integration with Content-Security-Policy</a>
    </ul>
   </aside>
 <script>/* script-dfn-panel */
