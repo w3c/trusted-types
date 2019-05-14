@@ -829,7 +829,7 @@ To get the [=default policy=] for a *factory*, execute the following steps:
 
 1.  Set *policyName* to `"default"`.
 1.  If *factory*'s `[[PolicyMap]]` internal slot does not have an entry
-    with the key *policyName, return null.
+    with the key *policyName*, return null.
 1.  Otherwise, return the value of the *policyName* entry of
     *factory*'s `[[PolicyMap]]`.
 
