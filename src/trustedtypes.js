@@ -54,6 +54,8 @@ const TrustedTypesInnerPolicy = {};
 const TrustedTypesTypeMap = {};
 /* eslint-enable no-unused-vars */
 
+export const DEFAULT_POLICY_NAME = 'default';
+
 
 export const trustedTypesBuilderTestOnly = function() {
   // Capture common names early.
@@ -118,16 +120,16 @@ export const trustedTypesBuilderTestOnly = function() {
   const policyNames = selfContained([]);
 
   /**
-   * Map of all exposed policies, keyed by policy name.
-   * @type {Map<string,!TrustedTypePolicy>}
-   */
-  const exposedPolicies = selfContained(new Map());
-
-  /**
    * Allowed policy namess for policy names.
    * @type {Array<string>}
    */
   const allowedNames = selfContained([]);
+
+  /**
+   * A reference to a default policy, if created.
+   * @type {TrustedTypePolicy}
+   */
+  let defaultPolicy = null;
 
   /**
    * Whether to enforce allowedNames in createPolicy().
@@ -456,16 +458,6 @@ export const trustedTypesBuilderTestOnly = function() {
   }
 
   /**
-   * Returns a policy object, if given policy was exposed.
-   * @param  {string} name
-   * @return {?TrustedTypePolicy}
-   */
-  function getExposedPolicy(name) {
-    const pName = '' + name;
-    return exposedPolicies.get(pName) || null;
-  }
-
-  /**
    * Returns the name of the trusted type required for a given element
    *   attribute.
    * @param {string} tagName The name of the tag of the element.
@@ -586,23 +578,11 @@ export const trustedTypesBuilderTestOnly = function() {
    *
    * @param  {string} name A unique name of the policy.
    * @param  {TrustedTypesInnerPolicy} policy Policy rules object.
-   * @param  {boolean=} expose Iff true, the policy will be exposed (available
-   *   globally).
    * @return {TrustedTypePolicy} The policy that may create TT objects
    *   according to the policy rules.
    */
-  function createPolicy(name, policy, expose = false) {
+  function createPolicy(name, policy) {
     const pName = '' + name; // Assert it's a string
-
-    if (pName == 'default' && !expose) {
-      const message = 'The default policy must be exposed';
-      if (DOMException) {
-        // Workaround for missing externs in Closure compiler.
-        throw new window['DOMException'](message, 'InvalidStateError');
-      } else {
-        throw new TypeError(message);
-      }
-    }
 
     if (enforceNameWhitelist && allowedNames.indexOf(pName) === -1) {
       throw new TypeError('Policy ' + pName + ' disallowed.');
@@ -634,8 +614,8 @@ export const trustedTypesBuilderTestOnly = function() {
 
     const wrappedPolicy = wrapPolicy(pName, innerPolicy);
 
-    if (expose) {
-      exposedPolicies.set(pName, wrappedPolicy);
+    if (pName === DEFAULT_POLICY_NAME) {
+      defaultPolicy = wrappedPolicy;
     }
 
     return wrappedPolicy;
@@ -657,14 +637,26 @@ export const trustedTypesBuilderTestOnly = function() {
     }
   }
 
+  /**
+   * Returns the default policy, or null if it was not created.
+   * @return {TrustedTypePolicy}
+   */
+  function getDefaultPolicy() {
+    return defaultPolicy;
+  }
+
+  /**
+   * Resets the default policy.
+   */
+  function resetDefaultPolicy() {
+    defaultPolicy = null;
+    policyNames.splice(policyNames.indexOf(DEFAULT_POLICY_NAME), 1);
+  }
 
   const api = create(TrustedTypePolicyFactory.prototype);
   assign(api, {
     // The main function to create policies.
     createPolicy,
-
-    // Policy getter
-    getExposedPolicy,
 
     getPolicyNames,
 
@@ -688,6 +680,8 @@ export const trustedTypesBuilderTestOnly = function() {
   return {
     TrustedTypes: freeze(api),
     setAllowedPolicyNames,
+    getDefaultPolicy,
+    resetDefaultPolicy,
   };
 };
 
@@ -695,5 +689,7 @@ export const trustedTypesBuilderTestOnly = function() {
 export const {
   TrustedTypes,
   setAllowedPolicyNames,
+  getDefaultPolicy,
+  resetDefaultPolicy,
 } = trustedTypesBuilderTestOnly();
 

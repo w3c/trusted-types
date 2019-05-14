@@ -9,7 +9,13 @@
 
 /* eslint-disable no-unused-vars */
 import {DIRECTIVE_NAME, TrustedTypeConfig} from './data/trustedtypeconfig.js';
-import {TrustedTypes, setAllowedPolicyNames, HTML_NS} from
+import {
+  TrustedTypes,
+  setAllowedPolicyNames,
+  getDefaultPolicy,
+  resetDefaultPolicy,
+  HTML_NS,
+} from
   './trustedtypes.js';
 
 /* eslint-enable no-unused-vars */
@@ -136,11 +142,6 @@ const TYPE_PRODUCER_MAP = {
   'TrustedScript': 'createScript',
 };
 
-/**
- * @type {function(string):?TrustedTypePolicy}
- */
-const getExposedPolicy = TrustedTypes.getExposedPolicy;
-
 /* eslint-disable no-unused-vars */
 /**
  * @typedef {TrustedTypePolicy}
@@ -258,6 +259,7 @@ export class TrustedTypesEnforcer {
     this.restoreFunction_(window, 'setTimeout');
     this.restoreFunction_(window, 'setInterval');
     this.uninstallPropertySetWrappers_();
+    resetDefaultPolicy();
   }
 
   /**
@@ -612,21 +614,18 @@ export class TrustedTypesEnforcer {
     }
 
     // Apply a fallback policy, if it exists.
-    const fallback = this.config_.fallbackPolicyName;
-    if (fallback) {
-      const fallbackPolicy = getExposedPolicy.call(TrustedTypes, fallback);
-      if (fallbackPolicy && TYPE_CHECKER_MAP.hasOwnProperty(typeName)) {
-        let fallbackValue;
-        let exceptionThrown;
-        try {
-          fallbackValue = fallbackPolicy[TYPE_PRODUCER_MAP[typeName]](value);
-        } catch (e) {
-          exceptionThrown = true;
-        }
-        if (!exceptionThrown) {
-          args[argNumber] = fallbackValue;
-          return apply(originalSetter, context, args);
-        }
+    const fallbackPolicy = getDefaultPolicy.call(TrustedTypes);
+    if (fallbackPolicy && TYPE_CHECKER_MAP.hasOwnProperty(typeName)) {
+      let fallbackValue;
+      let exceptionThrown;
+      try {
+        fallbackValue = fallbackPolicy[TYPE_PRODUCER_MAP[typeName]](value);
+      } catch (e) {
+        exceptionThrown = true;
+      }
+      if (!exceptionThrown) {
+        args[argNumber] = fallbackValue;
+        return apply(originalSetter, context, args);
       }
     }
 

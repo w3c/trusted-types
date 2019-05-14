@@ -270,7 +270,7 @@ contract.
 <xmp highlight=js>
 const sanitizingPolicy = TrustedTypes.createPolicy('sanitize-html', {
   createHTML: (input) => myTrustedSanitizer(input, { superSafe: 'ok'}),
-}, /* expose = */ true);
+});
 
 myDiv.innerHTML = sanitizingPolicy.createHTML(untrustedValue);
 </xmp>
@@ -318,11 +318,9 @@ can only be created via policies.
 
 The {{TrustedTypePolicyFactory/createPolicy()|createPolicy}} function returns a policy object whose create\* functions
 will create Trusted Type objects after applying the policy
-rules. Policies may also be optionally exposed, allowing callers to
-obtain a reference to the policy object from the global registry.
+rules. 
 
-
-Note: While it's safe to globally expose a policy that sanitizes its input
+Note: While it's safe to expose a policy that sanitizes its input
 (and allow any part of the application to use it), there might be a
 need to create lax policies to be used internally, and only to be
 called with author-controlled input. For example, a client-side HTML
@@ -362,9 +360,7 @@ reference - see [[#extensions-to-the-window-interface]].
 <pre class="idl">
 [Exposed=Window] interface TrustedTypePolicyFactory {
     [Unforgeable] TrustedTypePolicy createPolicy(
-        DOMString policyName, optional TrustedTypePolicyOptions policyOptions,
-        optional boolean exposed = false);
-    [Unforgeable] TrustedTypePolicy getExposedPolicy(DOMString policyName);
+        DOMString policyName, optional TrustedTypePolicyOptions policyOptions);
     [Unforgeable] sequence&lt;DOMString> getPolicyNames();
     [Unforgeable] boolean isHTML(any value);
     [Unforgeable] boolean isScript(any value);
@@ -382,7 +378,7 @@ to be applied for documents the factory is created for.
 
 <div dfn-type="method" dfn-for="TrustedTypePolicyFactory">
 
-:   <dfn>createPolicy(policyName, policyOptions, exposed)</dfn>
+:   <dfn>createPolicy(policyName, policyOptions)</dfn>
 ::  Creates a uniquely named policy object that will implement the rules
     passed in the {{TrustedTypePolicyOptions}} object. Allowed policy names
     may be restricted by the [=Trusted-Types HTTP Response Header=] - if that
@@ -400,8 +396,6 @@ to be applied for documents the factory is created for.
     </xmp>
     </div>
 
-    The policy can also be optionally exposed, allowing for a policy retrieval via {{getExposedPolicy(policyName)}}.
-
     Returns the result of executing a [$Create a Trusted Type Policy$] algorithm,
     with the following arguments:
     <dl>
@@ -409,35 +403,11 @@ to be applied for documents the factory is created for.
     <dd>[[DOM#context-object|context object]]</dd>
     <dt>policyName</dt>
     <dd>policyName</dt>
-    <dt>exposed</dt>
-    <dd>exposed</dd>
     </dl>
 
 : <dfn>getPolicyNames()</dfn>
 ::  Returns a new list, comprising of all keys of the `[[PolicyMap]]`
     internal slot map.
-
-: <dfn>getExposedPolicy(policyName)</dfn>
-::  Returns a policy object identified by a name, if that policy exists
-    and is exposed. Returns the result of executing a
-    [$Get exposed policy$] algorithm, with the following arguments:
-    <dl>
-    <dt>factory</dt>
-    <dd>[[DOM#context-object|context object]]</dd>
-    <dt>policyName</dt>
-    <dd>policyName</dt>
-    </dl>
-
-    <div class="example" id="get-exposed-policy-example">
-    <xmp highlight=js>
-    const exposedPolicy = TrustedTypes.createPolicy('foo', {}, true);
-    exposedPolicy === TrustedTypes.getExposedPolicy('foo'); // true
-
-    const unexposedPolicy = TrustedTypes.createPolicy('bar', {});
-    unexposedPolicy instanceof TrustedTypesPolicy // true
-    TrustedTypes.getExposedPolicy('bar') === null // true
-    </xmp>
-    </div>
 
 : <dfn>isHTML(value)</dfn>
 :: Returns true if value is an instance of {{TrustedHTML}} and has its `[[Data]]`  internal slot set, false otherwise.
@@ -488,9 +458,6 @@ const myPolicy = TrustedTypes.createPolicy('myPolicy', {
 });
 TrustedTypes.getPolicyNames();
 // ['myPolicy']
-
-TrustedTypes.getExposedPolicy('myPolicy');
-// null
 
 document.querySelector("#foo").innerHTML = myPolicy.createHTML(aValue);
 scriptElement.src = myPolicy.createScriptURL(
@@ -591,7 +558,6 @@ dictionary TrustedTypePolicyOptions {
    CreateScriptCallback? createScript;
    CreateURLCallback? createURL;
    CreateScriptURLCallback? createScriptURL;
-   boolean exposed = false;
 };
 callback CreateHTMLCallback = DOMString (DOMString input);
 callback CreateScriptCallback = DOMString (DOMString input);
@@ -612,7 +578,7 @@ Trusted Type object).
 
 This optional behavior allows for introducing Trusted Type [=enforcement=]
 to applications that are still using legacy code that writes to the DOM
-(or calls `eval`) directly. Needless to say, this exposed policy should
+(or calls `eval`) directly. Needless to say, this policy should
 necessarily be defined with very strict rules not to introduce a DOM
 XSS vulnerability in unknown parts of the application. In an extreme
 case, a lax, no-op default policy could bring the application DOM XSS
@@ -832,15 +798,12 @@ Issue: does configuration need to be defensively copied.
 ### <dfn abstract-op>Create a Trusted Type Policy</dfn> ### {#create-trusted-type-policy-algorithm}
 
 To create a {{TrustedTypePolicy}} in a {{TrustedTypePolicyFactory|factory}},
-given a DOMString (*policyName*), policy options dictionary (*options*)
-and exposed flag (*exposed*), run these steps:
+given a DOMString (*policyName*) and policy options dictionary (*options*), run these steps:
 
 1.  If *factory*'s `[[PolicyMap]]` internal slot has an entry with the key
     `policyName`, then throw a *TypeError*.
 1.  Let *policyAllowed* be the result of running [$Is policy name allowed$] algorithm.
 1.  If *policyAllowed* is False, throw a *TypeError*.
-1.  If [$Is a default policy$] algorithm returns True and *exposed* is False, then
-    throw a *TypeError*.
 1.  Let *policy* be a new {{TrustedTypePolicy}} object.
 1.  Set policy's `name` property value to *policyName*.
 1.  Let *policyOptions* be a new {{TrustedTypePolicyOptions}} object.
@@ -861,24 +824,14 @@ and exposed flag (*exposed*), run these steps:
 1.  Return *policy*.
 
 
-### <dfn abstract-op>Get exposed policy</dfn> ### {#get-exposed-policy-algorithm}
-
-1.  Let *policyName* and *factory* be the same variables as those of
-    the same name in the algorithm that invoked these steps.
-1.  If *factory*'s `[[PolicyMap]]` internal slot does not have an entry
-    with the key *policyName*, return null.
-1.  Otherwise, let *policy* be the value of the *policyName* entry of
-    *factory*'s `[[PolicyMap]]`.
-1.  If *policy*'s `[[options]]`'s {{TrustedTypePolicyOptions/exposed|exposed}} attribute is false,
-    return null.
-1.  Return *policy*.
-
-
 ### <dfn abstract-op>Get default policy</dfn> ### {#get-default-policy-algorithm}
 To get the [=default policy=] for a *factory*, execute the following steps:
 
 1.  Set *policyName* to `"default"`.
-1.  Return the result of executing the [$Get exposed policy$] algorithm.
+1.  If *factory*'s `[[PolicyMap]]` internal slot does not have an entry
+    with the key *policyName, return null.
+1.  Otherwise, return the value of the *policyName* entry of
+    *factory*'s `[[PolicyMap]]`.
 
 
 ### <dfn abstract-op>Is policy name allowed</dfn> ### {#is-policy-name-allow-algorithm}

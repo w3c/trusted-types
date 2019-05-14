@@ -134,8 +134,7 @@ As valid trusted type objects must originate from a policy, those policies alone
 
 ```webidl
 interface TrustedTypePolicyFactory {
-    TrustedTypePolicy createPolicy(DOMString policyName, TrustedTypeInnerPolicy policy, optional boolean expose = false);
-    TrustedTypePolicy getExposedPolicy(DOMString policyName);
+    TrustedTypePolicy createPolicy(DOMString policyName, TrustedTypeInnerPolicy policy);
     Array<DOMString> getPolicyNames();
 }
 ```
@@ -162,8 +161,6 @@ const myPolicy = TrustedTypes.createPolicy('https://example.com#mypolicy', {
 ```
 
 The policy object is returned, and can be used as a capability to create typed objects i.e. code parts without a reference to the policy object cannot use it.
-
-Optionally, the policy may be exposed globally by calling `createPolicy` with `expose` argument set to `true`. Exposed policies can be retrieved via `TrustedTypes.getExposedPolicy`. This mode is recommended only for the strict, sanitizing, "last resort" type of policies.
 
 The policy object can be used directly to create typed values that conform to its rules:
 
