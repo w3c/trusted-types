@@ -22,14 +22,11 @@ export class TrustedTypeConfig {
    *   violations to the console.
    * @param {boolean} isEnforcementEnabled If true enforcement is enabled at
    *   runtime.
-   * @param {?string} fallbackPolicyName If present, direct DOM sink usage
-   *   will be passed through this policy (has to be exposed).
    * @param {Array<string>} allowedPolicyNames Whitelisted policy names.
    * @param {?string} cspString String with the CSP policy.
    */
   constructor(isLoggingEnabled,
       isEnforcementEnabled,
-      fallbackPolicyName,
       allowedPolicyNames,
       cspString = null) {
     /**
@@ -43,12 +40,6 @@ export class TrustedTypeConfig {
       * @type {boolean}
       */
     this.isEnforcementEnabled = isEnforcementEnabled;
-
-    /**
-     * Fallback policy name
-     * @type {?string}
-     */
-    this.fallbackPolicyName = fallbackPolicyName;
 
     /**
      * Allowed policy names.
@@ -93,7 +84,6 @@ export class TrustedTypeConfig {
     const policy = TrustedTypeConfig.parseCSP(cspString);
     const enforce = DIRECTIVE_NAME in policy;
     let policies = ['*'];
-    const fallbackPolicyName = 'default';
     if (enforce) {
       policies = policy[DIRECTIVE_NAME].filter((p) => p.charAt(0) !== '\'');
     }
@@ -101,7 +91,6 @@ export class TrustedTypeConfig {
     return new TrustedTypeConfig(
         isLoggingEnabled,
         enforce, /* isEnforcementEnabled */
-        fallbackPolicyName, /* fallbackPolicyName */
         policies, /* allowedPolicyNames */
         cspString
     );

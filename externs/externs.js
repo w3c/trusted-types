@@ -57,20 +57,10 @@ var TrustedTypePolicyFactory = function() {};
  *
  * @param  {string} name A unique name of the policy.
  * @param  {!TrustedTypesInnerPolicy} policy The policy rules.
- * @param  {boolean=} opt_expose Iff true, the policy will be exposed
- *   (available globally).
  * @return {!TrustedTypePolicy} The policy that may create TT objects
  *   according to the rules in the builder.
  */
-TrustedTypePolicyFactory.prototype.createPolicy = function(name, policy,
-    opt_expose){};
-
-/**
- * Return a Policy object, if the policy was defined and exposed.
- * @param  {string} name The name of the policy.
- * @return {?TrustedTypePolicy}
- */
-TrustedTypePolicyFactory.prototype.getExposedPolicy = function(name){};
+TrustedTypePolicyFactory.prototype.createPolicy = function(name, policy){};
 
 /**
  * Returns all defined policy names.

@@ -50,7 +50,7 @@
   })();
 
   // Create escaping policy
-  TrustedTypes.createPolicy('escape', {
+  var escapePolicy = TrustedTypes.createPolicy('escape', {
     'createHTML': function(unsafe) {
       return unsafe
            .replace(/&/g, "&amp;")
@@ -59,7 +59,7 @@
            .replace(/"/g, "&quot;")
            .replace(/'/g, "&#039;");
     },
-  }, /* expose - make it available globally */ true);
+  });
 
   var testNumber = 0;
 
@@ -79,7 +79,7 @@
   };
 
   // Use the escaping policy.
-  var escapedValue = TrustedTypes.getExposedPolicy('escape').createHTML('<b>escape me</b>');
+  var escapedValue = escapePolicy.createHTML('<b>escape me</b>');
 
   function setHtml(value, el) {
     el.innerHTML = value;

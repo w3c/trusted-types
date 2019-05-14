@@ -12,10 +12,16 @@ import {trustedTypesBuilderTestOnly} from '../src/trustedtypes.js';
 describe('v2 TrustedTypes', () => {
   let TrustedTypes;
   let setAllowedPolicyNames;
+  let getDefaultPolicy;
+  let resetDefaultPolicy;
 
   beforeEach(() => {
     // We need separate instances.
-    ({TrustedTypes, setAllowedPolicyNames} = trustedTypesBuilderTestOnly());
+    ({
+      TrustedTypes,
+      setAllowedPolicyNames,
+      getDefaultPolicy,
+      resetDefaultPolicy} = trustedTypesBuilderTestOnly());
   });
 
   const noopPolicy = {
@@ -36,10 +42,6 @@ describe('v2 TrustedTypes', () => {
       expect(p.createHTML instanceof Function).toBe(true);
       expect(p.createURL instanceof Function).toBe(true);
       expect(p.createScriptURL instanceof Function).toBe(true);
-    });
-
-    it('require a default policy to be exposed', () => {
-      expect(() => TrustedTypes.createPolicy('default', {})).toThrow();
     });
 
     [null, undefined, () => {}].forEach((i) =>
@@ -71,18 +73,6 @@ describe('v2 TrustedTypes', () => {
       expect(() => policy.createHTML('<foo>')).toThrow();
     });
 
-    it('defaults to a non-exposed policy', () => {
-      TrustedTypes.createPolicy('policy', {});
-
-      expect(TrustedTypes.getExposedPolicy(name)).toBe(null);
-    });
-
-    it('supports exposing policy', () => {
-      const p = TrustedTypes.createPolicy('policy', {}, true);
-
-      expect(TrustedTypes.getExposedPolicy('policy')).toBe(p);
-    });
-
     it('does not allow for policy name collisions', () => {
       TrustedTypes.createPolicy('conflicting', {});
 
@@ -110,10 +100,10 @@ describe('v2 TrustedTypes', () => {
 
   describe('getPolicyNames', () => {
     it('returns all policy names', () => {
-      TrustedTypes.createPolicy('hidden', {});
-      TrustedTypes.createPolicy('exposed', {}, true);
+      TrustedTypes.createPolicy('first', {});
+      TrustedTypes.createPolicy('second', {});
 
-      expect(TrustedTypes.getPolicyNames()).toEqual(['hidden', 'exposed']);
+      expect(TrustedTypes.getPolicyNames()).toEqual(['first', 'second']);
     });
   });
 
@@ -490,6 +480,55 @@ describe('v2 TrustedTypes', () => {
 
       expect(() => TrustedTypes.createPolicy('foo', {})).not.toThrow();
       expect(() => TrustedTypes.createPolicy('bar', {})).not.toThrow();
+    });
+  });
+
+  describe('getDefaultPolicy', () => {
+    it('returns null initially', () => {
+      expect(getDefaultPolicy()).toBe(null);
+    });
+
+    it('returns the default policy if created', () => {
+      TrustedTypes.createPolicy('foo', {});
+      const policy = TrustedTypes.createPolicy('default', {});
+      TrustedTypes.createPolicy('bar', {});
+
+      expect(getDefaultPolicy()).toBe(policy);
+    });
+  });
+
+  describe('resetDefaultPolicy', () => {
+    beforeEach(() => {
+      TrustedTypes.createPolicy('default', {});
+    });
+
+    it('makes getDefaultPolicy return null', () => {
+      expect(getDefaultPolicy()).not.toBe(null);
+      resetDefaultPolicy();
+
+      expect(getDefaultPolicy()).toBe(null);
+    });
+
+    it('allows creating a new default policy', () => {
+      expect(() => {
+        TrustedTypes.createPolicy('default', {});
+      }).toThrow();
+      resetDefaultPolicy();
+
+      expect(() => {
+        TrustedTypes.createPolicy('default', {});
+      }).not.toThrow();
+    });
+
+    it('removes the default policy from policy names', () => {
+      TrustedTypes.createPolicy('a', {});
+
+      expect(TrustedTypes.getPolicyNames()).toContain('default');
+      expect(TrustedTypes.getPolicyNames()).toContain('a');
+      resetDefaultPolicy();
+
+      expect(TrustedTypes.getPolicyNames()).not.toContain('default');
+      expect(TrustedTypes.getPolicyNames()).toContain('a');
     });
   });
 });

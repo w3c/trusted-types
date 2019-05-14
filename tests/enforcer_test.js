@@ -29,7 +29,6 @@ describe('TrustedTypesEnforcer', function() {
   const ENFORCING_CONFIG = new TrustedTypeConfig(
       /* isLoggingEnabled */ false,
       /* isEnforcementEnabled */ true,
-      /* fallbackPolicy */ null,
       /* allowedPolicyNames */ ['*'],
       /* cspString */ 'script-src https:; trusted-types *'
   );
@@ -37,14 +36,12 @@ describe('TrustedTypesEnforcer', function() {
   const NOOP_CONFIG = new TrustedTypeConfig(
       /* isLoggingEnabled */ false,
       /* isEnforcementEnabled */ false,
-      /* fallbackPolicy */ null,
       /* allowedPolicyNames */ ['*']
   );
 
   const LOGGING_CONFIG = new TrustedTypeConfig(
       /* isLoggingEnabled */ true,
       /* isEnforcementEnabled */ false,
-      /* fallbackPolicy */ null,
       /* allowedPolicyNames */ ['*'],
       /* cspString */ 'script-src https:'
   );
@@ -213,7 +210,7 @@ describe('TrustedTypesEnforcer', function() {
 
     beforeEach(function() {
       enforcer = new TrustedTypesEnforcer(LOGGING_CONFIG);
-      policy = TrustedTypes.createPolicy(Math.random(), noopPolicy, true);
+      policy = TrustedTypes.createPolicy(Math.random(), noopPolicy);
       enforcer.install();
       el = document.createElement('div');
       spyOn(console, 'warn');
@@ -955,7 +952,7 @@ describe('TrustedTypesEnforcer', function() {
     beforeEach(function() {
       enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
       enforcer.install();
-      policy = TrustedTypes.createPolicy(Math.random(), noopPolicy, true);
+      policy = TrustedTypes.createPolicy(Math.random(), noopPolicy);
     });
 
     afterEach(function() {
@@ -1233,7 +1230,6 @@ describe('TrustedTypesEnforcer', function() {
       enforcer = new TrustedTypesEnforcer(new TrustedTypeConfig(
       /* isLoggingEnabled */ false,
           /* isEnforcementEnabled */ true,
-          'fallback1',
           ['foo']));
       enforcer.install();
 
@@ -1247,53 +1243,39 @@ describe('TrustedTypesEnforcer', function() {
     });
   });
 
-  describe('enforcement fallback policy', function() {
+  describe('enforcement default policy', function() {
     let enforcer;
+
+    beforeEach(function() {
+      enforcer = new TrustedTypesEnforcer(new TrustedTypeConfig(
+          /* isLoggingEnabled */ false,
+          /* isEnforcementEnabled */ true,
+          ['*']));
+      enforcer.install();
+    });
 
     afterEach(function() {
       enforcer.uninstall();
     });
 
     it('is used on strings', function() {
-      enforcer = new TrustedTypesEnforcer(new TrustedTypeConfig(
-      /* isLoggingEnabled */ false,
-          /* isEnforcementEnabled */ true,
-          'fallback1',
-          ['*']));
-      enforcer.install();
-      TrustedTypes.createPolicy('fallback1', {
-        'createHTML': (s) => 'fallback:' + s,
-      }, true);
+      TrustedTypes.createPolicy('default', {
+        'createHTML': (s) => {
+          return 'fallback:' + s;
+        },
+      });
       const el = document.createElement('div');
       el.innerHTML = TEST_HTML;
 
       expect(el.innerHTML).toEqual('fallback:' + TEST_HTML);
     });
 
-    it('has to be exposed', function() {
-      enforcer = new TrustedTypesEnforcer(new TrustedTypeConfig(
-      /* isLoggingEnabled */ false,
-          /* isEnforcementEnabled */ true,
-          'fallback10', ['*']));
-      enforcer.install();
-      TrustedTypes.createPolicy('fallback10', {
-        'createHTML': (s) => 'fallback:' + s,
-      });
-      const el = document.createElement('div');
-
-      expect(() => el.innerHTML = TEST_HTML).toThrow();
-      expect(el.innerHTML).toEqual('');
-    });
-
     it('is not used on typed values', function() {
-      enforcer = new TrustedTypesEnforcer(new TrustedTypeConfig(
-      /* isLoggingEnabled */ false,
-          /* isEnforcementEnabled */ true,
-          'fallback2', ['*']));
-      enforcer.install();
-      TrustedTypes.createPolicy('fallback2', {
-        'createHTML': (s) => 'fallback:' + s,
-      }, true);
+      TrustedTypes.createPolicy('default', {
+        'createHTML': (s) => {
+          return 'fallback:' + s;
+        },
+      });
       const policy = TrustedTypes.createPolicy(Math.random(), noopPolicy);
       const el = document.createElement('div');
       el.innerHTML = policy.createHTML(TEST_HTML);
@@ -1302,12 +1284,6 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('fails when fallback is not installed', function() {
-      enforcer = new TrustedTypesEnforcer(new TrustedTypeConfig(
-      /* isLoggingEnabled */ false,
-          /* isEnforcementEnabled */ true,
-          'fallback3', ['*']));
-      enforcer.install();
-      TrustedTypes.createPolicy(Math.random(), noopPolicy);
       const el = document.createElement('div');
 
       expect(() => el.innerHTML = TEST_HTML).toThrowError(TypeError);
@@ -1315,20 +1291,15 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('fails if policy throws an error', function() {
-      enforcer = new TrustedTypesEnforcer(new TrustedTypeConfig(
-      /* isLoggingEnabled */ false,
-          /* isEnforcementEnabled */ true,
-          'fallback4', ['*']));
-      enforcer.install();
-      TrustedTypes.createPolicy('fallback4', {
+      TrustedTypes.createPolicy('default', {
         'createHTML': (s) => {
-          throw new Error();
+          throw new EvalError();
         },
-      }, true);
+      });
       const el = document.createElement('div');
 
       // Throws a generic enforcement error, not the one from the policy.
-      expect(() => el.innerHTML = 'html')
+      expect(() => el.innerHTML = 'throw,please')
           .toThrowError(TypeError);
 
       expect(el.innerHTML).toEqual('');
@@ -1342,7 +1313,7 @@ describe('TrustedTypesEnforcer', function() {
     beforeEach(function() {
       enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
       enforcer.install();
-      policy = TrustedTypes.createPolicy(Math.random(), noopPolicy, true);
+      policy = TrustedTypes.createPolicy(Math.random(), noopPolicy);
     });
 
     afterEach(function() {
