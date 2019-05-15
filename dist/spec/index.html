@@ -1461,7 +1461,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Trusted Types</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-05-14">14 May 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-05-15">15 May 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1814,7 +1814,7 @@ a given host.
   createScriptURL<c- p>(</c->url<c- p>)</c-> <c- p>{</c->
     <c- kr>const</c-> parsed <c- o>=</c-> <c- k>new</c-> URL<c- p>(</c->url<c- p>,</c-> document<c- p>.</c->baseURI<c- p>);</c->
     <c- k>if</c-> <c- p>(</c->parsed<c- p>.</c->origin <c- o>==</c-> <c- t>'https://mycdn.example'</c-><c- p>)</c-> <c- p>{</c->
-      <c- k>return</c-> parsed<c- p>.</c->toString<c- p>();</c->
+      <c- k>return</c-> url<c- p>;</c->
     <c- p>}</c->
     <c- k>throw</c-> <c- k>new</c-> TypeError<c- p>(</c-><c- t>'invalid URL'</c-><c- p>);</c->
   <c- p>},</c->

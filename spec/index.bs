@@ -296,7 +296,7 @@ const cdnScriptsPolicy = TrustedTypes.createPolicy('cdn-scripts', {
   createScriptURL(url) {
     const parsed = new URL(url, document.baseURI);
     if (parsed.origin == 'https://mycdn.example') {
-      return parsed.toString();
+      return url;
     }
     throw new TypeError('invalid URL');
   },
@@ -318,7 +318,7 @@ can only be created via policies.
 
 The {{TrustedTypePolicyFactory/createPolicy()|createPolicy}} function returns a policy object whose create\* functions
 will create Trusted Type objects after applying the policy
-rules. 
+rules.
 
 Note: While it's safe to expose a policy that sanitizes its input
 (and allow any part of the application to use it), there might be a
