@@ -366,6 +366,7 @@ reference - see [[#extensions-to-the-window-interface]].
     [Unforgeable] boolean isScript(any value);
     [Unforgeable] boolean isScriptURL(any value);
     [Unforgeable] boolean isURL(any value);
+    [Unforgeable] readonly attribute TrustedHTML emptyHTML;
 };
 </pre>
 
@@ -463,6 +464,13 @@ document.querySelector("#foo").innerHTML = myPolicy.createHTML(aValue);
 scriptElement.src = myPolicy.createScriptURL(
     'https://scripts.myapp.example/script.js');
 </xmp>
+</div>
+
+<div dfn-type="attribute" dfn-for="TrustedTypePolicyFactory">
+
+: <dfn>emptyHTML</dfn>
+:: is a {{TrustedHTML}} object with its `[[Data]]` internal slot value set to an empty string.
+
 </div>
 
 ### <dfn type>TrustedTypePolicy</dfn> ### {#trusted-type-policy}

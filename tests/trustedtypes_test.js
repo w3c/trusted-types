@@ -531,4 +531,19 @@ describe('v2 TrustedTypes', () => {
       expect(TrustedTypes.getPolicyNames()).toContain('a');
     });
   });
+
+  describe('emptyHTML', () => {
+    it('returns an empty-string wrapping object', () => {
+      const html = TrustedTypes.emptyHTML;
+
+      expect(TrustedTypes.isHTML(html)).toBe(true);
+      expect(html.toString()).toEqual('');
+    });
+
+    it('returns the same object instance', () => {
+      const [html, html2] = [TrustedTypes.emptyHTML, TrustedTypes.emptyHTML];
+
+      expect(html).toBe(html2);
+    });
+  });
 });

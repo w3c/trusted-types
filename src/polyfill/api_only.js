@@ -37,6 +37,7 @@ function setupPolyfill() {
     'getAttributeType': tt.getAttributeType,
     'getPropertyType': tt.getPropertyType,
     'getTypeMapping': tt.getTypeMapping,
+    'emptyHTML': tt.emptyHTML,
     '_isPolyfill_': true,
   });
   window['TrustedTypes'] = Object.freeze(publicApi);
