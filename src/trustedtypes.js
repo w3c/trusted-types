@@ -224,6 +224,10 @@ export const trustedTypesBuilderTestOnly = function() {
 
   lockdownTrustedType(TrustedType, 'TrustedType');
 
+  // Common constants.
+  const emptyHTML = freeze(create(new TrustedHTML(creatorSymbol, '')));
+  privates(emptyHTML)['v'] = '';
+
   /**
    * A map of attribute / property names to allowed types
    * for known namespaces.
@@ -670,6 +674,7 @@ export const trustedTypesBuilderTestOnly = function() {
     getAttributeType,
     getPropertyType,
     getTypeMapping,
+    emptyHTML,
 
     TrustedHTML: TrustedHTML,
     TrustedURL: TrustedURL,
