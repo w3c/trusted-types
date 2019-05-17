@@ -158,20 +158,26 @@ Trusted Types are backwards-compatible with the regular DOM APIs.
 To ensure that Trusted Types are required in DOM property setters [=injection sinks=], we introduce 
 <dfn data-dfn-type="extended-attribute" data-x="TrustedTypes" data-lt="TrustedTypes"><code>[TrustedTypes]</code></dfn>
 IDL [=extended attributes|extended attribute=]. It indicates that the relevant setter algorithm is to be supplemented with additional 
-enforing steps.
+enforcing steps.
 
 The {{TrustedTypes}} extended attribute [=extended attribute/takes an identifier=] as an argument. 
 The only valid values for the identifier are {{TrustedHTML}}, {{TrustedScript}}, {{TrustedScriptURL} or {{TrustedURL}}. 
-This extended attribute must not appear on anything other than an attribute.
+This extended attribute must not appear on anything other than an attribute or an [=operation=] argument.
 Additionally, it must not appear on readonly attributes.
 
-The setters for attributes annotated with the {{TrustedTypes}} extended attributes must run the following steps in place of the ones specified in their description:
+When the extended attribute appears on an attribute, the setter for that attribute must run the following steps in place of the ones specified in their description:
 
- 1. Set *value* to the result of running the [$Enforce a Trusted Type$] algoritm, with *input* being the new value and *expectedType* being the {{TrustedType}} extended attribute [=identifier=]. 
- 
- 1. If an exception was thrown, rethrow exception and abort further steps.
-
+ 1. If [=relevant global object=] has an [=associated document=]:
+    1. Set *value* to the result of running the [$Get Trusted Type compliant string$] algorithm, with *input* being the new value and *expectedType* being the {{TrustedType}} extended attribute [=identifier=], and *document* being the [=relevant global object=]'s [=associated document=]. 
+    1. If an exception was thrown, rethrow exception and abort further steps.
  1. Run the originally specified steps for this construct, using *value* as a new value to set.
+
+When the extended attribute appears on an [=operation=] argument, before its operation is invoked, run the following steps:
+
+ 1. If [=relevant global object=] has an [=associated document=]:
+    1. Set the new argument value to the result of running the [$Get Trusted Type compliant string$] algorithm, with *input* being the argument value, *expectedType* being the {{TrustedType}} extended attribute [=identifier=], and *document* being the [=relevant global object=]'s [=associated document=]. 
+    1. If an exception was thrown, rethrow exception and abort further steps.
+ 1. Invoke the originally specified steps for the operation. 
 
 
 ### <dfn type>TrustedHTML</dfn> ### {#trusted-html}
@@ -1162,7 +1168,7 @@ partial interface mixin Window {
       TrustedTypePolicyFactory TrustedTypes;
 
   WindowProxy? open(
-      optional <b>URLString</b> url = "about:blank",
+      [TrustedTypes=TrustedURL] optional URLString url = "about:blank",
       optional DOMString target = "_blank",
       optional ([TreatNullAs=EmptyString] DOMString) features = "");
 };
@@ -1182,9 +1188,9 @@ This document modifies the {{Document}} interface defined by [[HTML5|HTML]]:
 
 <pre class="idl">
 partial interface mixin Document {
-  WindowProxy? open(<b>URLString</b> url, DOMString name, DOMString features);
-  [CEReactions] void write(<b>HTMLString</b>... text);
-  [CEReactions] void writeln(<b>HTMLString</b>... text);
+  WindowProxy? open([TrustedTypes=TrustedURL] URLString url, DOMString name, DOMString features);
+  [CEReactions] void write([TrustedTypes=TrustedHTML] HTMLString... text);
+  [CEReactions] void writeln([TrustedTypes=TrustedHTML] HTMLString... text);
 };
 </pre>
 
@@ -1193,56 +1199,21 @@ Note: The types of arguments were changed.
 Note: This document does not affect the two argument form of
 [[HTML/dynamic-markup-insertion#dom-document-open|document.open]].
 
-### Enforcement in window open steps algorithm ### {#enforcement-in-window-open}
+### Extensions to the Location interface ### {#extensions-to-the-location-interface}
 
-Modify the [[HTML5#window-open-steps|window open steps]] to accept a
-{{URLString}} (*url*) (instead of a string url), and add the following
-steps after step 9:
+This document modifies the {{Location}} interface defined by [[HTML5|HTML]]:
 
-1.  Set *url* to the result of executing [$Get Trusted Type compliant
-    string$] algorithm with:
-    *   *document* being the source
-        [[HTML5#concept-document-bc|browsing context]]’s active document,
-    *   *input* being *url*,
-    *   *passThroughFunctions* being false, and
-    *   *expectedType* being {{TrustedURL}}.
-1.  If the previous algorithm throws an exception, rethrow the exception,
-    and abort the following steps.
+<pre class="idl">
+partial interface mixin Location {
+  [Unforgeable, TrustedTypes=TrustedURL] stringifier attribute URLString href;
+  [Unforgeable] void assign([TrustedTypes=TrustedURL] URLString url);
+  [Unforgeable] void replace([TrustedTypes=TrustedURL] URLString url);
+};
+</pre>
 
+### Enforcement in Element attributes ### {#enforcement-in-sinks}
 
-### Enforcement in Location navigation algorithm ### {#enforcement-in-location}
-
-To the [[HTML5#location-object-navigate|Location-object navigate]]
-algorithm, add the following steps before step 1:
-
-1.  Set *url* to the result of executing [$Get Trusted Type compliant string$] algorithm with:
-    *   *document* being the Location object's {{Document}},
-    *   *input* being *url*,
-    *   *passThroughFunctions* being false, and
-    *   *expectedType* being {{TrustedURL}}.
-1.  If the previous algorithm throws an exception, rethrow the
-    exception, and abort the following steps.
-
-
-### Enforcement in document write steps ### {#enforcement-document-write}
-
-Modify the [[HTML5#document-write-steps|document write steps]]
-algorithm to accept an {{HTMLString}} (*input*) (instead of a string
-input), and add the following steps before step 1:
-
-1.  Set input to the result of executing [$Get Trusted Type compliant
-    string$] algorithm with:
-    *   *document* being *document*,
-    *   *input* being *input*,
-    *   *passThroughFunctions* being false, and
-    *   *expectedType* being {{TrustedHTML}}.
-1.  If the previous algorithm throws an exception, rethrow the
-    exception, and abort the following steps.
-
-
-### Enforcement in property sinks ### {#enforcement-in-sinks}
-
-This document modifies the setters of the following properties of
+This document modifies the setters of the following attributes of
 various DOM elements.  For each IDL attribute in the first column of the following table:
 
  * Add the {{TrustedType}} [=extended attributes|extended attribute=] in the 2nd column of the following table to the attribute IDL entry. 
@@ -1386,6 +1357,17 @@ various DOM elements.  For each IDL attribute in the first column of the followi
 
 ### Enforcement in timer functions ### {#enforcement-in-timer-functions}
 
+This document modifies the {{WindowOrWorkerGlobalScope}} interface mixin:
+
+<pre class="idl">
+typedef (ScriptString or Function) TrustedTimerHandler
+
+partial interface mixin WindowOrWorkerGlobalScope {
+  long setTimeout([TrustedTypes=TrustedScript] TrustedTimerHandler handler, optional long timeout = 0, any... arguments);
+  long setInterval([TrustedTypes=TrustedScript] TrustedTimerHandler handler, optional long timeout = 0, any... arguments);
+}
+</pre>
+
 To the [[HTML5#timer-initialisation-steps|timer initialization steps algorithm]],
 add a step between 7.1 and 7.2:
 
@@ -1446,16 +1428,9 @@ interface defined by [[DOM-Parsing]]:
 partial interface Element {
   [CEReactions, TrustedTypes=TrustedHTML] attribute HTMLStringDefaultsEmpty outerHTML;
   [CEReactions, TrustedTypes=TrustedHTML] attribute HTMLStringDefaultsEmpty innerHTML;
-  [CEReactions] void insertAdjacentHTML(DOMString position, HTMLString text);
+  [CEReactions] void insertAdjacentHTML(DOMString position, [TrustedTypes=TrustedHTML] HTMLString text);
 };
 </pre>
-
-For {{Element/innerHTML}} and {{Element/outerHTML}} execute the
-[$Enforce a Trusted Type$] algorithm as documented in {{TrustedTypes}} extended attribute.
-
-For the {{Element/insertAdjacentHTML()}} method, execute the
-[$Enforce a Trusted Type$] algorithm with *input* argument set to the *text*
-parameter value, and *expectedType* being {{TrustedHTML}}.
 
 Note: Recent drafts move `innerHTML` into a separate
  <a href="https://w3c.github.io/DOM-Parsing/#dom-innerhtml">mixin InnerHTML</a>.
@@ -1467,14 +1442,9 @@ interface defined by [[DOM-Parsing]]:
 
 <pre class="idl">
 partial interface Range {
-  [CEReactions, NewObject] DocumentFragment createContextualFragment(HTMLString fragment);
+  [CEReactions, NewObject] DocumentFragment createContextualFragment([TrustedTypes=TrustedHTML] HTMLString fragment);
 };
 </pre>
-
-For {{Range/createContextualFragment()}} function, execute the
-[$Enforce a Trusted Type$] algorithm with the *input* argument set to
-the *fragment* value and *expectedType* being {{TrustedHTML}}.
-
 
 ### Extensions to the DOMParser interface ### {#extensions-to-the-DOMParser}
 
@@ -1484,7 +1454,7 @@ defined by [[DOM-Parsing]]:
 <pre class="idl">
 [Constructor, Exposed=Window]
 interface DOMParser {
-  [NewObject] Document parseFromString(HTMLString str, SupportedType type);
+  [NewObject] Document parseFromString([TrustedTypes=TrustedHTML] HTMLString str, SupportedType type);
 };
 </pre>
 
@@ -1502,12 +1472,6 @@ enum SupportedType {
   "image/svg+xml"
 };
 </pre>
-
-For {{DOMParser/parseFromString()}} function, execute the [$Enforce a
-Trusted Type$] algorithm with *input* argument set to the *str* value.
-
-Issue: Do we need to specify that the enforcement type is {{TrustedHTML}}, or
-that it is dependent on *type* which may be `"image/svg+xml"` or generic XML?
 
 # Security Considerations # {#security-considerations}
 
