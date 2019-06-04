@@ -1,0 +1,692 @@
+<!doctype html>
+<meta charset="utf-8" />
+<title>Trusted Types and CSP integration</title>
+<style>
+  table {
+      border-collapse: collapse;
+  }
+  th {
+      font-weight: bold;
+      background: #ddd;
+      text-align: left
+  }
+  th, td {
+      border: 1px dotted gray
+  }
+  tr:nth-child(even) > td {
+      background: #ddd;
+  }
+  tr:nth-child(odd) > td {
+      background: #fff;
+  }
+  tr:nth-child(even) > th {
+      background: #ccf;
+  }
+  tr:nth-child(odd) > th {
+      background: #eef;
+  }
+  table.propertytable > thead > tr:first-child > th:first-child {
+      text-align: right; padding-right: 1em
+  }
+
+  span.dc { color: #666 }
+
+  .merge-conflict, .merged.propertytable .dc {
+      border: 1px solid red !important;
+      background: #fee !important;
+      font-weight: bold;
+      color: #600 !important;
+  }
+
+  body {
+      font-family: "Google Sans", "Roboto", "San Francisco", "Noto";
+      font-size: 14pt;
+  }
+</style>
+<body>
+<h1>Trusted Types and CSP integration</h1>
+
+<p>
+<a href="https://github.com/wicg/trusted-types">Trusted Types</a> would like to modify CSP's
+<a href="https://www.w3.org/TR/CSP3/#can-compile-strings"><i>EnsureCSPDoesNotBlockStringCompilation</i></a>
+so that <tt>new Function(x)</tt> and <tt>eval(x)</tt> work when <tt>x</tt> is a
+<a href="https://wicg.github.io/trusted-types/dist/spec/#trusted-script"><i>TrustedScript</i></a>.
+
+<p>
+  I'm trying to draft spec text to explain how that works.
+  It's fairly straightforward when the <tt>script-src</tt> and <tt>trusted-types</tt> portion
+  of the <tt>Content-Security-Policy</tt> header agree on whether script execution should be
+  allowed, reported only, or blocked.  But it's not when they don't.
+</p>
+
+<p>
+My first attempt involved writing nested `If ... Then` but I had low confidence in the result.
+
+<p>
+  This document tries to reach clarity by boiling down policy
+  application to descriptive properties any solution should have which
+  are implemented as small, simple JavaScript functions which can be
+  intersected into a lookup table that could serve as the basis for
+  spec text.
+</p>
+
+<h2>Options</h2>
+<p>
+  There seem to be two broad options of what to do when
+  <tt>script-src</tt> and <tt>trusted-types</tt>,
+  considered alone, disagree on whether to allow script execution:
+</p>
+<ol>
+  <li>Define a subset of Trusted-Types policies as <b>strong</b>.
+    Strong trusted-types policies take precedence over <tt>script-src</tt> in a
+    specific way, but weak policies never do.
+  </li>
+  <li>Add a new `script-src` <i>source-expression</i> that breaks ties.
+    For lack of a better name, <tt>script-src 'trusted-script'</tt>
+    means allow `eval(x)` when `x` is (or is
+    <a href="https://wicg.github.io/trusted-types/dist/spec/#default-policy-hdr">convertible to</a>)
+    a <i>TrustedScript</i>.
+    This is more permissive than <tt>script-src 'none'</tt> but less permissive than
+    <tt>script-src 'unsafe-eval</tt>.
+</ol>
+
+<h2>Lookup Tables</h2>
+
+<button type="button" onclick="setAllOpen(true)">Expand All</button> |
+<button type="button" onclick="setAllOpen(false)">Collapse All</button>
+
+<p>
+The axes are a combination of 4 separable signals:
+
+<ul>
+  <li><i>-src</i>: The effect of <tt>script-src</tt>, <tt>default-src</tt> alone.
+    <ul>
+      <li>Enforced means <i>calleeRealm</i> or <i>callerRealm</i> have a policy with a script-src (falling back to default-src) that does not include <tt>unsafe-eval</tt> and is not report only.
+      <li>Report-Only is like Enforced but without the "is not report only."
+      <li>Off otherwise.
+    </ul>
+  <li><i>Trusty</i>: Whether the strictest -src policies include the new <tt>'trusted-script'</tt>
+    source expression.
+    <br>This is only relevant to option 2 above.
+    <ul>
+      <li>Script: When all -src policies that lack <tt>'unsafe-eval'</tt>
+        have <tt>'trusted-script'</tt>.
+      <li>Noscript: Otherwise.
+    </ul>
+  <li><i>TT</i>: The effect of <tt>trusted-types</tt> on untrusted values.
+    <ul>
+      <li>Enforced means the callee realm's <a href="https://wicg.github.io/trusted-types/dist/spec/#trusted-type-configuration-hdr"><i>TrustedTypeConfiguration</i></a>'s <i>StringAtSinkDisposition</i> is <tt>reject</tt>.
+      <li>Report-Only means the <i>StringAtSinkDisposition</i> is <tt>report-only</tt>.
+      <li>Off otherwise.
+    </ul>
+  <li><i>Strength</i>: Whether <tt>trusted-types</tt> bounds policy creation.
+    <br>This is only relevant to option 1 above.
+    <ul>
+      <li>Stong means <tt>*</tt> is not in the callee realm's <a href="https://wicg.github.io/trusted-types/dist/spec/#trusted-type-configuration-hdr"><i>TrustedTypeConfiguration</i></a>'s <tt>allowedNames</tt> and its <i>UnknownPolicyNameDisposition</i> is <tt>reject</tt>.
+      <li>Weak otherwise.
+    </ul>
+  <li><i>Value</i>: The type of the input <i>x</i>.
+    <ul>
+      <li>Trusted means <i>x</i> is a <i>TrustedScript</i> created by a policy from <i>calleeRealm</i>'s <i>TrustedTypesPolicyFactory</i>.
+      <li>Untrusted otherwise.
+    </ul>
+</ul>
+
+<p>
+And the possible decisions in the lookup table are:
+
+<ul>
+<li>Reject script execution
+<li>Report: allow script execution but log a ViolationReport
+<li>Allow script execution
+<li>dc: Don't Care
+</ul>
+
+<h2>Backwards compatibility property</h2>
+
+<p>
+When CSP <tt>script-src</tt> or <tt>default-src</tt> is present and <tt>trusted-types</tt> is not,
+<i>EnsureCSPDoesNotBlockStringCompilation</i> should behave as before any modifications.
+
+<p>
+This property should not affect anything when in <i>TT</i> is not Off since no
+existing policies fall in that bucket.
+
+<xmp class="prettyprint lang-js tableproperty">
+function option1_backwardsCompatibilityProperty(
+    _src,
+    value, strength, tt) {
+  if (tt === 'Off') {
+    switch (_src) {
+      case 'Enforce': return 'Reject';
+      case 'Report':  return 'Report';
+      case 'Off':     return 'Allow';
+    }
+  }
+  return 'dc';
+}
+</xmp>
+
+<xmp class="prettyprint lang-js tableproperty">
+function option2_backwardsCompatibilityProperty(
+    trusty, _src,
+    value, tt) {
+  return option1_backwardsCompatibilityProperty(_src, value, null, tt);
+}
+</xmp>
+
+<h2>No watering down property</h2>
+
+<p>
+Turning off enforcement for either -src or trusted-Types
+should not weaken enforcement of the other.
+</p>
+
+<xmp class="prettyprint lang-js tableproperty">
+function option1_noWateringDownProperty(
+    _src,
+    value, strength, tt) {
+
+  if (tt === 'Enforce' && _src !== 'Enforce') {
+    if (value !== 'Trusted') {
+      // TT Enforcement does not apply to trusted values.
+      return 'Reject';
+    }
+  } else if (tt !== 'Enforce' && _src === 'Enforce') {
+    return 'Reject';
+  }
+
+  return 'dc';
+}
+</xmp>
+
+<xmp class="prettyprint lang-js tableproperty">
+function option2_noWateringDownProperty(
+    trusty, _src,
+    value, tt) {
+
+  return option1_noWateringDownProperty(_src, value, null, tt);
+}
+</xmp>
+
+<h2>Progressive enhancement property</h2>
+
+<p>
+Without serving different security headers to browsers that support
+Trusted-Types and browsers that don't, a developer should be able to
+have both a strong <tt>-src</tt> and Trusted-Types policy that allows loading
+of <i>TrustedScript</i> values.
+
+<p>
+Specifically, code like the below should work
+
+<xmp class="prettyprint">
+<meta http-equiv="Content-Security-Policy"
+      content="script-src nonce-123 'trusted-script';
+               trusted-types carefully-reviewed-code-generator" />
+<script nonce="123">
+import { carefullyReviewedCodeGenerator } from './cr-code-gen';
+import { fallback } from './fallback';
+
+let fn = fallback;  // Degrade gracefully when trusted-types unavailable
+try {
+  const myTrustedScript = carefullyReviewedCodeGenerator(...);
+  fn = new Function(myTrustedScript);
+} catch (err) {
+  // Rejected because trusted-types not available.
+}
+</script>
+</xmp>
+
+<xmp class="prettyprint lang-js tableproperty">
+function option1_progressiveEnhancementProperty(
+    _src,
+    value, strength, tt) {
+
+  if (tt === 'Enforce' && value === 'Trusted' && strength === 'Strong') {
+    return 'Allow';  // Trust trusted values from strong policies.
+  }
+
+  return 'dc';
+}
+</xmp>
+
+<xmp class="prettyprint lang-js tableproperty">
+function option2_progressiveEnhancementProperty(
+    trusty, _src,
+    value, tt) {
+
+  if (tt === 'Enforce' && value === 'Trusted' && trusty === 'Script') {
+    return 'Allow';  // Trust trusted values from strong policies.
+  }
+
+  return 'dc';
+}
+</xmp>
+
+
+<h2>Spurious report property</h2>
+
+<p>
+When both <tt>-src</tt> and Trusted-Types are in report-only mode,
+a developer should not see more reports than they would see
+if both were in enforcement mode.
+
+<xmp class="prettyprint lang-js tableproperty">
+function option1_spuriousReportProperty(
+    _src,
+    value, strength, tt) {
+
+  if (_src === 'Report' && tt === 'Report') {
+    if (value === 'Trusted' && strength === 'Strong') {
+      return 'Allow';  // Same logic as progressive enhancement
+    } else {
+      return 'Report';
+    }
+  }
+
+  return 'dc';
+}
+</xmp>
+
+<xmp class="prettyprint lang-js tableproperty">
+function option2_spuriousReportProperty(
+    trusty, _src,
+    value, tt) {
+
+  if (_src === 'Report' && tt === 'Report') {
+    if (value === 'Trusted' && trusty === 'Script') {
+      return 'Allow';  // Same logic as progressive enhancement
+    } else {
+      return 'Report';
+    }
+  }
+
+  return 'dc';
+}
+</xmp>
+
+
+<h2>Standalone property</h2>
+
+<p>
+When trusted types enforcement is on, we don't trust untrusted values
+regardless of what the -src policy is.
+
+<xmp class="prettyprint lang-js tableproperty">
+function option1_standsAloneProperty(
+    _src,
+    value, strength, tt) {
+
+  if (tt !== 'Off' && value === 'Untrusted') {
+    if (_src === 'Enforce' && tt !== 'Enforce') {
+      // No need to enforce.  Defer to more restrictive.
+    } else {
+      return tt === 'Enforce' ? 'Reject' : 'Report';
+    }
+  }
+
+  return 'dc';
+}
+</xmp>
+
+<xmp class="prettyprint lang-js tableproperty">
+function option2_standsAloneProperty(
+    trusty, _src,
+    value, tt) {
+
+  return option1_standsAloneProperty(_src, value, null, tt);
+}
+</xmp>
+
+
+<h2>Prefer -src to a weak TT policy property</h2>
+
+<p>
+Given a choice between a weak TT policy, and a strong -src policy, prefer the -src policy.
+
+<xmp class="prettyprint lang-js tableproperty">
+function option1_preferStrongSrcToWeakTTProperty(
+    _src,
+    value, strength, tt) {
+
+  if (strength === 'Weak' && _src !== 'Off') {
+    if (_src === 'Enforce') {
+      return 'Reject';
+    }
+    if (value !== 'Trusted') {
+      return tt === 'Enforce' ? 'Reject' : 'Report';
+    }
+  }
+
+  return 'dc';
+}
+</xmp>
+
+<xmp class="prettyprint lang-js tableproperty">
+function option2_preferStrongSrcToWeakTTProperty(
+    trusty, _src,
+    value, tt) {
+
+  if (trusty === 'Noscript' && _src !== 'Off') {
+    if (_src === 'Enforce') {
+      return 'Reject';
+    }
+    if (value !== 'Trusted') {
+      return tt === 'Enforce' ? 'Reject' : 'Report';
+    }
+  }
+
+  return 'dc';
+}
+</xmp>
+
+
+<h2>Weak is better than nothing property</h2>
+
+<p>
+In the absence of any -src policy, defer to a trusted types policy
+even if it's weak.
+
+<xmp class="prettyprint lang-js tableproperty">
+function option1_weakIsBetterThanNothingProperty(
+    _src,
+    value, strength, tt) {
+
+  if (_src !== tt && _src !== 'Enforce' && tt !== 'Off') {
+    if (value === 'Trusted') {
+      return 'Allow';
+    }
+    if (tt === 'Report') {
+      return 'Report';
+    }
+    return 'Reject';
+  }
+
+  return 'dc';
+}
+</xmp>
+
+<xmp class="prettyprint lang-js tableproperty">
+function option2_weakIsBetterThanNothingProperty(
+    trusty, _src,
+    value, tt) {
+
+  return option1_weakIsBetterThanNothingProperty(_src, value, null, tt);
+}
+</xmp>
+
+<h1>Intersection</h1>
+
+<p>
+Intersecting the lookup tables above yields the table below.
+The modified <i>EnsureCSPDoesNotBlockStringCompilation</i> could be
+specified in terms of extracting the signals above, squirreling away
+report metadata, just in case, and then looking up the result in the
+table.
+
+<table class="merged propertytable"
+       data-properties="^option1_">
+</table>
+
+<br>
+
+<table class="merged propertytable"
+       data-properties="^option2_">
+</table>
+
+
+<!-- Generate lookup tables for each property -->
+<script>(() => {
+  const createElement = document.createElement.bind(document);
+
+  // Values for names parameters in tableproperty functions.
+  const valueSets = {
+    __proto__: null,
+
+    _src:     [ 'Off', 'Report', 'Enforce' ],
+    trusty:   [ 'Noscript', 'Script' ],
+    tt:       [ 'Off', 'Report', 'Enforce' ],
+    strength: [ 'Weak', 'Strong' ],
+    value:    [ 'Untrusted', 'Trusted' ],
+  };
+
+  // All functions used to construct lookup tables.
+  const allFunctionNames = [];
+
+  function htmlEscape(s) {
+    return `${ s }`.replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&#34;')
+      .replace(/'/g, '&#27;');
+  }
+
+  const DONT_CARE_HTML = '<span class="dc">dc</span>';
+
+  // Look for stylized JavaScript functions and use them to deduce lookup tables.
+  document.body.querySelectorAll('.tableproperty').forEach(
+    (element) => {
+      // Look for a function that defines the property we want to generate the
+      // lookup table for.
+      const [ source, functionName, args ] = /^\s*function (\w+)\(([\s\w,]+)\)[\s\S]*/
+            .exec(element.textContent);
+
+      // Split argument names on newline to find two axes, and get the parameter names for each.
+      const axes = args.split(/,[ \t]*[\r\n]/g)
+            .map(
+              (line) => line.split(/,/g).map(
+                (pattern) => pattern.replace(/^\s+|\s+$/g, '')));
+
+      if (axes.length !== 2) {
+        console.error(`count of axes != 2: ${ JSON.stringify(axes) }`);
+        return;
+      }
+
+      const propertyFunction = eval(`(${ source })`);  // Ironic in a DOM-XSS spec document.
+      if (typeof propertyFunction !== 'function') {
+        console.error(`expected typeof to be function: ${ propertyFunction }`);
+      }
+      // Make the function available to other functions.
+      window[functionName] = propertyFunction;
+
+      // Axes need to represent |cartesianProduct(...possibleValues)|
+      const [xSize, ySize] =
+            axes.map((axis) => axis.reduce((n, el) => n * valueSets[el].length, 1));
+
+      function cartesianPick(i, names) {
+        const tuple = [];
+        let n = i;
+        for (const name of names) {
+          const set = valueSets[name];
+          tuple.push(set[n % set.length]);
+          n = (n / set.length) | 0;
+        }
+        if (n) {
+          throw new Error(`Out of bounds i=${ i }, names=${ names }`);
+        }
+        return tuple;
+      }
+
+      function varToHtml(propertyInputName) {
+        // We use _src as a JS identifier in lieu of -src which stands in
+        // for whichever of script-src or default-src would be used by the
+        // existing CSP algo.
+        return htmlEscape(propertyInputName.replace(/^_/, '-'));
+      }
+
+      function resultToHtml(propertyFunctionResult) {
+        if (propertyFunctionResult === 'dc') {
+          // Visibly differentiate don't cares.
+          return DONT_CARE_HTML;
+        }
+        return htmlEscape(propertyFunctionResult);
+      }
+
+      // Generate the table as a 2-D array where element 0 of both outer and inner arrays
+      // are header elements.
+      const nYHeaders = axes[1].length;
+      const tableHtml = [
+        // Create a row above with values for header cells which makes the legend look nice.
+        [ `&rarr; ${ axes[0].map(varToHtml).join(', ') }`, ...new Array(nYHeaders - 1) ],
+        // Seed row 0 with y axis headers
+        [ ...axes[1].map((v, i) => `&darr; ${ varToHtml(v) }`) ]
+      ];
+      const nTableHeadRows = tableHtml.length;
+      // Cache the values for each column.  If axes[0] is ['_src'] then this is valueSets._src.
+      const xAxisValuesForColumn = [];
+      for (let i = 0; i < xSize; ++i) {
+        const colValues = cartesianPick(i, axes[0]);
+        xAxisValuesForColumn[i] = colValues;
+        tableHtml[0][i + nYHeaders] = htmlEscape(colValues.join(', '));
+        tableHtml[1][i + nYHeaders] = '';
+      }
+      for (let j = 0; j < ySize; ++j) {
+        const row = tableHtml[j + nTableHeadRows] = [];
+        const rowValues = cartesianPick(j, axes[1]);
+        for (let i = 0; i < nYHeaders; ++i) {
+          row[i] = htmlEscape(rowValues[i]);
+        }
+        for (let i = 0; i < xSize; ++i) {
+          const colValues = xAxisValuesForColumn[i];
+          row[i + nYHeaders] = resultToHtml(propertyFunction(...colValues, ...rowValues));
+        }
+      }
+
+      const tableContainer = createElement('details');
+
+      const summary = createElement('summary');
+      summary.textContent = `Lookup table for ${ functionName }`;
+
+      const table = createElement('table');
+      table.id = `property-table:${ functionName }`;
+      table.className = 'function propertytable';
+
+      tableContainer.appendChild(summary);
+      tableContainer.appendChild(table);
+      const thead = createElement('thead');
+      const tbody = createElement('tbody');
+      table.appendChild(thead);
+      table.appendChild(tbody);
+
+      tableHtml.forEach(
+        (row, j) => {
+          const tr = createElement('tr');
+          (j >= nTableHeadRows ? tbody : thead).appendChild(tr);
+          row.forEach(
+            (cellHtml, i) => {
+              if (cellHtml === undefined && i) {
+                // See colSpan later.
+                return;
+              }
+              const td = createElement(i >= nYHeaders && j >= nTableHeadRows ? 'td' : 'th');
+              tr.appendChild(td);
+              td.innerHTML = cellHtml || '';
+              // Merge cells to the right with undefined content into this one.
+              // This has an effect for cell (0, 0) which points right with a
+              // legend towards x-axis value tuples.
+              let colSpan = 1;
+              while (i + colSpan < row.length && row[i + colSpan] === undefined) {
+                ++colSpan;
+              }
+              if (colSpan !== 1) {
+                td.colSpan = colSpan;
+              }
+            });
+        });
+
+      element.parentNode.insertBefore(tableContainer, element.nextSibling);
+      allFunctionNames.push(functionName);
+    });
+
+  // Merge the lookup tables into a master table
+  document.body.querySelectorAll('table.merged.propertytable').forEach(
+    (mergeTable) => {
+      mergeTable.getAttribute('data-properties')
+      const filterRegExp = new RegExp(mergeTable.getAttribute('data-properties'));
+      const functionNames = allFunctionNames.filter((x) => filterRegExp.test(x));
+      const caption = createElement('caption');
+      caption.textContent = `Merged from ${ functionNames.join(', ') }`;
+      mergeTable.appendChild(caption);
+
+      const tables = functionNames.map(
+        (name) =>
+          [ name, document.getElementById('property-table:' + name) ]);
+      const [ functionName0, table0 ] = tables.shift();
+
+      mergeTable.appendChild(table0.querySelector('thead').cloneNode(/* deep */true));
+      const mergeTbody = table0.querySelector('tbody').cloneNode(/* deep */true);
+      mergeTable.appendChild(mergeTbody);
+      mergeTbody.querySelectorAll('td').forEach(
+        (td) => {
+          if (td.textContent !== 'dc') {
+            td.title = `First specified by ${ functionName0 }`;
+          } else {
+            td.title = `Unspecified`;
+          }
+        });
+
+      const mergeTds = mergeTbody.querySelectorAll('td');
+
+      tables.forEach(
+        ([ functionName, table ]) => {
+          console.group(`Merging ${ functionName }`);
+          unmergedTds = table.querySelectorAll('td');
+          const n = mergeTds.length;
+          if (n !== unmergedTds.length) {
+            console.error(`Cannot merge ${ table.id }`);
+          } else {
+            for (let i = 0; i < n; ++i) {
+              const currentTd = mergeTds[i];
+              const newTd = unmergedTds[i];
+              const currentText = currentTd.textContent;
+              const newText = newTd.textContent;
+              if (currentText === newText) {
+                continue;
+              }
+              if (currentText !== 'dc' && newText !== 'dc') {
+                console.error(`Error merging ${ functionName } at cell ${ i
+                              }.  old=${ currentText }, new=${ newText }`);
+                if (!/\bmerge-conflict\b/.test(currentTd.className)) {
+                  currentTd.className += ' merge-conflict';
+                  currentTd.title += 'Merge conflict with ';
+                } else {
+                  currentTd.title += ', ';
+                }
+                currentTd.title += functionName + ':' + newText;
+              }
+              if (currentText === 'dc') {
+                while (currentTd.firstChild) {
+                  currentTd.removeChild(currentTd.firstChild);
+                }
+                for (let child = newTd.firstChild; child; child = child.nextSibling) {
+                  currentTd.appendChild(child.cloneNode(/* deep */ true));
+                }
+                currentTd.title = `First specified by ${ functionName }`;
+              }
+            }
+          }
+          console.groupEnd();
+        });
+    });
+})();
+</script>
+
+<script>
+  // Support for "Collapse/Expand All" buttons.
+  function setAllOpen(newOpen) {
+    document.querySelectorAll('details').forEach(
+      (details) => (details.open = newOpen));
+    location.hash = `#open=${ Boolean(newOpen) }`;
+  }
+
+  // The fn above stores expandedness in the hash.  Restore from that on load.
+  (() => {
+    const openMatch = location.hash.match(/\bopen=(true|false)\b/);
+    if (openMatch) {
+      setAllOpen(Boolean(openMatch[0]));
+    }
+  })();
+</script>
+
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
