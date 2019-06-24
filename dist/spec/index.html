@@ -1461,7 +1461,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Trusted Types</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-06-14">14 June 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-06-24">24 June 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1527,7 +1527,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
         <li><a href="#default-policy-hdr"><span class="secno">2.3.4</span> <span class="content"><span>Default policy</span></span></a>
        </ol>
       <li>
-       <a href="#enforcement"><span class="secno">2.4</span> <span class="content">Enforcement</span></a>
+       <a href="#enforcement-hdr"><span class="secno">2.4</span> <span class="content"><span>Enforcement</span></span></a>
        <ol class="toc">
         <li><a href="#trusted-type-configuration-hdr"><span class="secno">2.4.1</span> <span class="content">TrustedTypeConfiguration</span></a>
         <li><a href="#trusted-types-http-header"><span class="secno">2.4.2</span> <span class="content"><span>Trusted-Types</span> HTTP Response Header</span></a>
@@ -1851,11 +1851,11 @@ a given host.
 myLibrary<c- p>.</c->init<c- p>({</c->policy<c- o>:</c-> cdnScriptsPolicy<c- p>});</c->
 </pre>
    </div>
-   <p class="note" role="note"><span>Note:</span> As Trusted Type objects can only be created via policies, if <a data-link-type="dfn" href="#enforcement①" id="ref-for-enforcement①">enforcement</a> is enabled, only the policy code can introduce a DOM
+   <p class="note" role="note"><span>Note:</span> As Trusted Type objects can only be created via policies, if <a data-link-type="dfn" href="#enforcement" id="ref-for-enforcement">enforcement</a> is enabled, only the policy code can introduce a DOM
 XSS, and hence call-sites of the policies' factory functions are the <em>only</em> security-sensitive code in the entire program. Only this
 typically small subset of the entire code base needs to be
 security-reviewed for DOM XSS - there’s no need to monitor or review
-the traditional DOM sinks, as User Agents <a data-link-type="dfn" href="#enforcement①" id="ref-for-enforcement①①">enforce</a> that
+the traditional DOM sinks, as User Agents <a data-link-type="dfn" href="#enforcement" id="ref-for-enforcement①">enforce</a> that
 those sinks will only accept Trusted Type objects, and these in turn
 can only be created via policies.</p>
    <p>The <code class="idl"><a data-link-type="idl" href="#dom-trustedtypepolicyfactory-createpolicy" id="ref-for-dom-trustedtypepolicyfactory-createpolicy">createPolicy</a></code> function returns a policy object whose create* functions
@@ -2085,7 +2085,7 @@ the default policy can also be called implicitly by the user agent. It
 allows the application to define the rules that should be run as a
 fallback, in case an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink⑧">injection sink</a> is passed a string (instead of a
 Trusted Type object).</p>
-   <p>This optional behavior allows for introducing Trusted Type <a data-link-type="dfn" href="#enforcement①" id="ref-for-enforcement①②">enforcement</a> to applications that are still using legacy code that writes to the DOM
+   <p>This optional behavior allows for introducing Trusted Type <a data-link-type="dfn" href="#enforcement" id="ref-for-enforcement②">enforcement</a> to applications that are still using legacy code that writes to the DOM
 (or calls <code>eval</code>) directly. Needless to say, this policy should
 necessarily be defined with very strict rules not to introduce a DOM
 XSS vulnerability in unknown parts of the application. In an extreme
@@ -2096,14 +2096,16 @@ only, use it to detect and rewrite "raw DOM writes" dependencies and
 eventually phase out its usage entirely.</p>
    <p class="note" role="note"><span>Note:</span> See <a href="#get-trusted-type-compliant-string-algorithm">§ 3.2.2 Get Trusted Type compliant string</a> for details on how
 the default policy is applied.</p>
-   <h3 class="heading settled" data-level="2.4" id="enforcement"><span class="secno">2.4. </span><span class="content">Enforcement</span><a class="self-link" href="#enforcement"></a></h3>
+   <h3 class="heading settled" data-level="2.4" id="enforcement-hdr"><span class="secno">2.4. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="enforcement">Enforcement</dfn></span><a class="self-link" href="#enforcement-hdr"></a></h3>
    <p>This section describes how applications may require <a data-link-type="dfn" href="#trusted-type" id="ref-for-trusted-type③">Trusted Types</a> values for
 their <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink⑨">injection sinks</a> via specifying a HTTP response header, and what
 actions should be undertaken if a string value is used instead.</p>
+   <p class="note" role="note"><span>Note:</span> Enforcement is the process of checking that a value
+has an appropriate type before it reaches an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⓪">injection sink</a>.</p>
    <p class="note" role="note"><span>Note:</span> Most of the enforcement rules are defined as modifications of the algorithms
 in other specifiactions, see <a href="#integrations">§ 4 Integrations</a>.</p>
    <h4 class="heading settled" data-level="2.4.1" id="trusted-type-configuration-hdr"><span class="secno">2.4.1. </span><span class="content">TrustedTypeConfiguration</span><a class="self-link" href="#trusted-type-configuration-hdr"></a></h4>
-   <p>A Trusted Type Configuration defines <a data-link-type="dfn" href="#enforcement①" id="ref-for-enforcement①③">enforcement</a> setting for <a data-link-type="dfn" href="#trusted-type" id="ref-for-trusted-type④">Trusted Types</a> and restrictions on policy names that can be applied
+   <p>A Trusted Type Configuration defines <a data-link-type="dfn" href="#enforcement" id="ref-for-enforcement③">enforcement</a> setting for <a data-link-type="dfn" href="#trusted-type" id="ref-for-trusted-type④">Trusted Types</a> and restrictions on policy names that can be applied
 to a <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document①">Document</a></code>.</p>
 <pre class="idl highlight def"><c- b>enum</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="enum" data-export id="enumdef-stringatsinkdisposition"><code><c- g>StringAtSinkDisposition</c-></code></dfn> {
   <dfn class="idl-code" data-dfn-for="StringAtSinkDisposition" data-dfn-type="enum-value" data-export id="dom-stringatsinkdisposition-reject"><code><c- s>"reject"</c-></code><a class="self-link" href="#dom-stringatsinkdisposition-reject"></a></dfn>,
@@ -2141,7 +2143,7 @@ to apply a particular configuration of the Trusted Types framework to
 the document created from a given response. Specifically, the header
 value defines which policies (identified by name) can be created by
 the application, and what should be the behavior when a string value
-is passed to an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⓪">injection sink</a> (e.g. should the type-based enforcement be
+is passed to an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①①">injection sink</a> (e.g. should the type-based enforcement be
 enabled, or whether to attempt implicit conversion with a default
 policy).</p>
    <p>The header value is a serialized Trusted Types configuration
@@ -2161,7 +2163,7 @@ may be created.
    </div>
    <div class="example" id="header-that-allows-no-policy-names">
     <a class="self-link" href="#header-that-allows-no-policy-names"></a> A value of <code>null</code> indicates policies may not be created, and sinks are
-enforced.  I.e. no <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①①">injection sinks</a> can be used in a document. 
+enforced.  I.e. no <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①②">injection sinks</a> can be used in a document. 
 <pre class="http">Trusted-Types: null
 </pre>
    </div>
@@ -2173,7 +2175,7 @@ previously unused name.</p>
 </pre>
    </div>
    <p>If the policy named <code>“default”</code> is present in the list, it refers to the <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy">default policy</a>, and unless otherwise configured,
-all strings passed to <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①②">injection sinks</a> will be passed through it instead
+all strings passed to <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①③">injection sinks</a> will be passed through it instead
 of being rejected outright.</p>
    <div class="example" id="default-in-header">
     <a class="self-link" href="#default-in-header"></a> 
@@ -2182,16 +2184,16 @@ of being rejected outright.</p>
    </div>
    <p>To specify more fine-grained control over the enforcement, authors can
 use a header value that is an object. That object allows for configuring the
-enforcement for the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①③">injection sinks</a>.</p>
+enforcement for the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①④">injection sinks</a>.</p>
    <div class="example" id="complex configuration-in-header">
-    <a class="self-link" href="#complex%20configuration-in-header"></a> Only reports violations in <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①④">injection sinks</a>, but allow strings passed to them
+    <a class="self-link" href="#complex%20configuration-in-header"></a> Only reports violations in <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⑤">injection sinks</a>, but allow strings passed to them
 (similar to Content-Security-Policy-Report-Only). 
 <pre class="http" id="string-at-sink-disposition-in-header">Trusted-Types: "*", {"dom”: "unsafe-allow"}
 </pre>
     <p>Report violations using a “trustedtypes” reporting group.</p>
 <pre class="http" id="reporting-group-in-header">Trusted-Types: "*", {"report": "trustedtypes"}
 </pre>
-    <p>Explicitly specify that a string passed to an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⑤">injection sink</a> requiring
+    <p>Explicitly specify that a string passed to an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⑥">injection sink</a> requiring
 any Trusted Type should be rejected.  This is the default behavior if the
 header is present.</p>
 <pre class="http" id="unknown-policy-name-disposition-in-header">Trusted-Types: "*", {"dom": "reject"}
@@ -2242,11 +2244,11 @@ level, and when creating a policy).</p>
 given a DOMString (<em>policyName</em>) and policy options dictionary (<em>options</em>), run these steps:</p>
    <ol>
     <li data-md>
-     <p>If <em>factory</em>'s <code>[[PolicyMap]]</code> internal slot has an entry with the key <code>policyName</code>, then throw a <em>TypeError</em>.</p>
+     <p>If <em>factory</em>'s <code>[[PolicyMap]]</code> internal slot has an entry with the key <code>policyName</code>, then throw a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror">TypeError</a></code>.</p>
     <li data-md>
      <p>Let <em>policyAllowed</em> be the result of running <a data-link-type="abstract-op" href="#abstract-opdef-is-policy-name-allowed" id="ref-for-abstract-opdef-is-policy-name-allowed">Is policy name allowed</a> algorithm.</p>
     <li data-md>
-     <p>If <em>policyAllowed</em> is False, throw a <em>TypeError</em>.</p>
+     <p>If <em>policyAllowed</em> is False, throw a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror①">TypeError</a></code>.</p>
     <li data-md>
      <p>Let <em>policy</em> be a new <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy⑧">TrustedTypePolicy</a></code> object.</p>
     <li data-md>
@@ -2275,7 +2277,7 @@ given a DOMString (<em>policyName</em>) and policy options dictionary (<em>optio
      <p>Set <em>policyName</em> to <code>"default"</code>.</p>
     <li data-md>
      <p>If <em>factory</em>'s <code>[[PolicyMap]]</code> internal slot does not have an entry
-with the key <em>policyName</em>, return null.</p>
+with the key <em>policyName</em>, return <code class="idl"><a data-link-type="idl">null</a></code>.</p>
     <li data-md>
      <p>Otherwise, return the value of the <em>policyName</em> entry of <em>factory</em>'s <code>[[PolicyMap]]</code>.</p>
    </ol>
@@ -2304,11 +2306,11 @@ algorithm that invoked these steps.</p>
      <p>Otherwise, return false.</p>
    </ol>
    <h4 class="heading settled" data-level="3.1.6" id="create-a-trusted-type-algorithm"><span class="secno">3.1.6. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-create-a-trusted-type">Create a Trusted Type</dfn></span><a class="self-link" href="#create-a-trusted-type-algorithm"></a></h4>
-   <p>Given a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy⑨">TrustedTypePolicy</a></code> <em>policy</em>, a type name <em>trustedTypeName</em>,
-and a string <em>value</em>, execute the following steps:</p>
+   <p>Given a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy⑨">TrustedTypePolicy</a></code> <var>policy</var>, a type name <var>trustedTypeName</var>,
+and a string <var>value</var>, execute the following steps:</p>
    <ol>
     <li data-md>
-     <p>Let <em>functionName</em> be a function name for the given <em>trustedTypeName</em>,
+     <p>Let <var>functionName</var> be a function name for the given <var>trustedTypeName</var>,
 based on the following table:</p>
      <table>
       <tbody>
@@ -2329,23 +2331,23 @@ based on the following table:</p>
         <td>"TrustedURL"
      </table>
     <li data-md>
-     <p>Let <em>options</em> be the value of <em>policy</em>'s <code>[[options]]</code> slot.</p>
+     <p>Let <var>options</var> be the value of <var>policy</var>’s <code>[[options]]</code> slot.</p>
     <li data-md>
-     <p>Let <em>function</em> be the value of the property in <em>options</em> named <em>functionName</em>.</p>
+     <p>Let <var>function</var> be the value of the property in <var>options</var> named <var>functionName</var>.</p>
     <li data-md>
-     <p>If <em>function</em> is null, throw a <em>TypeError</em>.</p>
+     <p>If <var>function</var> is <code class="idl"><a data-link-type="idl">null</a></code>, throw a <em>TypeError</em>.</p>
     <li data-md>
-     <p>Let <em>policyValue</em> be the result of invoking <em>function</em> with <em>value</em> as a first argument, and <a href="https://tc39.github.io/ecma262/#sec-method">callback **this** value</a> set to null.</p>
+     <p>Let <var>policyValue</var> be the result of invoking <var>function</var> with <var>value</var> as a first argument, and <a href="https://tc39.github.io/ecma262/#sec-method">callback **this** value</a> set to <code class="idl"><a data-link-type="idl">null</a></code>.</p>
     <li data-md>
-     <p>If <em>policyValue</em> is an error, return <em>policyValue</em> and abort the following steps.</p>
+     <p>If <var>policyValue</var> is an error, return <var>policyValue</var> and abort the following steps.</p>
     <li data-md>
-     <p>Let <em>dataString</em> be the result of stringifying <em>policyValue</em>.</p>
+     <p>Let <var>dataString</var> be the result of stringifying <var>policyValue</var>.</p>
     <li data-md>
-     <p>Let <em>trustedObject</em> be a new instance of an interface with a type
-name <em>trustedTypeName</em>, with its <code>[[Data]]</code> internal slot value
-set to <em>dataString</em>.</p>
+     <p>Let <var>trustedObject</var> be a new instance of an interface with a type
+name <var>trustedTypeName</var>, with its <code>[[Data]]</code> internal slot value
+set to <var>dataString</var>.</p>
     <li data-md>
-     <p>Return <em>trustedObject</em>.</p>
+     <p>Return <var>trustedObject</var>.</p>
    </ol>
    <h3 class="heading settled" data-level="3.2" id="enforcement-algorithms"><span class="secno">3.2. </span><span class="content">Enforcement</span><a class="self-link" href="#enforcement-algorithms"></a></h3>
    <h4 class="heading settled" data-level="3.2.1" id="obtain-a-trusted-type-configuration-for-a-response-algorithm"><span class="secno">3.2.1. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-obtain-a-trusted-type-configuration-for-a-response">Obtain a Trusted Type Configuration for a response</dfn></span><a class="self-link" href="#obtain-a-trusted-type-configuration-for-a-response-algorithm"></a></h4>
@@ -2353,55 +2355,55 @@ set to <em>dataString</em>.</p>
 the response as a <a data-link-type="biblio" href="#biblio-http-jfv">[HTTP-JFV]</a> value and creates a configuration
 object.  The header value consists of a list of values.
 Every string value is assumed to be an <code class="idl"><a data-link-type="idl" href="#dom-trustedtypeconfiguration-allowednames" id="ref-for-dom-trustedtypeconfiguration-allowednames①">allowed policy name</a></code>,
-and the presence of the header by default <a data-link-type="dfn" href="#enforcement①" id="ref-for-enforcement①④">enforces</a> the types at every sink type.</p>
-   <p>Given a <code class="idl"><a data-link-type="idl" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response">Response</a></code> (<em>response</em>), perform the following steps:</p>
+and the presence of the header by default <a data-link-type="dfn" href="#enforcement" id="ref-for-enforcement④">enforces</a> the types at every sink type.</p>
+   <p>Given a <code class="idl"><a data-link-type="idl" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response">Response</a></code> (<var>response</var>), perform the following steps:</p>
    <ol>
     <li data-md>
-     <p>Let <em>config</em> be a new <code class="idl"><a data-link-type="idl" href="#dictdef-trustedtypeconfiguration" id="ref-for-dictdef-trustedtypeconfiguration③">TrustedTypeConfiguration</a></code>.</p>
+     <p>Let <var>config</var> be a new <code class="idl"><a data-link-type="idl" href="#dictdef-trustedtypeconfiguration" id="ref-for-dictdef-trustedtypeconfiguration③">TrustedTypeConfiguration</a></code>.</p>
     <li data-md>
-     <p>Let <em>defaultSinkDisposition</em> be <code>“unsafe-allow”</code>.</p>
+     <p>Let <var>defaultSinkDisposition</var> be <code>“unsafe-allow”</code>.</p>
     <li data-md>
-     <p>Let <em>hasWildcardPolicy</em> be true</p>
+     <p>Let <var>hasWildcardPolicy</var> be true</p>
     <li data-md>
-     <p>Let <em>header</em> be the value of the header in <em>response</em>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-list" id="ref-for-concept-header-list">header list</a> whose name is <code>“Trusted-Types”</code></p>
+     <p>Let <var>header</var> be the value of the header in <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-list" id="ref-for-concept-header-list">header list</a> whose name is <code>“Trusted-Types”</code></p>
     <li data-md>
-     <p>Let <em>list</em> be the result of executing the algorithm defined in
-Section 4 of <a data-link-type="biblio" href="#biblio-http-jfv">[HTTP-JFV]</a> on <em>header</em>. If that algorithm results
+     <p>Let <var>list</var> be the result of executing the algorithm defined in
+Section 4 of <a data-link-type="biblio" href="#biblio-http-jfv">[HTTP-JFV]</a> on <var>header</var>. If that algorithm results
 in an error, abort these steps.</p>
      <p class="issue" id="issue-6648a1f5"><a class="self-link" href="#issue-6648a1f5"></a> A trailing comma should not disable enforcement.  Do we
 need to leave the document in a locked down state?
 Maybe set <em>config</em>.domSinks to "reject" and return <em>config</em>.</p>
     <li data-md>
-     <p>If <em>list</em> is not empty, then set <em>hasWildcardPolicy</em> to false and set
+     <p>If <var>list</var> is not empty, then set <var>hasWildcardPolicy</var> to <code class="idl"><a data-link-type="idl">false</a></code> and set
 defaultSinkDisposition to <code>“reject”</code>.</p>
     <li data-md>
-     <p>For each <em>item</em> in <em>list</em>:</p>
+     <p>For each <var>item</var> in <var>list</var>:</p>
      <ol>
       <li data-md>
-       <p>If <em>item</em> is a <a href="https://tools.ietf.org/html/rfc8259#section-7">string</a> :</p>
+       <p>If <var>item</var> is a <a href="https://tools.ietf.org/html/rfc8259#section-7">string</a> :</p>
        <ol>
         <li data-md>
-         <p>If <em>item</em> is equal to <code>“*”</code>, then set <em>hasWildcardPolicy</em> to true.</p>
+         <p>If <var>item</var> is equal to <code>“*”</code>, then set <var>hasWildcardPolicy</var> to true.</p>
         <li data-md>
-         <p>Otherwise, add <em>item</em> to <em>config</em>'s <code class="idl"><a data-link-type="idl" href="#dom-trustedtypeconfiguration-allowednames" id="ref-for-dom-trustedtypeconfiguration-allowednames②">allowedNames</a></code> set.</p>
+         <p>Otherwise, add <var>item</var> to <var>config</var>’s <code class="idl"><a data-link-type="idl" href="#dom-trustedtypeconfiguration-allowednames" id="ref-for-dom-trustedtypeconfiguration-allowednames②">allowedNames</a></code> set.</p>
        </ol>
       <li data-md>
-       <p>Otherwise, if <em>item</em> is an <a href="https://tools.ietf.org/html/rfc8259#section-4">object</a>,
-for each <em>name</em> → <em>value</em> of item, execute the following steps:</p>
+       <p>Otherwise, if <var>item</var> is an <a href="https://tools.ietf.org/html/rfc8259#section-4">object</a>,
+for each <var>name</var> → <var>value</var> of <var>item</var>, execute the following steps:</p>
        <ol>
         <li data-md>
-         <p>Let <em>propertyName</em> be the result of running ASCII lowercase on name.</p>
+         <p>Let <var>propertyName</var> be the result of running ASCII lowercase on name.</p>
         <li data-md>
-         <p>Execute the first statement, switching on <em>propertyName</em>:</p>
+         <p>Execute the first statement, switching on <var>propertyName</var>:</p>
          <ol>
           <li data-md>
            <p>case <code>“dom”</code>:
-If value is a valid <code class="idl"><a data-link-type="idl" href="#enumdef-stringatsinkdisposition" id="ref-for-enumdef-stringatsinkdisposition②">StringAtSinkDisposition</a></code>, set <em>defaultSinkDisposition</em> to that value. Otherwise, throw
+If value is a valid <code class="idl"><a data-link-type="idl" href="#enumdef-stringatsinkdisposition" id="ref-for-enumdef-stringatsinkdisposition②">StringAtSinkDisposition</a></code>, set <var>defaultSinkDisposition</var> to that value. Otherwise, throw
 an error.</p>
           <li data-md>
            <p>case <code>“report”</code>:
 If value is a <a href="https://tools.ietf.org/html/rfc8259#section-7">string</a>,
-set <em>config</em>'s <code class="idl"><a data-link-type="idl" href="#dom-trustedtypeconfiguration-reportinggroup" id="ref-for-dom-trustedtypeconfiguration-reportinggroup">reportingGroup</a></code> to that value.
+set <var>config</var>’s <code class="idl"><a data-link-type="idl" href="#dom-trustedtypeconfiguration-reportinggroup" id="ref-for-dom-trustedtypeconfiguration-reportinggroup">reportingGroup</a></code> to that value.
 Otherwise, throw an error.</p>
           <li data-md>
            <p>Otherwise, continue.</p>
@@ -2411,85 +2413,83 @@ Otherwise, throw an error.</p>
        <p>Otherwise, throw an error.</p>
      </ol>
     <li data-md>
-     <p>If <em>hasWildcardPolicy</em> is false, then set <em>config</em>'s <code class="idl"><a data-link-type="idl" href="#dom-trustedtypeconfiguration-unknownpolicyname" id="ref-for-dom-trustedtypeconfiguration-unknownpolicyname①">unknownPolicyName</a></code> to <code>“reject”</code>.</p>
+     <p>If <var>hasWildcardPolicy</var> is false, then set <var>config</var>’s <code class="idl"><a data-link-type="idl" href="#dom-trustedtypeconfiguration-unknownpolicyname" id="ref-for-dom-trustedtypeconfiguration-unknownpolicyname①">unknownPolicyName</a></code> to <code>“reject”</code>.</p>
     <li data-md>
-     <p>If <em>config</em>’s <code class="idl"><a data-link-type="idl" href="#dom-trustedtypeconfiguration-domsinks" id="ref-for-dom-trustedtypeconfiguration-domsinks">domSinks</a></code> is null,
-set <em>config</em>’s domSinks to <em>defaultSinkDisposition</em>’s value.</p>
+     <p>If <var>config</var>’s <code class="idl"><a data-link-type="idl" href="#dom-trustedtypeconfiguration-domsinks" id="ref-for-dom-trustedtypeconfiguration-domsinks">domSinks</a></code> is <code class="idl"><a data-link-type="idl">null</a></code>,
+set <var>config</var>’s domSinks to <var>defaultSinkDisposition</var>’s value.</p>
     <li data-md>
-     <p>Return <em>config</em>.</p>
+     <p>Return <var>config</var>.</p>
    </ol>
    <h4 class="heading settled" data-level="3.2.2" id="get-trusted-type-compliant-string-algorithm"><span class="secno">3.2.2. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-get-trusted-type-compliant-string">Get Trusted Type compliant string</dfn></span><a class="self-link" href="#get-trusted-type-compliant-string-algorithm"></a></h4>
-   <p>This algorithm will return a string that can be assigned to a DOM <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⑥">injection sink</a>, optionally unwrapping it from a matching <a data-link-type="dfn" href="#trusted-type" id="ref-for-trusted-type⑤">Trusted Type</a>.
-It will ensure that the Trusted Type <a data-link-type="dfn" href="#enforcement①" id="ref-for-enforcement①⑤">enforcement</a> rules were respected.</p>
-   <p>Given a <code class="idl"><a data-link-type="idl" href="#typedefdef-trustedtype" id="ref-for-typedefdef-trustedtype②">TrustedType</a></code> type (<em>expectedType</em>), a <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document③">Document</a></code> (<em>document</em>), and a <code class="idl"><a data-link-type="idl" href="#typedefdef-trustedtype" id="ref-for-typedefdef-trustedtype③">TrustedType</a></code> (<em>input</em>) run these steps:</p>
+   <p>This algorithm will return a string that can be assigned to a DOM <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⑦">injection sink</a>, optionally unwrapping it from a matching <a data-link-type="dfn" href="#trusted-type" id="ref-for-trusted-type⑤">Trusted Type</a>.
+It will ensure that the Trusted Type <a data-link-type="dfn" href="#enforcement" id="ref-for-enforcement⑤">enforcement</a> rules were respected.</p>
+   <p>Given a <code class="idl"><a data-link-type="idl" href="#typedefdef-trustedtype" id="ref-for-typedefdef-trustedtype②">TrustedType</a></code> type (<var>expectedType</var>), a <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document③">Document</a></code> (<var>document</var>), and a <code class="idl"><a data-link-type="idl" href="#typedefdef-trustedtype" id="ref-for-typedefdef-trustedtype③">TrustedType</a></code> (<var>input</var>) run these steps:</p>
    <ol>
     <li data-md>
-     <p>Let <em>disposition</em> be <em>document</em>’s TrustedTypeConfiguration’s <code class="idl"><a data-link-type="idl" href="#dom-trustedtypeconfiguration-domsinks" id="ref-for-dom-trustedtypeconfiguration-domsinks①">domSinks</a></code>.</p>
+     <p>Let <var>disposition</var> be <var>document</var>’s <code class="idl"><a data-link-type="idl" href="#dictdef-trustedtypeconfiguration" id="ref-for-dictdef-trustedtypeconfiguration④">TrustedTypeConfiguration</a></code>'s <code class="idl"><a data-link-type="idl" href="#dom-trustedtypeconfiguration-domsinks" id="ref-for-dom-trustedtypeconfiguration-domsinks①">domSinks</a></code>.</p>
     <li data-md>
-     <p>If <em>disposition</em> is <code>“unsafe-allow”</code>, return stringified <em>input</em> and abort these steps.</p>
+     <p>If <var>disposition</var> is <code>“unsafe-allow”</code>, return stringified <var>input</var> and abort these steps.</p>
     <li data-md>
-     <p>If <em>input</em> has type <em>expectedType</em>, return stringified <em>input</em> and abort these steps.</p>
+     <p>If <var>input</var> has type <var>expectedType</var>, return stringified <var>input</var> and abort these steps.</p>
     <li data-md>
      <p>Otherwise, execute the following steps:</p>
      <ol>
       <li data-md>
-       <p>Let <em>defaultPolicy</em> be the result of executing <a data-link-type="abstract-op" href="#abstract-opdef-get-default-policy" id="ref-for-abstract-opdef-get-default-policy">Get default policy</a> algorithm on <em>document</em>’s <a href="https://www.w3.org/TR/html5/#concept-document-bc">browsing context</a>'s <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/window-object.html#window" id="ref-for-window">Window</a></code> object.</p>
+       <p>Let <var>defaultPolicy</var> be the result of executing <a data-link-type="abstract-op" href="#abstract-opdef-get-default-policy" id="ref-for-abstract-opdef-get-default-policy">Get default policy</a> algorithm on <var>document</var>’s <a href="https://www.w3.org/TR/html5/#concept-document-bc">browsing context</a>'s <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/window-object.html#window" id="ref-for-window">Window</a></code> object.</p>
       <li data-md>
-       <p>If <em>defaultPolicy</em> is null, abort these steps.</p>
+       <p>If <var>defaultPolicy</var> is <code class="idl"><a data-link-type="idl">null</a></code>, abort these steps.</p>
        <p class="issue" id="issue-90794f3a"><a class="self-link" href="#issue-90794f3a"></a> Do we need some "resume below" language?</p>
       <li data-md>
-       <p>Let <em>convertedInput</em> be the result of executing <a data-link-type="abstract-op" href="#abstract-opdef-create-a-trusted-type" id="ref-for-abstract-opdef-create-a-trusted-type④">Create a
+       <p>Let <var>convertedInput</var> be the result of executing <a data-link-type="abstract-op" href="#abstract-opdef-create-a-trusted-type" id="ref-for-abstract-opdef-create-a-trusted-type④">Create a
 Trusted Type</a> algorithm, with the following arguments:</p>
        <ul>
         <li data-md>
-         <p><em>defaultPolicy</em> as <em>policy</em></p>
+         <p><var>defaultPolicy</var> as <var>policy</var></p>
         <li data-md>
-         <p><em>input</em> as <em>value</em></p>
+         <p><var>input</var> as <var>value</var></p>
         <li data-md>
-         <p><em>expectedType</em>’s type name as <em>trustedTypeName</em></p>
+         <p><var>expectedType</var>’s type name as <var>trustedTypeName</var></p>
        </ul>
       <li data-md>
-       <p>If <em>convertedInput</em> is an error, then return error and abort the following steps.</p>
+       <p>If <var>convertedInput</var> is an error, then return error and abort the following steps.</p>
       <li data-md>
-       <p>If <em>convertedInput</em> has type <em>expectedType</em>, then return
-stringified <em>convertedInput</em> and abort the following steps.</p>
+       <p>If <var>convertedInput</var> has type <var>expectedType</var>, then return
+stringified <var>convertedInput</var> and abort the following steps.</p>
       <li data-md>
-       <p>Set <em>input</em> to <em>convertedInput</em>’s value.</p>
+       <p>Set <var>input</var> to <var>convertedInput</var>’s value.</p>
      </ol>
     <li data-md>
      <p>Execute <a data-link-type="abstract-op" href="#abstract-opdef-report-sink-type-mismatch-violation" id="ref-for-abstract-opdef-report-sink-type-mismatch-violation">Report sink type mismatch violation</a> algorithm.</p>
     <li data-md>
-     <p>If <em>disposition</em> is <code>“report”</code>, then return stringified <em>input</em> and abort these steps.</p>
+     <p>If <var>disposition</var> is <code>“report”</code>, then return stringified <var>input</var> and abort these steps.</p>
     <li data-md>
-     <p>Throw a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror">TypeError</a></code>.</p>
+     <p>Throw a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror②">TypeError</a></code>.</p>
    </ol>
    <h4 class="heading settled" data-level="3.2.3" id="enforce-a-trusted-type-algorithm"><span class="secno">3.2.3. </span><span class="content"><dfn data-dfn-type="abstract-op" data-export id="abstract-opdef-enforce-a-trusted-type">Enforce a Trusted Type<a class="self-link" href="#abstract-opdef-enforce-a-trusted-type"></a></dfn></span><a class="self-link" href="#enforce-a-trusted-type-algorithm"></a></h4>
-   <p class="note" role="note"><span>Note:</span> <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="enforcement①">enforcement</dfn> is the process of checking that a value
-has an appropriate type before it reaches an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⑦">injection sink</a>.</p>
    <p>Enforce a Trusted Type algorithm describes a modification to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⑧">injection sinks</a>,
 asserting that the input meets <a data-link-type="dfn" href="#trusted-type" id="ref-for-trusted-type⑥">Trusted Type</a> restrictions set for the current <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document④">Document</a></code>.  It accepts an input
 value that the original function would and will optionally
 pass-through to the original function -- all original arguments to the
 function apart from input are passed through without modification.</p>
-   <p>Given <em>input</em> and <em>expectedType</em>, perform the following steps.</p>
+   <p>Given <var>input</var> and <var>expectedType</var>, perform the following steps.</p>
    <ol>
     <li data-md>
-     <p>Let <em>compliantValue</em> be the result of executing <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string②">Get Trusted Type
+     <p>Let <var>compliantValue</var> be the result of executing <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string②">Get Trusted Type
 compliant string</a> algorithm with</p>
      <ul>
       <li data-md>
-       <p><em>document</em> being the current <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document⑤">Document</a></code></p>
+       <p><var>document</var> being the current <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document⑤">Document</a></code></p>
       <li data-md>
-       <p><em>input</em></p>
+       <p><var>input</var></p>
       <li data-md>
-       <p><em>expectedType</em></p>
+       <p><var>expectedType</var></p>
      </ul>
     <li data-md>
      <p>If the previous algorithm throws an exception, rethrow the exception,
 and abort these steps.</p>
-     <p class="issue" id="issue-bb8c9be7"><a class="self-link" href="#issue-bb8c9be7"></a> can we use "<em>compliantValue</em> is an error" language here?</p>
+     <p class="issue" id="issue-bb8c9be7"><a class="self-link" href="#issue-bb8c9be7"></a> can we use "<var>compliantValue</var> is an error" language here?</p>
     <li data-md>
-     <p>Execute the original function with <em>compliantValue</em> instead of the
+     <p>Execute the original function with <var>compliantValue</var> instead of the
 original value.  If the original functions accepts other
 arguments, pass-them through to the original function.  Return the
 result.</p>
@@ -2498,31 +2498,31 @@ result.</p>
    <p class="issue" id="issue-d9f0b628"><a class="self-link" href="#issue-d9f0b628"></a> TODO: write and link to it</p>
    <h4 class="heading settled" data-level="3.2.5" id="report-sink-type-mismatch-violation-algorithm"><span class="secno">3.2.5. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-report-sink-type-mismatch-violation">Report sink type mismatch violation</dfn></span><a class="self-link" href="#report-sink-type-mismatch-violation-algorithm"></a></h4>
    <p class="issue" id="issue-d66da75e"><a class="self-link" href="#issue-d66da75e"></a> Check that this algorithm is complete.</p>
-   <p>Given a <a href="#violation">violation</a> (<em>violation</em>), this algorithm reports
-it to the <code class="idl"><a data-link-type="idl" href="#dom-trustedtypeconfiguration-reportinggroup" id="ref-for-dom-trustedtypeconfiguration-reportinggroup①">endpoint</a></code> specified in the violation’s <code class="idl"><a data-link-type="idl" href="#dictdef-trustedtypeconfiguration" id="ref-for-dictdef-trustedtypeconfiguration④">configuration
+   <p>Given a <a href="#violation">violation</a> (<var>violation</var>), this algorithm reports
+it to the <code class="idl"><a data-link-type="idl" href="#dom-trustedtypeconfiguration-reportinggroup" id="ref-for-dom-trustedtypeconfiguration-reportinggroup①">endpoint</a></code> specified in the <var>violation</var>’s <code class="idl"><a data-link-type="idl" href="#dictdef-trustedtypeconfiguration" id="ref-for-dictdef-trustedtypeconfiguration⑤">configuration
 object</a></code>.</p>
    <ol>
     <li data-md>
      <p>Enqueue a task to run the following steps:</p>
      <ol>
       <li data-md>
-       <p>Let <em>group</em> be <em>violation</em>’s configuration’s <code class="idl"><a data-link-type="idl" href="#dom-trustedtypeconfiguration-reportinggroup" id="ref-for-dom-trustedtypeconfiguration-reportinggroup②">reportingGroup</a></code>.</p>
+       <p>Let <var>group</var> be <var>violation</var>’s configuration’s <code class="idl"><a data-link-type="idl" href="#dom-trustedtypeconfiguration-reportinggroup" id="ref-for-dom-trustedtypeconfiguration-reportinggroup②">reportingGroup</a></code>.</p>
       <li data-md>
-       <p>Let <em>settings</em> be <em>violation</em>’s <a href="https://www.w3.org/TR/CSP3/#violation-global-object">global object</a>’s
+       <p>Let <var>settings</var> be <var>violation</var>’s <a href="https://www.w3.org/TR/CSP3/#violation-global-object">global object</a>’s
 relevant settings object.</p>
       <li data-md>
-       <p>Execute <a href="https://wicg.github.io/reporting/#queue-report">Queue data as type for endpoint group on settings algorith</a> with the following arguments:</p>
+       <p>Execute <a href="https://wicg.github.io/reporting/#queue-report">Queue data as type for endpoint group on settings algorithm</a> with the following arguments:</p>
        <ul>
         <li data-md>
-         <p><em>data</em> = violation</p>
+         <p><var>data</var> = <var>violation</var></p>
         <li data-md>
-         <p><em>type</em> = <code>“trusted-types”</code></p>
+         <p><var>type</var> = <code>“trusted-types”</code></p>
         <li data-md>
-         <p><em>endpoint group</em> = <em>group</em></p>
+         <p><var>endpoint group</var> = <var>group</var></p>
         <li data-md>
-         <p><em>settings</em> = <em>settings</em></p>
+         <p><var>settings</var> = <var>settings</var></p>
        </ul>
-       <p class="note" role="note"><span>Note:</span> The optional <em>url</em> parameter is not provided.</p>
+       <p class="note" role="note"><span>Note:</span> The optional <var>url</var> parameter is not provided.</p>
      </ol>
    </ol>
    <h2 class="heading settled" data-level="4" id="integrations"><span class="secno">4. </span><span class="content">Integrations</span><a class="self-link" href="#integrations"></a></h2>
@@ -2539,13 +2539,13 @@ Having this separate type allows <a href="https://heycam.github.io/webidl/#Treat
 per heycam/webidl#441.</p>
    <p class="issue" id="issue-52d7d8d6"><a class="self-link" href="#issue-52d7d8d6"></a> <a href="https://heycam.github.io/webidl/#TreatNullAs">TreatNullAs=EmptyString</a> is confusing.
 See note "It should not be used in specifications unless ...".
-For some sinks a null value will result in "", and "null" for others.
+For some sinks a <code class="idl"><a data-link-type="idl">null</a></code> value will result in "", and "null" for others.
 This already caused problems in the polyfill. <a href="https://github.com/WICG/trusted-types/issues/2">&lt;https://github.com/WICG/trusted-types/issues/2></a></p>
    <h3 class="heading settled" data-level="4.1" id="integration-with-html"><span class="secno">4.1. </span><span class="content">Integration with HTML</span><a class="self-link" href="#integration-with-html"></a></h3>
    <p><code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/window-object.html#window" id="ref-for-window①">Window</a></code> objects have a <code class="idl"><a data-link-type="idl" href="#dom-window-trustedtypes" id="ref-for-dom-window-trustedtypes">trusted type policy factory</a></code>,
 which is a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicyfactory" id="ref-for-trustedtypepolicyfactory③">TrustedTypePolicyFactory</a></code> object.</p>
    <p><code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document⑥">Document</a></code> objects have a trusted type configuration,
-which is a <code class="idl"><a data-link-type="idl" href="#dictdef-trustedtypeconfiguration" id="ref-for-dictdef-trustedtypeconfiguration⑤">TrustedTypeConfiguration</a></code> object.</p>
+which is a <code class="idl"><a data-link-type="idl" href="#dictdef-trustedtypeconfiguration" id="ref-for-dictdef-trustedtypeconfiguration⑥">TrustedTypeConfiguration</a></code> object.</p>
    <h4 class="heading settled" data-level="4.1.1" id="initialize-a-documents-trusted-type-configuration-algorithm"><span class="secno">4.1.1. </span><span class="content"><dfn data-dfn-type="abstract-op" data-export id="abstract-opdef-initialize-a-documents-trusted-type-configuration-algorithm">Initialize a Document’s trusted type configuration algorithm<a class="self-link" href="#abstract-opdef-initialize-a-documents-trusted-type-configuration-algorithm"></a></dfn></span><a class="self-link" href="#initialize-a-documents-trusted-type-configuration-algorithm"></a></h4>
    <p>This algorithm should be executed during the <a href="https://www.w3.org/TR/html5/#initialise-the-document-object">Initializing a new Document
 object</a> algorithm.</p>
@@ -2579,7 +2579,7 @@ factory</a> algorithm on <em>configuration</em>.</p>
 </pre>
    <p><code class="idl"><a data-link-type="idl" href="#dom-window-trustedtypes" id="ref-for-dom-window-trustedtypes②">TrustedTypes</a></code> returns the <a href="#integration-with-html">trusted
 type policy factory</a> of the current <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/window-object.html#window" id="ref-for-window④">Window</a></code>, if the current Window
-has a trusted type policy factory, or null otherwise.</p>
+has a trusted type policy factory, or <code class="idl"><a data-link-type="idl">null</a></code> otherwise.</p>
    <h4 class="heading settled" data-level="4.1.3" id="extensions-to-the-document-interface"><span class="secno">4.1.3. </span><span class="content">Extensions to the Document interface</span><a class="self-link" href="#extensions-to-the-document-interface"></a></h4>
    <p>This document modifies the <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document⑧">Document</a></code> interface defined by <a data-link-type="biblio" href="#biblio-html5">HTML</a>:</p>
 <pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#document" id="ref-for-document⑨"><c- g>Document</c-></a> {
@@ -2782,7 +2782,7 @@ controlled inputs.</p>
    <p class="issue" id="issue-2eb927d2"><a class="self-link" href="#issue-2eb927d2"></a> Refer to the external document on secure policy design.</p>
    <h2 class="heading settled" data-level="6" id="implementation-considerations"><span class="secno">6. </span><span class="content">Implementation Considerations</span><a class="self-link" href="#implementation-considerations"></a></h2>
    <h3 class="heading settled" data-level="6.1" id="vendor-specific-extensions-and-addons"><span class="secno">6.1. </span><span class="content">Vendor-specific Extensions and Addons</span><a class="self-link" href="#vendor-specific-extensions-and-addons"></a></h3>
-   <p>Restriction imposed by the <code class="idl"><a data-link-type="idl" href="#dictdef-trustedtypeconfiguration" id="ref-for-dictdef-trustedtypeconfiguration⑥">TrustedTypeConfiguration</a></code> objects SHOULD
+   <p>Restriction imposed by the <code class="idl"><a data-link-type="idl" href="#dictdef-trustedtypeconfiguration" id="ref-for-dictdef-trustedtypeconfiguration⑦">TrustedTypeConfiguration</a></code> objects SHOULD
 NOT interfere with the operation of user-agent features like addons,
 extensions, or bookmarklets. These kinds of features generally advance
 the user’s priority over page authors, as espoused in <a data-link-type="biblio" href="#biblio-html-design-principles">[html-design-principles]</a>. Specifically, extensions SHOULD be able to pass strings
@@ -2967,7 +2967,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <li><a href="#dom-trustedtypeconfiguration-domsinks">domSinks</a><span>, in §2.4.1</span>
    <li><a href="#dom-trustedtypepolicyfactory-emptyhtml">emptyHTML</a><span>, in §2.3.1</span>
    <li><a href="#abstract-opdef-enforce-a-trusted-type">Enforce a Trusted Type</a><span>, in §3.2.3</span>
-   <li><a href="#enforcement①">enforcement</a><span>, in §3.2.3</span>
+   <li><a href="#enforcement">Enforcement</a><span>, in §2.4</span>
    <li>
     formAction
     <ul>
@@ -3399,7 +3399,8 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
   <aside class="dfn-panel" data-for="term-for-exceptiondef-typeerror">
    <a href="https://heycam.github.io/webidl/#exceptiondef-typeerror">https://heycam.github.io/webidl/#exceptiondef-typeerror</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-exceptiondef-typeerror">3.2.2. Get Trusted Type compliant string</a>
+    <li><a href="#ref-for-exceptiondef-typeerror">3.1.2. Create a Trusted Type Policy</a> <a href="#ref-for-exceptiondef-typeerror①">(2)</a>
+    <li><a href="#ref-for-exceptiondef-typeerror②">3.2.2. Get Trusted Type compliant string</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idl-USVString">
@@ -3797,12 +3798,12 @@ level, and when creating a policy).<a href="#issue-de6065a2"> ↵ </a></div>
 need to leave the document in a locked down state?
 Maybe set <em>config</em>.domSinks to "reject" and return <em>config</em>.<a href="#issue-6648a1f5"> ↵ </a></div>
    <div class="issue"> Do we need some "resume below" language?<a href="#issue-90794f3a"> ↵ </a></div>
-   <div class="issue"> can we use "<em>compliantValue</em> is an error" language here?<a href="#issue-bb8c9be7"> ↵ </a></div>
+   <div class="issue"> can we use "<var>compliantValue</var> is an error" language here?<a href="#issue-bb8c9be7"> ↵ </a></div>
    <div class="issue"> TODO: write and link to it<a href="#issue-d9f0b628"> ↵ </a></div>
    <div class="issue"> Check that this algorithm is complete.<a href="#issue-d66da75e"> ↵ </a></div>
    <div class="issue"> <a href="https://heycam.github.io/webidl/#TreatNullAs">TreatNullAs=EmptyString</a> is confusing.
 See note "It should not be used in specifications unless ...".
-For some sinks a null value will result in "", and "null" for others.
+For some sinks a <code class="idl"><a data-link-type="idl">null</a></code> value will result in "", and "null" for others.
 This already caused problems in the polyfill. <a href="https://github.com/WICG/trusted-types/issues/2">&lt;https://github.com/WICG/trusted-types/issues/2></a><a href="#issue-52d7d8d6"> ↵ </a></div>
    <div class="issue"> Define more generic restrictions for script texts. <a href="https://github.com/WICG/trusted-types/issues/133">&lt;https://github.com/WICG/trusted-types/issues/133></a><a href="#issue-4d991f00"> ↵ </a></div>
    <div class="issue"> Mention node-adoption bypass vectors. <a href="https://github.com/WICG/trusted-types/issues/49">&lt;https://github.com/WICG/trusted-types/issues/49></a><a href="#issue-31966331"> ↵ </a></div>
@@ -3825,10 +3826,10 @@ This already caused problems in the polyfill. <a href="https://github.com/WICG/t
     <li><a href="#ref-for-injection-sink⑥">2.2.5. TrustedURL</a>
     <li><a href="#ref-for-injection-sink⑦">2.3. Policies</a>
     <li><a href="#ref-for-injection-sink⑧">2.3.4. Default policy</a>
-    <li><a href="#ref-for-injection-sink⑨">2.4. Enforcement</a>
-    <li><a href="#ref-for-injection-sink①⓪">2.4.2. Trusted-Types HTTP Response Header</a> <a href="#ref-for-injection-sink①①">(2)</a> <a href="#ref-for-injection-sink①②">(3)</a> <a href="#ref-for-injection-sink①③">(4)</a> <a href="#ref-for-injection-sink①④">(5)</a> <a href="#ref-for-injection-sink①⑤">(6)</a>
-    <li><a href="#ref-for-injection-sink①⑥">3.2.2. Get Trusted Type compliant string</a>
-    <li><a href="#ref-for-injection-sink①⑦">3.2.3. Enforce a Trusted Type</a> <a href="#ref-for-injection-sink①⑧">(2)</a>
+    <li><a href="#ref-for-injection-sink⑨">2.4. Enforcement</a> <a href="#ref-for-injection-sink①⓪">(2)</a>
+    <li><a href="#ref-for-injection-sink①①">2.4.2. Trusted-Types HTTP Response Header</a> <a href="#ref-for-injection-sink①②">(2)</a> <a href="#ref-for-injection-sink①③">(3)</a> <a href="#ref-for-injection-sink①④">(4)</a> <a href="#ref-for-injection-sink①⑤">(5)</a> <a href="#ref-for-injection-sink①⑥">(6)</a>
+    <li><a href="#ref-for-injection-sink①⑦">3.2.2. Get Trusted Type compliant string</a>
+    <li><a href="#ref-for-injection-sink①⑧">3.2.3. Enforce a Trusted Type</a>
     <li><a href="#ref-for-injection-sink①⑨">6.1. Vendor-specific Extensions and Addons</a>
    </ul>
   </aside>
@@ -4067,6 +4068,16 @@ This already caused problems in the polyfill. <a href="https://github.com/WICG/t
     <li><a href="#ref-for-default-policy②">6.1. Vendor-specific Extensions and Addons</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="enforcement">
+   <b><a href="#enforcement">#enforcement</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-enforcement">2.3. Policies</a> <a href="#ref-for-enforcement①">(2)</a>
+    <li><a href="#ref-for-enforcement②">2.3.4. Default policy</a>
+    <li><a href="#ref-for-enforcement③">2.4.1. TrustedTypeConfiguration</a>
+    <li><a href="#ref-for-enforcement④">3.2.1. Obtain a Trusted Type Configuration for a response</a>
+    <li><a href="#ref-for-enforcement⑤">3.2.2. Get Trusted Type compliant string</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="enumdef-stringatsinkdisposition">
    <b><a href="#enumdef-stringatsinkdisposition">#enumdef-stringatsinkdisposition</a></b><b>Referenced in:</b>
    <ul>
@@ -4087,9 +4098,10 @@ This already caused problems in the polyfill. <a href="https://github.com/WICG/t
     <li><a href="#ref-for-dictdef-trustedtypeconfiguration①">2.4.3. Violation</a>
     <li><a href="#ref-for-dictdef-trustedtypeconfiguration②">3.1.1. Initialize policy factory</a>
     <li><a href="#ref-for-dictdef-trustedtypeconfiguration③">3.2.1. Obtain a Trusted Type Configuration for a response</a>
-    <li><a href="#ref-for-dictdef-trustedtypeconfiguration④">3.2.5. Report sink type mismatch violation</a>
-    <li><a href="#ref-for-dictdef-trustedtypeconfiguration⑤">4.1. Integration with HTML</a>
-    <li><a href="#ref-for-dictdef-trustedtypeconfiguration⑥">6.1. Vendor-specific Extensions and Addons</a>
+    <li><a href="#ref-for-dictdef-trustedtypeconfiguration④">3.2.2. Get Trusted Type compliant string</a>
+    <li><a href="#ref-for-dictdef-trustedtypeconfiguration⑤">3.2.5. Report sink type mismatch violation</a>
+    <li><a href="#ref-for-dictdef-trustedtypeconfiguration⑥">4.1. Integration with HTML</a>
+    <li><a href="#ref-for-dictdef-trustedtypeconfiguration⑦">6.1. Vendor-specific Extensions and Addons</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-trustedtypeconfiguration-unknownpolicyname">
@@ -4172,16 +4184,6 @@ This already caused problems in the polyfill. <a href="https://github.com/WICG/t
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string③">4.1.7. Enforcement in timer functions</a>
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string④">4.1.8. Enforcement in event handler content attributes</a>
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑤">4.1.9. String compilation</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="enforcement①">
-   <b><a href="#enforcement①">#enforcement①</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-enforcement①">2.3. Policies</a> <a href="#ref-for-enforcement①①">(2)</a>
-    <li><a href="#ref-for-enforcement①②">2.3.4. Default policy</a>
-    <li><a href="#ref-for-enforcement①③">2.4.1. TrustedTypeConfiguration</a>
-    <li><a href="#ref-for-enforcement①④">3.2.1. Obtain a Trusted Type Configuration for a response</a>
-    <li><a href="#ref-for-enforcement①⑤">3.2.2. Get Trusted Type compliant string</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="abstract-opdef-report-sink-type-mismatch-violation">

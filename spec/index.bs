@@ -634,11 +634,14 @@ Note: See [[#get-trusted-type-compliant-string-algorithm]] for details on how
 the default policy is applied.
 
 
-## Enforcement ## {#enforcement}
+## <dfn>Enforcement</dfn> ## {#enforcement-hdr}
 
 This section describes how applications may require [=Trusted Types=] values for
 their [=injection sinks=] via specifying a HTTP response header, and what
 actions should be undertaken if a string value is used instead.
+
+Note: Enforcement is the process of checking that a value
+has an appropriate type before it reaches an [=injection sink=].
 
 Note: Most of the enforcement rules are defined as modifications of the algorithms
 in other specifiactions, see [[#integrations]].
@@ -844,9 +847,9 @@ To create a {{TrustedTypePolicy}} in a {{TrustedTypePolicyFactory|factory}},
 given a DOMString (*policyName*) and policy options dictionary (*options*), run these steps:
 
 1.  If *factory*'s `[[PolicyMap]]` internal slot has an entry with the key
-    `policyName`, then throw a *TypeError*.
+    `policyName`, then throw a {{TypeError}}.
 1.  Let *policyAllowed* be the result of running [$Is policy name allowed$] algorithm.
-1.  If *policyAllowed* is False, throw a *TypeError*.
+1.  If *policyAllowed* is False, throw a {{TypeError}}.
 1.  Let *policy* be a new {{TrustedTypePolicy}} object.
 1.  Set policy's `name` property value to *policyName*.
 1.  Let *policyOptions* be a new {{TrustedTypePolicyOptions}} object.
@@ -872,7 +875,7 @@ To get the [=default policy=] for a *factory*, execute the following steps:
 
 1.  Set *policyName* to `"default"`.
 1.  If *factory*'s `[[PolicyMap]]` internal slot does not have an entry
-    with the key *policyName*, return null.
+    with the key *policyName*, return {{null}}.
 1.  Otherwise, return the value of the *policyName* entry of
     *factory*'s `[[PolicyMap]]`.
 
@@ -904,11 +907,11 @@ algorithm that invoked these steps.
 
 ### <dfn abstract-op>Create a Trusted Type</dfn> ### {#create-a-trusted-type-algorithm}
 
-Given a {{TrustedTypePolicy}} *policy*, a type name *trustedTypeName*,
-and a string *value*, execute the following steps:
+Given a {{TrustedTypePolicy}} |policy|, a type name |trustedTypeName|,
+and a string |value|, execute the following steps:
 
 
-1.  Let *functionName* be a function name for the given *trustedTypeName*,
+1.  Let |functionName| be a function name for the given |trustedTypeName|,
     based on the following table:
 
     <table>
@@ -934,18 +937,18 @@ and a string *value*, execute the following steps:
       </tr>
     </table>
 
-1.  Let *options* be the value of *policy*'s `[[options]]` slot.
-1.  Let *function* be the value of the property in *options* named *functionName*.
-1.  If *function* is null, throw a *TypeError*.
-1.  Let *policyValue* be the result of invoking *function* with
-    *value* as a first argument, and [[ECMASCRIPT#sec-method|callback **this** value]]
-    set to null.
-1.  If *policyValue* is an error, return *policyValue* and abort the following steps.
-1.  Let *dataString* be the result of stringifying *policyValue*.
-1.  Let *trustedObject* be a new instance of an interface with a type
-    name *trustedTypeName*, with its `[[Data]]` internal slot value
-    set to *dataString*.
-1.  Return *trustedObject*.
+1.  Let |options| be the value of |policy|'s `[[options]]` slot.
+1.  Let |function| be the value of the property in |options| named |functionName|.
+1.  If |function| is {{null}}, throw a *TypeError*.
+1.  Let |policyValue| be the result of invoking |function| with
+    |value| as a first argument, and [[ECMASCRIPT#sec-method|callback **this** value]]
+    set to {{null}}.
+1.  If |policyValue| is an error, return |policyValue| and abort the following steps.
+1.  Let |dataString| be the result of stringifying |policyValue|.
+1.  Let |trustedObject| be a new instance of an interface with a type
+    name |trustedTypeName|, with its `[[Data]]` internal slot value
+    set to |dataString|.
+1.  Return |trustedObject|.
 
 ## Enforcement ## {#enforcement-algorithms}
 
@@ -959,50 +962,50 @@ Every string value is assumed to be an
 and the presence of the header by default
 [=enforcement|enforces=] the types at every sink type.
 
-Given a {{Response}} (*response*), perform the following steps:
+Given a {{Response}} (|response|), perform the following steps:
 
-1.  Let *config* be a new {{TrustedTypeConfiguration}}.
-1.  Let *defaultSinkDisposition* be `“unsafe-allow”`.
-1.  Let *hasWildcardPolicy* be true
-1.  Let *header* be the value of the header in *response*’s <a>header list</a>
+1.  Let |config| be a new {{TrustedTypeConfiguration}}.
+1.  Let |defaultSinkDisposition| be `“unsafe-allow”`.
+1.  Let |hasWildcardPolicy| be true
+1.  Let |header| be the value of the header in |response|’s <a>header list</a>
     whose name is `“Trusted-Types”`
-1.  Let *list* be the result of executing the algorithm defined in
-    Section 4 of [[HTTP-JFV]] on *header*. If that algorithm results
+1.  Let |list| be the result of executing the algorithm defined in
+    Section 4 of [[HTTP-JFV]] on |header|. If that algorithm results
     in an error, abort these steps.
 
     Issue: A trailing comma should not disable enforcement.  Do we
     need to leave the document in a locked down state?
     Maybe set *config*.domSinks to "reject" and return *config*.
-1.  If *list* is not empty, then set *hasWildcardPolicy* to false and set
+1.  If |list| is not empty, then set |hasWildcardPolicy| to {{false}} and set
     defaultSinkDisposition to `“reject”`.
-1.  For each *item* in *list*:
-    1.  If *item* is a <a href="https://tools.ietf.org/html/rfc8259#section-7">string</a> :
-        1.  If *item* is equal to `“*”`, then set *hasWildcardPolicy* to true.
-        1.  Otherwise, add *item* to *config*'s
+1.  For each |item| in |list|:
+    1.  If |item| is a <a href="https://tools.ietf.org/html/rfc8259#section-7">string</a> :
+        1.  If |item| is equal to `“*”`, then set |hasWildcardPolicy| to true.
+        1.  Otherwise, add |item| to |config|'s
             {{TrustedTypeConfiguration/allowedNames|allowedNames}} set.
-    1.  Otherwise, if *item* is an
+    1.  Otherwise, if |item| is an
         <a href="https://tools.ietf.org/html/rfc8259#section-4">object</a>,
-        for each *name* → *value* of item, execute the following steps:
-        1.  Let *propertyName* be the result of running ASCII lowercase on name.
-        1.  Execute the first statement, switching on *propertyName*:
+        for each |name| → |value| of |item|, execute the following steps:
+        1.  Let |propertyName| be the result of running ASCII lowercase on name.
+        1.  Execute the first statement, switching on |propertyName|:
             1.  case `“dom”`:
                 If value is a valid {{StringAtSinkDisposition}}, set
-                *defaultSinkDisposition* to that value. Otherwise, throw
+                |defaultSinkDisposition| to that value. Otherwise, throw
                 an error.
             1.  case `“report”`:
                 If value is a
                 <a href="https://tools.ietf.org/html/rfc8259#section-7">string</a>,
-                set *config*'s
+                set |config|'s
                 {{TrustedTypeConfiguration/reportingGroup|reportingGroup}}
                 to that value.
                 Otherwise, throw an error.
             1.  Otherwise, continue.
     1.  Otherwise, throw an error.
-1.  If *hasWildcardPolicy* is false, then set *config*'s
+1.  If |hasWildcardPolicy| is false, then set |config|'s
     {{TrustedTypeConfiguration/unknownPolicyName}} to `“reject”`.
-1.  If *config*’s {{TrustedTypeConfiguration/domSinks|domSinks}} is null,
-    set *config*’s domSinks to *defaultSinkDisposition*’s value.
-1.  Return *config*.
+1.  If |config|’s {{TrustedTypeConfiguration/domSinks|domSinks}} is {{null}},
+    set |config|’s domSinks to |defaultSinkDisposition|’s value.
+1.  Return |config|.
 
 
 ### <dfn abstract-op>Get Trusted Type compliant string</dfn> ### {#get-trusted-type-compliant-string-algorithm}
@@ -1011,39 +1014,36 @@ This algorithm will return a string that can be assigned to a DOM
 [=injection sink=], optionally unwrapping it from a matching [=Trusted Type=].
 It will ensure that the Trusted Type [=enforcement=] rules were respected.
 
-Given a {{TrustedType}} type (*expectedType*), a {{Document}}
-(*document*), and a {{TrustedType}} (*input*) run these steps:
+Given a {{TrustedType}} type (|expectedType|), a {{Document}}
+(|document|), and a {{TrustedType}} (|input|) run these steps:
 
-1.  Let *disposition* be *document*’s TrustedTypeConfiguration's
+1.  Let |disposition| be |document|’s {{TrustedTypeConfiguration}}'s
     {{TrustedTypeConfiguration/domSinks}}.
-1.  If *disposition* is `“unsafe-allow”`, return stringified *input* and abort these steps.
-1.  If *input* has type *expectedType*, return stringified
-    *input* and abort these steps.
+1.  If |disposition| is `“unsafe-allow”`, return stringified |input| and abort these steps.
+1.  If |input| has type |expectedType|, return stringified
+    |input| and abort these steps.
 1.  Otherwise, execute the following steps:
-    1.  Let *defaultPolicy* be the result of executing
-        [$Get default policy$] algorithm on *document*’s
+    1.  Let |defaultPolicy| be the result of executing
+        [$Get default policy$] algorithm on |document|’s
         [[HTML5#concept-document-bc|browsing context]]'s {{Window}}
         object.
-    1.  If *defaultPolicy* is null, abort these steps.
+    1.  If |defaultPolicy| is {{null}}, abort these steps.
 
         Issue: Do we need some "resume below" language?
-    1.  Let *convertedInput* be the result of executing [$Create a
+    1.  Let |convertedInput| be the result of executing [$Create a
         Trusted Type$] algorithm, with the following arguments:
-        *  *defaultPolicy* as *policy*
-        *  *input* as *value*
-        *  *expectedType*’s type name as *trustedTypeName*
-    1.  If *convertedInput* is an error, then return error and abort the following steps.
-    1.  If *convertedInput* has type *expectedType*, then return
-        stringified *convertedInput* and abort the following steps.
-    1.  Set *input* to *convertedInput*’s value.
+        *  |defaultPolicy| as |policy|
+        *  |input| as |value|
+        *  |expectedType|’s type name as |trustedTypeName|
+    1.  If |convertedInput| is an error, then return error and abort the following steps.
+    1.  If |convertedInput| has type |expectedType|, then return
+        stringified |convertedInput| and abort the following steps.
+    1.  Set |input| to |convertedInput|’s value.
 1.  Execute [$Report sink type mismatch violation$] algorithm.
-1.  If *disposition* is `“report”`, then return stringified *input* and abort these steps.
+1.  If |disposition| is `“report”`, then return stringified |input| and abort these steps.
 1.  Throw a {{TypeError}}.
 
 ### <dfn abstract-op>Enforce a Trusted Type</dfn> ### {#enforce-a-trusted-type-algorithm}
-
-Note: <dfn>enforcement</dfn> is the process of checking that a value
-has an appropriate type before it reaches an [=injection sink=].
 
 Enforce a Trusted Type algorithm describes a modification to the [=injection sinks=],
 asserting that the input meets [=Trusted Type=]
@@ -1052,20 +1052,20 @@ value that the original function would and will optionally
 pass-through to the original function -- all original arguments to the
 function apart from input are passed through without modification.
 
-Given *input* and *expectedType*, perform the following steps.
+Given |input| and |expectedType|, perform the following steps.
 
-1.  Let *compliantValue* be the result of executing [$Get Trusted Type
+1.  Let |compliantValue| be the result of executing [$Get Trusted Type
     compliant string$] algorithm with
-    *  *document* being the current {{Document}}
-    *  *input*
-    *  *expectedType*
+    *  |document| being the current {{Document}}
+    *  |input|
+    *  |expectedType|
 
 1.  If the previous algorithm throws an exception, rethrow the exception,
     and abort these steps.
 
-    Issue: can we use "*compliantValue* is an error" language here?
+    Issue: can we use "|compliantValue| is an error" language here?
 
-1.  Execute the original function with *compliantValue* instead of the
+1.  Execute the original function with |compliantValue| instead of the
     original value.  If the original functions accepts other
     arguments, pass-them through to the original function.  Return the
     result.
@@ -1078,24 +1078,24 @@ Issue: TODO: write and link to it
 
 Issue: Check that this algorithm is complete.
 
-Given a [[#violation|violation]] (*violation*), this algorithm reports
+Given a [[#violation|violation]] (|violation|), this algorithm reports
 it to the {{TrustedTypeConfiguration/reportingGroup|endpoint}}
-specified in the violation’s {{TrustedTypeConfiguration|configuration
+specified in the |violation|’s {{TrustedTypeConfiguration|configuration
 object}}.
 
 1.  Enqueue a task to run the following steps:
-    1.  Let *group* be *violation*’s configuration's
+    1.  Let |group| be |violation|’s configuration's
         {{TrustedTypeConfiguration/reportingGroup}}.
-    1.  Let *settings* be *violation*’s [[CSP3#violation-global-object|global object]]’s
+    1.  Let |settings| be |violation|’s [[CSP3#violation-global-object|global object]]’s
         relevant settings object.
-    1.  Execute [[REPORTING#queue-report|Queue data as type for endpoint group on settings algorith]]
+    1.  Execute [[REPORTING#queue-report|Queue data as type for endpoint group on settings algorithm]]
         with the following arguments:
-        *  *data* = violation
-        *  *type* = `“trusted-types”`
-        *  *endpoint group* = *group*
-        *  *settings* = *settings*
+        *  |data| = |violation|
+        *  |type| = `“trusted-types”`
+        *  |endpoint group| = |group|
+        *  |settings| = |settings|
 
-        Note: The optional *url* parameter is not provided.
+        Note: The optional |url| parameter is not provided.
 
 # Integrations # {#integrations}
 
@@ -1115,7 +1115,7 @@ per heycam/webidl#441.
 
 Issue(WICG/trusted-types#2): [[webidl#TreatNullAs|TreatNullAs=EmptyString]] is confusing.
 See note "It should not be used in specifications unless ...".
-For some sinks a null value will result in "", and "null" for others.
+For some sinks a {{null}} value will result in "", and "null" for others.
 This already caused problems in the polyfill.
 
 ## Integration with HTML ## {#integration-with-html}
@@ -1169,7 +1169,7 @@ partial interface mixin Window {
 
 {{Window/TrustedTypes}} returns the [[#integration-with-html|trusted
 type policy factory]] of the current {{Window}}, if the current Window
-has a trusted type policy factory, or null otherwise.
+has a trusted type policy factory, or {{null}} otherwise.
 
 ### Extensions to the Document interface ### {#extensions-to-the-document-interface}
 
@@ -1376,7 +1376,7 @@ execution environment. It's assumed that the application is written by
 non-malicious authors; the intent is to prevent developer mistakes that could
 result in security bugs, and not to defend against first-party malicious code actively trying to bypass policy restrictions.
 
-## Bypass vectors
+## Bypass vectors ## {#bypass-vectors}
 
 Issue(WICG/trusted-types#49): Mention node-adoption bypass vectors.
 
@@ -1389,7 +1389,7 @@ Issue(WICG/trusted-types#42): Mention bypass vectors with template elements.
 
 Issue(WICG/trusted-types#6): Mention corner cases with types that depend on a different attribute value.
 
-## Best practices for policy design
+## Best practices for policy design ## {#best-practices-for-policy-design}
 
 Trusted Types limit the scope of the code that can introduce DOM XSS
 vulnerabilities to the implementation of [[#policies|policies]]. In this design,
