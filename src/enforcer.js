@@ -225,6 +225,7 @@ export class TrustedTypesEnforcer {
     this.wrapWithEnforceFunction_(window, 'setTimeout',
         TrustedTypes.TrustedScript, 0);
     this.wrapSetAttribute_();
+    this.installScriptMutatorGuards_();
     this.installPropertySetWrappers_();
   }
 
@@ -261,7 +262,58 @@ export class TrustedTypesEnforcer {
     this.restoreFunction_(window, 'setTimeout');
     this.restoreFunction_(window, 'setInterval');
     this.uninstallPropertySetWrappers_();
+    this.uninstallScriptMutatorGuards_();
     resetDefaultPolicy();
+  }
+
+  /**
+   * Installs type-enforcing wrappers for APIs that allow to modify
+   * script element texts.
+   * @private
+   */
+  installScriptMutatorGuards_() {
+    const that = this;
+
+    // TODO: Add Node insertBefore() and replaceChild()
+    // TODO: Add ParentNode append() and prepend()
+    // TODO: Add ChildNode after(), before() and replaceWith()
+    // TODO: Add Element insertAdjacentElement()
+    this.wrapFunction_(
+        Node.prototype,
+        'appendChild',
+        /**
+         * @this {TrustedTypesEnforcer}
+         * @param {function(!Function, ...*)} originalFn
+         * @return {*}
+         */
+        function(originalFn, ...args) {
+          return that.appendChildWrapper_
+              .bind(that, this, originalFn)
+              .apply(that, args);
+        });
+    this.wrapFunction_(
+        Element.prototype,
+        'insertAdjacentText',
+        /**
+         * @this {TrustedTypesEnforcer}
+         * @param {function(!Function, ...*)} originalFn
+         * @return {*}
+         */
+        function(originalFn, ...args) {
+          return that.insertAdjacentTextWrapper_
+              .bind(that, this, originalFn)
+              .apply(that, args);
+        });
+  }
+
+  /**
+   * Uninstalls type-enforcing wrappers for APIs that allow to modify
+   * script element texts.
+   * @private
+   */
+  uninstallScriptMutatorGuards_() {
+    this.restoreFunction_(Node.prototype, 'appendChild');
+    this.restoreFunction_(Element.prototype, 'insertAdjacentText');
   }
 
   /**
@@ -374,6 +426,61 @@ export class TrustedTypesEnforcer {
             STRING_TO_TYPE[requiredType],
             originalFn, 2, args);
       }
+    }
+    return originalFn.apply(context, args);
+  }
+
+  /**
+   * Wrapper for Node.appendChild that enforces type checks for appending to
+   * script nodes.
+   * @param {!Object} context The context for the call to the original function.
+   * @param {!Function} originalFn The original setAttributeNS function.
+   * @return {*}
+   */
+  appendChildWrapper_(context, originalFn, ...args) {
+    if (context instanceof HTMLScriptElement &&
+        args.length > 0 &&
+        args[0] instanceof Node &&
+        args[0].nodeType == Node.TEXT_NODE) {
+      // Text node insertion for script. Just serialize the node and try to
+      // set a property.
+      context.textContent += args[0].textContent;
+      return context.children[0];
+    }
+    return originalFn.apply(context, args);
+  }
+
+  /**
+   * Wrapper for Element.insertAdjacentText that enforces type checks for
+   * inserting text into a script node.
+   * @param {!Object} context The context for the call to the original function.
+   * @param {!Function} originalFn The original setAttributeNS function.
+   * @return {*}
+   */
+  insertAdjacentTextWrapper_(context, originalFn, ...args) {
+    if (context instanceof Element &&
+        context.parentElement instanceof HTMLScriptElement &&
+        args.length > 1 &&
+        (args[0] === 'beforebegin' || args[0] == 'afterend') &&
+        !(args[1] instanceof TrustedTypes.TrustedScript) && args[1] !== '') {
+      // Text node insertion for script. Just serialize the node and try to
+      // set a property.
+      let newText = '';
+      for (const childNode of context.parentElement.childNodes) {
+        if (childNode === context && args[0] == 'beforebegin') {
+          newText += args[1];
+        }
+        if (childNode.nodeType == Node.TEXT_NODE) {
+          newText += childNode.textContent;
+        }
+        if (childNode === context && args[0] == 'afterend') {
+          newText += args[1];
+        }
+      }
+
+      // TODO: Figure out a way to sanitize without losing the node structure.
+      context.parentElement.textContent = newText;
+      return;
     }
     return originalFn.apply(context, args);
   }

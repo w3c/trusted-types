@@ -1461,7 +1461,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Trusted Types</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-07-10">10 July 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-06-28">28 June 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1822,7 +1822,7 @@ tags and attributes that are known not to cause JavaScript
 execution. Any <code class="idl"><a data-link-type="idl" href="#trustedhtml" id="ref-for-trustedhtml①">TrustedHTML</a></code> object created through this policy can then
 be safely used in the application, and e.g. passed to <code>innerHTML</code> setter - even if the input value was controlled by the attacker, the
 policy rules neutralized it to adhere to policy-specific
-contract. 
+contract.
 <pre class="highlight"><c- kr>const</c-> sanitizingPolicy <c- o>=</c-> TrustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- t>'sanitize-html'</c-><c- p>,</c-> <c- p>{</c->
   createHTML<c- o>:</c-> <c- p>(</c->input<c- p>)</c-> <c- p>=></c-> myTrustedSanitizer<c- p>(</c->input<c- p>,</c-> <c- p>{</c-> superSafe<c- o>:</c-> <c- t>'ok'</c-><c- p>}),</c->
 <c- p>});</c->
@@ -1841,7 +1841,7 @@ applications to define different rules for different parts of the
 codebase.</p>
    <div class="example" id="policy-reference">
     <a class="self-link" href="#policy-reference"></a> Library initialized with a policy allowing it to load additional scripts from
-a given host. 
+a given host.
 <pre class="highlight"><c- kr>const</c-> cdnScriptsPolicy <c- o>=</c-> TrustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- t>'cdn-scripts'</c-><c- p>,</c-> <c- p>{</c->
   createScriptURL<c- p>(</c->url<c- p>)</c-> <c- p>{</c->
     <c- kr>const</c-> parsed <c- o>=</c-> <c- k>new</c-> URL<c- p>(</c->url<c- p>,</c-> document<c- p>.</c->baseURI<c- p>);</c->
@@ -1879,7 +1879,7 @@ access to which can be controlled using JavaScript techniques
 (e.g. via closures, internal function variables, or modules).</p>
    <div class="example" id="policy-capability">
     <a class="self-link" href="#policy-capability"></a> Unsafe no-op policy reachable only from within a single code block to ascertain
-that it’s called only with no attacker-controlled values. 
+that it’s called only with no attacker-controlled values.
 <pre class="highlight"><c- p>(</c-><c- a>function</c-> renderFootnote<c- p>()</c-> <c- p>{</c->
   <c- kr>const</c-> unsafePolicy <c- o>=</c-> TrustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- t>'html'</c-><c- p>,</c-> <c- p>{</c->
     createHTML<c- o>:</c-> input <c- p>=></c-> input<c- p>,</c->
@@ -1920,7 +1920,7 @@ header, the policy creation fails with a <a href="https://www.w3.org/TR/2016/REC
 Also, if createPolicy is called more than once with any given policyName,
 policy creation fails with a TypeError.</p>
       <div class="example" id="create-policy-example">
-       <a class="self-link" href="#create-policy-example"></a> 
+       <a class="self-link" href="#create-policy-example"></a>
 <pre class="highlight"><c- c1>// HTTP Response header: Trusted-Types: "foo"</c->
 TrustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- u>"foo"</c-><c- p>,</c-> <c- p>{});</c-> <c- c1>// ok.</c->
 TrustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- u>"bar"</c-><c- p>,</c-> <c- p>{});</c-> <c- c1>// throws - name not on the whitelist.</c->
@@ -1933,7 +1933,7 @@ with the following arguments:</p>
        <dt>factory
        <dd><a href="https://dom.spec.whatwg.org/#context-object">context object</a>
        <dt>policyName
-       <dd>policyName 
+       <dd>policyName
       </dl>
      <dt data-md><dfn class="dfn-paneled idl-code" data-dfn-for="TrustedTypePolicyFactory" data-dfn-type="method" data-export id="dom-trustedtypepolicyfactory-getpolicynames"><code>getPolicyNames()</code></dfn>
      <dd data-md>
@@ -1945,7 +1945,7 @@ with the following arguments:</p>
 policies). This is to be able to detect a forgery of the objects via
 e.g. <a href="https://tc39.github.io/ecma262/#sec-object.create">Object.create</a> or prototype chains manipulation.</p>
       <div class="example" id="is-html-example">
-       <a class="self-link" href="#is-html-example"></a> 
+       <a class="self-link" href="#is-html-example"></a>
 <pre class="highlight"><c- kr>const</c-> html <c- o>=</c-> policy<c- p>.</c->createHTML<c- p>(</c-><c- t>'&lt;div>'</c-><c- p>);</c->
 TrustedTypes<c- p>.</c->isHTML<c- p>(</c->html<c- p>)</c-> <c- c1>// true</c->
 
@@ -1967,7 +1967,7 @@ TrustedTypes<c- p>.</c->isHTML<c- p>(</c-><c- u>"&lt;div>plain string&lt;/div>"<
     </dl>
    </div>
    <div class="example" id="create-and-used-unexposed-policy">
-    <a class="self-link" href="#create-and-used-unexposed-policy"></a> 
+    <a class="self-link" href="#create-and-used-unexposed-policy"></a>
 <pre class="highlight"><c- kr>const</c-> myPolicy <c- o>=</c-> TrustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- t>'myPolicy'</c-><c- p>,</c-> <c- p>{</c->
   <c- c1>// This needs security review, as it’s security critical code;</c->
   <c- c1>// a flaw in this code could cause DOM XSS.</c->
@@ -2020,7 +2020,7 @@ result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-cr
 following arguments:</p>
       <dl>
        <dt>policy
-       <dd><a href="https://dom.spec.whatwg.org/#context-object">context object</a> 
+       <dd><a href="https://dom.spec.whatwg.org/#context-object">context object</a>
        <dt>trustedTypeName
        <dd><code>"TrustedHTML"</code>
        <dt>value
@@ -2033,7 +2033,7 @@ result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-cr
 following arguments:</p>
       <dl>
        <dt>policy
-       <dd><a href="https://dom.spec.whatwg.org/#context-object">context object</a> 
+       <dd><a href="https://dom.spec.whatwg.org/#context-object">context object</a>
        <dt>trustedTypeName
        <dd><code>"TrustedScript"</code>
        <dt>value
@@ -2046,7 +2046,7 @@ result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-cr
 following arguments:</p>
       <dl>
        <dt>policy
-       <dd><a href="https://dom.spec.whatwg.org/#context-object">context object</a> 
+       <dd><a href="https://dom.spec.whatwg.org/#context-object">context object</a>
        <dt>trustedTypeName
        <dd><code>"TrustedScriptURL"</code>
        <dt>value
@@ -2059,7 +2059,7 @@ result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-cr
 following arguments:</p>
       <dl>
        <dt>policy
-       <dd><a href="https://dom.spec.whatwg.org/#context-object">context object</a> 
+       <dd><a href="https://dom.spec.whatwg.org/#context-object">context object</a>
        <dt>trustedTypeName
        <dd><code>"TrustedURL"</code>
        <dt>value
@@ -2161,20 +2161,20 @@ simple, while allowing explicit change towards less strict
 configurations possible.</p>
    <div class="example" id="whitelist-of-policy-names-in-header">
     <a class="self-link" href="#whitelist-of-policy-names-in-header"></a> Types are enforced at sinks, and only policies name “one” and “two”
-may be created. 
+may be created.
 <pre class="http">Trusted-Types: "one", "two"
 </pre>
    </div>
    <div class="example" id="header-that-allows-no-policy-names">
     <a class="self-link" href="#header-that-allows-no-policy-names"></a> A value of <code>null</code> indicates policies may not be created, and sinks are
-enforced.  I.e. no <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①②">injection sinks</a> can be used in a document. 
+enforced.  I.e. no <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①②">injection sinks</a> can be used in a document.
 <pre class="http">Trusted-Types: null
 </pre>
    </div>
    <p>A policy named <code>"*"</code> makes it possible to create policies with any
 previously unused name.</p>
    <div class="example" id="wildcard-policy-name-in-header">
-    <a class="self-link" href="#wildcard-policy-name-in-header"></a> 
+    <a class="self-link" href="#wildcard-policy-name-in-header"></a>
 <pre class="http">Trusted-Types: "*"
 </pre>
    </div>
@@ -2182,7 +2182,7 @@ previously unused name.</p>
 all strings passed to <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①③">injection sinks</a> will be passed through it instead
 of being rejected outright.</p>
    <div class="example" id="default-in-header">
-    <a class="self-link" href="#default-in-header"></a> 
+    <a class="self-link" href="#default-in-header"></a>
 <pre class="http">Trusted-Types: "one", "two", "default"
 </pre>
    </div>
@@ -2191,7 +2191,7 @@ use a header value that is an object. That object allows for configuring the
 enforcement for the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①④">injection sinks</a>.</p>
    <div class="example" id="complex configuration-in-header">
     <a class="self-link" href="#complex%20configuration-in-header"></a> Only reports violations in <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⑤">injection sinks</a>, but allow strings passed to them
-(similar to Content-Security-Policy-Report-Only). 
+(similar to Content-Security-Policy-Report-Only).
 <pre class="http" id="string-at-sink-disposition-in-header">Trusted-Types: "*", {"dom”: "unsafe-allow"}
 </pre>
     <p>Report violations using a “trustedtypes” reporting group.</p>
@@ -2275,7 +2275,7 @@ given a DOMString (<em>policyName</em>) and policy options dictionary (<em>optio
      <p>Return <em>policy</em>.</p>
    </ol>
    <h4 class="heading settled" data-level="3.1.3" id="get-default-policy-algorithm"><span class="secno">3.1.3. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-get-default-policy">Get default policy</dfn></span><a class="self-link" href="#get-default-policy-algorithm"></a></h4>
-    To get the <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy①">default policy</a> for a <em>factory</em>, execute the following steps: 
+    To get the <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy①">default policy</a> for a <em>factory</em>, execute the following steps:
    <ol>
     <li data-md>
      <p>Set <em>policyName</em> to <code>"default"</code>.</p>
@@ -2320,7 +2320,7 @@ based on the following table:</p>
       <tbody>
        <tr>
         <th>Function name
-        <th>Trusted Type name 
+        <th>Trusted Type name
        <tr>
         <td>"createHTML"
         <td>"TrustedHTML"
@@ -2746,7 +2746,7 @@ also unconditionally accepts any <code class="idl"><a data-link-type="idl" href=
    <h3 class="heading settled" data-level="4.3" id="integration-with-content-security-policy"><span class="secno">4.3. </span><span class="content">Integration with Content-Security-Policy</span><a class="self-link" href="#integration-with-content-security-policy"></a></h3>
    <p class="note" role="note"><span>Note:</span> See <a href="https://github.com/tc39/ecma262/issues/938">TC39/ecma262 issue #938</a> (adding the value to be compiled to algorithm parameters).</p>
    <div class="note" role="note">
-    Note: EcmaScript code may call <code>Function()</code> and <code>eval</code> cross realm. 
+    Note: EcmaScript code may call <code>Function()</code> and <code>eval</code> cross realm.
 <pre class="highlight"><c- a>let</c-> f <c- o>=</c-> <c- k>new</c-> self<c- p>.</c->top<c- p>.</c->Function<c- p>(</c->source<c- p>);</c->
 </pre>
     <p>In this case, the <var>callerRealm</var>’s Window is <code>self</code> and the <var>calleeRealm</var>’s Window is <code>self.top</code>.
@@ -2767,21 +2767,21 @@ the <var>calleeRealm</var> or <var>callerRealm</var>’s Content-Security-Policy
 </pre>
    <p>This document modifies the <a href="https://www.w3.org/TR/CSP3/#can-compile-strings">EnsureCSPDoesNotBlockStringCompilation</a> which is reproduced in its entirety below with additions and deletions.</p>
    <p>
-    Given two <a href="https://tc39.github.io/ecma262/#realm">realms</a> (<var>callerRealm</var> and <var>calleeRealm</var>), and a 
+    Given two <a href="https://tc39.github.io/ecma262/#realm">realms</a> (<var>callerRealm</var> and <var>calleeRealm</var>), and a
     <del>string</del>
     <ins>value</ins>
-     (<var>source</var>), this algorithm returns 
+     (<var>source</var>), this algorithm returns
     <del>normally</del>
    </p>
    <ins>the source string to compile</ins>
     if compilation is allowed, and
-throws an "<code>EvalError</code>" if not: 
+throws an "<code>EvalError</code>" if not:
    <ol>
     <li data-md>
      <ins>Let <var>document</var> be <var>calleeRealm</var>’s <a href="https://www.w3.org/TR/html5/#environment-settings-object">environment setting object</a>'s <a href="https://www.w3.org/TR/html5/#responsible-document">responsible document</a>.</ins>
     <li data-md>
      <ins>
-      Let <var>sourceString</var> be the result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string⑤">Get Trusted Type compliant string</a> algorithm, with: 
+      Let <var>sourceString</var> be the result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string⑤">Get Trusted Type compliant string</a> algorithm, with:
       <ul>
        <li data-md>
         <p><var>document</var> as <var>document</var>,</p>
@@ -2795,7 +2795,7 @@ throws an "<code>EvalError</code>" if not:
      <ins>If the algorithm throws an error, throw an <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-evalerror" id="ref-for-exceptiondef-evalerror">EvalError</a></code>.</ins>
     <li data-md>
      <ins>
-      Let <var>isExempt</var> be the result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-issourceexempt" id="ref-for-abstract-opdef-issourceexempt">IsSourceExempt</a> algorithm with: 
+      Let <var>isExempt</var> be the result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-issourceexempt" id="ref-for-abstract-opdef-issourceexempt">IsSourceExempt</a> algorithm with:
       <ul>
        <li data-md>
         <p><var>document</var>’s <code class="idl"><a data-link-type="idl" href="#dictdef-trustedtypeconfiguration" id="ref-for-dictdef-trustedtypeconfiguration⑦">TrustedTypeConfiguration</a></code> as <var>ttConfig</var>.</p>
@@ -2821,7 +2821,7 @@ set <var>source-list</var> to that <a data-link-type="dfn" href="https://w3c.git
         <li data-md>
          <p>
           If <var>source-list</var> is not <code>null</code>, and does not contain a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#source-expression" id="ref-for-source-expression">source expression</a> which is
-an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ascii-case-insensitive" id="ref-for-ascii-case-insensitive">ASCII case-insensitive</a> match for the string "<a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-unsafe-eval" id="ref-for-grammardef-unsafe-eval"><code>'unsafe-eval'</code></a>", 
+an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ascii-case-insensitive" id="ref-for-ascii-case-insensitive">ASCII case-insensitive</a> match for the string "<a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-unsafe-eval" id="ref-for-grammardef-unsafe-eval"><code>'unsafe-eval'</code></a>",
           <ins>and
 it is the case that (<var>isExempt</var> is not true or <var>source-list</var> does not contain a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#source-expression" id="ref-for-source-expression①">source expression</a> which is an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ascii-case-insensitive" id="ref-for-ascii-case-insensitive①">ASCII case-insensitive</a> match for the
 string "<a data-link-type="grammar" href="#grammardef-trusted-script" id="ref-for-grammardef-trusted-script"><code>'trusted-script'</code></a>")</ins>
@@ -2836,7 +2836,7 @@ string "<a data-link-type="grammar" href="#grammardef-trusted-script" id="ref-fo
            <p>
             If <var>source-list</var> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain">contains</a> the expression
 "<a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-report-sample" id="ref-for-grammardef-report-sample"><code>'report-sample'</code></a>", then set <var>violation</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation-sample" id="ref-for-violation-sample">sample</a> to
-the substring of 
+the substring of
             <del><var>source</var></del>
             <ins><var>sourceString</var></ins>
              containing its first
