@@ -65,8 +65,8 @@ const windowOpenObject = getOwnPropertyDescriptor(window, 'open') ?
   window :
   window.constructor.prototype;
 
-// In IE 11, insertAdjacentHTML is on HTMLElement prototype
-const insertAdjacentHTMLObject = apply(hasOwnProperty, Element.prototype,
+// In IE 11, insertAdjacent(HTML|Text) is on HTMLElement prototype
+const insertAdjacentObject = apply(hasOwnProperty, Element.prototype,
     ['insertAdjacentHTML']) ? Element.prototype : HTMLElement.prototype;
 
 // This is not available in release Firefox :(
@@ -193,7 +193,7 @@ export class TrustedTypesEnforcer {
     this.wrapWithEnforceFunction_(Range.prototype, 'createContextualFragment',
         TrustedTypes.TrustedHTML, 0);
 
-    this.wrapWithEnforceFunction_(insertAdjacentHTMLObject,
+    this.wrapWithEnforceFunction_(insertAdjacentObject,
         'insertAdjacentHTML',
         TrustedTypes.TrustedHTML, 1);
 
@@ -241,7 +241,7 @@ export class TrustedTypesEnforcer {
       this.restoreSetter_(ShadowRoot.prototype, 'innerHTML');
     }
     this.restoreFunction_(Range.prototype, 'createContextualFragment');
-    this.restoreFunction_(insertAdjacentHTMLObject, 'insertAdjacentHTML');
+    this.restoreFunction_(insertAdjacentObject, 'insertAdjacentHTML');
     this.restoreFunction_(Element.prototype, 'setAttribute');
     this.restoreFunction_(Element.prototype, 'setAttributeNS');
 
@@ -290,7 +290,7 @@ export class TrustedTypesEnforcer {
               .apply(that, args);
         });
     this.wrapFunction_(
-        Element.prototype,
+        insertAdjacentObject,
         'insertAdjacentText',
         /**
          * @this {TrustedTypesEnforcer}
@@ -311,7 +311,7 @@ export class TrustedTypesEnforcer {
    */
   uninstallScriptMutatorGuards_() {
     this.restoreFunction_(Node.prototype, 'appendChild');
-    this.restoreFunction_(Element.prototype, 'insertAdjacentText');
+    this.restoreFunction_(insertAdjacentObject, 'insertAdjacentText');
   }
 
   /**
