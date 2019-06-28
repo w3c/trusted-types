@@ -549,6 +549,65 @@ describe('TrustedTypesEnforcer', function() {
     });
   });
 
+  describe('enforcement disables script node modification', () => {
+    let enforcer;
+
+    beforeEach(function() {
+      enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
+      enforcer.install();
+    });
+
+    afterEach(function() {
+      enforcer.uninstall();
+    });
+
+    it('via insertAdjacentText on script children', () => {
+      // Setup: Create a <script> element with a <p> child.
+      const s = document.createElement('script');
+      const p = document.createElement('p');
+      p.textContent = 'hello("world");';
+      s.appendChild(p);
+
+      // Sanity check: The <p> content doesn't count as source text.
+      expect(s.text).toEqual('');
+
+      // Try to insertAdjacentText into the <script>, starting from the <p>
+      expect(() => {
+        p.insertAdjacentText('beforebegin', 'hello("before");');
+      }).toThrow();
+
+      expect(s.text).toEqual('');
+      expect(() => {
+        p.insertAdjacentText('afterend', 'hello("after");');
+      }).toThrow();
+
+      expect(s.text).toEqual('');
+    });
+
+    it('via text node insertion to non-attached script node', () => {
+      // Variant: Create a <script> element and create & insert a text node.
+      // Then insert it into the document container to make it live.
+      const s = document.createElement('script');
+      const text = document.createTextNode('alert("hello");');
+
+      expect(() => {
+        s.appendChild(text);
+      }).toThrow();
+    });
+
+    it('via text node insertion to an attached script node', () => {
+      // Variant: Create a <script> element and create & insert a text node.
+      // Then insert it into the document container to make it live.
+      const s = document.createElement('script');
+      const text = document.createTextNode('alert("hello");');
+      document.body.appendChild(s);
+
+      expect(() => {
+        s.appendChild(text);
+      }).toThrow();
+    });
+  });
+
   describe('enforcement disables string assignments', function() {
     let enforcer;
 
