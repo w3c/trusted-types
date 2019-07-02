@@ -160,7 +160,7 @@ producing types in parts of the application, while still using and
 accepting strings in other parts of the codebase). In that sense,
 Trusted Types are backwards-compatible with the regular DOM APIs.
 
-### TrustedTypes extended attribute
+### TrustedTypes extended attribute ### {#!trustedtypes-extended-attribute}
 
 To ensure that Trusted Types are required in DOM property setters [=injection sinks=], we introduce
 <dfn data-dfn-type="extended-attribute" data-x="TrustedTypes" data-lt="TrustedTypes"><code>[TrustedTypes]</code></dfn>
@@ -986,7 +986,7 @@ Given a {{Response}} (|response|), perform the following steps:
     1.  Otherwise, if |item| is an
         <a href="https://tools.ietf.org/html/rfc8259#section-4">object</a>,
         for each |name| → |value| of |item|, execute the following steps:
-        1.  Let |propertyName| be the result of running ASCII lowercase on name.
+        1.  Let |propertyName| be the result of running |=ASCII lowercase=| on |name|.
         1.  Execute the first statement, switching on |propertyName|:
             1.  case `“dom”`:
                 If value is a valid {{StringAtSinkDisposition}}, set
@@ -1322,8 +1322,7 @@ At the beginning of step 5, insert the following steps:
     [$Get Trusted Type compliant string$] algorithm, with
     *   *document* set to the owner document of *eventTarget*,
     *   *input* set to *value*,
-    *   *expectedType* set to {{TrustedScript}}, and
-    *   |passThroughFunctions| set to false.
+    *   *expectedType* set to {{TrustedScript}}
 1.  If the algorithm throws an error, abort these steps.
 
 
@@ -1398,26 +1397,17 @@ throws an "`EvalError`" if not:
     [$Get Trusted Type compliant string$] algorithm, with:
     *   |document| as |document|,
     *   |source| as |input|,
-    *   {{TrustedScript}} as |expectedType|, and
-    *   false as |passThroughFunctions|.</ins>
+    *   {{TrustedScript}} as |expectedType|.</ins>
 
 3.  <ins>If the algorithm throws an error, throw an {{EvalError}}.</ins>
 
-4.  Let |globals| be a list containing |calleeRealm|'s [=Realm/global object=] and |calleeRealm|'s
-    [=Realm/global object=].
-
-5.  <ins>Let |cspPolicies| be an empty list.</ins>
-
-6.  <ins>For each |global| in |globals|:
-
-    1.  For each |policy| in |global|'s [[CSP#global-object-csp-list|CSP list]]:
-        1.  Add |policy| to |cspPolicies|.</ins>
-
-7.  <ins>Let |isExempt| be the result of executing the [$IsSourceExempt$] algorithm with:
-    *   |cspPolicies| as |cspPolicies|, and
+4.  <ins>Let |isExempt| be the result of executing the [$IsSourceExempt$] algorithm with:
     *   |document|’s {{TrustedTypeConfiguration}} as |ttConfig|.</ins>
 
-8.  For each |global| in |globals|:
+5.  Let |globals| be a list containing |calleeRealm|'s [=Realm/global object=] and |calleeRealm|'s
+    [=Realm/global object=].
+
+6.  For each |global| in |globals|:
 
     1.  Let |result| be "`Allowed`".
 
@@ -1478,49 +1468,15 @@ error, it only reports it via its |calleeRealm|'s report-uri.
 
 ### <dfn abstract-op>IsSourceExempt</dfn> Algorithm ### {#is-source-exempt-algorithm}
 
-The IsSourceExempt algorithm takes a list of
-[[CSP3#content-security-policy-object|policies]] (|cspPolicies|),
-and a {{TrustedTypeConfiguration}} (|ttConfig|) and executes the
-following steps:
+The IsSourceExempt algorithm takes a {{TrustedTypeConfiguration}}
+(|ttConfig|) and executes the following steps:
 
-1.  Let |isTTStrict| = `true`.
-1.  If |ttConfig|'s {{TrustedTypeConfiguration/unknownPolicyName}} is
-    {{UnknownPolicyNameDisposition|"allow"}} then
-    set |isTTStrict| to `false`.
-1.  Otherwise if |ttConfig|'s {{TrustedTypeConfiguration/allowedNames}} contains `'*'` then
-    set |isTTStrict| to `false`.
-1.  Let |isTTEnforced| = `false`.
 1.  If |ttConfig|'s {{TrustedTypeConfiguration/domSinks}} is
-    {{StringAtSinkDisposition|"reject"}} then
-    set |isTTEnforced| to `true`.
-1.  Let |isCSPEnforced| = `false`.
-1.  For each |policy| in |cspPolicies|:
-    1.  Let |source-list| be `null`.
-    1.  If |policy| contains a [[CSP3#directive|directive]]
-        whose [[CSP3#directive-name|name]] is "`script-src`", then set
-        |source-list| to that [[CSP3#directive|directive]]'s
-        [[CSP3#directive-value|value]].
+    {{StringAtSinkDisposition|"reject"}} then return true.
+1.  Return false.
 
-        Otherwise if |policy| contains a [[CSP3#directive|directive]]
-        whose [[CSP3#directive-name|name]] is "`default-src`", then set
-        |source-list| to that [[CSP3#directive|directive]]'s
-        [[CSP3#directive-value|value]].
-    1.  If |source-list| is not `null`, and does not contain a
-        [[CSP3#source-expression|source expression]] which as an
-        <a>ASCII case-insensitive</a> match for
-        the string "<a grammar>'unsafe-eval'</a>", then
-        set |isCSPEnforced| to `true`.
-1.  If |isTTStrict| is `true` and |isCSPEnforced| is equal to
-    |isTTEnforced| then return `true`.
-1.  Return `false`.
-
-Note: We want to allow progressive enhancement via dynamic code loading
-without requiring servers to serve `'unsafe-eval` only to user-agents
-that don't implement TrustedTypes without allowing
-{{TrustedTypePolicyFactory/createPolicy()}} to bypass CSP without opt-in.
-This algorithm returns true if CSP and TrustedTypes agree on whether
-to enforce and the {{TrustedTypeConfiguration}} places meaningful limits
-(|isTTStrict|) on {{TrustedTypePolicy}} creation.
+Note: This checks whether Trusted Types enforcement would have rejected the
+input, were it problematic in the callout to [$Get Trusted Type compliant string$].
 
 
 # Security Considerations # {#security-considerations}

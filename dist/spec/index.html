@@ -1215,7 +1215,7 @@ Possible extra rowspan handling
   <link href="https://www.w3.org/StyleSheets/TR/2016/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version 10ff3eb4050069e20bb9b943c8b76fe5bfe3a48f" name="generator">
   <link href="https://wicg.github.io/trusted-types/dist/spec/" rel="canonical">
-  <meta content="25361c73a14ac09dcac8d60a12736e3818e14a28" name="document-revision">
+  <meta content="c047b294f024558139de865614999f3884ef68aa" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -1513,7 +1513,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <li>
        <a href="#trusted-types"><span class="secno">2.2</span> <span class="content">Trusted Types</span></a>
        <ol class="toc">
-        <li><a href="#trustedtypes-extended-attribute"><span class="secno">2.2.1</span> <span class="content">TrustedTypes extended attribute</span></a>
+        <li><a href="#!trustedtypes-extended-attribute"><span class="secno">2.2.1</span> <span class="content">TrustedTypes extended attribute</span></a>
         <li><a href="#trusted-html"><span class="secno">2.2.2</span> <span class="content"><span>TrustedHTML</span></span></a>
         <li><a href="#trusted-script"><span class="secno">2.2.3</span> <span class="content"><span>TrustedScript</span></span></a>
         <li><a href="#trused-script-url"><span class="secno">2.2.4</span> <span class="content"><span>TrustedScriptURL</span></span></a>
@@ -1717,7 +1717,7 @@ Trusted Types in place of DOM strings (it’s possible to start
 producing types in parts of the application, while still using and
 accepting strings in other parts of the codebase). In that sense,
 Trusted Types are backwards-compatible with the regular DOM APIs.</p>
-   <h4 class="heading settled" data-level="2.2.1" id="trustedtypes-extended-attribute"><span class="secno">2.2.1. </span><span class="content">TrustedTypes extended attribute</span><a class="self-link" href="#trustedtypes-extended-attribute"></a></h4>
+   <h4 class="heading settled" data-level="2.2.1" id="!trustedtypes-extended-attribute"><span class="secno">2.2.1. </span><span class="content">TrustedTypes extended attribute</span><a class="self-link" href="#!trustedtypes-extended-attribute"></a></h4>
    <p>To ensure that Trusted Types are required in DOM property setters <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②">injection sinks</a>, we introduce <dfn class="dfn-paneled idl-code" data-dfn-type="extended-attribute" data-export data-lt="TrustedTypes" data-x="TrustedTypes" id="extendedattrdef-trustedtypes"><code>[TrustedTypes]</code></dfn> IDL <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-extended-attribute" id="ref-for-dfn-extended-attribute">extended attribute</a>. It indicates that the relevant setter algorithm is to be supplemented with additional
 enforcing steps.</p>
    <p>The <code class="idl"><a data-link-type="idl" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes">TrustedTypes</a></code> extended attribute <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-xattr-identifier" id="ref-for-dfn-xattr-identifier">takes an identifier</a> as an argument.
@@ -2397,7 +2397,7 @@ defaultSinkDisposition to <code>“reject”</code>.</p>
 for each <var>name</var> → <var>value</var> of <var>item</var>, execute the following steps:</p>
        <ol>
         <li data-md>
-         <p>Let <var>propertyName</var> be the result of running ASCII lowercase on name.</p>
+         <p>Let <var>propertyName</var> be the result of running |=ASCII lowercase=| on <var>name</var>.</p>
         <li data-md>
          <p>Execute the first statement, switching on <var>propertyName</var>:</p>
          <ol>
@@ -2719,9 +2719,7 @@ also unconditionally accepts any <code class="idl"><a data-link-type="idl" href=
       <li data-md>
        <p><em>input</em> set to <em>value</em>,</p>
       <li data-md>
-       <p><em>expectedType</em> set to <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①⓪">TrustedScript</a></code>, and</p>
-      <li data-md>
-       <p><var>passThroughFunctions</var> set to false.</p>
+       <p><em>expectedType</em> set to <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①⓪">TrustedScript</a></code></p>
      </ul>
     <li data-md>
      <p>If the algorithm throws an error, abort these steps.</p>
@@ -2791,39 +2789,21 @@ throws an "<code>EvalError</code>" if not:
        <li data-md>
         <p><var>source</var> as <var>input</var>,</p>
        <li data-md>
-        <p><code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①①">TrustedScript</a></code> as <var>expectedType</var>, and</p>
-       <li data-md>
-        <p>false as <var>passThroughFunctions</var>.</p>
+        <p><code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①①">TrustedScript</a></code> as <var>expectedType</var>.</p>
       </ul>
      </ins>
     <li data-md>
      <ins>If the algorithm throws an error, throw an <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-evalerror" id="ref-for-exceptiondef-evalerror">EvalError</a></code>.</ins>
     <li data-md>
-     <p>Let <var>globals</var> be a list containing <var>calleeRealm</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global">global object</a> and <var>calleeRealm</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global①">global object</a>.</p>
-    <li data-md>
-     <ins>Let <var>cspPolicies</var> be an empty list.</ins>
-    <li data-md>
-     <ins>
-      For each <var>global</var> in <var>globals</var>: 
-      <ol>
-       <li data-md>
-        <p>For each <var>policy</var> in <var>global</var>’s <a href="https://www.w3.org/TR/CSP3/#global-object-csp-list">CSP list</a>:</p>
-        <ol>
-         <li data-md>
-          <p>Add <var>policy</var> to <var>cspPolicies</var>.</p>
-        </ol>
-      </ol>
-     </ins>
-    <li data-md>
      <ins>
       Let <var>isExempt</var> be the result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-issourceexempt" id="ref-for-abstract-opdef-issourceexempt">IsSourceExempt</a> algorithm with: 
       <ul>
        <li data-md>
-        <p><var>cspPolicies</var> as <var>cspPolicies</var>, and</p>
-       <li data-md>
         <p><var>document</var>’s <code class="idl"><a data-link-type="idl" href="#dictdef-trustedtypeconfiguration" id="ref-for-dictdef-trustedtypeconfiguration⑦">TrustedTypeConfiguration</a></code> as <var>ttConfig</var>.</p>
       </ul>
      </ins>
+    <li data-md>
+     <p>Let <var>globals</var> be a list containing <var>calleeRealm</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global">global object</a> and <var>calleeRealm</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global①">global object</a>.</p>
     <li data-md>
      <p>For each <var>global</var> in <var>globals</var>:</p>
      <ol>
@@ -2888,49 +2868,15 @@ Is this a feature or a bug?</p>
 callerRealm != calleeRealm.  If <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string⑦">Get Trusted Type compliant string</a> reports an
 error, it only reports it via its <var>calleeRealm</var>’s report-uri.</p>
    <h4 class="heading settled" data-level="4.3.1" id="is-source-exempt-algorithm"><span class="secno">4.3.1. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-issourceexempt">IsSourceExempt</dfn> Algorithm</span><a class="self-link" href="#is-source-exempt-algorithm"></a></h4>
-   <p>The IsSourceExempt algorithm takes a list of <a href="https://www.w3.org/TR/CSP3/#content-security-policy-object">policies</a> (<var>cspPolicies</var>),
-and a <code class="idl"><a data-link-type="idl" href="#dictdef-trustedtypeconfiguration" id="ref-for-dictdef-trustedtypeconfiguration⑧">TrustedTypeConfiguration</a></code> (<var>ttConfig</var>) and executes the
-following steps:</p>
+   <p>The IsSourceExempt algorithm takes a <code class="idl"><a data-link-type="idl" href="#dictdef-trustedtypeconfiguration" id="ref-for-dictdef-trustedtypeconfiguration⑧">TrustedTypeConfiguration</a></code> (<var>ttConfig</var>) and executes the following steps:</p>
    <ol>
     <li data-md>
-     <p>Let <var>isTTStrict</var> = <code>true</code>.</p>
+     <p>If <var>ttConfig</var>’s <code class="idl"><a data-link-type="idl" href="#dom-trustedtypeconfiguration-domsinks" id="ref-for-dom-trustedtypeconfiguration-domsinks②">domSinks</a></code> is <code class="idl"><a data-link-type="idl" href="#enumdef-stringatsinkdisposition" id="ref-for-enumdef-stringatsinkdisposition③">"reject"</a></code> then return true.</p>
     <li data-md>
-     <p>If <var>ttConfig</var>’s <code class="idl"><a data-link-type="idl" href="#dom-trustedtypeconfiguration-unknownpolicyname" id="ref-for-dom-trustedtypeconfiguration-unknownpolicyname②">unknownPolicyName</a></code> is <code class="idl"><a data-link-type="idl" href="#enumdef-unknownpolicynamedisposition" id="ref-for-enumdef-unknownpolicynamedisposition②">"allow"</a></code> then
-set <var>isTTStrict</var> to <code>false</code>.</p>
-    <li data-md>
-     <p>Otherwise if <var>ttConfig</var>’s <code class="idl"><a data-link-type="idl" href="#dom-trustedtypeconfiguration-allowednames" id="ref-for-dom-trustedtypeconfiguration-allowednames③">allowedNames</a></code> contains <code>'*'</code> then
-set <var>isTTStrict</var> to <code>false</code>.</p>
-    <li data-md>
-     <p>Let <var>isTTEnforced</var> = <code>false</code>.</p>
-    <li data-md>
-     <p>If <var>ttConfig</var>’s <code class="idl"><a data-link-type="idl" href="#dom-trustedtypeconfiguration-domsinks" id="ref-for-dom-trustedtypeconfiguration-domsinks②">domSinks</a></code> is <code class="idl"><a data-link-type="idl" href="#enumdef-stringatsinkdisposition" id="ref-for-enumdef-stringatsinkdisposition③">"reject"</a></code> then
-set <var>isTTEnforced</var> to <code>true</code>.</p>
-    <li data-md>
-     <p>Let <var>isCSPEnforced</var> = <code>false</code>.</p>
-    <li data-md>
-     <p>For each <var>policy</var> in <var>cspPolicies</var>:</p>
-     <ol>
-      <li data-md>
-       <p>Let <var>source-list</var> be <code>null</code>.</p>
-      <li data-md>
-       <p>If <var>policy</var> contains a <a href="https://www.w3.org/TR/CSP3/#directive">directive</a> whose <a href="https://www.w3.org/TR/CSP3/#directive-name">name</a> is "<code>script-src</code>", then set <var>source-list</var> to that <a href="https://www.w3.org/TR/CSP3/#directive">directive</a>'s <a href="https://www.w3.org/TR/CSP3/#directive-value">value</a>.</p>
-       <p>Otherwise if <var>policy</var> contains a <a href="https://www.w3.org/TR/CSP3/#directive">directive</a> whose <a href="https://www.w3.org/TR/CSP3/#directive-name">name</a> is "<code>default-src</code>", then set <var>source-list</var> to that <a href="https://www.w3.org/TR/CSP3/#directive">directive</a>'s <a href="https://www.w3.org/TR/CSP3/#directive-value">value</a>.</p>
-      <li data-md>
-       <p>If <var>source-list</var> is not <code>null</code>, and does not contain a <a href="https://www.w3.org/TR/CSP3/#source-expression">source expression</a> which as an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ascii-case-insensitive" id="ref-for-ascii-case-insensitive②">ASCII case-insensitive</a> match for
-the string "<a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-unsafe-eval" id="ref-for-grammardef-unsafe-eval①">'unsafe-eval'</a>", then
-set <var>isCSPEnforced</var> to <code>true</code>.</p>
-     </ol>
-    <li data-md>
-     <p>If <var>isTTStrict</var> is <code>true</code> and <var>isCSPEnforced</var> is equal to <var>isTTEnforced</var> then return <code>true</code>.</p>
-    <li data-md>
-     <p>Return <code>false</code>.</p>
+     <p>Return false.</p>
    </ol>
-   <p class="note" role="note"><span>Note:</span> We want to allow progressive enhancement via dynamic code loading
-without requiring servers to serve <code>'unsafe-eval</code> only to user-agents
-that don’t implement TrustedTypes without allowing <code class="idl"><a data-link-type="idl" href="#dom-trustedtypepolicyfactory-createpolicy" id="ref-for-dom-trustedtypepolicyfactory-createpolicy③">createPolicy()</a></code> to bypass CSP without opt-in.
-This algorithm returns true if CSP and TrustedTypes agree on whether
-to enforce and the <code class="idl"><a data-link-type="idl" href="#dictdef-trustedtypeconfiguration" id="ref-for-dictdef-trustedtypeconfiguration⑨">TrustedTypeConfiguration</a></code> places meaningful limits
-(<var>isTTStrict</var>) on <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy①⓪">TrustedTypePolicy</a></code> creation.</p>
+   <p class="note" role="note"><span>Note:</span> This checks whether Trusted Types enforcement would have rejected the
+input, were it problematic in the callout to <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string⑧">Get Trusted Type compliant string</a>.</p>
    <h2 class="heading settled" data-level="5" id="security-considerations"><span class="secno">5. </span><span class="content">Security Considerations</span><a class="self-link" href="#security-considerations"></a></h2>
    <p>Trusted Types are not intended to defend against XSS in an actively malicious
 execution environment. It’s assumed that the application is written by
@@ -2953,7 +2899,7 @@ controlled inputs.</p>
    <p class="issue" id="issue-2eb927d2"><a class="self-link" href="#issue-2eb927d2"></a> Refer to the external document on secure policy design.</p>
    <h2 class="heading settled" data-level="6" id="implementation-considerations"><span class="secno">6. </span><span class="content">Implementation Considerations</span><a class="self-link" href="#implementation-considerations"></a></h2>
    <h3 class="heading settled" data-level="6.1" id="vendor-specific-extensions-and-addons"><span class="secno">6.1. </span><span class="content">Vendor-specific Extensions and Addons</span><a class="self-link" href="#vendor-specific-extensions-and-addons"></a></h3>
-   <p>Restriction imposed by the <code class="idl"><a data-link-type="idl" href="#dictdef-trustedtypeconfiguration" id="ref-for-dictdef-trustedtypeconfiguration①⓪">TrustedTypeConfiguration</a></code> objects SHOULD
+   <p>Restriction imposed by the <code class="idl"><a data-link-type="idl" href="#dictdef-trustedtypeconfiguration" id="ref-for-dictdef-trustedtypeconfiguration⑨">TrustedTypeConfiguration</a></code> objects SHOULD
 NOT interfere with the operation of user-agent features like addons,
 extensions, or bookmarklets. These kinds of features generally advance
 the user’s priority over page authors, as espoused in <a data-link-type="biblio" href="#biblio-html-design-principles">[html-design-principles]</a>. Specifically, extensions SHOULD be able to pass strings
@@ -3300,7 +3246,6 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <a href="https://w3c.github.io/webappsec-csp/#grammardef-unsafe-eval">https://w3c.github.io/webappsec-csp/#grammardef-unsafe-eval</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-grammardef-unsafe-eval">4.3. Integration with Content-Security-Policy</a>
-    <li><a href="#ref-for-grammardef-unsafe-eval①">4.3.1. IsSourceExempt Algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-directives">
@@ -3583,7 +3528,6 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <a href="https://infra.spec.whatwg.org/#ascii-case-insensitive">https://infra.spec.whatwg.org/#ascii-case-insensitive</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-ascii-case-insensitive">4.3. Integration with Content-Security-Policy</a> <a href="#ref-for-ascii-case-insensitive①">(2)</a>
-    <li><a href="#ref-for-ascii-case-insensitive②">4.3.1. IsSourceExempt Algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-list-contain">
@@ -3889,7 +3833,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
 };
 
 <c- b>dictionary</c-> <a href="#dictdef-trustedtypeconfiguration"><code><c- g>TrustedTypeConfiguration</c-></code></a> {
-  <a class="n" data-link-type="idl-name" href="#enumdef-unknownpolicynamedisposition" id="ref-for-enumdef-unknownpolicynamedisposition③"><c- n>UnknownPolicyNameDisposition</c-></a> <a data-default="&quot;allow&quot;" data-type="UnknownPolicyNameDisposition " href="#dom-trustedtypeconfiguration-unknownpolicyname"><code><c- g>unknownPolicyName</c-></code></a> = "allow";
+  <a class="n" data-link-type="idl-name" href="#enumdef-unknownpolicynamedisposition" id="ref-for-enumdef-unknownpolicynamedisposition②"><c- n>UnknownPolicyNameDisposition</c-></a> <a data-default="&quot;allow&quot;" data-type="UnknownPolicyNameDisposition " href="#dom-trustedtypeconfiguration-unknownpolicyname"><code><c- g>unknownPolicyName</c-></code></a> = "allow";
   <a class="n" data-link-type="idl-name" href="#enumdef-stringatsinkdisposition" id="ref-for-enumdef-stringatsinkdisposition④"><c- n>StringAtSinkDisposition</c-></a>? <a data-type="StringAtSinkDisposition? " href="#dom-trustedtypeconfiguration-domsinks"><code><c- g>domSinks</c-></code></a>;
   <c- b>sequence</c->&lt;<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①③①"><c- b>DOMString</c-></a>> <a data-type="sequence<DOMString> " href="#dom-trustedtypeconfiguration-allowednames"><code><c- g>allowedNames</c-></code></a>;
   <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①④①"><c- b>DOMString</c-></a> <a data-default="&quot;default&quot;" data-type="DOMString " href="#dom-trustedtypeconfiguration-reportinggroup"><code><c- g>reportingGroup</c-></code></a> = "default";
@@ -4194,7 +4138,6 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
    <ul>
     <li><a href="#ref-for-dom-trustedtypepolicyfactory-createpolicy">2.3. Policies</a> <a href="#ref-for-dom-trustedtypepolicyfactory-createpolicy①">(2)</a>
     <li><a href="#ref-for-dom-trustedtypepolicyfactory-createpolicy②">2.3.1. TrustedTypePolicyFactory</a>
-    <li><a href="#ref-for-dom-trustedtypepolicyfactory-createpolicy③">4.3.1. IsSourceExempt Algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-trustedtypepolicyfactory-getpolicynames">
@@ -4244,7 +4187,6 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
     <li><a href="#ref-for-trustedtypepolicy⑥">2.3.3. TrustedTypePolicyOptions</a>
     <li><a href="#ref-for-trustedtypepolicy⑦">3.1.2. Create a Trusted Type Policy</a> <a href="#ref-for-trustedtypepolicy⑧">(2)</a>
     <li><a href="#ref-for-trustedtypepolicy⑨">3.1.6. Create a Trusted Type</a>
-    <li><a href="#ref-for-trustedtypepolicy①⓪">4.3.1. IsSourceExempt Algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-trustedtypepolicy-createhtml">
@@ -4366,7 +4308,6 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
    <b><a href="#enumdef-unknownpolicynamedisposition">#enumdef-unknownpolicynamedisposition</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-enumdef-unknownpolicynamedisposition">2.4.1. TrustedTypeConfiguration</a> <a href="#ref-for-enumdef-unknownpolicynamedisposition①">(2)</a>
-    <li><a href="#ref-for-enumdef-unknownpolicynamedisposition②">4.3.1. IsSourceExempt Algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dictdef-trustedtypeconfiguration">
@@ -4380,8 +4321,8 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
     <li><a href="#ref-for-dictdef-trustedtypeconfiguration⑤">3.2.5. Report sink type mismatch violation</a>
     <li><a href="#ref-for-dictdef-trustedtypeconfiguration⑥">4.1. Integration with HTML</a>
     <li><a href="#ref-for-dictdef-trustedtypeconfiguration⑦">4.3. Integration with Content-Security-Policy</a>
-    <li><a href="#ref-for-dictdef-trustedtypeconfiguration⑧">4.3.1. IsSourceExempt Algorithm</a> <a href="#ref-for-dictdef-trustedtypeconfiguration⑨">(2)</a>
-    <li><a href="#ref-for-dictdef-trustedtypeconfiguration①⓪">6.1. Vendor-specific Extensions and Addons</a>
+    <li><a href="#ref-for-dictdef-trustedtypeconfiguration⑧">4.3.1. IsSourceExempt Algorithm</a>
+    <li><a href="#ref-for-dictdef-trustedtypeconfiguration⑨">6.1. Vendor-specific Extensions and Addons</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-trustedtypeconfiguration-unknownpolicyname">
@@ -4389,7 +4330,6 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
    <ul>
     <li><a href="#ref-for-dom-trustedtypeconfiguration-unknownpolicyname">3.1.4. Is policy name allowed</a>
     <li><a href="#ref-for-dom-trustedtypeconfiguration-unknownpolicyname①">3.2.1. Obtain a Trusted Type Configuration for a response</a>
-    <li><a href="#ref-for-dom-trustedtypeconfiguration-unknownpolicyname②">4.3.1. IsSourceExempt Algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-trustedtypeconfiguration-domsinks">
@@ -4405,7 +4345,6 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
    <ul>
     <li><a href="#ref-for-dom-trustedtypeconfiguration-allowednames">3.1.4. Is policy name allowed</a>
     <li><a href="#ref-for-dom-trustedtypeconfiguration-allowednames①">3.2.1. Obtain a Trusted Type Configuration for a response</a> <a href="#ref-for-dom-trustedtypeconfiguration-allowednames②">(2)</a>
-    <li><a href="#ref-for-dom-trustedtypeconfiguration-allowednames③">4.3.1. IsSourceExempt Algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-trustedtypeconfiguration-reportinggroup">
@@ -4467,6 +4406,7 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string③">4.1.7. Enforcement in timer functions</a>
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string④">4.1.8. Enforcement in event handler content attributes</a>
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑤">4.3. Integration with Content-Security-Policy</a> <a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑥">(2)</a> <a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑦">(3)</a>
+    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑧">4.3.1. IsSourceExempt Algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="abstract-opdef-report-sink-type-mismatch-violation">
