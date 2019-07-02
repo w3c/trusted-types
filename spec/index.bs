@@ -850,8 +850,6 @@ given a DOMString (*policyName*) and policy options dictionary (*options*), run 
     `policyName`, then throw a {{TypeError}}.
 1.  Let *policyAllowed* be the result of running [$Is policy name allowed$] algorithm.
 1.  If *policyAllowed* is False, throw a {{TypeError}}.
-1.  If [$Is a default policy$] algorithm returns True and *exposed* is False, then
-    throw a {{TypeError}}.
 1.  Let *policy* be a new {{TrustedTypePolicy}} object.
 1.  Set policy's `name` property value to *policyName*.
 1.  Let *policyOptions* be a new {{TrustedTypePolicyOptions}} object.
@@ -877,7 +875,7 @@ To get the [=default policy=] for a *factory*, execute the following steps:
 
 1.  Set *policyName* to `"default"`.
 1.  If *factory*'s `[[PolicyMap]]` internal slot does not have an entry
-    with the key *policyName*, return {{null}}.
+    with the key *policyName*, return `null`.
 1.  Otherwise, return the value of the *policyName* entry of
     *factory*'s `[[PolicyMap]]`.
 
@@ -941,10 +939,10 @@ and a string |value|, execute the following steps:
 
 1.  Let |options| be the value of |policy|'s `[[options]]` slot.
 1.  Let |function| be the value of the property in |options| named |functionName|.
-1.  If |function| is null, throw a {{TypeError}}.
+1.  If |function| is `null`, throw a {{TypeError}}.
 1.  Let |policyValue| be the result of invoking |function| with
     |value| as a first argument, and [[ECMASCRIPT#sec-method|callback **this** value]]
-    set to null.
+    set to `null`.
 1.  If |policyValue| is an error, return |policyValue| and abort the following steps.
 1.  Let |dataString| be the result of stringifying |policyValue|.
 1.  Let |trustedObject| be a new instance of an interface with a type
@@ -978,7 +976,7 @@ Given a {{Response}} (|response|), perform the following steps:
     Issue: A trailing comma should not disable enforcement.  Do we
     need to leave the document in a locked down state?
     Maybe set *config*.domSinks to "reject" and return *config*.
-1.  If |list| is not empty, then set |hasWildcardPolicy| to {{false}} and set
+1.  If |list| is not empty, then set |hasWildcardPolicy| to false and set
     defaultSinkDisposition to `“reject”`.
 1.  For each |item| in |list|:
     1.  If |item| is a <a href="https://tools.ietf.org/html/rfc8259#section-7">string</a> :
@@ -1005,7 +1003,7 @@ Given a {{Response}} (|response|), perform the following steps:
     1.  Otherwise, throw an error.
 1.  If |hasWildcardPolicy| is false, then set |config|'s
     {{TrustedTypeConfiguration/unknownPolicyName}} to `“reject”`.
-1.  If |config|’s {{TrustedTypeConfiguration/domSinks|domSinks}} is {{null}},
+1.  If |config|’s {{TrustedTypeConfiguration/domSinks|domSinks}} is `null`,
     set |config|’s domSinks to |defaultSinkDisposition|’s value.
 1.  Return |config|.
 
@@ -1029,7 +1027,7 @@ Given a {{TrustedType}} type (|expectedType|), a {{Document}}
         [$Get default policy$] algorithm on |document|’s
         [[HTML5#concept-document-bc|browsing context]]'s {{Window}}
         object.
-    1.  If |defaultPolicy| is {{null}}, abort these steps.
+    1.  If |defaultPolicy| is `null`, abort these steps.
 
         Issue: Do we need some "resume below" language?
     1.  Let |convertedInput| be the result of executing [$Create a
@@ -1092,12 +1090,12 @@ object}}.
         relevant settings object.
     1.  Execute [[REPORTING#queue-report|Queue data as type for endpoint group on settings algorithm]]
         with the following arguments:
-        *  |data| = |violation|
-        *  |type| = `“trusted-types”`
-        *  |endpoint group| = |group|
+        *  <var ignore>data</var> = |violation|
+        *  <var ignore>type</var> = `“trusted-types”`
+        *  <var ignore>endpoint group</var> = |group|
         *  |settings| = |settings|
 
-        Note: The optional |url| parameter is not provided.
+        Note: The optional <var ignore>url</var> parameter is not provided.
 
 # Integrations # {#integrations}
 
@@ -1117,7 +1115,7 @@ per heycam/webidl#441.
 
 Issue(WICG/trusted-types#2): [[webidl#TreatNullAs|TreatNullAs=EmptyString]] is confusing.
 See note "It should not be used in specifications unless ...".
-For some sinks a {{null}} value will result in "", and "null" for others.
+For some sinks a `null` value will result in "", and "null" for others.
 This already caused problems in the polyfill.
 
 ## Integration with HTML ## {#integration-with-html}
@@ -1171,7 +1169,7 @@ partial interface mixin Window {
 
 {{Window/TrustedTypes}} returns the [[#integration-with-html|trusted
 type policy factory]] of the current {{Window}}, if the current Window
-has a trusted type policy factory, or {{null}} otherwise.
+has a trusted type policy factory, or `null` otherwise.
 
 ### Extensions to the Document interface ### {#extensions-to-the-document-interface}
 
@@ -1325,7 +1323,7 @@ At the beginning of step 5, insert the following steps:
     *   *document* set to the owner document of *eventTarget*,
     *   *input* set to *value*,
     *   *expectedType* set to {{TrustedScript}}, and
-    *   *passThroughFunctions* set to false.
+    *   |passThroughFunctions| set to false.
 1.  If the algorithm throws an error, abort these steps.
 
 
@@ -1358,9 +1356,6 @@ interface DOMParser {
 Note: See <a href="https://github.com/tc39/ecma262/issues/938">TC39/ecma262 issue #938</a>
 (adding the value to be compiled to algorithm parameters).
 
-This document modifies the [[CSP3#can-compile-strings|EnsureCSPDoesNotBlockStringCompilation]]
-which is reproduced in its entirety below with additions and deletions.
-
 <div class="note">Note: EcmaScript code may call `Function()` and `eval` cross realm.
 <pre highlight="js">
   let f = new self.top.Function(source);
@@ -1377,6 +1372,17 @@ The Trusted Types portion of this algorithm uses |calleeRealm| for consistency w
 This is subtly different from the CSP directive enforcement portion which rejects if either
 the |calleeRealm| or |callerRealm|'s Content-Security-Policy rejects string compilation.
 </div>
+
+This document modifies the grammar for [[CSP3#keyword-source]]:
+
+<pre dfn-type="grammar" link-type="grammar">
+  <dfn>keyword-source</dfn> = "'self'" / "'unsafe-inline'" / "'unsafe-eval'"
+                       / "'strict-dynamic'" / "'unsafe-hashes'" / "'report-sample'"
+                       / "'unsafe-allow-redirects'" <ins>/ "<dfn>'trusted-script'</dfn>"</ins>
+</pre>
+
+This document modifies the [[CSP3#can-compile-strings|EnsureCSPDoesNotBlockStringCompilation]]
+which is reproduced in its entirety below with additions and deletions.
 
 Given two [[ECMASCRIPT#realm|realms]] (|callerRealm| and
 |calleeRealm|), and a <del>string</del> <ins>value</ins>
@@ -1411,9 +1417,7 @@ throws an "`EvalError`" if not:
     *   |cspPolicies| as |cspPolicies|, and
     *   |document|’s {{TrustedTypeConfiguration}} as |ttConfig|.</ins>
 
-8.  <ins>If |isExempt| is true, then return |sourceString|.</ins>
-
-9.  For each |global| in |globals|:
+8.  For each |global| in |globals|:
 
     1.  Let |result| be "`Allowed`".
 
@@ -1428,7 +1432,9 @@ throws an "`EvalError`" if not:
             "`default-src`", then set |source-list| to that directive's [=directive/value=].
 
         3.  If |source-list| is not `null`, and does not contain a [=source expression=] which is
-            an [=ASCII case-insensitive=] match for the string "<a grammar>`'unsafe-eval'`</a>",
+            an [=ASCII case-insensitive=] match for the string "<a grammar>`'unsafe-eval'`</a>", <ins>and
+            it is not the case that (|isExempt| is true and |source-list| contains an
+            [=ASCII case-insensitive=] match for the string "<a grammar>'trusted-script'</a>")</ins>
             then:
 
             1.  Let |violation| be the result of executing [[CSP3#create-violation-for-global]] on
@@ -1448,7 +1454,7 @@ throws an "`EvalError`" if not:
 
     3.  If |result| is "`Blocked`", throw an `EvalError` exception.
 
-10. <ins>Return |sourceString|.</ins>
+9. <ins>Return |sourceString|.</ins>
 
 Note: returning |sourceString| means that the string that gets
 compiled is that returned by any [=default policy=] in the course of
@@ -1456,7 +1462,7 @@ executing [$Get Trusted Type compliant string$].
 
 Issue: This depends on a solution to
 <a href="https://github.com/WICG/trusted-types/issues/144">issue #144</a> like <a
-href="https://mikesamuel.github.io/proposal-hostensurecancompilestrings-passthru/">TC39 HostBeforeCompile</a>
+href="https://github.com/tc39-transfer/dynamic-code-brand-checks#problem-host-callout-does-not-receive-type-information">TC39 HostBeforeCompile</a>
 
 Issue: In some cases, the violation "`'report-sample'`" contain the result of
 applying the default policy to a string argument which differs.
