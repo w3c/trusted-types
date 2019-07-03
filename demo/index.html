@@ -26,14 +26,22 @@
 <body>
   <h1>Trusted Types demo</h1>
   <table>
-  <tbody id=table>
-    <tr id="row">
-      <td class=id></td>
-      <td class=name></td>
-      <td class=payload></td>
-      <td class=result>&nbsp;</td>
-    </tr>
-  </tbody>
+    <thead>
+      <tr>
+        <th>Test case</th>
+        <th>Name</th>
+        <th>Payload</th>
+        <th>Result</th>
+      </tr>
+    </thead>
+    <tbody id=table>
+      <tr id="row">
+        <td class=id></td>
+        <td class=name></td>
+        <td class=payload></td>
+        <td class=result>&nbsp;</td>
+      </tr>
+    </tbody>
   </table>
   <script>
   var trustedValue;
@@ -74,7 +82,7 @@
       row.querySelector('.result').className += (shouldThrow ? ' fail' : ' pass');
     } catch (e) {
       row.querySelector('.result').className += (!shouldThrow ? ' fail' : ' pass');
-      console.error(name, e);
+      console.error(names, e);
     };
   };
 
@@ -110,10 +118,10 @@
     el.appendChild(
       document.createRange().createContextualFragment(trustedValue));
   }, false);
-  runTest(['Element.inertAdjacentHTML', 'string'], function(el) {
+  runTest(['Element.insertAdjacentHTML', 'string'], function(el) {
     el.insertAdjacentHTML('afterbegin', '<b>a</b>');
   }, true);
-  runTest(['Element.inertAdjacentHTML', 'TrustedHTML'], function(el) {
+  runTest(['Element.insertAdjacentHTML', 'TrustedHTML'], function(el) {
     el.insertAdjacentHTML('afterbegin', trustedValue);
   }, false);
   runTest(['HTMLScriptElement.src', 'TrustedScriptURL'], function(el) {
