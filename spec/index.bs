@@ -1423,9 +1423,9 @@ throws an "`EvalError`" if not:
 
         3.  If |source-list| is not `null`, and does not contain a [=source expression=] which is
             an [=ASCII case-insensitive=] match for the string "<a grammar>`'unsafe-eval'`</a>", <ins>and
-            it is not the case that (|isExempt| is true and |source-list| contains an
-            [=ASCII case-insensitive=] match for the string "<a grammar>'trusted-script'</a>")</ins>
-            then:
+            it is the case that (|isExempt| is not true or |source-list| does not contain a
+            [=source expression=] which is an [=ASCII case-insensitive=] match for the
+            string "<a grammar>`'trusted-script'`</a>")</ins> then:
 
             1.  Let |violation| be the result of executing [[CSP3#create-violation-for-global]] on
                 |global|, |policy|, and "`script-src`".

@@ -1215,7 +1215,7 @@ Possible extra rowspan handling
   <link href="https://www.w3.org/StyleSheets/TR/2016/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version 10ff3eb4050069e20bb9b943c8b76fe5bfe3a48f" name="generator">
   <link href="https://wicg.github.io/trusted-types/dist/spec/" rel="canonical">
-  <meta content="c047b294f024558139de865614999f3884ef68aa" name="document-revision">
+  <meta content="7c8df9d700d37884fb97a2ed4f482a5f7767be6a" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -1462,7 +1462,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Trusted Types</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-07-02">2 July 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-07-05">5 July 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -2824,7 +2824,8 @@ set <var>source-list</var> to that <a data-link-type="dfn" href="https://w3c.git
           If <var>source-list</var> is not <code>null</code>, and does not contain a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#source-expression" id="ref-for-source-expression">source expression</a> which is
 an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ascii-case-insensitive" id="ref-for-ascii-case-insensitive">ASCII case-insensitive</a> match for the string "<a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-unsafe-eval" id="ref-for-grammardef-unsafe-eval"><code>'unsafe-eval'</code></a>", 
           <ins>and
-it is not the case that (<var>isExempt</var> is true and <var>source-list</var> contains an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ascii-case-insensitive" id="ref-for-ascii-case-insensitive①">ASCII case-insensitive</a> match for the string "<a data-link-type="grammar" href="#grammardef-trusted-script" id="ref-for-grammardef-trusted-script">'trusted-script'</a>")</ins>
+it is the case that (<var>isExempt</var> is not true or <var>source-list</var> does not contain a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#source-expression" id="ref-for-source-expression①">source expression</a> which is an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ascii-case-insensitive" id="ref-for-ascii-case-insensitive①">ASCII case-insensitive</a> match for the
+string "<a data-link-type="grammar" href="#grammardef-trusted-script" id="ref-for-grammardef-trusted-script"><code>'trusted-script'</code></a>")</ins>
            then:
          </p>
          <ol>
@@ -3281,7 +3282,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
   <aside class="dfn-panel" data-for="term-for-source-expression">
    <a href="https://w3c.github.io/webappsec-csp/#source-expression">https://w3c.github.io/webappsec-csp/#source-expression</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-source-expression">4.3. Integration with Content-Security-Policy</a>
+    <li><a href="#ref-for-source-expression">4.3. Integration with Content-Security-Policy</a> <a href="#ref-for-source-expression①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-directive-value">
