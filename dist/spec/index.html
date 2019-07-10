@@ -1213,9 +1213,8 @@ Possible extra rowspan handling
 	}
 </style>
   <link href="https://www.w3.org/StyleSheets/TR/2016/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version 30aa90d768746168deba12493f1f3622df2814b6" name="generator">
+  <meta content="Bikeshed version a3b64e58e069c2e8a9ffcadffb76601231663a47" name="generator">
   <link href="https://wicg.github.io/trusted-types/dist/spec/" rel="canonical">
-  <meta content="7c8df9d700d37884fb97a2ed4f482a5f7767be6a" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -1462,7 +1461,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Trusted Types</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-07-05">5 July 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-07-10">10 July 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1693,7 +1692,7 @@ without appropriate validation, sanitization or escaping.</p>
 of <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink">injection sinks</a>, as the strings do not carry the information about the
 provenance of their value. To allow the authors to control values reaching
 sensitive DOM and JavaScript functions, we introduce Trusted Types.</p>
-   <p class="note" role="note"><span>Note:</span> The exact list of injection sinks covered by this document is defined in <a href="#integrations">§4 Integrations</a>.</p>
+   <p class="note" role="note"><span>Note:</span> The exact list of injection sinks covered by this document is defined in <a href="#integrations">§ 4 Integrations</a>.</p>
    <p class="issue" id="issue-7a6e3d33"><a class="self-link" href="#issue-7a6e3d33"></a> Consider surfacing the DOM sink (node + attr) => type mapping in the API, to faciliate building HTML sanitizers. <a href="https://github.com/WICG/trusted-types/issues/43">&lt;https://github.com/WICG/trusted-types/issues/43></a></p>
    <h3 class="heading settled" data-level="2.2" id="trusted-types"><span class="secno">2.2. </span><span class="content">Trusted Types</span><a class="self-link" href="#trusted-types"></a></h3>
    <p>We introduce the following list of <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="trusted-type">Trusted Type</dfn>s indicating that a given value is
@@ -1893,7 +1892,7 @@ that it’s called only with no attacker-controlled values.
    <h4 class="heading settled" data-level="2.3.1" id="trusted-type-policy-factory"><span class="secno">2.3.1. </span><span class="content"><dfn class="css" data-dfn-type="type" data-export id="typedef-trustedtypepolicyfactory">TrustedTypePolicyFactory<a class="self-link" href="#typedef-trustedtypepolicyfactory"></a></dfn></span><a class="self-link" href="#trusted-type-policy-factory"></a></h4>
    <p>TrustedTypePolicyFactory creates <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy④">policies</a></code> and verifies that Trusted Type object instances
 were created via one of the policies.</p>
-   <p class="note" role="note"><span>Note:</span> This factory object is exposed to JavaScript through <code>window.TrustedTypes</code> reference - see <a href="#extensions-to-the-window-interface">§4.1.2 Extensions to the Window interface</a>.</p>
+   <p class="note" role="note"><span>Note:</span> This factory object is exposed to JavaScript through <code>window.TrustedTypes</code> reference - see <a href="#extensions-to-the-window-interface">§ 4.1.2 Extensions to the Window interface</a>.</p>
 <pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed④"><c- g>Exposed</c-></a>=<c- n>Window</c->] <c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="trustedtypepolicyfactory"><code><c- g>TrustedTypePolicyFactory</c-></code></dfn> {
     [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable"><c- g>Unforgeable</c-></a>] <a class="n" data-link-type="idl-name" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy⑤"><c- n>TrustedTypePolicy</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicyfactory-createpolicy" id="ref-for-dom-trustedtypepolicyfactory-createpolicy②"><c- g>createPolicy</c-></a>(
         <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="TrustedTypePolicyFactory/createPolicy(policyName, policyOptions), TrustedTypePolicyFactory/createPolicy(policyName)" data-dfn-type="argument" data-export id="dom-trustedtypepolicyfactory-createpolicy-policyname-policyoptions-policyname"><code><c- g>policyName</c-></code><a class="self-link" href="#dom-trustedtypepolicyfactory-createpolicy-policyname-policyoptions-policyname"></a></dfn>, <c- b>optional</c-> <a class="n" data-link-type="idl-name" href="#dictdef-trustedtypepolicyoptions" id="ref-for-dictdef-trustedtypepolicyoptions"><c- n>TrustedTypePolicyOptions</c-></a> <dfn class="idl-code" data-dfn-for="TrustedTypePolicyFactory/createPolicy(policyName, policyOptions), TrustedTypePolicyFactory/createPolicy(policyName)" data-dfn-type="argument" data-export id="dom-trustedtypepolicyfactory-createpolicy-policyname-policyoptions-policyoptions"><code><c- g>policyOptions</c-></code><a class="self-link" href="#dom-trustedtypepolicyfactory-createpolicy-policyname-policyoptions-policyoptions"></a></dfn>);
@@ -2099,7 +2098,7 @@ security posture back to the pre-Trusted Types level. If possible,
 authors should resort to a default policy in a transitional period
 only, use it to detect and rewrite "raw DOM writes" dependencies and
 eventually phase out its usage entirely.</p>
-   <p class="note" role="note"><span>Note:</span> See <a href="#get-trusted-type-compliant-string-algorithm">§3.2.2 Get Trusted Type compliant string</a> for details on how
+   <p class="note" role="note"><span>Note:</span> See <a href="#get-trusted-type-compliant-string-algorithm">§ 3.2.2 Get Trusted Type compliant string</a> for details on how
 the default policy is applied.</p>
    <h3 class="heading settled" data-level="2.4" id="enforcement-hdr"><span class="secno">2.4. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="enforcement">Enforcement</dfn></span><a class="self-link" href="#enforcement-hdr"></a></h3>
    <p>This section describes how applications may require <a data-link-type="dfn" href="#trusted-type" id="ref-for-trusted-type③">Trusted Types</a> values for
@@ -2108,7 +2107,7 @@ actions should be undertaken if a string value is used instead.</p>
    <p class="note" role="note"><span>Note:</span> Enforcement is the process of checking that a value
 has an appropriate type before it reaches an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⓪">injection sink</a>.</p>
    <p class="note" role="note"><span>Note:</span> Most of the enforcement rules are defined as modifications of the algorithms
-in other specifiactions, see <a href="#integrations">§4 Integrations</a>.</p>
+in other specifiactions, see <a href="#integrations">§ 4 Integrations</a>.</p>
    <h4 class="heading settled" data-level="2.4.1" id="trusted-type-configuration-hdr"><span class="secno">2.4.1. </span><span class="content">TrustedTypeConfiguration</span><a class="self-link" href="#trusted-type-configuration-hdr"></a></h4>
    <p>A Trusted Type Configuration defines <a data-link-type="dfn" href="#enforcement" id="ref-for-enforcement③">enforcement</a> setting for <a data-link-type="dfn" href="#trusted-type" id="ref-for-trusted-type④">Trusted Types</a> and restrictions on policy names that can be applied
 to a <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document①">Document</a></code>.</p>
