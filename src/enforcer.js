@@ -272,7 +272,6 @@ export class TrustedTypesEnforcer {
   installScriptMutatorGuards_() {
     const that = this;
 
-    // TODO: Add Node insertBefore() and replaceChild()
     // TODO: Add ParentNode append() and prepend()
     // TODO: Add ChildNode after(), before() and replaceWith()
     // TODO: Add Element insertAdjacentElement()
@@ -285,7 +284,7 @@ export class TrustedTypesEnforcer {
          * @return {*}
          */
         function(originalFn, ...args) {
-          return that.appendChildWrapper_
+          return that.enforceTypeInScriptNodes_
               .bind(that, this, originalFn)
               .apply(that, args);
         });
@@ -302,6 +301,32 @@ export class TrustedTypesEnforcer {
               .bind(that, this, originalFn)
               .apply(that, args);
         });
+    this.wrapFunction_(
+        Node.prototype,
+        'insertBefore',
+        /**
+         * @this {TrustedTypesEnforcer}
+         * @param {function(!Function, ...*)} originalFn
+         * @return {*}
+         */
+        function(originalFn, ...args) {
+          return that.enforceTypeInScriptNodes_
+              .bind(that, this, originalFn)
+              .apply(that, args);
+        });
+    this.wrapFunction_(
+        Node.prototype,
+        'replaceChild',
+        /**
+         * @this {TrustedTypesEnforcer}
+         * @param {function(!Function, ...*)} originalFn
+         * @return {*}
+         */
+        function(originalFn, ...args) {
+          return that.enforceTypeInScriptNodes_
+              .bind(that, this, originalFn)
+              .apply(that, args);
+        });
   }
 
   /**
@@ -311,6 +336,8 @@ export class TrustedTypesEnforcer {
    */
   uninstallScriptMutatorGuards_() {
     this.restoreFunction_(Node.prototype, 'appendChild');
+    this.restoreFunction_(Node.prototype, 'insertBefore');
+    this.restoreFunction_(Node.prototype, 'replaceChild');
     this.restoreFunction_(insertAdjacentObject, 'insertAdjacentText');
   }
 
@@ -401,7 +428,7 @@ export class TrustedTypesEnforcer {
             originalFn, 1, args);
       }
     }
-    return originalFn.apply(context, args);
+    return apply(originalFn, context, args);
   }
 
   /**
@@ -425,17 +452,17 @@ export class TrustedTypesEnforcer {
             originalFn, 2, args);
       }
     }
-    return originalFn.apply(context, args);
+    return apply(originalFn, context, args);
   }
 
   /**
-   * Wrapper for Node.appendChild that enforces type checks for appending to
-   * script nodes.
+   * Wrapper for DOM mutator functions that enforces type checks if the context
+   * is a script node and a first argument is a text node.
    * @param {!Object} context The context for the call to the original function.
-   * @param {!Function} originalFn The original setAttributeNS function.
+   * @param {!Function} originalFn The original mutator function.
    * @return {*}
    */
-  appendChildWrapper_(context, originalFn, ...args) {
+  enforceTypeInScriptNodes_(context, originalFn, ...args) {
     if (context instanceof HTMLScriptElement &&
         args.length > 0 &&
         args[0] instanceof Node &&
@@ -450,13 +477,10 @@ export class TrustedTypesEnforcer {
         exceptionThrown = true;
       }
       if (exceptionThrown) {
-        this.processViolation_(context, 'appendChild',
+        this.processViolation_(context, originalFn.name,
             TrustedTypes.TrustedScript, args[0].textContent);
       }
-
-      return apply(originalFn, context, [
-        document.createTextNode('' + fallbackValue),
-      ]);
+      args[0] = document.createTextNode('' + fallbackValue);
     }
     return apply(originalFn, context, args);
   }
@@ -465,7 +489,7 @@ export class TrustedTypesEnforcer {
    * Wrapper for Element.insertAdjacentText that enforces type checks for
    * inserting text into a script node.
    * @param {!Object} context The context for the call to the original function.
-   * @param {!Function} originalFn The original setAttributeNS function.
+   * @param {!Function} originalFn The original insertAdjacentText function.
    */
   insertAdjacentTextWrapper_(context, originalFn, ...args) {
     const riskyPositions = ['beforebegin', 'afterend'];
@@ -490,12 +514,18 @@ export class TrustedTypesEnforcer {
 
       const textNode = document.createTextNode('' + fallbackValue);
 
+
+      const insertBefore = /** @type function(this: Node) */(
+        this.originalSetters_[this.getKey_(Node.prototype, 'insertBefore')]);
+
       switch (args[0]) {
         case riskyPositions[0]: // 'beforebegin'
-          context.parentElement.insertBefore(textNode, context);
+          apply(insertBefore, context.parentElement,
+              [textNode, context]);
           break;
         case riskyPositions[1]: // 'afterend'
-          context.parentElement.insertBefore(textNode, context.nextSibling);
+          apply(insertBefore, context.parentElement,
+              [textNode, context.nextSibling]);
           break;
       }
       return;

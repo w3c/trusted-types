@@ -556,6 +556,9 @@ describe('TrustedTypesEnforcer', function() {
         beforeEach(function() {
           enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
           enforcer.install();
+          TrustedTypes.createPolicy('default', {
+            createScript: (s) => '/*' + s + '*/',
+          });
         });
 
         afterEach(function() {
@@ -563,10 +566,6 @@ describe('TrustedTypesEnforcer', function() {
         });
 
         it('via insertAdjacentText on script children', () => {
-          TrustedTypes.createPolicy('default', {
-            createScript: (s) => 'fallback:' + s,
-          });
-
           // Setup: Create a <script> element with a <p> child.
           const s = document.createElement('script');
           const p = document.createElement('p');
@@ -585,16 +584,13 @@ describe('TrustedTypesEnforcer', function() {
             p.insertAdjacentText('afterend', 'after;');
           }).not.toThrow();
 
-          expect(s.text).toEqual('fallback:before;fallback:after;');
-          expect(s.childNodes[0].textContent).toEqual('fallback:before;');
+          expect(s.text).toEqual('/*before;*//*after;*/');
+          expect(s.childNodes[0].textContent).toEqual('/*before;*/');
           expect(s.childNodes[1]).toBe(p);
-          expect(s.childNodes[2].textContent).toEqual('fallback:after;');
+          expect(s.childNodes[2].textContent).toEqual('/*after;*/');
         });
 
         it('via text node insertion to non-attached script node', () => {
-          TrustedTypes.createPolicy('default', {
-            createScript: (s) => 'fallback:' + s,
-          });
           // Variant: Create a <script> element and create & insert a text node.
           // Then insert it into the document container to make it live.
           const s = document.createElement('script');
@@ -607,8 +603,24 @@ describe('TrustedTypesEnforcer', function() {
           }).not.toThrow();
 
           expect(addedNode).not.toBe(text);
-          expect(addedNode.textContent).toEqual('fallback:alert("hello");');
-          expect(s.textContent).toEqual('fallback:alert("hello");');
+          expect(addedNode.textContent).toEqual('/*alert("hello");*/');
+          expect(s.textContent).toEqual('/*alert("hello");*/');
+        });
+
+        it('via insertBefore on script child node', () => {
+          // Variant: Create a <script> element and create & insert a text node.
+          // Then insert it into the document container to make it live.
+          const s = document.createElement('script');
+          const p = document.createElement('p');
+          s.appendChild(p);
+          const text = document.createTextNode('alert("hello");');
+          document.body.appendChild(s);
+
+          expect(() => {
+            s.insertBefore(text, p);
+          }).not.toThrow();
+
+          expect(s.text).toEqual('/*alert("hello");*/');
         });
       });
 
@@ -667,6 +679,34 @@ describe('TrustedTypesEnforcer', function() {
 
       expect(() => {
         s.appendChild(text);
+      }).toThrow();
+    });
+
+    it('via insertBefore on script child node', () => {
+      // Variant: Create a <script> element and create & insert a text node.
+      // Then insert it into the document container to make it live.
+      const s = document.createElement('script');
+      const p = document.createElement('p');
+      s.appendChild(p);
+      const text = document.createTextNode('alert("hello");');
+      document.body.appendChild(s);
+
+      expect(() => {
+        s.insertBefore(text, p);
+      }).toThrow();
+    });
+
+    it('via replaceChild on script node', () => {
+      // Variant: Create a <script> element and create & insert a text node.
+      // Then insert it into the document container to make it live.
+      const s = document.createElement('script');
+      const p = document.createElement('p');
+      s.appendChild(p);
+      const text = document.createTextNode('alert("hello");');
+      document.body.appendChild(s);
+
+      expect(() => {
+        s.replaceChild(text, p);
       }).toThrow();
     });
   });
