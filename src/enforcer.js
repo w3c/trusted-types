@@ -41,13 +41,7 @@ const UrlConstructor = typeof window.URL == 'function' ?
     URL.prototype.constructor :
     null;
 
-const stringifyForRangeHack = (function(doc) {
-  const r = doc.createRange();
-  // In IE 11 Range.createContextualFragment doesn't stringify its argument.
-  const f = r.createContextualFragment(/** @type {string} */ (
-    {toString: () => '<div></div>'}));
-  return f.childNodes.length == 0;
-})(document);
+let stringifyForRangeHack;
 
 /**
  * Return object constructor name
@@ -190,6 +184,14 @@ export class TrustedTypesEnforcer {
       this.wrapSetter_(ShadowRoot.prototype, 'innerHTML',
           TrustedTypes.TrustedHTML);
     }
+    stringifyForRangeHack = (function(doc) {
+      const r = doc.createRange();
+      // In IE 11 Range.createContextualFragment doesn't stringify its argument.
+      const f = r.createContextualFragment(/** @type {string} */ (
+        {toString: () => '<div></div>'}));
+      return f.childNodes.length == 0;
+    })(document);
+
     this.wrapWithEnforceFunction_(Range.prototype, 'createContextualFragment',
         TrustedTypes.TrustedHTML, 0);
 
