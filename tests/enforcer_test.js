@@ -709,6 +709,48 @@ describe('TrustedTypesEnforcer', function() {
         s.replaceChild(text, p);
       }).toThrow();
     });
+
+    describe('via new multi-param methods', () => {
+      const s = document.createElement('script');
+      const p = document.createElement('p');
+      const text = document.createTextNode('alert(/textnode/)');
+
+      // Methods documented in
+      // https://developer.mozilla.org/en-US/docs/Web/API/ChildNode
+      // https://developer.mozilla.org/en-US/docs/Web/API/ParentNode
+
+      [
+        [p, 'replaceWith'],
+        [p, 'after'],
+        [p, 'before'],
+        [s, 'append'],
+        [s, 'prepend'],
+      ].forEach(([o, functionName]) => {
+        it(functionName, () => {
+          s.appendChild(p);
+          const fn = o[functionName].bind(o);
+
+          expect(() => {
+            fn('alert(1)');
+          }).toThrow();
+
+          expect(() => {
+            fn(text);
+          }).toThrow();
+
+          expect(() => {
+            fn('alert(1)', '');
+          }).toThrow();
+
+          expect(() => {
+            fn(text, 'alert(1)');
+          }).toThrow();
+
+          expect(s.childNodes.length).toEqual(1);
+          expect(s.text).toEqual('');
+        });
+      });
+    });
   });
 
   describe('enforcement disables string assignments', function() {
