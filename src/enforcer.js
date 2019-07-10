@@ -440,12 +440,25 @@ export class TrustedTypesEnforcer {
         args.length > 0 &&
         args[0] instanceof Node &&
         args[0].nodeType == Node.TEXT_NODE) {
-      // Text node insertion for script. Just serialize the node and try to
-      // set a property.
-      context.textContent += args[0].textContent;
-      return context.children[0];
+      // Try to run a default policy on args[0]
+      let fallbackValue;
+      let exceptionThrown;
+      try {
+        fallbackValue = this.maybeCallDefaultPolicy_('TrustedScript',
+            args[0].textContent);
+      } catch (e) {
+        exceptionThrown = true;
+      }
+      if (exceptionThrown) {
+        this.processViolation_(context, 'appendChild',
+            TrustedTypes.TrustedScript, args[0].textContent);
+      }
+
+      return apply(originalFn, context, [
+        document.createTextNode('' + fallbackValue),
+      ]);
     }
-    return originalFn.apply(context, args);
+    return apply(originalFn, context, args);
   }
 
   /**
@@ -453,34 +466,41 @@ export class TrustedTypesEnforcer {
    * inserting text into a script node.
    * @param {!Object} context The context for the call to the original function.
    * @param {!Function} originalFn The original setAttributeNS function.
-   * @return {*}
    */
   insertAdjacentTextWrapper_(context, originalFn, ...args) {
+    const riskyPositions = ['beforebegin', 'afterend'];
     if (context instanceof Element &&
         context.parentElement instanceof HTMLScriptElement &&
         args.length > 1 &&
-        (args[0] === 'beforebegin' || args[0] == 'afterend') &&
-        !(args[1] instanceof TrustedTypes.TrustedScript) && args[1] !== '') {
-      // Text node insertion for script. Just serialize the node and try to
-      // set a property.
-      let newText = '';
-      for (const childNode of context.parentElement.childNodes) {
-        if (childNode === context && args[0] == 'beforebegin') {
-          newText += args[1];
-        }
-        if (childNode.nodeType == Node.TEXT_NODE) {
-          newText += childNode.textContent;
-        }
-        if (childNode === context && args[0] == 'afterend') {
-          newText += args[1];
-        }
+        riskyPositions.includes(args[0]) &&
+        !(TrustedTypes.isScript(args[1]))) {
+      // Run a default policy on args[1]
+      let fallbackValue;
+      let exceptionThrown;
+      try {
+        fallbackValue = this.maybeCallDefaultPolicy_('TrustedScript',
+            args[1]);
+      } catch (e) {
+        exceptionThrown = true;
+      }
+      if (exceptionThrown) {
+        this.processViolation_(context, 'insertAdjacentText',
+            TrustedTypes.TrustedScript, args[1]);
       }
 
-      // TODO: Figure out a way to sanitize without losing the node structure.
-      context.parentElement.textContent = newText;
+      const textNode = document.createTextNode('' + fallbackValue);
+
+      switch (args[0]) {
+        case riskyPositions[0]: // 'beforebegin'
+          context.parentElement.insertBefore(textNode, context);
+          break;
+        case riskyPositions[1]: // 'afterend'
+          context.parentElement.insertBefore(textNode, context.nextSibling);
+          break;
+      }
       return;
     }
-    return originalFn.apply(context, args);
+    apply(originalFn, context, args);
   }
 
   /**
@@ -676,6 +696,26 @@ export class TrustedTypesEnforcer {
     return ctrName + '-' + name;
   }
 
+
+  /**
+   * Calls a default policy.
+   * @param {string} typeName Type name to attempt to produce from a value.
+   * @param {*} value The value to pass to a default policy
+   * @throws {Error} If the default policy throws, or not exist.
+   * @return {Function} The trusted value.
+   */
+  maybeCallDefaultPolicy_(typeName, value) {
+    // Apply a fallback policy, if it exists.
+    const fallbackPolicy = getDefaultPolicy.call(TrustedTypes);
+    if (!fallbackPolicy) {
+      throw new Error('Default policy does not exist');
+    }
+    if (!TYPE_CHECKER_MAP.hasOwnProperty(typeName)) {
+      throw new Error();
+    }
+    return fallbackPolicy[TYPE_PRODUCER_MAP[typeName]](value);
+  }
+
   /**
    * Logs and enforces TrustedTypes depending on the given configuration.
    * @template T
@@ -721,25 +761,37 @@ export class TrustedTypesEnforcer {
     }
 
     // Apply a fallback policy, if it exists.
-    const fallbackPolicy = getDefaultPolicy.call(TrustedTypes);
-    if (fallbackPolicy && TYPE_CHECKER_MAP.hasOwnProperty(typeName)) {
-      let fallbackValue;
-      let exceptionThrown;
-      try {
-        fallbackValue = fallbackPolicy[TYPE_PRODUCER_MAP[typeName]](value);
-      } catch (e) {
-        exceptionThrown = true;
-      }
-      if (!exceptionThrown) {
-        args[argNumber] = fallbackValue;
-        return apply(originalSetter, context, args);
-      }
+    let fallbackValue;
+    let exceptionThrown;
+    try {
+      fallbackValue = this.maybeCallDefaultPolicy_(typeName, value);
+    } catch (e) {
+      exceptionThrown = true;
+    }
+    if (!exceptionThrown) {
+      args[argNumber] = fallbackValue;
+      return apply(originalSetter, context, args);
     }
 
+    // This will throw a TypeError if enforcement is enabled.
+    this.processViolation_(context, propertyName, typeToEnforce, value);
+
+    return apply(originalSetter, context, args);
+  }
+
+  /**
+   * Report a TT violation.
+   * @param {!Object} context The object that the setter is called for.
+   * @param {string} propertyName The name of the property.
+   * @param {!Function} typeToEnforce The type to enforce.
+   * @param {string} value The value that was violated the restrictions.
+   * @throws {TypeError} if the enforcement is enabled.
+   */
+  processViolation_(context, propertyName, typeToEnforce, value) {
     const contextName = getConstructorName_(context.constructor) ||
         '' + context;
     const message = `Failed to set ${propertyName} on ${contextName}: `
-        + `This property requires ${typeName}.`;
+        + `This property requires ${typeToEnforce.name}.`;
 
     if (this.config_.isLoggingEnabled) {
       // eslint-disable-next-line no-console
@@ -780,8 +832,6 @@ export class TrustedTypesEnforcer {
 
     if (this.config_.isEnforcementEnabled) {
       throw new TypeError(message);
-    } else { // pass-through
-      return apply(originalSetter, context, args);
     }
   }
 }

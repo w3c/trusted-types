@@ -549,6 +549,69 @@ describe('TrustedTypesEnforcer', function() {
     });
   });
 
+  describe('enforcement uses default policy for script node modification',
+      () => {
+        let enforcer;
+
+        beforeEach(function() {
+          enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
+          enforcer.install();
+        });
+
+        afterEach(function() {
+          enforcer.uninstall();
+        });
+
+        it('via insertAdjacentText on script children', () => {
+          TrustedTypes.createPolicy('default', {
+            createScript: (s) => 'fallback:' + s,
+          });
+
+          // Setup: Create a <script> element with a <p> child.
+          const s = document.createElement('script');
+          const p = document.createElement('p');
+          p.textContent = 'not in text';
+          s.appendChild(p);
+
+          // Sanity check: The <p> content doesn't count as source text.
+          expect(s.text).toEqual('');
+
+          // Try to insertAdjacentText into the <script>, starting from the <p>
+          expect(() => {
+            p.insertAdjacentText('beforebegin', 'before;');
+          }).not.toThrow();
+
+          expect(() => {
+            p.insertAdjacentText('afterend', 'after;');
+          }).not.toThrow();
+
+          expect(s.text).toEqual('fallback:before;fallback:after;');
+          expect(s.childNodes[0].textContent).toEqual('fallback:before;');
+          expect(s.childNodes[1]).toBe(p);
+          expect(s.childNodes[2].textContent).toEqual('fallback:after;');
+        });
+
+        it('via text node insertion to non-attached script node', () => {
+          TrustedTypes.createPolicy('default', {
+            createScript: (s) => 'fallback:' + s,
+          });
+          // Variant: Create a <script> element and create & insert a text node.
+          // Then insert it into the document container to make it live.
+          const s = document.createElement('script');
+          const text = document.createTextNode('alert("hello");');
+
+          let addedNode;
+
+          expect(() => {
+            addedNode = s.appendChild(text);
+          }).not.toThrow();
+
+          expect(addedNode).not.toBe(text);
+          expect(addedNode.textContent).toEqual('fallback:alert("hello");');
+          expect(s.textContent).toEqual('fallback:alert("hello");');
+        });
+      });
+
   describe('enforcement disables script node modification', () => {
     let enforcer;
 
@@ -565,7 +628,7 @@ describe('TrustedTypesEnforcer', function() {
       // Setup: Create a <script> element with a <p> child.
       const s = document.createElement('script');
       const p = document.createElement('p');
-      p.textContent = 'hello("world");';
+      p.textContent = 'fail()';
       s.appendChild(p);
 
       // Sanity check: The <p> content doesn't count as source text.
