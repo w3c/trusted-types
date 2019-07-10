@@ -276,20 +276,21 @@ export class TrustedTypesEnforcer {
 
     // TODO: Add ParentNode append() and prepend()
     // TODO: Add ChildNode after(), before() and replaceWith()
-    // TODO: Add Element insertAdjacentElement()
-    this.wrapFunction_(
-        Node.prototype,
-        'appendChild',
-        /**
+    ['appendChild', 'insertBefore', 'replaceChild'].forEach((fnName) => {
+      this.wrapFunction_(
+          Node.prototype,
+          fnName,
+          /**
          * @this {TrustedTypesEnforcer}
          * @param {function(!Function, ...*)} originalFn
          * @return {*}
          */
-        function(originalFn, ...args) {
-          return that.enforceTypeInScriptNodes_
-              .bind(that, this, originalFn)
-              .apply(that, args);
-        });
+          function(originalFn, ...args) {
+            return that.enforceTypeInScriptNodes_
+                .bind(that, this, /* checkParent */ false, originalFn)
+                .apply(that, args);
+          });
+    });
     this.wrapFunction_(
         insertAdjacentObject,
         'insertAdjacentText',
@@ -303,32 +304,39 @@ export class TrustedTypesEnforcer {
               .bind(that, this, originalFn)
               .apply(that, args);
         });
-    this.wrapFunction_(
-        Node.prototype,
-        'insertBefore',
-        /**
-         * @this {TrustedTypesEnforcer}
-         * @param {function(!Function, ...*)} originalFn
-         * @return {*}
-         */
-        function(originalFn, ...args) {
-          return that.enforceTypeInScriptNodes_
-              .bind(that, this, originalFn)
-              .apply(that, args);
-        });
-    this.wrapFunction_(
-        Node.prototype,
-        'replaceChild',
-        /**
-         * @this {TrustedTypesEnforcer}
-         * @param {function(!Function, ...*)} originalFn
-         * @return {*}
-         */
-        function(originalFn, ...args) {
-          return that.enforceTypeInScriptNodes_
-              .bind(that, this, originalFn)
-              .apply(that, args);
-        });
+
+    if ('after' in Element.prototype) {
+      ['after', 'before', 'replaceWith'].forEach((fnName) => {
+        this.wrapFunction_(
+            Element.prototype,
+            fnName,
+            /**
+           * @this {TrustedTypesEnforcer}
+           * @param {function(!Function, ...*)} originalFn
+           * @return {*}
+           */
+            function(originalFn, ...args) {
+              return that.enforceTypeInScriptNodes_
+                  .bind(that, this, /* checkParent */ true, originalFn)
+                  .apply(that, args);
+            });
+      });
+      ['append', 'prepend'].forEach((fnName) => {
+        this.wrapFunction_(
+            Element.prototype,
+            fnName,
+            /**
+           * @this {TrustedTypesEnforcer}
+           * @param {function(!Function, ...*)} originalFn
+           * @return {*}
+           */
+            function(originalFn, ...args) {
+              return that.enforceTypeInScriptNodes_
+                  .bind(that, this, /* checkParent */ false, originalFn)
+                  .apply(that, args);
+            });
+      });
+    }
   }
 
   /**
@@ -341,6 +349,10 @@ export class TrustedTypesEnforcer {
     this.restoreFunction_(Node.prototype, 'insertBefore');
     this.restoreFunction_(Node.prototype, 'replaceChild');
     this.restoreFunction_(insertAdjacentObject, 'insertAdjacentText');
+    if ('after' in Element.prototype) {
+      ['after', 'before', 'replaceWith', 'append', 'prepend'].forEach(
+          (fnName) => this.restoreFunction_(Element.prototype, fnName));
+    }
   }
 
   /**
@@ -459,30 +471,45 @@ export class TrustedTypesEnforcer {
 
   /**
    * Wrapper for DOM mutator functions that enforces type checks if the context
-   * is a script node and a first argument is a text node.
+   * (or, optionally, its parent node) is a script node.
+   * For each argument, it will make sure that text nodes pass through a
+   * default policy, or generate a violation. To skip that check, pass
+   * TrustedScript objects instead.
    * @param {!Object} context The context for the call to the original function.
+   * @param {boolean} checkParent Check parent of context instead.
    * @param {!Function} originalFn The original mutator function.
    * @return {*}
    */
-  enforceTypeInScriptNodes_(context, originalFn, ...args) {
-    if (context instanceof HTMLScriptElement &&
-        args.length > 0 &&
-        args[0] instanceof Node &&
-        args[0].nodeType == Node.TEXT_NODE) {
-      // Try to run a default policy on args[0]
-      let fallbackValue;
-      let exceptionThrown;
-      try {
-        fallbackValue = this.maybeCallDefaultPolicy_('TrustedScript',
-            args[0].textContent);
-      } catch (e) {
-        exceptionThrown = true;
+  enforceTypeInScriptNodes_(context, checkParent, originalFn, ...args) {
+    const objToCheck = checkParent ? context.parentNode : context;
+    if (objToCheck instanceof HTMLScriptElement && args.length > 0) {
+      for (let argNumber = 0; argNumber < args.length; argNumber++) {
+        let arg = args[argNumber];
+        if (arg instanceof Node && arg.nodeType !== Node.TEXT_NODE) {
+          continue; // Type is not interesting
+        }
+        if (arg instanceof Node && arg.nodeType == Node.TEXT_NODE) {
+          arg = arg.textContent;
+        } else if (TrustedTypes.isScript(arg)) {
+          // Convert to text node and go on.
+          args[argNumber] = document.createTextNode(arg);
+          continue;
+        }
+
+        // Try to run a default policy on argsthe argument
+        let fallbackValue;
+        let exceptionThrown;
+        try {
+          fallbackValue = this.maybeCallDefaultPolicy_('TrustedScript', arg);
+        } catch (e) {
+          exceptionThrown = true;
+        }
+        if (exceptionThrown) {
+          this.processViolation_(context, originalFn.name,
+              TrustedTypes.TrustedScript, arg);
+        }
+        args[argNumber] = document.createTextNode('' + fallbackValue);
       }
-      if (exceptionThrown) {
-        this.processViolation_(context, originalFn.name,
-            TrustedTypes.TrustedScript, args[0].textContent);
-      }
-      args[0] = document.createTextNode('' + fallbackValue);
     }
     return apply(originalFn, context, args);
   }
