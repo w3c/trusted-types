@@ -549,6 +549,238 @@ describe('TrustedTypesEnforcer', function() {
     });
   });
 
+  describe('enforcement uses default policy for script node modification',
+      () => {
+        let enforcer;
+
+        beforeEach(function() {
+          enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
+          enforcer.install();
+          TrustedTypes.createPolicy('default', {
+            createScript: (s) => '/*' + s + '*/',
+          });
+        });
+
+        afterEach(function() {
+          enforcer.uninstall();
+        });
+
+        it('via insertAdjacentText on script children', () => {
+          // Setup: Create a <script> element with a <p> child.
+          const s = document.createElement('script');
+          const p = document.createElement('p');
+          p.textContent = 'not in text';
+          s.appendChild(p);
+
+          // Sanity check: The <p> content doesn't count as source text.
+          expect(s.text).toEqual('');
+
+          // Try to insertAdjacentText into the <script>, starting from the <p>
+          expect(() => {
+            p.insertAdjacentText('beforebegin', 'before;');
+          }).not.toThrow();
+
+          expect(() => {
+            p.insertAdjacentText('afterend', 'after;');
+          }).not.toThrow();
+
+          expect(s.text).toEqual('/*before;*//*after;*/');
+          expect(s.childNodes[0].textContent).toEqual('/*before;*/');
+          expect(s.childNodes[1]).toBe(p);
+          expect(s.childNodes[2].textContent).toEqual('/*after;*/');
+        });
+
+        it('via text node insertion to non-attached script node', () => {
+          // Variant: Create a <script> element and create & insert a text node.
+          // Then insert it into the document container to make it live.
+          const s = document.createElement('script');
+          const text = document.createTextNode('alert("hello");');
+
+          let addedNode;
+
+          expect(() => {
+            addedNode = s.appendChild(text);
+          }).not.toThrow();
+
+          expect(addedNode).not.toBe(text);
+          expect(addedNode.textContent).toEqual('/*alert("hello");*/');
+          expect(s.textContent).toEqual('/*alert("hello");*/');
+        });
+
+        it('via insertBefore on script child node', () => {
+          // Variant: Create a <script> element and create & insert a text node.
+          // Then insert it into the document container to make it live.
+          const s = document.createElement('script');
+          const p = document.createElement('p');
+          s.appendChild(p);
+          const text = document.createTextNode('alert("hello");');
+          document.body.appendChild(s);
+
+          expect(() => {
+            s.insertBefore(text, p);
+          }).not.toThrow();
+
+          expect(s.text).toEqual('/*alert("hello");*/');
+        });
+
+        it('via Node.after', () => {
+          if (!('after' in Element.prototype)) {
+            pending();
+          }
+          const s = document.createElement('script');
+          const p = document.createElement('p');
+          s.appendChild(p);
+          const text = document.createTextNode('textnode');
+          const span = document.createElement('span');
+
+          expect(() => {
+            p.after(text, span, 'literaltext');
+          }).not.toThrow();
+
+          expect(s.childNodes.length).toEqual(4);
+
+          expect(s.childNodes[0]).toBe(p);
+
+          expect(s.childNodes[1].textContent).toEqual('/*textnode*/');
+
+          expect(s.childNodes[2]).toBe(span); // untouched by the wrapper
+
+          expect(s.childNodes[3].textContent).toEqual('/*literaltext*/');
+        });
+      });
+
+  describe('enforcement disables script node modification', () => {
+    let enforcer;
+
+    beforeEach(function() {
+      enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
+      enforcer.install();
+    });
+
+    afterEach(function() {
+      enforcer.uninstall();
+    });
+
+    it('via insertAdjacentText on script children', () => {
+      // Setup: Create a <script> element with a <p> child.
+      const s = document.createElement('script');
+      const p = document.createElement('p');
+      p.textContent = 'fail()';
+      s.appendChild(p);
+
+      // Sanity check: The <p> content doesn't count as source text.
+      expect(s.text).toEqual('');
+
+      // Try to insertAdjacentText into the <script>, starting from the <p>
+      expect(() => {
+        p.insertAdjacentText('beforebegin', 'hello("before");');
+      }).toThrow();
+
+      expect(s.text).toEqual('');
+      expect(() => {
+        p.insertAdjacentText('afterend', 'hello("after");');
+      }).toThrow();
+
+      expect(s.text).toEqual('');
+    });
+
+    it('via text node insertion to non-attached script node', () => {
+      // Variant: Create a <script> element and create & insert a text node.
+      // Then insert it into the document container to make it live.
+      const s = document.createElement('script');
+      const text = document.createTextNode('alert("hello");');
+
+      expect(() => {
+        s.appendChild(text);
+      }).toThrow();
+    });
+
+    it('via text node insertion to an attached script node', () => {
+      // Variant: Create a <script> element and create & insert a text node.
+      // Then insert it into the document container to make it live.
+      const s = document.createElement('script');
+      const text = document.createTextNode('alert("hello");');
+      document.body.appendChild(s);
+
+      expect(() => {
+        s.appendChild(text);
+      }).toThrow();
+    });
+
+    it('via insertBefore on script child node', () => {
+      // Variant: Create a <script> element and create & insert a text node.
+      // Then insert it into the document container to make it live.
+      const s = document.createElement('script');
+      const p = document.createElement('p');
+      s.appendChild(p);
+      const text = document.createTextNode('alert("hello");');
+      document.body.appendChild(s);
+
+      expect(() => {
+        s.insertBefore(text, p);
+      }).toThrow();
+    });
+
+    it('via replaceChild on script node', () => {
+      // Variant: Create a <script> element and create & insert a text node.
+      // Then insert it into the document container to make it live.
+      const s = document.createElement('script');
+      const p = document.createElement('p');
+      s.appendChild(p);
+      const text = document.createTextNode('alert("hello");');
+      document.body.appendChild(s);
+
+      expect(() => {
+        s.replaceChild(text, p);
+      }).toThrow();
+    });
+
+    describe('via new multi-param methods', () => {
+      const s = document.createElement('script');
+      const p = document.createElement('p');
+      const text = document.createTextNode('alert(/textnode/)');
+
+      // Methods documented in
+      // https://developer.mozilla.org/en-US/docs/Web/API/ChildNode
+      // https://developer.mozilla.org/en-US/docs/Web/API/ParentNode
+
+      [
+        [p, 'replaceWith'],
+        [p, 'after'],
+        [p, 'before'],
+        [s, 'append'],
+        [s, 'prepend'],
+      ].forEach(([o, functionName]) => {
+        it(functionName, () => {
+          if (!o[functionName]) {
+            pending();
+          }
+          s.appendChild(p);
+          const fn = o[functionName].bind(o);
+
+          expect(() => {
+            fn('alert(1)');
+          }).toThrow();
+
+          expect(() => {
+            fn(text);
+          }).toThrow();
+
+          expect(() => {
+            fn('alert(1)', '');
+          }).toThrow();
+
+          expect(() => {
+            fn(text, 'alert(1)');
+          }).toThrow();
+
+          expect(s.childNodes.length).toEqual(1);
+          expect(s.text).toEqual('');
+        });
+      });
+    });
+  });
+
   describe('enforcement disables string assignments', function() {
     let enforcer;
 

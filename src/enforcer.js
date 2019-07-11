@@ -59,8 +59,8 @@ const windowOpenObject = getOwnPropertyDescriptor(window, 'open') ?
   window :
   window.constructor.prototype;
 
-// In IE 11, insertAdjacentHTML is on HTMLElement prototype
-const insertAdjacentHTMLObject = apply(hasOwnProperty, Element.prototype,
+// In IE 11, insertAdjacent(HTML|Text) is on HTMLElement prototype
+const insertAdjacentObject = apply(hasOwnProperty, Element.prototype,
     ['insertAdjacentHTML']) ? Element.prototype : HTMLElement.prototype;
 
 // This is not available in release Firefox :(
@@ -195,7 +195,7 @@ export class TrustedTypesEnforcer {
     this.wrapWithEnforceFunction_(Range.prototype, 'createContextualFragment',
         TrustedTypes.TrustedHTML, 0);
 
-    this.wrapWithEnforceFunction_(insertAdjacentHTMLObject,
+    this.wrapWithEnforceFunction_(insertAdjacentObject,
         'insertAdjacentHTML',
         TrustedTypes.TrustedHTML, 1);
 
@@ -225,6 +225,7 @@ export class TrustedTypesEnforcer {
     this.wrapWithEnforceFunction_(window, 'setTimeout',
         TrustedTypes.TrustedScript, 0);
     this.wrapSetAttribute_();
+    this.installScriptMutatorGuards_();
     this.installPropertySetWrappers_();
   }
 
@@ -242,7 +243,7 @@ export class TrustedTypesEnforcer {
       this.restoreSetter_(ShadowRoot.prototype, 'innerHTML');
     }
     this.restoreFunction_(Range.prototype, 'createContextualFragment');
-    this.restoreFunction_(insertAdjacentHTMLObject, 'insertAdjacentHTML');
+    this.restoreFunction_(insertAdjacentObject, 'insertAdjacentHTML');
     this.restoreFunction_(Element.prototype, 'setAttribute');
     this.restoreFunction_(Element.prototype, 'setAttributeNS');
 
@@ -261,7 +262,95 @@ export class TrustedTypesEnforcer {
     this.restoreFunction_(window, 'setTimeout');
     this.restoreFunction_(window, 'setInterval');
     this.uninstallPropertySetWrappers_();
+    this.uninstallScriptMutatorGuards_();
     resetDefaultPolicy();
+  }
+
+  /**
+   * Installs type-enforcing wrappers for APIs that allow to modify
+   * script element texts.
+   * @private
+   */
+  installScriptMutatorGuards_() {
+    const that = this;
+
+    ['appendChild', 'insertBefore', 'replaceChild'].forEach((fnName) => {
+      this.wrapFunction_(
+          Node.prototype,
+          fnName,
+          /**
+         * @this {TrustedTypesEnforcer}
+         * @param {function(!Function, ...*)} originalFn
+         * @return {*}
+         */
+          function(originalFn, ...args) {
+            return that.enforceTypeInScriptNodes_
+                .bind(that, this, /* checkParent */ false, originalFn)
+                .apply(that, args);
+          });
+    });
+    this.wrapFunction_(
+        insertAdjacentObject,
+        'insertAdjacentText',
+        /**
+         * @this {TrustedTypesEnforcer}
+         * @param {function(!Function, ...*)} originalFn
+         * @return {*}
+         */
+        function(originalFn, ...args) {
+          return that.insertAdjacentTextWrapper_
+              .bind(that, this, originalFn)
+              .apply(that, args);
+        });
+
+    if ('after' in Element.prototype) {
+      ['after', 'before', 'replaceWith'].forEach((fnName) => {
+        this.wrapFunction_(
+            Element.prototype,
+            fnName,
+            /**
+           * @this {TrustedTypesEnforcer}
+           * @param {function(!Function, ...*)} originalFn
+           * @return {*}
+           */
+            function(originalFn, ...args) {
+              return that.enforceTypeInScriptNodes_
+                  .bind(that, this, /* checkParent */ true, originalFn)
+                  .apply(that, args);
+            });
+      });
+      ['append', 'prepend'].forEach((fnName) => {
+        this.wrapFunction_(
+            Element.prototype,
+            fnName,
+            /**
+           * @this {TrustedTypesEnforcer}
+           * @param {function(!Function, ...*)} originalFn
+           * @return {*}
+           */
+            function(originalFn, ...args) {
+              return that.enforceTypeInScriptNodes_
+                  .bind(that, this, /* checkParent */ false, originalFn)
+                  .apply(that, args);
+            });
+      });
+    }
+  }
+
+  /**
+   * Uninstalls type-enforcing wrappers for APIs that allow to modify
+   * script element texts.
+   * @private
+   */
+  uninstallScriptMutatorGuards_() {
+    this.restoreFunction_(Node.prototype, 'appendChild');
+    this.restoreFunction_(Node.prototype, 'insertBefore');
+    this.restoreFunction_(Node.prototype, 'replaceChild');
+    this.restoreFunction_(insertAdjacentObject, 'insertAdjacentText');
+    if ('after' in Element.prototype) {
+      ['after', 'before', 'replaceWith', 'append', 'prepend'].forEach(
+          (fnName) => this.restoreFunction_(Element.prototype, fnName));
+    }
   }
 
   /**
@@ -351,7 +440,7 @@ export class TrustedTypesEnforcer {
             originalFn, 1, args);
       }
     }
-    return originalFn.apply(context, args);
+    return apply(originalFn, context, args);
   }
 
   /**
@@ -375,7 +464,101 @@ export class TrustedTypesEnforcer {
             originalFn, 2, args);
       }
     }
-    return originalFn.apply(context, args);
+    return apply(originalFn, context, args);
+  }
+
+  /**
+   * Wrapper for DOM mutator functions that enforces type checks if the context
+   * (or, optionally, its parent node) is a script node.
+   * For each argument, it will make sure that text nodes pass through a
+   * default policy, or generate a violation. To skip that check, pass
+   * TrustedScript objects instead.
+   * @param {!Object} context The context for the call to the original function.
+   * @param {boolean} checkParent Check parent of context instead.
+   * @param {!Function} originalFn The original mutator function.
+   * @return {*}
+   */
+  enforceTypeInScriptNodes_(context, checkParent, originalFn, ...args) {
+    const objToCheck = checkParent ? context.parentNode : context;
+    if (objToCheck instanceof HTMLScriptElement && args.length > 0) {
+      for (let argNumber = 0; argNumber < args.length; argNumber++) {
+        let arg = args[argNumber];
+        if (arg instanceof Node && arg.nodeType !== Node.TEXT_NODE) {
+          continue; // Type is not interesting
+        }
+        if (arg instanceof Node && arg.nodeType == Node.TEXT_NODE) {
+          arg = arg.textContent;
+        } else if (TrustedTypes.isScript(arg)) {
+          // TODO(koto): Consider removing this branch, as it's hard to spec.
+          // Convert to text node and go on.
+          args[argNumber] = document.createTextNode(arg);
+          continue;
+        }
+
+        // Try to run a default policy on argsthe argument
+        let fallbackValue;
+        let exceptionThrown;
+        try {
+          fallbackValue = this.maybeCallDefaultPolicy_('TrustedScript', arg);
+        } catch (e) {
+          exceptionThrown = true;
+        }
+        if (exceptionThrown) {
+          this.processViolation_(context, originalFn.name,
+              TrustedTypes.TrustedScript, arg);
+        }
+        args[argNumber] = document.createTextNode('' + fallbackValue);
+      }
+    }
+    return apply(originalFn, context, args);
+  }
+
+  /**
+   * Wrapper for Element.insertAdjacentText that enforces type checks for
+   * inserting text into a script node.
+   * @param {!Object} context The context for the call to the original function.
+   * @param {!Function} originalFn The original insertAdjacentText function.
+   */
+  insertAdjacentTextWrapper_(context, originalFn, ...args) {
+    const riskyPositions = ['beforebegin', 'afterend'];
+    if (context instanceof Element &&
+        context.parentElement instanceof HTMLScriptElement &&
+        args.length > 1 &&
+        riskyPositions.includes(args[0]) &&
+        !(TrustedTypes.isScript(args[1]))) {
+      // Run a default policy on args[1]
+      let fallbackValue;
+      let exceptionThrown;
+      try {
+        fallbackValue = this.maybeCallDefaultPolicy_('TrustedScript',
+            args[1]);
+      } catch (e) {
+        exceptionThrown = true;
+      }
+      if (exceptionThrown) {
+        this.processViolation_(context, 'insertAdjacentText',
+            TrustedTypes.TrustedScript, args[1]);
+      }
+
+      const textNode = document.createTextNode('' + fallbackValue);
+
+
+      const insertBefore = /** @type function(this: Node) */(
+        this.originalSetters_[this.getKey_(Node.prototype, 'insertBefore')]);
+
+      switch (args[0]) {
+        case riskyPositions[0]: // 'beforebegin'
+          apply(insertBefore, context.parentElement,
+              [textNode, context]);
+          break;
+        case riskyPositions[1]: // 'afterend'
+          apply(insertBefore, context.parentElement,
+              [textNode, context.nextSibling]);
+          break;
+      }
+      return;
+    }
+    apply(originalFn, context, args);
   }
 
   /**
@@ -571,6 +754,26 @@ export class TrustedTypesEnforcer {
     return ctrName + '-' + name;
   }
 
+
+  /**
+   * Calls a default policy.
+   * @param {string} typeName Type name to attempt to produce from a value.
+   * @param {*} value The value to pass to a default policy
+   * @throws {Error} If the default policy throws, or not exist.
+   * @return {Function} The trusted value.
+   */
+  maybeCallDefaultPolicy_(typeName, value) {
+    // Apply a fallback policy, if it exists.
+    const fallbackPolicy = getDefaultPolicy.call(TrustedTypes);
+    if (!fallbackPolicy) {
+      throw new Error('Default policy does not exist');
+    }
+    if (!TYPE_CHECKER_MAP.hasOwnProperty(typeName)) {
+      throw new Error();
+    }
+    return fallbackPolicy[TYPE_PRODUCER_MAP[typeName]](value);
+  }
+
   /**
    * Logs and enforces TrustedTypes depending on the given configuration.
    * @template T
@@ -616,25 +819,37 @@ export class TrustedTypesEnforcer {
     }
 
     // Apply a fallback policy, if it exists.
-    const fallbackPolicy = getDefaultPolicy.call(TrustedTypes);
-    if (fallbackPolicy && TYPE_CHECKER_MAP.hasOwnProperty(typeName)) {
-      let fallbackValue;
-      let exceptionThrown;
-      try {
-        fallbackValue = fallbackPolicy[TYPE_PRODUCER_MAP[typeName]](value);
-      } catch (e) {
-        exceptionThrown = true;
-      }
-      if (!exceptionThrown) {
-        args[argNumber] = fallbackValue;
-        return apply(originalSetter, context, args);
-      }
+    let fallbackValue;
+    let exceptionThrown;
+    try {
+      fallbackValue = this.maybeCallDefaultPolicy_(typeName, value);
+    } catch (e) {
+      exceptionThrown = true;
+    }
+    if (!exceptionThrown) {
+      args[argNumber] = fallbackValue;
+      return apply(originalSetter, context, args);
     }
 
+    // This will throw a TypeError if enforcement is enabled.
+    this.processViolation_(context, propertyName, typeToEnforce, value);
+
+    return apply(originalSetter, context, args);
+  }
+
+  /**
+   * Report a TT violation.
+   * @param {!Object} context The object that the setter is called for.
+   * @param {string} propertyName The name of the property.
+   * @param {!Function} typeToEnforce The type to enforce.
+   * @param {string} value The value that was violated the restrictions.
+   * @throws {TypeError} if the enforcement is enabled.
+   */
+  processViolation_(context, propertyName, typeToEnforce, value) {
     const contextName = getConstructorName_(context.constructor) ||
         '' + context;
     const message = `Failed to set ${propertyName} on ${contextName}: `
-        + `This property requires ${typeName}.`;
+        + `This property requires ${typeToEnforce.name}.`;
 
     if (this.config_.isLoggingEnabled) {
       // eslint-disable-next-line no-console
@@ -675,8 +890,6 @@ export class TrustedTypesEnforcer {
 
     if (this.config_.isEnforcementEnabled) {
       throw new TypeError(message);
-    } else { // pass-through
-      return apply(originalSetter, context, args);
     }
   }
 }
