@@ -1270,7 +1270,7 @@ partial interface HTMLTrackElement : HTMLElement {
 // TODO: Add HTMLPortalElement.src from https://github.com/WICG/portals once it's specced.
 </pre>
 
-### Enforcement for script child text contents ### {#enforcement-in-script-text}
+### Enforcement for script text contents ### {#enforcement-in-script-text}
 
 This document modifies how {{HTMLScriptElement}} [=child text content=] can be set to allow documents to control dynamically created scripts. It does so by
 adding the {{HTMLElement/innerText}} and {{Node/textContent}} attributes directly on {{HTMLScriptElement}}. The behavior of the attributes remains the same
@@ -1283,7 +1283,17 @@ partial interface mixin HTMLScriptElement : HTMLElement {
 };
 </pre>
 
-Issue(WICG/trusted-types#133): Define more generic restrictions for script texts.
+Additionally, this document defines [$insert text node validation steps$] for {{HTMLScriptElement}} to ascertain that text nodes inserted to {{HTMLScriptElement}} elements will satisfy Trusted Types restrictions:
+
+1.  Let |disposition| be |parent|’s {{document}}'s {{TrustedTypeConfiguration}}'s
+    {{TrustedTypeConfiguration/domSinks}}.
+1.  If |disposition| is `“unsafe-allow”`, abort the following steps.
+1.  Let |text| be |node|'s [=child text content=].
+1.  Let |convertedText| be the result of running [$Get Trusted Type compliant string$], passing |parent|'s {{document}} as *document*, {{TrustedScript}} as *expectedType* and |text| as input.
+    If the algorithm threw an error, rethrow the error.
+1.  Set |node|'s data to |convertedText|.
+
+Note: This prevent calling ChildNode.after(aTrustedScript, ...), as the type information is lost before insert is run. To fix that, an additional metadata in Text nodes would be needed. Removed that use case for simplicity.
 
 ### Enforcement in timer functions ### {#enforcement-in-timer-functions}
 
@@ -1325,6 +1335,15 @@ At the beginning of step 5, insert the following steps:
     *   *expectedType* set to {{TrustedScript}}
 1.  If the algorithm throws an error, abort these steps.
 
+## Integration with DOM ## {#integration-with-dom}
+
+### Text node validation steps ### {#dom-text-node-validation}
+
+Add the following step at the beginning of step 7 of [[DOM#concept-node-insert|insert]] algorithm.
+
+1. If |node| is a {{Text}} node, run [$insert text node validation steps$] for |parent|, passing |node| and |parent| as parameters.
+
+<dfn abstract-op>insert text node validation steps</dfn> may be defined by other specifications.
 
 ## Integration with DOM Parsing ## {#integration-with-dom-parsing}
 
