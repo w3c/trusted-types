@@ -622,6 +622,28 @@ describe('TrustedTypesEnforcer', function() {
 
           expect(s.text).toEqual('/*alert("hello");*/');
         });
+
+        it('via after', () => {
+          const s = document.createElement('script');
+          const p = document.createElement('p');
+          s.appendChild(p);
+          const text = document.createTextNode('textnode');
+          const span = document.createElement('span');
+
+          expect(() => {
+            p.after(text, span, 'literaltext');
+          }).not.toThrow();
+
+          expect(s.childNodes.length).toEqual(4);
+
+          expect(s.childNodes[0]).toBe(p);
+
+          expect(s.childNodes[1].textContent).toEqual('/*textnode*/');
+
+          expect(s.childNodes[2]).toBe(span); // untouched by the wrapper
+
+          expect(s.childNodes[3].textContent).toEqual('/*literaltext*/');
+        });
       });
 
   describe('enforcement disables script node modification', () => {
