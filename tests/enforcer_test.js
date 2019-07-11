@@ -623,7 +623,10 @@ describe('TrustedTypesEnforcer', function() {
           expect(s.text).toEqual('/*alert("hello");*/');
         });
 
-        it('via after', () => {
+        it('via Node.after', () => {
+          if (!('after' in Element.prototype)) {
+            pending();
+          }
           const s = document.createElement('script');
           const p = document.createElement('p');
           s.appendChild(p);
@@ -749,6 +752,9 @@ describe('TrustedTypesEnforcer', function() {
         [s, 'prepend'],
       ].forEach(([o, functionName]) => {
         it(functionName, () => {
+          if (!o[functionName]) {
+            pending();
+          }
           s.appendChild(p);
           const fn = o[functionName].bind(o);
 
