@@ -304,7 +304,6 @@ describe('v2 TrustedTypes', () => {
     });
 
     it('Object.prototype for property lookup', () => {
-      const poisonedProto = false;
       // eslint-disable-next-line no-extend-native
       Object.prototype['FOO'] = {
         attributes: {
@@ -322,10 +321,8 @@ describe('v2 TrustedTypes', () => {
         expect(TrustedTypes.getAttributeType('SCRIPT', 'newattr'))
             .toBeUndefined();
       } finally {
-        if (poisonedProto) {
-          delete Object.prototype.FOO;
-          delete Object.prototype.newattr;
-        }
+        delete Object.prototype.FOO;
+        delete Object.prototype.newattr;
       }
     });
   });
