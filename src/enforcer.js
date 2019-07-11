@@ -489,6 +489,7 @@ export class TrustedTypesEnforcer {
         if (arg instanceof Node && arg.nodeType == Node.TEXT_NODE) {
           arg = arg.textContent;
         } else if (TrustedTypes.isScript(arg)) {
+          // TODO(koto): Consider removing this branch, as it's hard to spec.
           // Convert to text node and go on.
           args[argNumber] = document.createTextNode(arg);
           continue;
