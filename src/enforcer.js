@@ -274,8 +274,6 @@ export class TrustedTypesEnforcer {
   installScriptMutatorGuards_() {
     const that = this;
 
-    // TODO: Add ParentNode append() and prepend()
-    // TODO: Add ChildNode after(), before() and replaceWith()
     ['appendChild', 'insertBefore', 'replaceChild'].forEach((fnName) => {
       this.wrapFunction_(
           Node.prototype,
