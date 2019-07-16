@@ -211,8 +211,6 @@ will never change during its lifetime.
 To stringify a TrustedHTML object, return the DOMString from its
 `[[Data]]` internal slot.
 
-Issue(WICG/trusted-types#95): Add TrustedHTML.EMPTY.
-
 ### <dfn type>TrustedScript</dfn> ### {#trusted-script}
 
 The TrustedScript interface represents a string with an uncompiled
@@ -283,8 +281,6 @@ will never change during its lifetime.
 
 To stringify a TrustedURL object, return the USVString from its
 `[[Data]]` internal slot.
-
-Issue(WICG/trusted-types#104): Consider adding new set of types, e.g. related to CSS.
 
 ## Policies ## {#policies}
 

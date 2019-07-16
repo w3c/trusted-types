@@ -1461,7 +1461,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Trusted Types</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-07-15">15 July 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-07-16">16 July 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1756,7 +1756,6 @@ wrappers around a string, constructed via a <code class="idl"><a data-link-type=
 DOMString. The slot’s value is set when the object is created, and
 will never change during its lifetime.</p>
    <p>To stringify a TrustedHTML object, return the DOMString from its <code>[[Data]]</code> internal slot.</p>
-   <p class="issue" id="issue-fee6a803"><a class="self-link" href="#issue-fee6a803"></a> Add TrustedHTML.EMPTY. <a href="https://github.com/WICG/trusted-types/issues/95">&lt;https://github.com/WICG/trusted-types/issues/95></a></p>
    <h4 class="heading settled" data-level="2.2.3" id="trusted-script"><span class="secno">2.2.3. </span><span class="content"><dfn class="css" data-dfn-type="type" data-export id="typedef-trustedscript">TrustedScript<a class="self-link" href="#typedef-trustedscript"></a></dfn></span><a class="self-link" href="#trusted-script"></a></h4>
    <p>The TrustedScript interface represents a string with an uncompiled
 script body that a developer can confidently pass into an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink④">injection sink</a> that might lead to executing that script.
@@ -1801,7 +1800,6 @@ string, constructed via a <code class="idl"><a data-link-type="idl" href="#trust
 USVString.  The slot’s value is set when the object is created, and
 will never change during its lifetime.</p>
    <p>To stringify a TrustedURL object, return the USVString from its <code>[[Data]]</code> internal slot.</p>
-   <p class="issue" id="issue-a6d5e385"><a class="self-link" href="#issue-a6d5e385"></a> Consider adding new set of types, e.g. related to CSS. <a href="https://github.com/WICG/trusted-types/issues/104">&lt;https://github.com/WICG/trusted-types/issues/104></a></p>
    <h3 class="heading settled" data-level="2.3" id="policies"><span class="secno">2.3. </span><span class="content">Policies</span><a class="self-link" href="#policies"></a></h3>
    <p>Trusted Types can only be created via user-defined
 and immutable policies that define rules for converting a string into
@@ -3533,7 +3531,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <dt id="biblio-csp-3">[CSP-3]
    <dd>Content Security Policy Level 3 URL: <a href="https://www.w3.org/TR/CSP3/">https://www.w3.org/TR/CSP3/</a>
    <dt id="biblio-css-syntax-3">[CSS-SYNTAX-3]
-   <dd>Tab Atkins Jr.; Simon Sapin. <a href="https://www.w3.org/TR/css-syntax-3/">CSS Syntax Module Level 3</a>. 20 February 2014. CR. URL: <a href="https://www.w3.org/TR/css-syntax-3/">https://www.w3.org/TR/css-syntax-3/</a>
+   <dd>Tab Atkins Jr.; Simon Sapin. <a href="https://www.w3.org/TR/css-syntax-3/">CSS Syntax Module Level 3</a>. 16 July 2019. CR. URL: <a href="https://www.w3.org/TR/css-syntax-3/">https://www.w3.org/TR/css-syntax-3/</a>
    <dt id="biblio-dom">[DOM]
    <dd>Anne van Kesteren. <a href="https://dom.spec.whatwg.org/">DOM Standard</a>. Living Standard. URL: <a href="https://dom.spec.whatwg.org/">https://dom.spec.whatwg.org/</a>
    <dt id="biblio-dom-parsing">[DOM-Parsing]
@@ -3741,8 +3739,6 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <div class="issue"> figure out if we need this section here. CSP has none, SRI has one and it looks useful.<a href="#issue-d33261f4"> ↵ </a></div>
    <div class="issue"> Something about reducing the review surface<a href="#issue-5bedf486"> ↵ </a></div>
    <div class="issue"> Consider surfacing the DOM sink (node + attr) => type mapping in the API, to faciliate building HTML sanitizers. <a href="https://github.com/WICG/trusted-types/issues/43">&lt;https://github.com/WICG/trusted-types/issues/43></a><a href="#issue-7a6e3d33"> ↵ </a></div>
-   <div class="issue"> Add TrustedHTML.EMPTY. <a href="https://github.com/WICG/trusted-types/issues/95">&lt;https://github.com/WICG/trusted-types/issues/95></a><a href="#issue-fee6a803"> ↵ </a></div>
-   <div class="issue"> Consider adding new set of types, e.g. related to CSS. <a href="https://github.com/WICG/trusted-types/issues/104">&lt;https://github.com/WICG/trusted-types/issues/104></a><a href="#issue-a6d5e385"> ↵ </a></div>
    <div class="issue"> Decide if separate per-type enforcement settings should be exposed to the authors. <a href="https://github.com/WICG/trusted-types/issues/66">&lt;https://github.com/WICG/trusted-types/issues/66></a><a href="#issue-20410262"> ↵ </a></div>
    <div class="issue"> Change the algorithm to allow duplicate policy names in report-only.<a href="#issue-6f6d471a"> ↵ </a></div>
    <div class="issue"> Get the sink from the callers.<a href="#issue-22c7f802"> ↵ </a></div>
