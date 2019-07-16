@@ -401,9 +401,11 @@ reference - see [[#extensions-to-the-window-interface]].
 };
 </pre>
 
-Internal slot `[[PolicyMap]]` contains a map, with each map entry
-being a pair of a policy name (DOMString key) and the
-TrustedTypePolicy (value).
+Internal slot `[[DefaultPolicy]]` may contain a {{TrustedTypePolicy}} object,
+and is initially empty.
+
+Internal slot `[[CreatedPolicyNames]]` is an <a>ordered set</a> of strings,
+initially empty.
 
 <div dfn-type="method" dfn-for="TrustedTypePolicyFactory">
 
@@ -437,8 +439,8 @@ TrustedTypePolicy (value).
     </dl>
 
 : <dfn>getPolicyNames()</dfn>
-::  Returns a new list, comprising of all keys of the `[[PolicyMap]]`
-    internal slot map.
+::  Returns a new list, comprising of all entries  of the
+    `[[CreatedPolicyNames]]` slot.
 
 : <dfn>isHTML(value)</dfn>
 :: Returns true if value is an instance of {{TrustedHTML}} and has its `[[Data]]`  internal slot set, false otherwise.
@@ -607,7 +609,7 @@ callback CreateScriptURLCallback = USVString (DOMString input);
 
 *This section is not normative.*
 
-One of the policies, the "default" policy, is special; while all other
+One of the policies, the `default` policy, is special; while all other
 policies have to be called explicitly to create a TrustedType object,
 the default policy can also be called implicitly by the user agent. It
 allows the application to define the rules that should be run as a
@@ -657,15 +659,10 @@ To create a {{TrustedTypePolicy}} in a {{TrustedTypePolicyFactory|factory}},
 given a DOMString (|policyName|), policy options dictionary (|options|), and a
 <a>global object</a> (|global|) run these steps:
 
-1.  If |factory|'s `[[PolicyMap]]` internal slot has an entry with the key
-    `policyName`, then throw a {{TypeError}} and abort further steps.
-
-    Issue: Change the algorithm to allow duplicate policy names in report-only.
-1.  Let |allowedByCSP| be the result of executing [$Should policy creation be
-    blocked by Content Security Policy?$] algorithm with |global| and |policyName|.
-
+1.  Let |allowedByCSP| be the result of executing [$Should Trusted Type policy
+    creation be blocked by Content Security Policy?$] algorithm with |global|,
+    |policyName| and |factory|'s `[[CreatedPolicyNames]]` slot value.
 1.  If |allowedByCSP| is `"Blocked"`, throw a {{TypeError}} and abort further steps.
-
 1.  Let |policy| be a new {{TrustedTypePolicy}} object.
 1.  Set |policy|'s `name` property value to |policyName|.
 1.  Let |policyOptions| be a new {{TrustedTypePolicyOptions}} object.
@@ -682,17 +679,16 @@ given a DOMString (|policyName|), policy options dictionary (|options|), and a
     property to |option|'s
     {{TrustedTypePolicyOptions/createURL|createURL}} property value.
 1.  Set |policy|'s `[[options]]` internal slot value to *policyOptions*.
-1.  Set the value for the |policyName| entry of |factory|'s `[[PolicyMap]]` to |policy|.
+1.  If the |policyName| is the [=ASCII case-sensitive=] match for the string
+    `default`, set the |factory|'s `[[DefaultPolicy]]` slot value to |policy|.
+1.  Append |policyName| to |factory|'s `[[CreatedPolicyNames]]`.
 1.  Return |policy|.
 
 ### <dfn abstract-op>Get default policy</dfn> ### {#get-default-policy-algorithm}
 To get the [=default policy=] for a *factory*, execute the following steps:
 
-1.  Set *policyName* to `"default"`.
-1.  If *factory*'s `[[PolicyMap]]` internal slot does not have an entry
-    with the key *policyName*, return `null`.
-1.  Otherwise, return the value of the *policyName* entry of
-    *factory*'s `[[PolicyMap]]`.
+1.  Return the value of |factory|'s `[[DefaultPolicy]]` slot
+    (null if the slot is empty).
 
 ### <dfn abstract-op>Create a Trusted Type</dfn> ### {#create-a-trusted-type-algorithm}
 
@@ -1046,7 +1042,8 @@ directive-name = "trusted-types"
 directive-value = <a>serialized-tt-configuration</a>
 <dfn>serialized-tt-configuration</dfn> = ( <a>tt-expression</a> *( <a href="https://w3c.github.io/webappsec-csp/#grammardef-required-ascii-whitespace">required-ascii-whitespace</a> <a>tt-expression</a> ) )
 <dfn>tt-expression</dfn> = "*" / <a>tt-policy-name</a> ; In the future, add keywords
-<dfn>tt-policy-name</dfn> = 1*( <a href="https://tools.ietf.org/html/rfc5234#appendix-B.1">ALPHA</a> / <a href="https://tools.ietf.org/html/rfc5234#appendix-B.1">DIGIT</a> / "-" / "#" / "/" / "_" / "." / "=" )
+<dfn>tt-policy-name</dfn> = 1*( %x21-%x26 / %x28-%x29 / %x2B / %x2D-%x3A / %x3C-%x7E )
+; Policy name can consist of any <a href="https://tools.ietf.org/html/rfc5234#appendix-B.1">VCHAR</a> character, apart from ";", ",", "*" and "'".
 </pre>
 
 <div class="example" id="whitelist-of-policy-names-in-header">
@@ -1101,7 +1098,7 @@ returns `"Blocked"` if the [=injection sink=] requires a [=Trusted Type=], and
     1.  If |policy|'s <a>directive set</a> does not contain a <a>directive</a>
         which [=directive/name=] is `"trusted-types"`, skip to the next |policy|.
     1.  Let |violation| be the result of executing
-        [$Create a violation object for global, policy, and directive$] on the
+        [[CSP#create-violation-for-global|Create a violation object for global, policy, and directive]] on the
         <a>current settings object</a>'s <a>global object</a>, |policy| and
         `"trusted-types"`
 
@@ -1111,29 +1108,34 @@ returns `"Blocked"` if the [=injection sink=] requires a [=Trusted Type=], and
         `"Blocked"`.
 1. Return |result|.
 
-### <dfn abstract-op>Should policy creation be blocked by Content Security Policy?</dfn> ### {#should-block-create-policy}
+### <dfn abstract-op>Should Trusted Type policy creation be blocked by Content Security Policy?</dfn> ### {#should-block-create-policy}
 
-Given a <a>global object</a> (|global|) and a string (|policyName|) this algorithm
-returns `"Blocked"` if the [=Trusted Type Policy=] should not be created, and
-`"Allowed"` otherwise.
+Given a <a>global object</a> (|global|), a string (|policyName|) and a list of
+strings (|createdPolicyNames|), this algorithm returns `"Blocked"` if the
+[=Trusted Type Policy=] should not be created, and `"Allowed"` otherwise.
 
 1.  Let |result| be `"Allowed"`.
 1.  For each |policy| in |global|'s <a>CSP list</a>:
+    1.  Let |reason| be an empty string.
     1.  If |policy|'s <a>directive set</a> does not contain a <a>directive</a>
         which name is `"trusted-types"`, skip to the next |policy|.
-    1.  Let |directive| be the |policy|'s |directive set|'s directive which name
+    1.  Let |directive| be the |policy|'s |directive set|'s [=directive=] which name
         is `"trusted-types"`
     1.  If |directive|'s [=directive/value=] contains a <a>tt-expression</a> which is a match
         for a value `*`, skip to the next |policy|.
-    1.  If |directive|'s [=directive/value=] contains a <a>tt-policy-name</a>, which is an
-        [=ASCII case-insensitive=] match for the value |policyName|, skip to the
-        next policy.
+
+        Note: `trusted-types *` allows authors to create policies with
+        duplicated names.
+    1.  If |createdPolicyNames| contains |policyName|, set |reason| to `"duplicate-name"`.
+    1.  If |directive|'s [=directive/value=] does not contain a <a>tt-policy-name</a>, which is an
+        [=ASCII case-sensitive=] match for the value |policyName|, set |reason| to `"disallowed-name"`
+    1.  If |reason| is an empty string, skip to the next |policy|.
     1.  Let |violation| be the result of executing
-        [$Create a violation object for global, policy, and directive$] on the
+        [[CSP#create-violation-for-global|Create a violation object for global, policy, and directive]] on the
         <a>current settings object</a>'s <a>global object</a>, |policy| and
         `"trusted-types"`
 
-        Issue: Populate the violation object here.
+        Issue: Populate the violation object here, using |reason|.
     1.  Execute [[CSP#report-violation|Report a violation]] on |violation|.
     1.  If |policy|'s [=policy/disposition=] is `"enforce"`, then set |result| to
         `"Blocked"`.

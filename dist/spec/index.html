@@ -1569,7 +1569,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
        <ol class="toc">
         <li><a href="#trusted-types-csp-directive"><span class="secno">4.4.1</span> <span class="content"><span>trusted-types</span> directive</span></a>
         <li><a href="#should-block-sink-type-mismatch"><span class="secno">4.4.2</span> <span class="content"><span>Should sink type mismatch violation be blocked by Content Security Policy?</span></span></a>
-        <li><a href="#should-block-create-policy"><span class="secno">4.4.3</span> <span class="content"><span>Should policy creation be blocked by Content Security Policy?</span></span></a>
+        <li><a href="#should-block-create-policy"><span class="secno">4.4.3</span> <span class="content"><span>Should Trusted Type policy creation be blocked by Content Security Policy?</span></span></a>
         <li><a href="#trusted-script-csp-keyword"><span class="secno">4.4.4</span> <span class="content">'trusted-script' keyword</span></a>
         <li><a href="#is-source-exempt-algorithm"><span class="secno">4.4.5</span> <span class="content"><span>IsSourceExempt</span> Algorithm</span></a>
        </ol>
@@ -1896,9 +1896,10 @@ were created via one of the policies.</p>
     [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable⑥"><c- g>Unforgeable</c-></a>] <c- b>readonly</c-> <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml②"><c- n>TrustedHTML</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="TrustedHTML" href="#dom-trustedtypepolicyfactory-emptyhtml" id="ref-for-dom-trustedtypepolicyfactory-emptyhtml"><c- g>emptyHTML</c-></a>;
 };
 </pre>
-   <p>Internal slot <code>[[PolicyMap]]</code> contains a map, with each map entry
-being a pair of a policy name (DOMString key) and the
-TrustedTypePolicy (value).</p>
+   <p>Internal slot <code>[[DefaultPolicy]]</code> may contain a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy⑥">TrustedTypePolicy</a></code> object,
+and is initially empty.</p>
+   <p>Internal slot <code>[[CreatedPolicyNames]]</code> is an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-set" id="ref-for-ordered-set">ordered set</a> of strings,
+initially empty.</p>
    <div>
     <dl>
      <dt data-md><dfn class="dfn-paneled idl-code" data-dfn-for="TrustedTypePolicyFactory" data-dfn-type="method" data-export data-lt="createPolicy(policyName, policyOptions)|createPolicy(policyName)" id="dom-trustedtypepolicyfactory-createpolicy"><code>createPolicy(policyName, policyOptions)</code></dfn>
@@ -1930,7 +1931,7 @@ with the following arguments:</p>
       </dl>
      <dt data-md><dfn class="dfn-paneled idl-code" data-dfn-for="TrustedTypePolicyFactory" data-dfn-type="method" data-export id="dom-trustedtypepolicyfactory-getpolicynames"><code>getPolicyNames()</code></dfn>
      <dd data-md>
-      <p>Returns a new list, comprising of all keys of the <code>[[PolicyMap]]</code> internal slot map.</p>
+      <p>Returns a new list, comprising of all entries  of the <code>[[CreatedPolicyNames]]</code> slot.</p>
      <dt data-md><dfn class="dfn-paneled idl-code" data-dfn-for="TrustedTypePolicyFactory" data-dfn-type="method" data-export id="dom-trustedtypepolicyfactory-ishtml"><code>isHTML(value)</code></dfn>
      <dd data-md>
       <p>Returns true if value is an instance of <code class="idl"><a data-link-type="idl" href="#trustedhtml" id="ref-for-trustedhtml③">TrustedHTML</a></code> and has its <code>[[Data]]</code> internal slot set, false otherwise.</p>
@@ -2062,7 +2063,7 @@ following arguments:</p>
    </div>
    <h4 class="heading settled" data-level="2.3.3" id="trusted-type-policy-options"><span class="secno">2.3.3. </span><span class="content"><dfn class="css" data-dfn-type="type" data-export id="typedef-trustedtypepolicyoptions">TrustedTypePolicyOptions<a class="self-link" href="#typedef-trustedtypepolicyoptions"></a></dfn></span><a class="self-link" href="#trusted-type-policy-options"></a></h4>
    <p>This dictionary holds author-defined functions for converting string
-values into trusted values. These functions do not create <a data-link-type="dfn" href="#trusted-type" id="ref-for-trusted-type②">Trusted Type</a> object instances directly - this behavior is provided by <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy⑥">TrustedTypePolicy</a></code>.</p>
+values into trusted values. These functions do not create <a data-link-type="dfn" href="#trusted-type" id="ref-for-trusted-type②">Trusted Type</a> object instances directly - this behavior is provided by <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy⑦">TrustedTypePolicy</a></code>.</p>
 <pre class="idl highlight def"><c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-trustedtypepolicyoptions"><code><c- g>TrustedTypePolicyOptions</c-></code></dfn> {
    <a class="n" data-link-type="idl-name" href="#callbackdef-createhtmlcallback" id="ref-for-callbackdef-createhtmlcallback"><c- n>CreateHTMLCallback</c-></a>? <dfn class="dfn-paneled idl-code" data-dfn-for="TrustedTypePolicyOptions" data-dfn-type="dict-member" data-export data-type="CreateHTMLCallback? " id="dom-trustedtypepolicyoptions-createhtml"><code><c- g>createHTML</c-></code></dfn>;
    <a class="n" data-link-type="idl-name" href="#callbackdef-createscriptcallback" id="ref-for-callbackdef-createscriptcallback"><c- n>CreateScriptCallback</c-></a>? <dfn class="dfn-paneled idl-code" data-dfn-for="TrustedTypePolicyOptions" data-dfn-type="dict-member" data-export data-type="CreateScriptCallback? " id="dom-trustedtypepolicyoptions-createscript"><code><c- g>createScript</c-></code></dfn>;
@@ -2076,7 +2077,7 @@ values into trusted values. These functions do not create <a data-link-type="dfn
 </pre>
    <h4 class="heading settled" data-level="2.3.4" id="default-policy-hdr"><span class="secno">2.3.4. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="default-policy">Default policy</dfn></span><a class="self-link" href="#default-policy-hdr"></a></h4>
    <p><em>This section is not normative.</em></p>
-   <p>One of the policies, the "default" policy, is special; while all other
+   <p>One of the policies, the <code>default</code> policy, is special; while all other
 policies have to be called explicitly to create a TrustedType object,
 the default policy can also be called implicitly by the user agent. It
 allows the application to define the rules that should be run as a
@@ -2106,19 +2107,16 @@ algorithms in other specifiactions, see <a href="#integrations">§ 4 Integrati
    <h2 class="heading settled" data-level="3" id="algorithms"><span class="secno">3. </span><span class="content">Algorithms</span><a class="self-link" href="#algorithms"></a></h2>
    <h3 class="heading settled" data-level="3.1" id="policy-algorithms"><span class="secno">3.1. </span><span class="content">Policies</span><a class="self-link" href="#policy-algorithms"></a></h3>
    <h4 class="heading settled" data-level="3.1.1" id="create-trusted-type-policy-algorithm"><span class="secno">3.1.1. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-create-a-trusted-type-policy">Create a Trusted Type Policy</dfn></span><a class="self-link" href="#create-trusted-type-policy-algorithm"></a></h4>
-   <p>To create a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy⑦">TrustedTypePolicy</a></code> in a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicyfactory" id="ref-for-trustedtypepolicyfactory">factory</a></code>,
+   <p>To create a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy⑧">TrustedTypePolicy</a></code> in a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicyfactory" id="ref-for-trustedtypepolicyfactory">factory</a></code>,
 given a DOMString (<var>policyName</var>), policy options dictionary (<var>options</var>), and a <a data-link-type="dfn" href="https://w3c.github.io/ServiceWorker/#dfn-service-worker-global-object" id="ref-for-dfn-service-worker-global-object">global object</a> (<var>global</var>) run these steps:</p>
    <ol>
     <li data-md>
-     <p>If <var>factory</var>’s <code>[[PolicyMap]]</code> internal slot has an entry with the key <code>policyName</code>, then throw a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror">TypeError</a></code> and abort further steps.</p>
-     <p class="issue" id="issue-6f6d471a"><a class="self-link" href="#issue-6f6d471a"></a> Change the algorithm to allow duplicate policy names in report-only.</p>
+     <p>Let <var>allowedByCSP</var> be the result of executing <a data-link-type="abstract-op" href="#abstract-opdef-should-trusted-type-policy-creation-be-blocked-by-content-security-policy" id="ref-for-abstract-opdef-should-trusted-type-policy-creation-be-blocked-by-content-security-policy">Should Trusted Type policy
+creation be blocked by Content Security Policy?</a> algorithm with <var>global</var>, <var>policyName</var> and <var>factory</var>’s <code>[[CreatedPolicyNames]]</code> slot value.</p>
     <li data-md>
-     <p>Let <var>allowedByCSP</var> be the result of executing <a data-link-type="abstract-op" href="#abstract-opdef-should-policy-creation-be-blocked-by-content-security-policy" id="ref-for-abstract-opdef-should-policy-creation-be-blocked-by-content-security-policy">Should policy creation be
-blocked by Content Security Policy?</a> algorithm with <var>global</var> and <var>policyName</var>.</p>
+     <p>If <var>allowedByCSP</var> is <code>"Blocked"</code>, throw a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror">TypeError</a></code> and abort further steps.</p>
     <li data-md>
-     <p>If <var>allowedByCSP</var> is <code>"Blocked"</code>, throw a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror①">TypeError</a></code> and abort further steps.</p>
-    <li data-md>
-     <p>Let <var>policy</var> be a new <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy⑧">TrustedTypePolicy</a></code> object.</p>
+     <p>Let <var>policy</var> be a new <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy⑨">TrustedTypePolicy</a></code> object.</p>
     <li data-md>
      <p>Set <var>policy</var>’s <code>name</code> property value to <var>policyName</var>.</p>
     <li data-md>
@@ -2134,7 +2132,9 @@ blocked by Content Security Policy?</a> algorithm with <var>global</var> and <va
     <li data-md>
      <p>Set <var>policy</var>’s <code>[[options]]</code> internal slot value to <em>policyOptions</em>.</p>
     <li data-md>
-     <p>Set the value for the <var>policyName</var> entry of <var>factory</var>’s <code>[[PolicyMap]]</code> to <var>policy</var>.</p>
+     <p>If the <var>policyName</var> is the <a data-link-type="dfn">ASCII case-sensitive</a> match for the string <code>default</code>, set the <var>factory</var>’s <code>[[DefaultPolicy]]</code> slot value to <var>policy</var>.</p>
+    <li data-md>
+     <p>Append <var>policyName</var> to <var>factory</var>’s <code>[[CreatedPolicyNames]]</code>.</p>
     <li data-md>
      <p>Return <var>policy</var>.</p>
    </ol>
@@ -2142,15 +2142,11 @@ blocked by Content Security Policy?</a> algorithm with <var>global</var> and <va
     To get the <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy">default policy</a> for a <em>factory</em>, execute the following steps: 
    <ol>
     <li data-md>
-     <p>Set <em>policyName</em> to <code>"default"</code>.</p>
-    <li data-md>
-     <p>If <em>factory</em>'s <code>[[PolicyMap]]</code> internal slot does not have an entry
-with the key <em>policyName</em>, return <code>null</code>.</p>
-    <li data-md>
-     <p>Otherwise, return the value of the <em>policyName</em> entry of <em>factory</em>'s <code>[[PolicyMap]]</code>.</p>
+     <p>Return the value of <var>factory</var>’s <code>[[DefaultPolicy]]</code> slot
+(null if the slot is empty).</p>
    </ol>
    <h4 class="heading settled" data-level="3.1.3" id="create-a-trusted-type-algorithm"><span class="secno">3.1.3. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-create-a-trusted-type">Create a Trusted Type</dfn></span><a class="self-link" href="#create-a-trusted-type-algorithm"></a></h4>
-   <p>Given a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy⑨">TrustedTypePolicy</a></code> <var>policy</var>, a type name <var>trustedTypeName</var>,
+   <p>Given a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy①⓪">TrustedTypePolicy</a></code> <var>policy</var>, a type name <var>trustedTypeName</var>,
 and a string <var>value</var>, execute the following steps:</p>
    <ol>
     <li data-md>
@@ -2179,7 +2175,7 @@ based on the following table:</p>
     <li data-md>
      <p>Let <var>function</var> be the value of the property in <var>options</var> named <var>functionName</var>.</p>
     <li data-md>
-     <p>If <var>function</var> is <code>null</code>, throw a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror②">TypeError</a></code>.</p>
+     <p>If <var>function</var> is <code>null</code>, throw a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror①">TypeError</a></code>.</p>
     <li data-md>
      <p>Let <var>policyValue</var> be the result of invoking <var>function</var> with <var>value</var> as a first argument, and <a href="https://tc39.github.io/ecma262/#sec-method">callback **this** value</a> set to <code>null</code>.</p>
     <li data-md>
@@ -2240,7 +2236,7 @@ stringified <var>convertedInput</var> and abort the following steps.</p>
     <li data-md>
      <p>If <var>disposition</var> is <code>“Allowed”</code>, then return stringified <var>input</var> and abort these steps.</p>
     <li data-md>
-     <p>Throw a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror③">TypeError</a></code>.</p>
+     <p>Throw a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror②">TypeError</a></code>.</p>
      <p class="issue" id="issue-50a0f296"><a class="self-link" href="#issue-50a0f296"></a> Populate the TypeError object.</p>
    </ol>
    <h2 class="heading settled" data-level="4" id="integrations"><span class="secno">4. </span><span class="content">Integrations</span><a class="self-link" href="#integrations"></a></h2>
@@ -2471,7 +2467,8 @@ ABNF:</p>
 directive-value = <a data-link-type="dfn" href="#serialized-tt-configuration" id="ref-for-serialized-tt-configuration">serialized-tt-configuration</a>
 <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="serialized-tt-configuration">serialized-tt-configuration</dfn> = ( <a data-link-type="dfn" href="#tt-expression" id="ref-for-tt-expression">tt-expression</a> *( <a href="https://w3c.github.io/webappsec-csp/#grammardef-required-ascii-whitespace">required-ascii-whitespace</a> <a data-link-type="dfn" href="#tt-expression" id="ref-for-tt-expression①">tt-expression</a> ) )
 <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="tt-expression">tt-expression</dfn> = "*" / <a data-link-type="dfn" href="#tt-policy-name" id="ref-for-tt-policy-name">tt-policy-name</a> ; In the future, add keywords
-<dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="tt-policy-name">tt-policy-name</dfn> = 1*( <a href="https://tools.ietf.org/html/rfc5234#appendix-B.1">ALPHA</a> / <a href="https://tools.ietf.org/html/rfc5234#appendix-B.1">DIGIT</a> / "-" / "#" / "/" / "_" / "." / "=" )
+<dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="tt-policy-name">tt-policy-name</dfn> = 1*( %x21-%x26 / %x28-%x29 / %x2B / %x2D-%x3A / %x3C-%x7E )
+; Policy name can consist of any <a href="https://tools.ietf.org/html/rfc5234#appendix-B.1">VCHAR</a> character, apart from ";", ",", "*" and "'".
 </pre>
    <div class="example" id="whitelist-of-policy-names-in-header">
     <a class="self-link" href="#whitelist-of-policy-names-in-header"></a> Types are enforced at sinks, and only policies named “one” and “two”
@@ -2514,7 +2511,7 @@ returns <code>"Blocked"</code> if the <a data-link-type="dfn" href="#injection-s
       <li data-md>
        <p>If <var>policy</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#policy-directive-set" id="ref-for-policy-directive-set①">directive set</a> does not contain a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives①">directive</a> which <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-name" id="ref-for-directive-name①">name</a> is <code>"trusted-types"</code>, skip to the next <var>policy</var>.</p>
       <li data-md>
-       <p>Let <var>violation</var> be the result of executing <a data-link-type="abstract-op">Create a violation object for global, policy, and directive</a> on the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#current-settings-object" id="ref-for-current-settings-object">current settings object</a>’s <a data-link-type="dfn" href="https://w3c.github.io/ServiceWorker/#dfn-service-worker-global-object" id="ref-for-dfn-service-worker-global-object②">global object</a>, <var>policy</var> and <code>"trusted-types"</code></p>
+       <p>Let <var>violation</var> be the result of executing <a href="https://www.w3.org/TR/CSP3/#create-violation-for-global">Create a violation object for global, policy, and directive</a> on the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#current-settings-object" id="ref-for-current-settings-object">current settings object</a>’s <a data-link-type="dfn" href="https://w3c.github.io/ServiceWorker/#dfn-service-worker-global-object" id="ref-for-dfn-service-worker-global-object②">global object</a>, <var>policy</var> and <code>"trusted-types"</code></p>
        <p class="issue" id="issue-565a1020"><a class="self-link" href="#issue-565a1020"></a> Populate the violation object here.</p>
       <li data-md>
        <p>Execute <a href="https://www.w3.org/TR/CSP3/#report-violation">Report a violation</a> on <var>violation</var>.</p>
@@ -2524,9 +2521,9 @@ returns <code>"Blocked"</code> if the <a data-link-type="dfn" href="#injection-s
     <li data-md>
      <p>Return <var>result</var>.</p>
    </ol>
-   <h4 class="heading settled" data-level="4.4.3" id="should-block-create-policy"><span class="secno">4.4.3. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-should-policy-creation-be-blocked-by-content-security-policy">Should policy creation be blocked by Content Security Policy?</dfn></span><a class="self-link" href="#should-block-create-policy"></a></h4>
-   <p>Given a <a data-link-type="dfn" href="https://w3c.github.io/ServiceWorker/#dfn-service-worker-global-object" id="ref-for-dfn-service-worker-global-object③">global object</a> (<var>global</var>) and a string (<var>policyName</var>) this algorithm
-returns <code>"Blocked"</code> if the <a data-link-type="dfn">Trusted Type Policy</a> should not be created, and <code>"Allowed"</code> otherwise.</p>
+   <h4 class="heading settled" data-level="4.4.3" id="should-block-create-policy"><span class="secno">4.4.3. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-should-trusted-type-policy-creation-be-blocked-by-content-security-policy">Should Trusted Type policy creation be blocked by Content Security Policy?</dfn></span><a class="self-link" href="#should-block-create-policy"></a></h4>
+   <p>Given a <a data-link-type="dfn" href="https://w3c.github.io/ServiceWorker/#dfn-service-worker-global-object" id="ref-for-dfn-service-worker-global-object③">global object</a> (<var>global</var>), a string (<var>policyName</var>) and a list of
+strings (<var>createdPolicyNames</var>), this algorithm returns <code>"Blocked"</code> if the <a data-link-type="dfn">Trusted Type Policy</a> should not be created, and <code>"Allowed"</code> otherwise.</p>
    <ol>
     <li data-md>
      <p>Let <var>result</var> be <code>"Allowed"</code>.</p>
@@ -2534,19 +2531,26 @@ returns <code>"Blocked"</code> if the <a data-link-type="dfn">Trusted Type Polic
      <p>For each <var>policy</var> in <var>global</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#concept-document-csp-list" id="ref-for-concept-document-csp-list②">CSP list</a>:</p>
      <ol>
       <li data-md>
+       <p>Let <var>reason</var> be an empty string.</p>
+      <li data-md>
        <p>If <var>policy</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#policy-directive-set" id="ref-for-policy-directive-set②">directive set</a> does not contain a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives②">directive</a> which name is <code>"trusted-types"</code>, skip to the next <var>policy</var>.</p>
       <li data-md>
-       <p>Let <var>directive</var> be the <var>policy</var>’s <var>directive set</var>’s directive which name
+       <p>Let <var>directive</var> be the <var>policy</var>’s <var>directive set</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives③">directive</a> which name
 is <code>"trusted-types"</code></p>
       <li data-md>
        <p>If <var>directive</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-value" id="ref-for-directive-value②">value</a> contains a <a data-link-type="dfn" href="#tt-expression" id="ref-for-tt-expression②">tt-expression</a> which is a match
 for a value <code>*</code>, skip to the next <var>policy</var>.</p>
+       <p class="note" role="note"><span>Note:</span> <code>trusted-types *</code> allows authors to create policies with
+duplicated names.</p>
       <li data-md>
-       <p>If <var>directive</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-value" id="ref-for-directive-value③">value</a> contains a <a data-link-type="dfn" href="#tt-policy-name" id="ref-for-tt-policy-name①">tt-policy-name</a>, which is an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ascii-case-insensitive" id="ref-for-ascii-case-insensitive">ASCII case-insensitive</a> match for the value <var>policyName</var>, skip to the
-next policy.</p>
+       <p>If <var>createdPolicyNames</var> contains <var>policyName</var>, set <var>reason</var> to <code>"duplicate-name"</code>.</p>
       <li data-md>
-       <p>Let <var>violation</var> be the result of executing <a data-link-type="abstract-op">Create a violation object for global, policy, and directive</a> on the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#current-settings-object" id="ref-for-current-settings-object①">current settings object</a>’s <a data-link-type="dfn" href="https://w3c.github.io/ServiceWorker/#dfn-service-worker-global-object" id="ref-for-dfn-service-worker-global-object④">global object</a>, <var>policy</var> and <code>"trusted-types"</code></p>
-       <p class="issue" id="issue-565a1020①"><a class="self-link" href="#issue-565a1020①"></a> Populate the violation object here.</p>
+       <p>If <var>directive</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-value" id="ref-for-directive-value③">value</a> does not contain a <a data-link-type="dfn" href="#tt-policy-name" id="ref-for-tt-policy-name①">tt-policy-name</a>, which is an <a data-link-type="dfn">ASCII case-sensitive</a> match for the value <var>policyName</var>, set <var>reason</var> to <code>"disallowed-name"</code></p>
+      <li data-md>
+       <p>If <var>reason</var> is an empty string, skip to the next <var>policy</var>.</p>
+      <li data-md>
+       <p>Let <var>violation</var> be the result of executing <a href="https://www.w3.org/TR/CSP3/#create-violation-for-global">Create a violation object for global, policy, and directive</a> on the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#current-settings-object" id="ref-for-current-settings-object①">current settings object</a>’s <a data-link-type="dfn" href="https://w3c.github.io/ServiceWorker/#dfn-service-worker-global-object" id="ref-for-dfn-service-worker-global-object④">global object</a>, <var>policy</var> and <code>"trusted-types"</code></p>
+       <p class="issue" id="issue-c5475d45"><a class="self-link" href="#issue-c5475d45"></a> Populate the violation object here, using <var>reason</var>.</p>
       <li data-md>
        <p>Execute <a href="https://www.w3.org/TR/CSP3/#report-violation">Report a violation</a> on <var>violation</var>.</p>
       <li data-md>
@@ -2626,16 +2630,16 @@ throws an "<code>EvalError</code>" if not:
         <li data-md>
          <p>Let <var>source-list</var> be <code>null</code>.</p>
         <li data-md>
-         <p>If <var>policy</var> contains a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives③">directive</a> whose <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-name" id="ref-for-directive-name②">name</a> is "<code>script-src</code>", then
-set <var>source-list</var> to that <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives④">directive</a>'s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-value" id="ref-for-directive-value④">value</a>.</p>
-         <p>Otherwise if <var>policy</var> contains a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives⑤">directive</a> whose <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-name" id="ref-for-directive-name③">name</a> is
+         <p>If <var>policy</var> contains a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives④">directive</a> whose <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-name" id="ref-for-directive-name②">name</a> is "<code>script-src</code>", then
+set <var>source-list</var> to that <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives⑤">directive</a>'s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-value" id="ref-for-directive-value④">value</a>.</p>
+         <p>Otherwise if <var>policy</var> contains a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives⑥">directive</a> whose <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-name" id="ref-for-directive-name③">name</a> is
 "<code>default-src</code>", then set <var>source-list</var> to that directive’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-value" id="ref-for-directive-value⑤">value</a>.</p>
         <li data-md>
          <p>
           If <var>source-list</var> is not <code>null</code>, and does not contain a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#source-expression" id="ref-for-source-expression">source expression</a> which is
-an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ascii-case-insensitive" id="ref-for-ascii-case-insensitive①">ASCII case-insensitive</a> match for the string "<a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-unsafe-eval" id="ref-for-grammardef-unsafe-eval"><code>'unsafe-eval'</code></a>", 
+an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ascii-case-insensitive" id="ref-for-ascii-case-insensitive">ASCII case-insensitive</a> match for the string "<a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-unsafe-eval" id="ref-for-grammardef-unsafe-eval"><code>'unsafe-eval'</code></a>", 
           <ins>and
-it is the case that (<var>isExempt</var> is not true or <var>source-list</var> does not contain a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#source-expression" id="ref-for-source-expression①">source expression</a> which is an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ascii-case-insensitive" id="ref-for-ascii-case-insensitive②">ASCII case-insensitive</a> match for the
+it is the case that (<var>isExempt</var> is not true or <var>source-list</var> does not contain a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#source-expression" id="ref-for-source-expression①">source expression</a> which is an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ascii-case-insensitive" id="ref-for-ascii-case-insensitive①">ASCII case-insensitive</a> match for the
 string "<a data-link-type="grammar" href="#grammardef-trusted-script" id="ref-for-grammardef-trusted-script"><code>'trusted-script'</code></a>")</ins>
            then:
          </p>
@@ -2941,8 +2945,8 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <li><a href="#dom-windoworworkerglobalscope-settimeout">setTimeout(handler)</a><span>, in §4.1.6</span>
    <li><a href="#dom-windoworworkerglobalscope-settimeout">setTimeout(handler, timeout)</a><span>, in §4.1.6</span>
    <li><a href="#dom-windoworworkerglobalscope-settimeout">setTimeout(handler, timeout, ...arguments)</a><span>, in §4.1.6</span>
-   <li><a href="#abstract-opdef-should-policy-creation-be-blocked-by-content-security-policy">Should policy creation be blocked by Content Security Policy?</a><span>, in §4.4.3</span>
    <li><a href="#abstract-opdef-should-sink-type-mismatch-violation-be-blocked-by-content-security-policy">Should sink type mismatch violation be blocked by Content Security Policy?</a><span>, in §4.4.2</span>
+   <li><a href="#abstract-opdef-should-trusted-type-policy-creation-be-blocked-by-content-security-policy">Should Trusted Type policy creation be blocked by Content Security Policy?</a><span>, in §4.4.3</span>
    <li>
     src
     <ul>
@@ -3047,7 +3051,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <ul>
     <li><a href="#ref-for-policy-directive-set">3.2.1. Get Trusted Type compliant string</a>
     <li><a href="#ref-for-policy-directive-set①">4.4.2. Should sink type mismatch violation be blocked by Content Security Policy?</a>
-    <li><a href="#ref-for-policy-directive-set②">4.4.3. Should policy creation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-policy-directive-set②">4.4.3. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
     <li><a href="#ref-for-policy-directive-set③">4.4.5. IsSourceExempt Algorithm</a>
    </ul>
   </aside>
@@ -3056,15 +3060,15 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <ul>
     <li><a href="#ref-for-directives">4.4.1. trusted-types directive</a>
     <li><a href="#ref-for-directives①">4.4.2. Should sink type mismatch violation be blocked by Content Security Policy?</a>
-    <li><a href="#ref-for-directives②">4.4.3. Should policy creation be blocked by Content Security Policy?</a>
-    <li><a href="#ref-for-directives③">4.4.4. 'trusted-script' keyword</a> <a href="#ref-for-directives④">(2)</a> <a href="#ref-for-directives⑤">(3)</a>
+    <li><a href="#ref-for-directives②">4.4.3. Should Trusted Type policy creation be blocked by Content Security Policy?</a> <a href="#ref-for-directives③">(2)</a>
+    <li><a href="#ref-for-directives④">4.4.4. 'trusted-script' keyword</a> <a href="#ref-for-directives⑤">(2)</a> <a href="#ref-for-directives⑥">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-policy-disposition">
    <a href="https://w3c.github.io/webappsec-csp/#policy-disposition">https://w3c.github.io/webappsec-csp/#policy-disposition</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-policy-disposition">4.4.2. Should sink type mismatch violation be blocked by Content Security Policy?</a>
-    <li><a href="#ref-for-policy-disposition①">4.4.3. Should policy creation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-policy-disposition①">4.4.3. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
     <li><a href="#ref-for-policy-disposition②">4.4.4. 'trusted-script' keyword</a>
    </ul>
   </aside>
@@ -3098,7 +3102,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <a href="https://w3c.github.io/webappsec-csp/#directive-value">https://w3c.github.io/webappsec-csp/#directive-value</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-directive-value">4.4.1. trusted-types directive</a> <a href="#ref-for-directive-value①">(2)</a>
-    <li><a href="#ref-for-directive-value②">4.4.3. Should policy creation be blocked by Content Security Policy?</a> <a href="#ref-for-directive-value③">(2)</a>
+    <li><a href="#ref-for-directive-value②">4.4.3. Should Trusted Type policy creation be blocked by Content Security Policy?</a> <a href="#ref-for-directive-value③">(2)</a>
     <li><a href="#ref-for-directive-value④">4.4.4. 'trusted-script' keyword</a> <a href="#ref-for-directive-value⑤">(2)</a>
    </ul>
   </aside>
@@ -3306,14 +3310,14 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <ul>
     <li><a href="#ref-for-concept-document-csp-list">3.2.1. Get Trusted Type compliant string</a>
     <li><a href="#ref-for-concept-document-csp-list①">4.4.2. Should sink type mismatch violation be blocked by Content Security Policy?</a>
-    <li><a href="#ref-for-concept-document-csp-list②">4.4.3. Should policy creation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-concept-document-csp-list②">4.4.3. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-current-settings-object">
    <a href="https://html.spec.whatwg.org/multipage/webappapis.html#current-settings-object">https://html.spec.whatwg.org/multipage/webappapis.html#current-settings-object</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-current-settings-object">4.4.2. Should sink type mismatch violation be blocked by Content Security Policy?</a>
-    <li><a href="#ref-for-current-settings-object①">4.4.3. Should policy creation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-current-settings-object①">4.4.3. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-realm-global">
@@ -3338,14 +3342,19 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
   <aside class="dfn-panel" data-for="term-for-ascii-case-insensitive">
    <a href="https://infra.spec.whatwg.org/#ascii-case-insensitive">https://infra.spec.whatwg.org/#ascii-case-insensitive</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-ascii-case-insensitive">4.4.3. Should policy creation be blocked by Content Security Policy?</a>
-    <li><a href="#ref-for-ascii-case-insensitive①">4.4.4. 'trusted-script' keyword</a> <a href="#ref-for-ascii-case-insensitive②">(2)</a>
+    <li><a href="#ref-for-ascii-case-insensitive">4.4.4. 'trusted-script' keyword</a> <a href="#ref-for-ascii-case-insensitive①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-list-contain">
    <a href="https://infra.spec.whatwg.org/#list-contain">https://infra.spec.whatwg.org/#list-contain</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-list-contain">4.4.4. 'trusted-script' keyword</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-ordered-set">
+   <a href="https://infra.spec.whatwg.org/#ordered-set">https://infra.spec.whatwg.org/#ordered-set</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-ordered-set">2.3.1. TrustedTypePolicyFactory</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-remotedocument-document">
@@ -3359,7 +3368,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <ul>
     <li><a href="#ref-for-dfn-service-worker-global-object">3.1.1. Create a Trusted Type Policy</a>
     <li><a href="#ref-for-dfn-service-worker-global-object①">4.4.2. Should sink type mismatch violation be blocked by Content Security Policy?</a> <a href="#ref-for-dfn-service-worker-global-object②">(2)</a>
-    <li><a href="#ref-for-dfn-service-worker-global-object③">4.4.3. Should policy creation be blocked by Content Security Policy?</a> <a href="#ref-for-dfn-service-worker-global-object④">(2)</a>
+    <li><a href="#ref-for-dfn-service-worker-global-object③">4.4.3. Should Trusted Type policy creation be blocked by Content Security Policy?</a> <a href="#ref-for-dfn-service-worker-global-object④">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idl-DOMString">
@@ -3416,9 +3425,9 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
   <aside class="dfn-panel" data-for="term-for-exceptiondef-typeerror">
    <a href="https://heycam.github.io/webidl/#exceptiondef-typeerror">https://heycam.github.io/webidl/#exceptiondef-typeerror</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-exceptiondef-typeerror">3.1.1. Create a Trusted Type Policy</a> <a href="#ref-for-exceptiondef-typeerror①">(2)</a>
-    <li><a href="#ref-for-exceptiondef-typeerror②">3.1.3. Create a Trusted Type</a>
-    <li><a href="#ref-for-exceptiondef-typeerror③">3.2.1. Get Trusted Type compliant string</a>
+    <li><a href="#ref-for-exceptiondef-typeerror">3.1.1. Create a Trusted Type Policy</a>
+    <li><a href="#ref-for-exceptiondef-typeerror①">3.1.3. Create a Trusted Type</a>
+    <li><a href="#ref-for-exceptiondef-typeerror②">3.2.1. Get Trusted Type compliant string</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idl-USVString">
@@ -3540,6 +3549,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
     <ul>
      <li><span class="dfn-paneled" id="term-for-ascii-case-insensitive" style="color:initial">ascii case-insensitive</span>
      <li><span class="dfn-paneled" id="term-for-list-contain" style="color:initial">contain</span>
+     <li><span class="dfn-paneled" id="term-for-ordered-set" style="color:initial">ordered set</span>
     </ul>
    <li>
     <a data-link-type="biblio">[json-ld11-api]</a> defines the following terms:
@@ -3786,7 +3796,6 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <div class="issue"> figure out if we need this section here. CSP has none, SRI has one and it looks useful.<a href="#issue-d33261f4"> ↵ </a></div>
    <div class="issue"> Something about reducing the review surface<a href="#issue-5bedf486"> ↵ </a></div>
    <div class="issue"> Consider surfacing the DOM sink (node + attr) => type mapping in the API, to faciliate building HTML sanitizers. <a href="https://github.com/WICG/trusted-types/issues/43">&lt;https://github.com/WICG/trusted-types/issues/43></a><a href="#issue-7a6e3d33"> ↵ </a></div>
-   <div class="issue"> Change the algorithm to allow duplicate policy names in report-only.<a href="#issue-6f6d471a"> ↵ </a></div>
    <div class="issue"> Get the sink from the callers.<a href="#issue-22c7f802"> ↵ </a></div>
    <div class="issue"> Populate the TypeError object.<a href="#issue-50a0f296"> ↵ </a></div>
    <div class="issue"> <a href="https://heycam.github.io/webidl/#TreatNullAs">TreatNullAs=EmptyString</a> is confusing.
@@ -3795,7 +3804,7 @@ For some sinks a <code>null</code> value will result in "", and "null" for other
 This already caused problems in the polyfill. <a href="https://github.com/WICG/trusted-types/issues/2">&lt;https://github.com/WICG/trusted-types/issues/2></a><a href="#issue-52d7d8d6"> ↵ </a></div>
    <div class="issue"> Decide if separate per-type enforcement settings should be exposed to the authors. <a href="https://github.com/WICG/trusted-types/issues/66">&lt;https://github.com/WICG/trusted-types/issues/66></a><a href="#issue-20410262"> ↵ </a></div>
    <div class="issue"> Populate the violation object here.<a href="#issue-565a1020"> ↵ </a></div>
-   <div class="issue"> Populate the violation object here.<a href="#issue-565a1020①"> ↵ </a></div>
+   <div class="issue"> Populate the violation object here, using <var>reason</var>.<a href="#issue-c5475d45"> ↵ </a></div>
    <div class="issue"> This depends on a solution to <a href="https://github.com/WICG/trusted-types/issues/144">issue #144</a> like <a href="https://github.com/tc39-transfer/dynamic-code-brand-checks#problem-host-callout-does-not-receive-type-information">TC39 HostBeforeCompile</a><a href="#issue-e28ea232"> ↵ </a></div>
    <div class="issue"> In some cases, the violation "<code>'report-sample'</code>" contain the result of
 applying the default policy to a string argument which differs.
@@ -3960,10 +3969,10 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
     <li><a href="#ref-for-trustedtypepolicy①">2.2.3. TrustedScript</a>
     <li><a href="#ref-for-trustedtypepolicy②">2.2.4. TrustedScriptURL</a>
     <li><a href="#ref-for-trustedtypepolicy③">2.2.5. TrustedURL</a>
-    <li><a href="#ref-for-trustedtypepolicy④">2.3.1. TrustedTypePolicyFactory</a> <a href="#ref-for-trustedtypepolicy⑤">(2)</a>
-    <li><a href="#ref-for-trustedtypepolicy⑥">2.3.3. TrustedTypePolicyOptions</a>
-    <li><a href="#ref-for-trustedtypepolicy⑦">3.1.1. Create a Trusted Type Policy</a> <a href="#ref-for-trustedtypepolicy⑧">(2)</a>
-    <li><a href="#ref-for-trustedtypepolicy⑨">3.1.3. Create a Trusted Type</a>
+    <li><a href="#ref-for-trustedtypepolicy④">2.3.1. TrustedTypePolicyFactory</a> <a href="#ref-for-trustedtypepolicy⑤">(2)</a> <a href="#ref-for-trustedtypepolicy⑥">(3)</a>
+    <li><a href="#ref-for-trustedtypepolicy⑦">2.3.3. TrustedTypePolicyOptions</a>
+    <li><a href="#ref-for-trustedtypepolicy⑧">3.1.1. Create a Trusted Type Policy</a> <a href="#ref-for-trustedtypepolicy⑨">(2)</a>
+    <li><a href="#ref-for-trustedtypepolicy①⓪">3.1.3. Create a Trusted Type</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-trustedtypepolicy-createhtml">
@@ -4202,14 +4211,14 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
    <b><a href="#tt-expression">#tt-expression</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-tt-expression">4.4.1. trusted-types directive</a> <a href="#ref-for-tt-expression①">(2)</a>
-    <li><a href="#ref-for-tt-expression②">4.4.3. Should policy creation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-tt-expression②">4.4.3. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="tt-policy-name">
    <b><a href="#tt-policy-name">#tt-policy-name</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-tt-policy-name">4.4.1. trusted-types directive</a>
-    <li><a href="#ref-for-tt-policy-name①">4.4.3. Should policy creation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-tt-policy-name①">4.4.3. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="abstract-opdef-should-sink-type-mismatch-violation-be-blocked-by-content-security-policy">
@@ -4218,10 +4227,10 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
     <li><a href="#ref-for-abstract-opdef-should-sink-type-mismatch-violation-be-blocked-by-content-security-policy">3.2.1. Get Trusted Type compliant string</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="abstract-opdef-should-policy-creation-be-blocked-by-content-security-policy">
-   <b><a href="#abstract-opdef-should-policy-creation-be-blocked-by-content-security-policy">#abstract-opdef-should-policy-creation-be-blocked-by-content-security-policy</a></b><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="abstract-opdef-should-trusted-type-policy-creation-be-blocked-by-content-security-policy">
+   <b><a href="#abstract-opdef-should-trusted-type-policy-creation-be-blocked-by-content-security-policy">#abstract-opdef-should-trusted-type-policy-creation-be-blocked-by-content-security-policy</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-abstract-opdef-should-policy-creation-be-blocked-by-content-security-policy">3.1.1. Create a Trusted Type Policy</a>
+    <li><a href="#ref-for-abstract-opdef-should-trusted-type-policy-creation-be-blocked-by-content-security-policy">3.1.1. Create a Trusted Type Policy</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="grammardef-trusted-script">
