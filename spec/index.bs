@@ -631,78 +631,21 @@ the default policy is applied.
 
 ## <dfn>Enforcement</dfn> ## {#enforcement-hdr}
 
-This section describes how applications may require [=Trusted Types=] values for
-their [=injection sinks=] via configuring
-[[CSP#policy-delivery|configuring a Content-Security-Policy]] for their
-documents.
-
 Note: Enforcement is the process of checking that a value
 has an appropriate type before it reaches an [=injection sink=].
 
-Note: Most of the enforcement rules are defined as modifications of the algorithms
-in other specifiactions, see [[#integrations]].
+While the JavaScript API that allows authors to create Trusted Types is always
+available (via {{Window/TrustedTypes}}), the enforcement is optional.
+Applications may opt-in to require [=Trusted Types=] values for their [=injection sinks=]
+via [[CSP#policy-delivery|configuring a Content-Security-Policy]]
+for their documents. This document defines a new [=trusted-types-directive|trusted-types=]
+Content Security Policy directive controlling that behavior.
 
-### <dfn lt="trusted-types-directive">trusted-types</dfn> CSP directive ### {#trusted-types-csp-directive}
+This allows the authors to prepare their applicaiton for enforcing Trusted Types
+via using the {{CSP#csp-ro|Content-Security-Report-Only}} HTTP Response header.
 
-This document defines *trusted-types* - a new [[CSP3#directives|Content Security Policy directive]].
-
-{{#trusted-types-directive|trusted-types}} directive configures the Trusted
-Types framework for all the documents in a current realm. Specifically, it
-defines which policies (identified by name) can be created, and what should
-be the behavior when a string value is passed to an [=injection sink=]
-(i.e. should the type-based enforcement be enabled).
-
-The syntax for the directive's [=directive/name=] and [=directive/value=] is described by the following
-ABNF:
-
-<pre>
-directive-name = "trusted-types"
-directive-value = <a>serialized-tt-configuration</a>
-<dfn>serialized-tt-configuration</dfn> = ( <a>tt-expression</a> *( <a href="https://w3c.github.io/webappsec-csp/#grammardef-required-ascii-whitespace">required-ascii-whitespace</a> <a>tt-expression</a> ) )
-<dfn>tt-expression</dfn> = "*" / <a>tt-policy-name</a> ; In the future, add keywords
-<dfn>tt-policy-name</dfn> = 1*( <a href="https://tools.ietf.org/html/rfc5234#appendix-B.1">ALPHA</a> / <a href="https://tools.ietf.org/html/rfc5234#appendix-B.1">DIGIT</a> / "-" / "#" / "/" / "_" / "." / "=" )
-</pre>
-
-<div class="example" id="whitelist-of-policy-names-in-header">
-Types are enforced at sinks, and only policies named “one” and “two”
-may be created.
-
-<pre class="http">
-Content-Security-Policy: trusted-types one two
-</pre>
-</div>
-
-<div class="example" id="header-that-allows-no-policy-names">
-An empty [=directive=] [=directive/value=] indicates policies may not be created,
-and sinks expect Trusted Type values.  I.e. no [=injection sinks=] can be used
-in a document.
-
-<pre class="http">
-Content-Security-Policy: trusted-types
-</pre>
-</div>
-
-Value `*` makes it possible to create policies with any
-previously unused name.
-
-<div class="example" id="wildcard-policy-name-in-header">
-<pre class="http">
-Content-Security-Policy: trusted-types *
-</pre>
-</div>
-
-If the policy named `default` is present in the list, it refers to the
-[=default policy=], and unless otherwise configured,
-all strings passed to [=injection sinks=] will be passed through it instead
-of being rejected outright.
-
-<div class="example" id="default-in-header">
-<pre class="http">
-Content-Security-Policy: trusted-types one two default
-</pre>
-</div>
-
-Issue(WICG/trusted-types#66): Decide if separate per-type enforcement settings should be exposed to the authors.
+Note: Most of the enforcement rules are defined as modifications of the
+algorithms in other specifiactions, see [[#integrations]].
 
 # Algorithms # {#algorithms}
 
@@ -838,54 +781,6 @@ Given a {{TrustedType}} type (|expectedType|), a {{Document}}
 
     Issue: Populate the TypeError object.
 
-### <dfn abstract-op>Should sink type mismatch violation be blocked by Content Security Policy?</dfn> ### {#should-block-sink-type-mismatch}
-
-Given a {{Document}} (|document|), a string (|sink|) and a string (|source|) this algorithm
-returns `"Blocked"` if the [=injection sink=] requires a [=Trusted Type=], and
-`"Allowed"` otherwise.
-
-1.  Let |result| be `"Allowed"`.
-1.  For each |policy| in |document|'s <a>global object</a>'s <a>CSP list</a>:
-    1.  If |policy|'s <a>directive set</a> does not contain a <a>directive</a>
-        which [=directive/name=] is `"trusted-types"`, skip to the next |policy|.
-    1.  Let |violation| be the result of executing
-        [$Create a violation object for global, policy, and directive$] on the
-        <a>current settings object</a>'s <a>global object</a>, |policy| and
-        `"trusted-types"`
-
-        Issue: Populate the violation object here.
-    1.  Execute [[CSP#report-violation|Report a violation]] on |violation|.
-    1.  If |policy|'s [=policy/disposition=] is `"enforce"`, then set |result| to
-        `"Blocked"`.
-1. Return |result|.
-
-### <dfn abstract-op>Should policy creation be blocked by Content Security Policy?</dfn> ### {#should-block-create-policy}
-
-Given a <a>global object</a> (|global|) and a string (|policyName|) this algorithm
-returns `"Blocked"` if the [=Trusted Type Policy=] should not be created, and
-`"Allowed"` otherwise.
-
-1.  Let |result| be `"Allowed"`.
-1.  For each |policy| in |global|'s <a>CSP list</a>:
-    1.  If |policy|'s <a>directive set</a> does not contain a <a>directive</a>
-        which name is `"trusted-types"`, skip to the next |policy|.
-    1.  Let |directive| be the |policy|'s |directive set|'s directive which name
-        is `"trusted-types"`
-    1.  If |directive|'s [=directive/value=] contains a <a>tt-expression</a> which is a match
-        for a value `*`, skip to the next |policy|.
-    1.  If |directive|'s [=directive/value=] contains a <a>tt-policy-name</a>, which is an
-        [=ASCII case-insensitive=] match for the value |policyName|, skip to the
-        next policy.
-    1.  Let |violation| be the result of executing
-        [$Create a violation object for global, policy, and directive$] on the
-        <a>current settings object</a>'s <a>global object</a>, |policy| and
-        `"trusted-types"`
-
-        Issue: Populate the violation object here.
-    1.  Execute [[CSP#report-violation|Report a violation]] on |violation|.
-    1.  If |policy|'s [=policy/disposition=] is `"enforce"`, then set |result| to
-        `"Blocked"`.
-1. Return |result|.
 
 # Integrations # {#integrations}
 
@@ -1132,6 +1027,117 @@ interface DOMParser {
 </pre>
 
 ## Integration with Content-Security-Policy ## {#integration-with-content-security-policy}
+
+### <dfn lt="trusted-types-directive">trusted-types</dfn> directive ### {#trusted-types-csp-directive}
+
+This document defines *trusted-types* - a new [[CSP3#directives|Content Security Policy directive]].
+
+{{#trusted-types-directive|trusted-types}} directive configures the Trusted
+Types framework for all the documents in a current realm. Specifically, it
+defines which policies (identified by name) can be created, and what should
+be the behavior when a string value is passed to an [=injection sink=]
+(i.e. should the type-based enforcement be enabled).
+
+The syntax for the directive's [=directive/name=] and [=directive/value=] is described by the following
+ABNF:
+
+<pre>
+directive-name = "trusted-types"
+directive-value = <a>serialized-tt-configuration</a>
+<dfn>serialized-tt-configuration</dfn> = ( <a>tt-expression</a> *( <a href="https://w3c.github.io/webappsec-csp/#grammardef-required-ascii-whitespace">required-ascii-whitespace</a> <a>tt-expression</a> ) )
+<dfn>tt-expression</dfn> = "*" / <a>tt-policy-name</a> ; In the future, add keywords
+<dfn>tt-policy-name</dfn> = 1*( <a href="https://tools.ietf.org/html/rfc5234#appendix-B.1">ALPHA</a> / <a href="https://tools.ietf.org/html/rfc5234#appendix-B.1">DIGIT</a> / "-" / "#" / "/" / "_" / "." / "=" )
+</pre>
+
+<div class="example" id="whitelist-of-policy-names-in-header">
+Types are enforced at sinks, and only policies named “one” and “two”
+may be created.
+
+<pre class="http">
+Content-Security-Policy: trusted-types one two
+</pre>
+</div>
+
+<div class="example" id="header-that-allows-no-policy-names">
+An empty [=directive=] [=directive/value=] indicates policies may not be created,
+and sinks expect Trusted Type values.  I.e. no [=injection sinks=] can be used
+in a document.
+
+<pre class="http">
+Content-Security-Policy: trusted-types
+</pre>
+</div>
+
+Value `*` makes it possible to create policies with any
+previously unused name.
+
+<div class="example" id="wildcard-policy-name-in-header">
+<pre class="http">
+Content-Security-Policy: trusted-types *
+</pre>
+</div>
+
+If the policy named `default` is present in the list, it refers to the
+[=default policy=], and unless otherwise configured,
+all strings passed to [=injection sinks=] will be passed through it instead
+of being rejected outright.
+
+<div class="example" id="default-in-header">
+<pre class="http">
+Content-Security-Policy: trusted-types one two default
+</pre>
+</div>
+
+Issue(WICG/trusted-types#66): Decide if separate per-type enforcement settings should be exposed to the authors.
+
+### <dfn abstract-op>Should sink type mismatch violation be blocked by Content Security Policy?</dfn> ### {#should-block-sink-type-mismatch}
+
+Given a {{Document}} (|document|), a string (|sink|) and a string (|source|) this algorithm
+returns `"Blocked"` if the [=injection sink=] requires a [=Trusted Type=], and
+`"Allowed"` otherwise.
+
+1.  Let |result| be `"Allowed"`.
+1.  For each |policy| in |document|'s <a>global object</a>'s <a>CSP list</a>:
+    1.  If |policy|'s <a>directive set</a> does not contain a <a>directive</a>
+        which [=directive/name=] is `"trusted-types"`, skip to the next |policy|.
+    1.  Let |violation| be the result of executing
+        [$Create a violation object for global, policy, and directive$] on the
+        <a>current settings object</a>'s <a>global object</a>, |policy| and
+        `"trusted-types"`
+
+        Issue: Populate the violation object here.
+    1.  Execute [[CSP#report-violation|Report a violation]] on |violation|.
+    1.  If |policy|'s [=policy/disposition=] is `"enforce"`, then set |result| to
+        `"Blocked"`.
+1. Return |result|.
+
+### <dfn abstract-op>Should policy creation be blocked by Content Security Policy?</dfn> ### {#should-block-create-policy}
+
+Given a <a>global object</a> (|global|) and a string (|policyName|) this algorithm
+returns `"Blocked"` if the [=Trusted Type Policy=] should not be created, and
+`"Allowed"` otherwise.
+
+1.  Let |result| be `"Allowed"`.
+1.  For each |policy| in |global|'s <a>CSP list</a>:
+    1.  If |policy|'s <a>directive set</a> does not contain a <a>directive</a>
+        which name is `"trusted-types"`, skip to the next |policy|.
+    1.  Let |directive| be the |policy|'s |directive set|'s directive which name
+        is `"trusted-types"`
+    1.  If |directive|'s [=directive/value=] contains a <a>tt-expression</a> which is a match
+        for a value `*`, skip to the next |policy|.
+    1.  If |directive|'s [=directive/value=] contains a <a>tt-policy-name</a>, which is an
+        [=ASCII case-insensitive=] match for the value |policyName|, skip to the
+        next policy.
+    1.  Let |violation| be the result of executing
+        [$Create a violation object for global, policy, and directive$] on the
+        <a>current settings object</a>'s <a>global object</a>, |policy| and
+        `"trusted-types"`
+
+        Issue: Populate the violation object here.
+    1.  Execute [[CSP#report-violation|Report a violation]] on |violation|.
+    1.  If |policy|'s [=policy/disposition=] is `"enforce"`, then set |result| to
+        `"Blocked"`.
+1. Return |result|.
 
 ### 'trusted-script' keyword ### {#trusted-script-csp-keyword}
 
