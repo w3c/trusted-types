@@ -1723,7 +1723,7 @@ Additionally, it must not appear on readonly attributes.</p>
      <p>If <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global">relevant global object</a> has an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#concept-document-window" id="ref-for-concept-document-window">associated document</a>:</p>
      <ol>
       <li data-md>
-       <p>Set <em>value</em> to the result of running the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string">Get Trusted Type compliant string</a> algorithm, with <em>input</em> being the new value, <em>expectedType</em> being the <code class="idl"><a data-link-type="idl" href="#typedefdef-trustedtype" id="ref-for-typedefdef-trustedtype">TrustedType</a></code> extended attribute <a data-link-type="dfn" href="https://drafts.csswg.org/css-syntax-3/#identifier" id="ref-for-identifier">identifier</a>, and <em>document</em> being the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#concept-document-window" id="ref-for-concept-document-window①">associated document</a>.</p>
+       <p>Set <em>value</em> to the result of running the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string">Get Trusted Type compliant string</a> algorithm, with <em>input</em> being the new value, <em>expectedType</em> being the <code class="idl"><a data-link-type="idl" href="#typedefdef-trustedtype" id="ref-for-typedefdef-trustedtype">TrustedType</a></code> extended attribute identifier, and <em>document</em> being the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#concept-document-window" id="ref-for-concept-document-window①">associated document</a>.</p>
       <li data-md>
        <p>If an exception was thrown, rethrow exception and abort further steps.</p>
      </ol>
@@ -1737,7 +1737,7 @@ Additionally, it must not appear on readonly attributes.</p>
      <p>If <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global②">relevant global object</a> has an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#concept-document-window" id="ref-for-concept-document-window②">associated document</a>:</p>
      <ol>
       <li data-md>
-       <p>Set the new argument value to the result of running the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string①">Get Trusted Type compliant string</a> algorithm, with <em>input</em> being the argument value, <em>expectedType</em> being the <code class="idl"><a data-link-type="idl" href="#typedefdef-trustedtype" id="ref-for-typedefdef-trustedtype①">TrustedType</a></code> extended attribute <a data-link-type="dfn" href="https://drafts.csswg.org/css-syntax-3/#identifier" id="ref-for-identifier①">identifier</a>, and <em>document</em> being the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global③">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#concept-document-window" id="ref-for-concept-document-window③">associated document</a>.</p>
+       <p>Set the new argument value to the result of running the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string①">Get Trusted Type compliant string</a> algorithm, with <em>input</em> being the argument value, <em>expectedType</em> being the <code class="idl"><a data-link-type="idl" href="#typedefdef-trustedtype" id="ref-for-typedefdef-trustedtype①">TrustedType</a></code> extended attribute identifier, and <em>document</em> being the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global③">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#concept-document-window" id="ref-for-concept-document-window③">associated document</a>.</p>
       <li data-md>
        <p>If an exception was thrown, rethrow exception and abort further steps.</p>
      </ol>
@@ -2108,7 +2108,7 @@ algorithms in other specifiactions, see <a href="#integrations">§ 4 Integrati
    <h3 class="heading settled" data-level="3.1" id="policy-algorithms"><span class="secno">3.1. </span><span class="content">Policies</span><a class="self-link" href="#policy-algorithms"></a></h3>
    <h4 class="heading settled" data-level="3.1.1" id="create-trusted-type-policy-algorithm"><span class="secno">3.1.1. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-create-a-trusted-type-policy">Create a Trusted Type Policy</dfn></span><a class="self-link" href="#create-trusted-type-policy-algorithm"></a></h4>
    <p>To create a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy⑧">TrustedTypePolicy</a></code> in a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicyfactory" id="ref-for-trustedtypepolicyfactory">factory</a></code>,
-given a DOMString (<var>policyName</var>), policy options dictionary (<var>options</var>), and a <a data-link-type="dfn" href="https://w3c.github.io/ServiceWorker/#dfn-service-worker-global-object" id="ref-for-dfn-service-worker-global-object">global object</a> (<var>global</var>) run these steps:</p>
+given a DOMString (<var>policyName</var>), policy options dictionary (<var>options</var>), and a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global">global object</a> (<var>global</var>) run these steps:</p>
    <ol>
     <li data-md>
      <p>Let <var>allowedByCSP</var> be the result of executing <a data-link-type="abstract-op" href="#abstract-opdef-should-trusted-type-policy-creation-be-blocked-by-content-security-policy" id="ref-for-abstract-opdef-should-trusted-type-policy-creation-be-blocked-by-content-security-policy">Should Trusted Type policy
@@ -2370,13 +2370,13 @@ as in their original counterparts, apart from additional behavior triggered by t
    <p>Additionally, this document defines <a data-link-type="abstract-op" href="#abstract-opdef-insert-text-node-validation-steps" id="ref-for-abstract-opdef-insert-text-node-validation-steps">insert text node validation steps</a> for <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement" id="ref-for-htmlscriptelement④">HTMLScriptElement</a></code> to ascertain that text nodes inserted to <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement" id="ref-for-htmlscriptelement⑤">HTMLScriptElement</a></code> elements will satisfy Trusted Types restrictions:</p>
    <ol>
     <li data-md>
-     <p>Let <var>disposition</var> be <var>parent</var>’s <code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/json-ld11-api/#dom-remotedocument-document" id="ref-for-dom-remotedocument-document">document</a></code>'s <code class="idl"><a data-link-type="idl">TrustedTypeConfiguration</a></code>'s <code class="idl"><a data-link-type="idl">domSinks</a></code>.</p>
+     <p>Let <var>disposition</var> be <var>parent</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-document" id="ref-for-concept-node-document">node document</a>'s <code class="idl"><a data-link-type="idl">TrustedTypeConfiguration</a></code>'s <code class="idl"><a data-link-type="idl">domSinks</a></code>.</p>
     <li data-md>
      <p>If <var>disposition</var> is <code>“unsafe-allow”</code>, abort the following steps.</p>
     <li data-md>
      <p>Let <var>text</var> be <var>node</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-child-text-content" id="ref-for-concept-child-text-content①">child text content</a>.</p>
     <li data-md>
-     <p>Let <var>convertedText</var> be the result of running <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string②">Get Trusted Type compliant string</a>, passing <var>parent</var>’s <code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/json-ld11-api/#dom-remotedocument-document" id="ref-for-dom-remotedocument-document①">document</a></code> as <em>document</em>, <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript⑧">TrustedScript</a></code> as <em>expectedType</em> and <var>text</var> as input.
+     <p>Let <var>convertedText</var> be the result of running <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string②">Get Trusted Type compliant string</a>, passing <var>parent</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-document" id="ref-for-concept-node-document①">node document</a> as <em>document</em>, <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript⑧">TrustedScript</a></code> as <em>expectedType</em> and <var>text</var> as input.
 If the algorithm threw an error, rethrow the error.</p>
     <li data-md>
      <p>Set <var>node</var>’s data to <var>convertedText</var>.</p>
@@ -2506,12 +2506,12 @@ returns <code>"Blocked"</code> if the <a data-link-type="dfn" href="#injection-s
     <li data-md>
      <p>Let <var>result</var> be <code>"Allowed"</code>.</p>
     <li data-md>
-     <p>For each <var>policy</var> in <var>document</var>’s <a data-link-type="dfn" href="https://w3c.github.io/ServiceWorker/#dfn-service-worker-global-object" id="ref-for-dfn-service-worker-global-object①">global object</a>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#concept-document-csp-list" id="ref-for-concept-document-csp-list①">CSP list</a>:</p>
+     <p>For each <var>policy</var> in <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global①">global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#concept-document-csp-list" id="ref-for-concept-document-csp-list①">CSP list</a>:</p>
      <ol>
       <li data-md>
        <p>If <var>policy</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#policy-directive-set" id="ref-for-policy-directive-set①">directive set</a> does not contain a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives①">directive</a> which <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-name" id="ref-for-directive-name①">name</a> is <code>"trusted-types"</code>, skip to the next <var>policy</var>.</p>
       <li data-md>
-       <p>Let <var>violation</var> be the result of executing <a href="https://www.w3.org/TR/CSP3/#create-violation-for-global">Create a violation object for global, policy, and directive</a> on the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#current-settings-object" id="ref-for-current-settings-object">current settings object</a>’s <a data-link-type="dfn" href="https://w3c.github.io/ServiceWorker/#dfn-service-worker-global-object" id="ref-for-dfn-service-worker-global-object②">global object</a>, <var>policy</var> and <code>"trusted-types"</code></p>
+       <p>Let <var>violation</var> be the result of executing <a href="https://www.w3.org/TR/CSP3/#create-violation-for-global">Create a violation object for global, policy, and directive</a> on the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#current-settings-object" id="ref-for-current-settings-object">current settings object</a>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global②">global object</a>, <var>policy</var> and <code>"trusted-types"</code></p>
        <p class="issue" id="issue-565a1020"><a class="self-link" href="#issue-565a1020"></a> Populate the violation object here.</p>
       <li data-md>
        <p>Execute <a href="https://www.w3.org/TR/CSP3/#report-violation">Report a violation</a> on <var>violation</var>.</p>
@@ -2522,7 +2522,7 @@ returns <code>"Blocked"</code> if the <a data-link-type="dfn" href="#injection-s
      <p>Return <var>result</var>.</p>
    </ol>
    <h4 class="heading settled" data-level="4.4.3" id="should-block-create-policy"><span class="secno">4.4.3. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-should-trusted-type-policy-creation-be-blocked-by-content-security-policy">Should Trusted Type policy creation be blocked by Content Security Policy?</dfn></span><a class="self-link" href="#should-block-create-policy"></a></h4>
-   <p>Given a <a data-link-type="dfn" href="https://w3c.github.io/ServiceWorker/#dfn-service-worker-global-object" id="ref-for-dfn-service-worker-global-object③">global object</a> (<var>global</var>), a string (<var>policyName</var>) and a list of
+   <p>Given a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global③">global object</a> (<var>global</var>), a string (<var>policyName</var>) and a list of
 strings (<var>createdPolicyNames</var>), this algorithm returns <code>"Blocked"</code> if the <a data-link-type="dfn">Trusted Type Policy</a> should not be created, and <code>"Allowed"</code> otherwise.</p>
    <ol>
     <li data-md>
@@ -2549,7 +2549,7 @@ duplicated names.</p>
       <li data-md>
        <p>If <var>reason</var> is an empty string, skip to the next <var>policy</var>.</p>
       <li data-md>
-       <p>Let <var>violation</var> be the result of executing <a href="https://www.w3.org/TR/CSP3/#create-violation-for-global">Create a violation object for global, policy, and directive</a> on the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#current-settings-object" id="ref-for-current-settings-object①">current settings object</a>’s <a data-link-type="dfn" href="https://w3c.github.io/ServiceWorker/#dfn-service-worker-global-object" id="ref-for-dfn-service-worker-global-object④">global object</a>, <var>policy</var> and <code>"trusted-types"</code></p>
+       <p>Let <var>violation</var> be the result of executing <a href="https://www.w3.org/TR/CSP3/#create-violation-for-global">Create a violation object for global, policy, and directive</a> on the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#current-settings-object" id="ref-for-current-settings-object①">current settings object</a>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global④">global object</a>, <var>policy</var> and <code>"trusted-types"</code></p>
        <p class="issue" id="issue-c5475d45"><a class="self-link" href="#issue-c5475d45"></a> Populate the violation object here, using <var>reason</var>.</p>
       <li data-md>
        <p>Execute <a href="https://www.w3.org/TR/CSP3/#report-violation">Report a violation</a> on <var>violation</var>.</p>
@@ -2618,7 +2618,7 @@ throws an "<code>EvalError</code>" if not:
       </ul>
      </ins>
     <li data-md>
-     <p>Let <var>globals</var> be a list containing <var>calleeRealm</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global">global object</a> and <var>calleeRealm</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global①">global object</a>.</p>
+     <p>Let <var>globals</var> be a list containing <var>calleeRealm</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global⑤">global object</a> and <var>calleeRealm</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global⑥">global object</a>.</p>
     <li data-md>
      <p>For each <var>global</var> in <var>globals</var>:</p>
      <ol>
@@ -3106,12 +3106,6 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
     <li><a href="#ref-for-directive-value④">4.4.4. 'trusted-script' keyword</a> <a href="#ref-for-directive-value⑤">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-identifier">
-   <a href="https://drafts.csswg.org/css-syntax-3/#identifier">https://drafts.csswg.org/css-syntax-3/#identifier</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-identifier">2.2.1. TrustedTypes extended attribute</a> <a href="#ref-for-identifier①">(2)</a>
-   </ul>
-  </aside>
   <aside class="dfn-panel" data-for="term-for-document">
    <a href="https://dom.spec.whatwg.org/#document">https://dom.spec.whatwg.org/#document</a><b>Referenced in:</b>
    <ul>
@@ -3151,6 +3145,12 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <a href="https://dom.spec.whatwg.org/#concept-child-text-content">https://dom.spec.whatwg.org/#concept-child-text-content</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-child-text-content">4.1.5. Enforcement for script text contents</a> <a href="#ref-for-concept-child-text-content①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-node-document">
+   <a href="https://dom.spec.whatwg.org/#concept-node-document">https://dom.spec.whatwg.org/#concept-node-document</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-node-document">4.1.5. Enforcement for script text contents</a> <a href="#ref-for-concept-node-document①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-node-textcontent">
@@ -3323,7 +3323,10 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
   <aside class="dfn-panel" data-for="term-for-concept-realm-global">
    <a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global">https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-realm-global">4.4.4. 'trusted-script' keyword</a> <a href="#ref-for-concept-realm-global①">(2)</a>
+    <li><a href="#ref-for-concept-realm-global">3.1.1. Create a Trusted Type Policy</a>
+    <li><a href="#ref-for-concept-realm-global①">4.4.2. Should sink type mismatch violation be blocked by Content Security Policy?</a> <a href="#ref-for-concept-realm-global②">(2)</a>
+    <li><a href="#ref-for-concept-realm-global③">4.4.3. Should Trusted Type policy creation be blocked by Content Security Policy?</a> <a href="#ref-for-concept-realm-global④">(2)</a>
+    <li><a href="#ref-for-concept-realm-global⑤">4.4.4. 'trusted-script' keyword</a> <a href="#ref-for-concept-realm-global⑥">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-innertext">
@@ -3355,20 +3358,6 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <a href="https://infra.spec.whatwg.org/#ordered-set">https://infra.spec.whatwg.org/#ordered-set</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-ordered-set">2.3.1. TrustedTypePolicyFactory</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-dom-remotedocument-document">
-   <a href="https://www.w3.org/TR/json-ld11-api/#dom-remotedocument-document">https://www.w3.org/TR/json-ld11-api/#dom-remotedocument-document</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-remotedocument-document">4.1.5. Enforcement for script text contents</a> <a href="#ref-for-dom-remotedocument-document①">(2)</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-dfn-service-worker-global-object">
-   <a href="https://w3c.github.io/ServiceWorker/#dfn-service-worker-global-object">https://w3c.github.io/ServiceWorker/#dfn-service-worker-global-object</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dfn-service-worker-global-object">3.1.1. Create a Trusted Type Policy</a>
-    <li><a href="#ref-for-dfn-service-worker-global-object①">4.4.2. Should sink type mismatch violation be blocked by Content Security Policy?</a> <a href="#ref-for-dfn-service-worker-global-object②">(2)</a>
-    <li><a href="#ref-for-dfn-service-worker-global-object③">4.4.3. Should Trusted Type policy creation be blocked by Content Security Policy?</a> <a href="#ref-for-dfn-service-worker-global-object④">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idl-DOMString">
@@ -3493,11 +3482,6 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
      <li><span class="dfn-paneled" id="term-for-directive-value" style="color:initial">value</span>
     </ul>
    <li>
-    <a data-link-type="biblio">[css-syntax-3]</a> defines the following terms:
-    <ul>
-     <li><span class="dfn-paneled" id="term-for-identifier" style="color:initial">identifier</span>
-    </ul>
-   <li>
     <a data-link-type="biblio">[DOM]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-document" style="color:initial">Document</span>
@@ -3506,6 +3490,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
      <li><span class="dfn-paneled" id="term-for-range" style="color:initial">Range</span>
      <li><span class="dfn-paneled" id="term-for-text" style="color:initial">Text</span>
      <li><span class="dfn-paneled" id="term-for-concept-child-text-content" style="color:initial">child text content</span>
+     <li><span class="dfn-paneled" id="term-for-concept-node-document" style="color:initial">node document</span>
      <li><span class="dfn-paneled" id="term-for-dom-node-textcontent" style="color:initial">textContent</span>
     </ul>
    <li>
@@ -3552,16 +3537,6 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
      <li><span class="dfn-paneled" id="term-for-ordered-set" style="color:initial">ordered set</span>
     </ul>
    <li>
-    <a data-link-type="biblio">[json-ld11-api]</a> defines the following terms:
-    <ul>
-     <li><span class="dfn-paneled" id="term-for-dom-remotedocument-document" style="color:initial">document</span>
-    </ul>
-   <li>
-    <a data-link-type="biblio">[service-workers-1]</a> defines the following terms:
-    <ul>
-     <li><span class="dfn-paneled" id="term-for-dfn-service-worker-global-object" style="color:initial">global object</span>
-    </ul>
-   <li>
     <a data-link-type="biblio">[WebIDL]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-idl-DOMString" style="color:initial">DOMString</span>
@@ -3585,8 +3560,6 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
   <dl>
    <dt id="biblio-csp-3">[CSP-3]
    <dd>Content Security Policy Level 3 URL: <a href="https://www.w3.org/TR/CSP3/">https://www.w3.org/TR/CSP3/</a>
-   <dt id="biblio-css-syntax-3">[CSS-SYNTAX-3]
-   <dd>Tab Atkins Jr.; Simon Sapin. <a href="https://www.w3.org/TR/css-syntax-3/">CSS Syntax Module Level 3</a>. 16 July 2019. CR. URL: <a href="https://www.w3.org/TR/css-syntax-3/">https://www.w3.org/TR/css-syntax-3/</a>
    <dt id="biblio-dom">[DOM]
    <dd>Anne van Kesteren. <a href="https://dom.spec.whatwg.org/">DOM Standard</a>. Living Standard. URL: <a href="https://dom.spec.whatwg.org/">https://dom.spec.whatwg.org/</a>
    <dt id="biblio-dom-parsing">[DOM-Parsing]
@@ -3595,12 +3568,8 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <dd>Anne van Kesteren; et al. <a href="https://html.spec.whatwg.org/multipage/">HTML Standard</a>. Living Standard. URL: <a href="https://html.spec.whatwg.org/multipage/">https://html.spec.whatwg.org/multipage/</a>
    <dt id="biblio-infra">[INFRA]
    <dd>Anne van Kesteren; Domenic Denicola. <a href="https://infra.spec.whatwg.org/">Infra Standard</a>. Living Standard. URL: <a href="https://infra.spec.whatwg.org/">https://infra.spec.whatwg.org/</a>
-   <dt id="biblio-json-ld11-api">[JSON-LD11-API]
-   <dd>Gregg Kellogg. <a href="https://www.w3.org/TR/json-ld11-api/">JSON-LD 1.1 Processing Algorithms and API</a>. 13 July 2019. WD. URL: <a href="https://www.w3.org/TR/json-ld11-api/">https://www.w3.org/TR/json-ld11-api/</a>
    <dt id="biblio-rfc2119">[RFC2119]
    <dd>S. Bradner. <a href="https://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>. March 1997. Best Current Practice. URL: <a href="https://tools.ietf.org/html/rfc2119">https://tools.ietf.org/html/rfc2119</a>
-   <dt id="biblio-service-workers-1">[SERVICE-WORKERS-1]
-   <dd>Alex Russell; et al. <a href="https://www.w3.org/TR/service-workers-1/">Service Workers 1</a>. 2 November 2017. WD. URL: <a href="https://www.w3.org/TR/service-workers-1/">https://www.w3.org/TR/service-workers-1/</a>
    <dt id="biblio-webidl">[WebIDL]
    <dd>Boris Zbarsky. <a href="https://heycam.github.io/webidl/">Web IDL</a>. 15 December 2016. ED. URL: <a href="https://heycam.github.io/webidl/">https://heycam.github.io/webidl/</a>
   </dl>

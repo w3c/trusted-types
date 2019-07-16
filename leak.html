@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<!-- DO NOT SUBMIT: Fix Page Title. Missing tags? http://go/optional-html -->
+<title>Page Title</title>
+<!DOCTYPE html SYSTEM "javascript:console.log('doctype')">
+<html xmlns="http://www.w3.org/1999/xhtml" manifest="javascript:console.log('html-manifest')">
+<head>
+
+<!--
+%Base (check manually)
+-->
+<base href="javascript:console.log('base-href/')">
+
+<!--
+%MSIE Imports
+-->
+<?IMPORT namespace="myNS" implementation="javascript:console.log('import-implementation')" ?>
+<IMPORT namespace="myNS" implementation="javascript:console.log('import-implementation-2')" />
+
+<!--
+%Redirects
+-->
+<meta http-equiv="refresh" content="10; url=javascript:console.log('meta-refresh')">
+
+<!--  
+%CSP
+-->
+<meta http-equiv="Content-Security-Policy" content="script-src 'self'; report-uri javascript:console.log('meta-csp-report-uri')">
+<meta http-equiv="Content-Security-Policy-Report-Only" content="script-src 'self'; report-uri javascript:console.log('meta-csp-report-uri-2')">
+
+<!-- 
+%Reading View
+-->
+<meta name="copyright" content="<img src='javascript:console.log('meta-name-copyright-reading-view'>')">
+<meta name="displaydate" content="<img src='javascript:console.log('meta-name-displaydate-reading-view'>')">
+<meta property="og:site_name" content="<img src='javascript:console.log('meta-property-reading-view'>')">
+
+<!-- 
+%AppLink Web Fallback
+-->
+<meta property="al:web:url" content="javascript:console.log('meta-property-al-web-url')">
+
+<!-- 
+%Pinned Websites
+-->
+<meta name="msapplication-config" content="javascript:console.log('meta-name-msa-config')">
+<meta name="msapplication-badge" content="frequency=30; polling-uri=javascript:console.log('meta-name-msa-badge')">
+<meta name="msapplication-notification" content="frequency=60;polling-uri=javascript:console.log('meta-name-msa-notification')">
+<meta name="msapplication-square150x150logo" content="javascript:console.log('meta-name-msa-logo-1')">
+<meta name="msapplication-square310x310logo" content="javascript:console.log('meta-name-msa-logo-2')">
+<meta name="msapplication-square70x70logo" content="javascript:console.log('meta-name-msa-logo-3')">
+<meta name="msapplication-wide310x150logo" content="javascript:console.log('meta-name-msa-logo-4')">
+<meta name="msapplication-task" content="name=Leak;action-uri=javascript:console.log('meta-name-msa-task;icon-uri=https://leaking.via/meta-name-msa-task-icon')">
+<meta name="msapplication-TileImage" content="javascript:console.log('meta-name-msa-tile-image')">
+
+<!--
+%Conditional Comments
+-->
+<!--[if true]>
+<link href="javascript:console.log('conditional-comment-1')" rel="stylesheet">
+<![endif]-->
+
+<!-- 
+%Links 
+-->
+<link rel="stylesheet" href="javascript:console.log('link-stylesheet')" />
+<link rel="icon" href="javascript:console.log('link-icon')" />
+<link rel="canonical" href="javascript:console.log('link-canonical')" />
+<link rel="shortcut icon" href="javascript:console.log('link-shortcut-icon')" />
+<link rel="import" href="javascript:console.log('link-import')" />
+<link rel="dns-prefetch" href="javascript:console.log('link-dns-prefetch')" />
+<link rel="preconnect" href="javascript:console.log('link-preconnect')">
+<link rel="prefetch" href="javascript:console.log('link-prefetch')" />
+<link rel="preload" href="javascript:console.log('link-preload')" />
+<link rel="prerender" href="javascript:console.log('link-prerender')" />
+
+<link rel="preload" as="font" href="javascript:console.log('link-preload-as-font')" />
+<link rel="preload" as="image" href="javascript:console.log('link-preload-as-image')" />
+<link rel="preload" as="image" imagesrcset=",,,,,javascript:console.log('link-preload-imagesrcset')" />
+<link rel="preload" as="style" href="javascript:console.log('link-preload-as-style')" />
+<link rel="preload" as="script" href="javascript:console.log('link-preload-as-script')" />
+
+<link rel="search" href="javascript:console.log('link-search')" />
+<!--
+Note that OpenSearch description URLs are ignored in Chrome if this file isn't placed in the webroot.
+Also, in Chrome, you won't see the request in the developer tools because the request happens in the privileged browser process.
+Use a network sniffer to detect it.
+-->
+
+<link rel="alternate" href="javascript:console.log('link-alternate')" />
+<link rel="alternate" type="application/atom+xml" href="javascript:console.log('link-alternate-atom')" /> 
+<link rel="alternate stylesheet" href="javascript:console.log('link-alternate-stylesheet')" />
+<link rel="amphtml" href="javascript:console.log('link-amphtml')">
+<link rel="appendix" href="javascript:console.log('link-appendix')" />
+<link rel="apple-touch-icon-precomposed" href="javascript:console.log('link-apple-touch-icon-precomposed')">
+<link rel="apple-touch-icon" href="javascript:console.log('link-apple-touch-icon')">
+<link rel="apple-touch-startup-image" href="javascript:console.log('link-apple-touch-startup-image')">
+<link rel="archives" href="javascript:console.log('link-archives')" />
+<link rel="author" href="javascript:console.log('link-author')" />
+<link rel="bookmark" href="javascript:console.log('link-bookmark')" />
+<link rel="canonical" href="javascript:console.log('link-canonical')">
+<link rel="chapter" href="javascript:console.log('link-chapter')" />
+<link rel="chrome-webstore-item" href="javascript:console.log('link-chrome-webstore-item')">
+<link rel="contents" href="javascript:console.log('link-contents')" />
+<link rel="copyright" href="javascript:console.log('link-copyright')" />
+<link rel="entry-content" href="javascript:console.log('link-entry-content')" />
+<link rel="external" href="javascript:console.log('link-external')" />
+<link rel="feedurl" href="javascript:console.log('link-feedurl')" />
+<link rel="first" href="javascript:console.log('link-first')" />
+<link rel="glossary" href="javascript:console.log('link-glossary')" />
+<link rel="help" href="javascript:console.log('link-help')" />
+<link rel="index" href="javascript:console.log('link-index')" />
+<link rel="last" href="javascript:console.log('link-last')" />
+<link rel="manifest" href="javascript:console.log('link-manifest')" />
+<link rel="mask-icon" href="javascript:console.log('link-mask-icon')" color="red">
+<link rel="next" href="javascript:console.log('link-next')" />
+<link rel="offline" href="javascript:console.log('link-offline')" />
+<link rel="P3Pv1" href="javascript:console.log('link-P3Pv1')">
+<link rel="pingback" href="javascript:console.log('link-pingback')" />
+<link rel="prev" href="javascript:console.log('link-prev')" />
+<link rel="publisher" href="javascript:console.log('link-publisher')">
+<link rel="search" type="application/opensearchdescription+xml" href="javascript:console.log('link-search-2')" title="Search" /> 
+<link rel="sidebar" href="javascript:console.log('link-sidebar')" />
+<link rel="start" href="javascript:console.log('link-start')" />
+<link rel="section" href="javascript:console.log('link-section')" />
+<link rel="subsection" href="javascript:console.log('link-subsection')" />
+<link rel="subresource" href="javascript:console.log('link-subresource')">
+<link rel="tag" href="javascript:console.log('link-tag')" />
+<link rel="up" href="javascript:console.log('link-up')" />
+</head>
+
+<!--
+%Body Background
+-->
+<body background="javascript:console.log('body-background')">
+
+<!-- 
+%Links & Maps
+-->
+<a ping="javascript:console.log('a-ping')" href="#">You have to click me</a>
+<img src="data:;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw" width="150" height="150" usemap="#map">
+<map name="map">
+  <area ping="javascript:console.log('area-ping')" shape="rect" coords="0,0,150,150" href="#">
+</map> 
+<!-- 
+The ping attribute allows to send a HTTP request to an external IP or domain, 
+even if the link's HREF points somewhere else. The link has to be clicked though 
+
+https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#attr-ping
+-->
+
+<!--
+%Table Background
+-->
+<table background="javascript:console.log('table-background')">
+    <tr>
+        <td background="javascript:console.log('td-background')"></td>
+    </tr>
+</table>
+
+<!--
+%Images
+-->
+<img src="javascript:console.log('img-src')">
+<img dynsrc="javascript:console.log('img-dynsrc')">
+<img lowsrc="javascript:console.log('img-lowsrc')">
+<img src="data:image/svg+xml,<svg%20xmlns='%68ttp:%2f/www.w3.org/2000/svg'%20xmlns:xlink='%68ttp:%2f/www.w3.org/1999/xlink'><image%20xlink:hr%65f='%68ttps:%2f/leaking.via/svg-via-data'></image></svg>">
+
+<image src="javascript:console.log('image-src')">
+<image href="javascript:console.log('image-href')">
+
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<image href="javascript:console.log('svg-image-href')">
+<image xlink:href="javascript:console.log('svg-image-xlink-href')">
+</svg>
+
+<picture>
+    <source srcset="javascript:console.log('picture-source-srcset')">
+</picture>
+<picture>
+    <img srcset="javascript:console.log('picture-img-srcset')">
+</picture>
+<img srcset=",,,,,javascript:console.log('img-srcset')">
+
+<img src="#" longdesc="javascript:console.log('img-longdesc')">
+<!-- longdesc works on Firefox but requires right-click, "View Description" -->
+
+<!--
+%Forms
+-->
+<form action="javascript:console.log('form-action')"><input type=submit></form>
+<form id="test"></form><button form="test" formaction="javascript:console.log('button-formaction')">CLICKME</button>
+<input type="image" src="javascript:console.log('input-src')" name="test" value="test">
+<isindex src="javascript:console.log('isindex-src')" type="image">
+<isindex action="javascript:console.log('isindex-action')"></isindex>
+<form id="test2"></form><isindex type="submit" formaction="javascript:console.log('isindex-formaction')" form="test2"></isindex>
+<!--
+%Media
+-->
+<bgsound src="javascript:console.log('bgsound-src')"></bgsound>
+<video src="javascript:console.log('video-src')">
+  <track kind="subtitles" label="English subtitles" src="javascript:console.log('track-src')" srclang="en" default></track>
+</video>
+<video controls>
+  <source src="javascript:console.log('video-source-src')" type="video/mp4">
+</video>
+<audio src="javascript:console.log('audio-src')"></audio>
+<audio controls>
+  <source src="javascript:console.log('audio-source-src')" type="video/mp4">
+</audio>
+<video poster="javascript:console.log('video-poster')" src="javascript:console.log('video-poster-2')"></video>
+
+<!--
+%Object & Embed
+-->
+<object data="javascript:console.log('object-data')"></object>
+<object type="text/x-scriptlet" data="javascript:console.log('object-data-x-scriptlet')"></object>
+<object movie="javascript:console.log('object-movie')" type="application/x-shockwave-flash"></object>
+<object movie="javascript:console.log('object-movie')">
+    <param name="type" value="application/x-shockwave-flash"></param>
+</object>
+<object codebase="javascript:console.log('object-codebase')"></object>
+<embed src="javascript:console.log('embed-src')"></embed>
+<embed code="javascript:console.log('embed-code')"></embed>
+<object classid="clsid:333C7BC4-460F-11D0-BC04-0080C7055A83">
+    <param name="DataURL" value="javascript:console.log('object-param-dataurl')">
+</object>
+<object classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6">
+    <param name="URL" value="javascript:console.log('object-param-url')">
+</object>
+
+
+<!--
+%Script
+-->
+<script src="javascript:console.log('script-src')"></script>
+<svg><script href="javascript:console.log('svg-script-href')"></script></svg>
+<svg><script xlink:href="javascript:console.log('svg-script-xlink-href')"></script></svg>
+<script>
+//# sourceMappingURL=https://leaking.via/javascript-source-map
+</script>
+
+<!--
+%Frames
+-->
+<iframe src="javascript:console.log('iframe-src')"></iframe>
+<iframe src="data:image/svg+xml,<svg%20xmlns='%68ttp:%2f/www.w3.org/2000/svg'%20xmlns:xlink='%68ttp:%2f/www.w3.org/1999/xlink'><image%20xlink:hr%65f='%68ttps:%2f/leaking.via/svg-via-data'></image></svg>"></iframe>
+<iframe srcdoc="<img src=javascript:console.log('iframe-srcdoc-img-src>')"></iframe>
+<frameset>
+    <frame src="javascript:console.log('frame-src')"></frame>
+</frameset>
+<iframe src="view-source:javascript:console.log('iframe-src-viewsource')"></iframe>
+<iframe src="javascript:'&lt;img src=javascript:console.log('iframe-javascript-src&gt;'')"></iframe>
+<iframe src="javascript:'&lt;iframe src=&quot;javascript:\&apos;&lt;img src=javascript:console.log('iframe-javascript-src-2&gt;\&apos;&quot;&gt;&lt;/iframe&gt;'')"></iframe>
+<iframe src="javascript:atob('PGltZyBzcmM9Imh0dHBzOi8vbGVha2luZy52aWEvaWZyYW1lLWphdmFzY3JpcHQtc3JjLTMiPg==')"></iframe>
+
+<!-- 
+%Menu
+-->
+<p contextmenu="a">Right Click</p>
+<menu type="context" id="a">
+    <menuitem label="a" icon="javascript:console.log('menuitem-icon')"></menuitem>
+</menu>
+
+<!--
+%CSS
+-->
+<style>
+    /*# sourceMappingURL=https://leaking.via/css-source-map */
+</style>
+<style>
+    @import 'https://leaking.via/css-import-string';
+    @import url(https://leaking.via/css-import-url);
+</style>
+<style>
+    a:after {content: url(https://leaking.via/css-after-content)}
+    a::after {content: url(https://leaking.via/css-after-content-2)}
+    a:before {content: url(https://leaking.via/css-before-content)}
+    a::before {content: url(https://leaking.via/css-before-content-2)}    
+</style>
+<a href="#">ABC</a>
+<style>
+    big {
+        list-style: url(https://leaking.via/css-list-style);
+        list-style-image: url(https://leaking.via/css-list-style-image);
+        background: url(https://leaking.via/css-background);
+        background-image: url(https://leaking.via/css-background-image);
+        border-image: url(https://leaking.via/css-border-image);
+        -moz-border-image: url(https://leaking.via/css--moz-border-image-alias);
+        -webkit-border-image: url(https://leaking.via/css--webkit-border-image-alias);
+        border-image-source: url(https://leaking.via/css-border-image-source);
+        shape-outside: url(https://leaking.via/css-shape-outside);
+        cursor: url(https://leaking.via/css-cursor), auto;
+    }
+</style>
+<big>DEF</big>
+<style>
+    /* Basic font-face */
+    @font-face {
+        font-family: leak;
+        src: url(https://leaking.via/css-font-face-src);
+    }
+    
+    /* 
+    * Cross-browser font-face
+    * IE6-8 will use the EOT source, modern browsers will use WOFF(2) and fallback to TTF in case of error
+    * More info:
+    * http://www.paulirish.com/2009/bulletproof-font-face-implementation-syntax/
+    * http://caniuse.com/#search=eot
+    * http://caniuse.com/#search=woff2
+    * http://caniuse.com/#search=woff
+    * http://caniuse.com/#search=ttf
+    */
+    @font-face {
+      font-family: 'leak';
+      src: url('https://leaking.via/css-font-face-src-eot') format('eot'), url('https://leaking.via/css-font-face-src-woff') format('woff'), url('https://leaking.via/css-font-face-src-ttf') format('truetype');
+    }
+
+    big {
+        font-family: leak;
+    }
+</style>
+<big>GHI</big>
+<svg>
+    <style>
+        circle {
+            fill: url(https://leaking.via/svg-css-fill#foo);
+            mask: url(https://leaking.via/svg-css-mask#foo);
+            -webkit-mask: url(https://leaking.via/svg-css--webkit-mask#foo);
+            filter: url(https://leaking.via/svg-css-filter#foo);
+            clip-path: url(https://leaking.via/svg-css-clip-path#foo);
+        }
+    </style>
+    <circle r="40"></circle>
+</svg>
+<s foo="javascript:console.log('css-attr-notation')">JKL</s>
+<style>
+    s {
+      --leak: url(https://leaking.via/css-variables);
+    }
+    s {
+      background: var(--leak);
+    }
+    s::after {
+      content: attr(foo url);
+    }    
+    s::before {
+      content: attr(notpresent, url(https://leaking.via/css-attr-fallback));
+    }
+</style>
+<style>
+    p#p1 {
+        background-image: \75 \72 \6C (https://leaking.via/css-escape-url-1);
+    }
+    p#p2 {
+        background-image: \000075\000072\00006C(https://leaking.via/css-escape-url-2);
+    }
+</style>
+<p id="p1">bla</p>
+<p id="p2">bla</p>
+
+<!--
+%Inline CSS
+-->
+<b style="
+        list-style: url(https://leaking.via/inline-css-list-style);
+        list-style-image: url&#40;https://leaking.via/inline-css-list-style-image&#41;;
+        background: url&#x28;https://leaking.via/inline-css-background&#x29;;
+        background-image: url&lpar;https://leaking.via/inline-css-background-image&rpar;;
+        border-image: url(https://leaking.via/inline-css-list-style-image);
+        -moz-border-image: url(https://leaking.via/inline-css--moz-background-image-alias);
+        -webkit-border-image: url(https://leaking.via/inline-css--webkit-background-image-alias);
+        border-image-source: url(https://leaking.via/inline-css-border-image-source);
+        shape-outside: url(https://leaking.via/inline-css-shape-outside);
+        cursor: url(https://leaking.via/inline-css-cursor), auto;
+">MNO</b>
+
+<svg>
+<circle style="
+        fill: url(https://leaking.via/svg-inline-css-fill#foo);
+        mask: url(https://leaking.via/svg-inline-css-mask#foo);
+        -webkit-mask: url(https://leaking.via/svg-inline-css--webkit-mask#foo);
+        filter: url(https://leaking.via/svg-inline-css-filter#foo);
+        clip-path: url(https://leaking.via/svg-inline-css-clip-path#foo);
+"></circle>
+</svg>
+
+<!-- 
+%Exotic Inline CSS
+-->
+<div style="background: url() url() url() url() url(javascript:console.log('inline-css-multiple-backgrounds);')"></div>
+<div style="behavior: url('javascript:console.log('inline-css-behavior');')"></div>
+<div style="-ms-behavior: url('javascript:console.log('inline-css-behavior-2');')"></div>
+<div style="background-image: image('javascript:console.log('inline-css-image-function')')"></div>
+<div style="filter:progid:DXImageTransform.Microsoft.AlphaImageLoader( src='javascript:console.log('inline-css-filter-alpha', sizingMethod='scale');')" ></div>
+<div style="filter:progid:DXImageTransform.Microsoft.ICMFilter(colorSpace='javascript:console.log('inline-css-filter-icm')')"></div>
+
+<!--
+%Applet
+-->
+<applet code="Test" codebase="javascript:console.log('applet-codebase')"></applet>
+<applet code="Test" archive="javascript:console.log('applet-archive')"></applet>
+<applet code="Test" object="javascript:console.log('applet-object')"></applet>
+
+<!--
+%SVG
+-->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <linearGradient id="Gradient">
+      <stop offset="0" stop-color="white" stop-opacity="0" />
+      <stop offset="1" stop-color="white" stop-opacity="1" />
+    </linearGradient>
+    <mask id="Mask">
+      <rect x="0" y="0" width="200" height="200" fill="url(javascript:console.log('svg-fill)')"  />
+    </mask>
+  </defs>
+  <rect x="0" y="0" width="200" height="200" fill="green" />
+  <rect x="0" y="0" width="200" height="200" fill="red" mask="url(javascript:console.log('svg-mask)')" />
+</svg>
+
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <image xmlns:xlink="http://www.w3.org/1999/xlink">
+        <set attributeName="xlink:href" begin="0s" to="javascript:console.log('svg-image-set')" />
+    </image>
+</svg>
+
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <image xmlns:xlink="http://www.w3.org/1999/xlink">
+        <animate attributeName="xlink:href" begin="0s" from="#" to="javascript:console.log('svg-image-animate')" />
+    </image>
+</svg>
+
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <feImage xlink:href="javascript:console.log('svg-feimage')" />
+</svg>
+
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <a xlink:href="javascript:console.log('svg-a-text/')"><text transform="translate(0,20)">CLICKME</text></a>
+</svg>
+
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <rect cursor="url(javascript:console.log('svg-cursor),auto')" />
+</svg>
+
+<svg>
+    <font-face-uri xlink:href="javascript:console.log('svg-font-face-uri')" />
+</svg>
+
+<!--
+%XSLT Stylesheets
+-->
+<?xml-stylesheet type="text/xsl" href="javascript:console.log('xslt-stylesheet')" ?>
+
+<!--
+%Data Islands
+-->
+<xml src="javascript:console.log('xml-src')" id="xml"></xml>
+<div datasrc="#xml" datafld="$text" dataformatas="html"></div>
+<script language="xml">
+    <!DOCTYPE html SYSTEM "javascript:console.log('script-doctype')">
+</script>
+<xml>
+    <!DOCTYPE html SYSTEM "javascript:console.log('xml-doctype')">
+</xml>
+
+<!-- 
+%VML
+-->
+<line xmlns="urn:schemas-microsoft-com:vml" style="behavior:url(#default#vml)">
+    <fill style="behavior:url(#default#vml)" src="javascript:console.log('vml-line-fill-src')" />
+    <stroke style="behavior:url(#default#vml)" src="javascript:console.log('vml-line-stroke-src')" />
+    <imageData style="behavior:url(#default#vml)" src="javascript:console.log('vml-line-imgdata-src')" />
+</line>
+
+<vmlframe 
+    xmlns="urn:schemas-microsoft-com:vml" 
+    style="behavior:url(#default#vml);position:absolute;width:100%;height:100%" 
+    src="javascript:console.log('vmlframe-src#xss')">
+</vmlframe>
+
+<line xmlns="urn:schemas-microsoft-com:vml" style="behavior:url(#default#vml)">
+    <imageData style="behavior:url(#default#vml)" o:href="javascript:console.log('vml-line-imgdata-href')" />
+</line>
+
+<!--
+%MathML
+-->
+<math xlink:href="javascript:console.log('mathml-math')">CLICKME</math>
+
+<math><mi xlink:href="javascript:console.log('mathml-mi')">CLICKME</mi></math>
+
+</body>
+</html>

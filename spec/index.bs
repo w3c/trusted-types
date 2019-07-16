@@ -175,7 +175,7 @@ Additionally, it must not appear on readonly attributes.
 When the extended attribute appears on an attribute, the setter for that attribute must run the following steps in place of the ones specified in their description:
 
  1. If [=relevant global object=] has an [=associated document=]:
-    1. Set *value* to the result of running the [$Get Trusted Type compliant string$] algorithm, with *input* being the new value, *expectedType* being the {{TrustedType}} extended attribute [=identifier=], and *document* being the [=relevant global object=]'s [=associated document=].
+    1. Set *value* to the result of running the [$Get Trusted Type compliant string$] algorithm, with *input* being the new value, *expectedType* being the {{TrustedType}} extended attribute identifier, and *document* being the [=relevant global object=]'s [=associated document=].
     1. If an exception was thrown, rethrow exception and abort further steps.
  1. Run the originally specified steps for this construct, using *value* as a new value to set.
 
@@ -184,7 +184,7 @@ Note: If the IDL attribute [=reflect/reflects=] a given content attribute, ident
 When the extended attribute appears on an [=operation=] argument, before its operation is invoked, run the following steps:
 
  1. If [=relevant global object=] has an [=associated document=]:
-    1. Set the new argument value to the result of running the [$Get Trusted Type compliant string$] algorithm, with *input* being the argument value, *expectedType* being the {{TrustedType}} extended attribute [=identifier=], and *document* being the [=relevant global object=]'s [=associated document=].
+    1. Set the new argument value to the result of running the [$Get Trusted Type compliant string$] algorithm, with *input* being the argument value, *expectedType* being the {{TrustedType}} extended attribute identifier, and *document* being the [=relevant global object=]'s [=associated document=].
     1. If an exception was thrown, rethrow exception and abort further steps.
  1. Invoke the originally specified steps for the operation.
 
@@ -657,7 +657,7 @@ algorithms in other specifiactions, see [[#integrations]].
 
 To create a {{TrustedTypePolicy}} in a {{TrustedTypePolicyFactory|factory}},
 given a DOMString (|policyName|), policy options dictionary (|options|), and a
-<a>global object</a> (|global|) run these steps:
+[=Realm/global object=] (|global|) run these steps:
 
 1.  Let |allowedByCSP| be the result of executing [$Should Trusted Type policy
     creation be blocked by Content Security Policy?$] algorithm with |global|,
@@ -938,11 +938,11 @@ partial interface mixin HTMLScriptElement : HTMLElement {
 
 Additionally, this document defines [$insert text node validation steps$] for {{HTMLScriptElement}} to ascertain that text nodes inserted to {{HTMLScriptElement}} elements will satisfy Trusted Types restrictions:
 
-1.  Let |disposition| be |parent|’s {{document}}'s {{TrustedTypeConfiguration}}'s
+1.  Let |disposition| be |parent|’s [=Node/node document=]'s {{TrustedTypeConfiguration}}'s
     {{TrustedTypeConfiguration/domSinks}}.
 1.  If |disposition| is `“unsafe-allow”`, abort the following steps.
 1.  Let |text| be |node|'s [=child text content=].
-1.  Let |convertedText| be the result of running [$Get Trusted Type compliant string$], passing |parent|'s {{document}} as *document*, {{TrustedScript}} as *expectedType* and |text| as input.
+1.  Let |convertedText| be the result of running [$Get Trusted Type compliant string$], passing |parent|'s [=Node/node document=] as *document*, {{TrustedScript}} as *expectedType* and |text| as input.
     If the algorithm threw an error, rethrow the error.
 1.  Set |node|'s data to |convertedText|.
 
@@ -1094,12 +1094,12 @@ returns `"Blocked"` if the [=injection sink=] requires a [=Trusted Type=], and
 `"Allowed"` otherwise.
 
 1.  Let |result| be `"Allowed"`.
-1.  For each |policy| in |document|'s <a>global object</a>'s <a>CSP list</a>:
+1.  For each |policy| in |document|'s [=Realm/global object=]'s <a>CSP list</a>:
     1.  If |policy|'s <a>directive set</a> does not contain a <a>directive</a>
         which [=directive/name=] is `"trusted-types"`, skip to the next |policy|.
     1.  Let |violation| be the result of executing
         [[CSP#create-violation-for-global|Create a violation object for global, policy, and directive]] on the
-        <a>current settings object</a>'s <a>global object</a>, |policy| and
+        <a>current settings object</a>'s [=Realm/global object=], |policy| and
         `"trusted-types"`
 
         Issue: Populate the violation object here.
@@ -1110,7 +1110,7 @@ returns `"Blocked"` if the [=injection sink=] requires a [=Trusted Type=], and
 
 ### <dfn abstract-op>Should Trusted Type policy creation be blocked by Content Security Policy?</dfn> ### {#should-block-create-policy}
 
-Given a <a>global object</a> (|global|), a string (|policyName|) and a list of
+Given a [=Realm/global object=] (|global|), a string (|policyName|) and a list of
 strings (|createdPolicyNames|), this algorithm returns `"Blocked"` if the
 [=Trusted Type Policy=] should not be created, and `"Allowed"` otherwise.
 
@@ -1132,7 +1132,7 @@ strings (|createdPolicyNames|), this algorithm returns `"Blocked"` if the
     1.  If |reason| is an empty string, skip to the next |policy|.
     1.  Let |violation| be the result of executing
         [[CSP#create-violation-for-global|Create a violation object for global, policy, and directive]] on the
-        <a>current settings object</a>'s <a>global object</a>, |policy| and
+        <a>current settings object</a>'s [=Realm/global object=], |policy| and
         `"trusted-types"`
 
         Issue: Populate the violation object here, using |reason|.
