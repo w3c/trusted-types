@@ -104,7 +104,7 @@ string value in a way that could result in XSS if that value is untrusted.
 
 Examples of injection sinks include:
 
-  * Functions that parse & insert HTML strings into he document like
+  * Functions that parse & insert HTML strings into the document like
     [[DOM-Parsing#widl-Element-innerHTML|Element.innerHTML]] setter
   * Setters for {{Element}} attributes that accept a URL of the code to load
     like {{HTMLScriptElement/src!!attribute|HTMLScriptElement.src}}
@@ -174,17 +174,21 @@ Additionally, it must not appear on readonly attributes.
 
 When the extended attribute appears on an attribute, the setter for that attribute must run the following steps in place of the ones specified in their description:
 
- 1. If [=relevant global object=] has an [=associated document=]:
-    1. Set *value* to the result of running the [$Get Trusted Type compliant string$] algorithm, with *input* being the new value, *expectedType* being the {{TrustedType}} extended attribute [=identifier=], and *document* being the [=relevant global object=]'s [=associated document=].
+ 1. If [=context object=]'s [=relevant global object=] has a [=Window/trusted type policy factory=]:
+
+    Issue: Update when workers have TT.
+    1. Set |value| to the result of running the [$Get Trusted Type compliant string$] algorithm, with |input| being the new value, |expectedType| being the {{TrustedType}} extended attribute identifier, and |global| being the [=context object=]'s [=relevant global object=].
     1. If an exception was thrown, rethrow exception and abort further steps.
- 1. Run the originally specified steps for this construct, using *value* as a new value to set.
+ 1. Run the originally specified steps for this construct, using |value| as a new value to set.
 
 Note: If the IDL attribute [=reflect/reflects=] a given content attribute, identical steps should be performed when the content attribute is modified by JavaScript code e.g. via ''Element.setAttribute()'' function.
 
 When the extended attribute appears on an [=operation=] argument, before its operation is invoked, run the following steps:
 
- 1. If [=relevant global object=] has an [=associated document=]:
-    1. Set the new argument value to the result of running the [$Get Trusted Type compliant string$] algorithm, with *input* being the argument value, *expectedType* being the {{TrustedType}} extended attribute [=identifier=], and *document* being the [=relevant global object=]'s [=associated document=].
+ 1. If [=context object=]'s [=relevant global object=] has a [=Window/trusted type policy factory=]:
+
+    Issue: Update when workers have TT.
+    1. Set the new argument value to the result of running the [$Get Trusted Type compliant string$] algorithm, with |input| being the argument value, |expectedType| being the {{TrustedType}} extended attribute identifier, and |global| being the [=context object=]'s [=relevant global object=].
     1. If an exception was thrown, rethrow exception and abort further steps.
  1. Invoke the originally specified steps for the operation.
 
@@ -210,8 +214,6 @@ will never change during its lifetime.
 
 To stringify a TrustedHTML object, return the DOMString from its
 `[[Data]]` internal slot.
-
-Issue(WICG/trusted-types#95): Add TrustedHTML.EMPTY.
 
 ### <dfn type>TrustedScript</dfn> ### {#trusted-script}
 
@@ -284,8 +286,6 @@ will never change during its lifetime.
 To stringify a TrustedURL object, return the USVString from its
 `[[Data]]` internal slot.
 
-Issue(WICG/trusted-types#104): Consider adding new set of types, e.g. related to CSS.
-
 ## Policies ## {#policies}
 
 Trusted Types can only be created via user-defined
@@ -318,7 +318,7 @@ instances is security-critical. To allow for strict control over Trusted Type
 object creation we don't expose the constructors of those
 directly, but require policy usage.
 
-There can be multiple policies for a document, allowing the
+Multiple policies can be created in a given [=Realm=], allowing the
 applications to define different rules for different parts of the
 codebase.
 
@@ -405,27 +405,27 @@ reference - see [[#extensions-to-the-window-interface]].
 };
 </pre>
 
-Internal slot `[[PolicyMap]]` contains a map, with each map entry
-being a pair of a policy name (DOMString key) and the
-TrustedTypePolicy (value).
+Internal slot `[[DefaultPolicy]]` may contain a {{TrustedTypePolicy}} object,
+and is initially empty.
 
-Internal slot `[[Configuration]]` stores the {{TrustedTypeConfiguration}}
-to be applied for documents the factory is created for.
+Internal slot `[[CreatedPolicyNames]]` is an <a>ordered set</a> of strings,
+initially empty.
 
 <div dfn-type="method" dfn-for="TrustedTypePolicyFactory">
 
 :   <dfn>createPolicy(policyName, policyOptions)</dfn>
 ::  Creates a uniquely named policy object that will implement the rules
-    passed in the {{TrustedTypePolicyOptions}} object. Allowed policy names
-    may be restricted by the [=Trusted-Types HTTP Response Header=] - if that
+    passed in the {{TrustedTypePolicyOptions}} object.
+    Allowed policy names may be restricted by the response header - if that
     is present, and the policy name is not on the whitelist defined in the
     header, the policy creation fails with a [[WebIDL-1#idl-Error|TypeError]].
-    Also, if createPolicy is called more than once with any given policyName,
+    Also, if unique policy names are enforced (i.e. `trusted-types *` is not used),
+    and `createPolicy` is called more than once with any given `policyName`,
     policy creation fails with a TypeError.
 
     <div class="example" id="create-policy-example">
     <xmp highlight=js>
-    // HTTP Response header: Trusted-Types: "foo"
+    // HTTP Response header: Content-Security-Policy: trusted-types foo
     TrustedTypes.createPolicy("foo", {}); // ok.
     TrustedTypes.createPolicy("bar", {}); // throws - name not on the whitelist.
     TrustedTypes.createPolicy("foo", {}); // throws - duplicate name.
@@ -436,14 +436,18 @@ to be applied for documents the factory is created for.
     with the following arguments:
     <dl>
     <dt>factory</dt>
-    <dd>[[DOM#context-object|context object]]</dd>
+    <dd>[=context object=]</dd>
     <dt>policyName</dt>
-    <dd>policyName</dt>
+    <dd>|policyName|</dt>
+    <dt>options</dt>
+    <dd>|policyOptions|</dd>
+    <dt>global</dt>
+    <dd>[=context object=]'s [=relevant global object=]</dd>
     </dl>
 
 : <dfn>getPolicyNames()</dfn>
-::  Returns a new list, comprising of all keys of the `[[PolicyMap]]`
-    internal slot map.
+::  Returns a new list, comprising of all entries  of the
+    `[[CreatedPolicyNames]]` slot.
 
 : <dfn>isHTML(value)</dfn>
 :: Returns true if value is an instance of {{TrustedHTML}} and has its `[[Data]]`  internal slot set, false otherwise.
@@ -612,7 +616,7 @@ callback CreateScriptURLCallback = USVString (DOMString input);
 
 *This section is not normative.*
 
-One of the policies, the "default" policy, is special; while all other
+One of the policies, the `default` policy, is special; while all other
 policies have to be called explicitly to create a TrustedType object,
 the default policy can also be called implicitly by the user agent. It
 allows the application to define the rules that should be run as a
@@ -636,274 +640,62 @@ the default policy is applied.
 
 ## <dfn>Enforcement</dfn> ## {#enforcement-hdr}
 
-This section describes how applications may require [=Trusted Types=] values for
-their [=injection sinks=] via specifying a HTTP response header, and what
-actions should be undertaken if a string value is used instead.
-
 Note: Enforcement is the process of checking that a value
 has an appropriate type before it reaches an [=injection sink=].
 
-Note: Most of the enforcement rules are defined as modifications of the algorithms
-in other specifiactions, see [[#integrations]].
+While the JavaScript API that allows authors to create Trusted Types is always
+available (via {{Window/TrustedTypes}}), the enforcement is optional.
+Applications may opt-in to require [=Trusted Types=] values for their [=injection sinks=]
+via [[CSP#policy-delivery|configuring a Content-Security-Policy]]. This document defines a new [=trusted-types-directive|trusted-types=]
+Content Security Policy directive controlling that behavior.
 
-### TrustedTypeConfiguration ### {#trusted-type-configuration-hdr}
+This allows the authors to prepare their applicaiton for enforcing Trusted Types
+via using the {{CSP#csp-ro|Content-Security-Report-Only}} HTTP Response header.
 
-A Trusted Type Configuration defines [=enforcement=] setting for
-[=Trusted Types=] and restrictions on policy names that can be applied
-to a {{Document}}.
-
-<pre class="idl">
-enum StringAtSinkDisposition {
-  "reject",
-  "report",
-  "unsafe-allow",
-};
-
-enum UnknownPolicyNameDisposition {
-  "reject",
-  "allow",
-};
-
-dictionary TrustedTypeConfiguration {
-  UnknownPolicyNameDisposition unknownPolicyName = "allow";
-  StringAtSinkDisposition? domSinks;
-  sequence&lt;DOMString> allowedNames;
-  DOMString reportingGroup = "default";
-};
-</pre>
-
-Each Trusted Type Configuration has an associated
-{{StringAtSinkDisposition|string at sink disposition}}
-(for all DOM sinks).
-It is either “reject”, “report” or “unsafe-allow”.
-
-Each Trusted Type Configuration has an associated
-{{UnknownPolicyNameDisposition|unknown policy name disposition}},
-which is either “reject” or “allow”.
-
-Each Trusted Type Configuration has an associated allowed policy names set.
-
-Each Trusted Type Configuration has a related reporting group name.
-
-Issue(WICG/trusted-types#36): Decide if it should be possible from JS to determine if types are enforced without resorting to `try {} catch`.
-
-### <dfn http-header>Trusted-Types</dfn> HTTP Response Header ### {#trusted-types-http-header}
-
-Issue(WICG/trusted-types#1): In the current Chromium implementation, the enforcement mechanism is
-configured in the `Content-Security-Policy` header (instead of `Trusted-Types`), with slightly different syntax. See [explainer](https://github.com/WICG/trusted-types#limiting-policies) and [platform test files](https://github.com/web-platform-tests/wpt/tree/master/trusted-types).
-
-Issue: +mkwst The header does not appear in the origin trials.  Can
-the spec differ so much from the implementation, especially given the
-upcoming Origin Trials?
-
-The <dfn>Trusted-Types HTTP response header</dfn> instructs the user agent
-to apply a particular configuration of the Trusted Types framework to
-the document created from a given response. Specifically, the header
-value defines which policies (identified by name) can be created by
-the application, and what should be the behavior when a string value
-is passed to an [=injection sink=] (e.g. should the type-based enforcement be
-enabled, or whether to attempt implicit conversion with a default
-policy).
-
-The header value is a serialized Trusted Types configuration
-represented by the following ANBF:
-
-<xmp highlight="abnf">
-TRUSTEDTYPES = json-field-value
-</xmp>
-
-The header’s value is interpreted as a JSON-formatted array of values
-without the outer `[` and `]`, as described in Section 4 of
-[[HTTP-JFV]].
-
-Note: The header syntax is tailored to making a secure configuration
-simple, while allowing explicit change towards less strict
-configurations possible.
-
-<div class="example" id="whitelist-of-policy-names-in-header">
-Types are enforced at sinks, and only policies name “one” and “two”
-may be created.
-
-<pre class="http">
-Trusted-Types: "one", "two"
-</pre>
-</div>
-
-<div class="example" id="header-that-allows-no-policy-names">
-A value of `null` indicates policies may not be created, and sinks are
-enforced.  I.e. no [=injection sinks=] can be used in a document.
-
-<pre class="http">
-Trusted-Types: null
-</pre>
-</div>
-
-A policy named `"*"` makes it possible to create policies with any
-previously unused name.
-
-<div class="example" id="wildcard-policy-name-in-header">
-<pre class="http">
-Trusted-Types: "*"
-</pre>
-</div>
-
-If the policy named `“default”` is present in the list, it refers to the
-[=default policy=], and unless otherwise configured,
-all strings passed to [=injection sinks=] will be passed through it instead
-of being rejected outright.
-
-<div class="example" id="default-in-header">
-<pre class="http">
-Trusted-Types: "one", "two", "default"
-</pre>
-</div>
-
-To specify more fine-grained control over the enforcement, authors can
-use a header value that is an object. That object allows for configuring the
-enforcement for the [=injection sinks=].
-
-<div class="example" id="complex configuration-in-header">
-Only reports violations in [=injection sinks=], but allow strings passed to them
-(similar to Content-Security-Policy-Report-Only).
-<pre class="http" id="string-at-sink-disposition-in-header">
-Trusted-Types: "*", {"dom”: "unsafe-allow"}
-</pre>
-
-Report violations using a “trustedtypes” reporting group.
-<pre class="http" id="reporting-group-in-header">
-Trusted-Types: "*", {"report": "trustedtypes"}
-</pre>
-
-Explicitly specify that a string passed to an [=injection sink=] requiring
-any Trusted Type should be rejected.  This is the default behavior if the
-header is present.
-<pre class="http" id="unknown-policy-name-disposition-in-header">
-Trusted-Types: "*", {"dom": "reject"}
-</pre>
-</div>
-
-Issue(WICG/trusted-types#66): Decide if separate per-type enforcement settings should be exposed to the authors.
-
-Issue: it seems to be the case that one object is allowed and it should
-appear last, it cannot contain an allowedNames property and the allowedNames
-set should be the string values.  Clarify.
-
-Issue: maybe treat a string as a configuration that is equivalent to a
-configuration that allows just that name and which has the default values
-for the other properties and allow `{"allowedNames":[...],...}`.
-This would enable a use case where migrating one tool at a time by having
-some policies that are report-only and others that are enforced.
-
-Issue: if so, need example of 2 disjoint allowed name sets with different
-configurations.
-
-Issue: what happens if there are 2 configurations with overlapping
-allowed name sets?
-
-Issue: does a single configuration with an unknown policy name disposition
-of "allow" govern all policy names that appear in no other configuratons.
-
-
-
-### Violation ### {#violation}
-
-A violation represents an action which is disallowed by the
-{{TrustedTypeConfiguration}} objects associated with the {{Document}}.
-
-Issue: how does this relate to webappsec-csp/[=Violation=]?
-
-Issue: TODO: Describe the properties of the violation
-Each violation has a configuration , which is a Trusted Type Configuration.
-Each violation has a global object , which is a global object.
-
-Issue: TODO(mkwst): How to serialize? CSP3 has no serialization defined for
-the violation object, although reporting assumes the object should be
-serializable.
-
-
-### Reporting ### {#reporting}
-
-Issue: How does a policy violation get reported (both at the sink
-level, and when creating a policy).
+Note: Most of the enforcement rules are defined as modifications of the
+algorithms in other specifiactions, see [[#integrations]].
 
 # Algorithms # {#algorithms}
 
 ## Policies ## {#policy-algorithms}
 
-### <dfn abstract-op>Initialize policy factory</dfn> ### {#initialize-policy-factory-algorithm}
-
-To initialize a {{TrustedTypePolicyFactory|Trusted Type Factory}} with a
-{{TrustedTypeConfiguration}} run these steps:
-
-1.  Let *factory* be a new {{TrustedTypePolicyFactory}} object, with an empty `[[PolicyMap]]` map.
-1.  Set the *factory*'s `[[Configuration]]` internal slot to *configuration*.
-1.  Return *factory*.
-
-Issue: does configuration need to be defensively copied.
-
 ### <dfn abstract-op>Create a Trusted Type Policy</dfn> ### {#create-trusted-type-policy-algorithm}
 
-To create a {{TrustedTypePolicy}} in a {{TrustedTypePolicyFactory|factory}},
-given a DOMString (*policyName*) and policy options dictionary (*options*), run these steps:
+To create a {{TrustedTypePolicy}}, given a {{TrustedTypePolicyFactory}} (|factory|),
+a string (|policyName|), {{TrustedTypePolicyOptions}} dictionary (|options|), and a
+[=Realm/global object=] (|global|) run these steps:
 
-1.  If *factory*'s `[[PolicyMap]]` internal slot has an entry with the key
-    `policyName`, then throw a {{TypeError}}.
-1.  Let *policyAllowed* be the result of running [$Is policy name allowed$] algorithm.
-1.  If *policyAllowed* is False, throw a {{TypeError}}.
-1.  Let *policy* be a new {{TrustedTypePolicy}} object.
-1.  Set policy's `name` property value to *policyName*.
-1.  Let *policyOptions* be a new {{TrustedTypePolicyOptions}} object.
-1.  Set *policyOptions*
-    {{TrustedTypePolicy/createHTML(input)|createHTML}} property to *option*'s
+1.  Let |allowedByCSP| be the result of executing [$Should Trusted Type policy
+    creation be blocked by Content Security Policy?$] algorithm with |global|,
+    |policyName| and |factory|'s `[[CreatedPolicyNames]]` slot value.
+1.  If |allowedByCSP| is `"Blocked"`, throw a {{TypeError}} and abort further steps.
+
+    Issue: Populate TypeError.
+1.  Let |policy| be a new {{TrustedTypePolicy}} object.
+1.  Set |policy|'s `name` property value to |policyName|.
+1.  Let |policyOptions| be a new {{TrustedTypePolicyOptions}} object.
+1.  Set |policyOptions|
+    {{TrustedTypePolicy/createHTML(input)|createHTML}} property to |option|'s
     {{TrustedTypePolicyOptions/createHTML|createHTML}} property value.
-1.  Set *policyOptions* {{TrustedTypePolicy/createScript()|createScript}}
-    property to *option*'s
+1.  Set |policyOptions| {{TrustedTypePolicy/createScript()|createScript}}
+    property to |option|'s
     {{TrustedTypePolicyOptions/createScript|createScript}} property value.
-1.  Set *policyOptions* {{TrustedTypePolicy/createScriptURL()|createScriptURL}}
-    property to *option*'s
+1.  Set |policyOptions| {{TrustedTypePolicy/createScriptURL()|createScriptURL}}
+    property to |option|'s
     {{TrustedTypePolicyOptions/createScriptURL|createScriptURL}} property value.
-1.  Set *policyOptions* {{TrustedTypePolicy/createURL()|createURL}}
-    property to *option*'s
+1.  Set |policyOptions| {{TrustedTypePolicy/createURL()|createURL}}
+    property to |option|'s
     {{TrustedTypePolicyOptions/createURL|createURL}} property value.
-1.  Set *policy*'s `[[options]]` internal slot value to *policyOptions*.
-1.  Set the value for the *policyName* entry of *factory*'s `[[PolicyMap]]` to *policy*.
-1.  Return *policy*.
-
+1.  Set |policy|'s `[[options]]` internal slot value to *policyOptions*.
+1.  If the |policyName| is `default`, set the |factory|'s `[[DefaultPolicy]]` slot value to |policy|.
+1.  Append |policyName| to |factory|'s `[[CreatedPolicyNames]]`.
+1.  Return |policy|.
 
 ### <dfn abstract-op>Get default policy</dfn> ### {#get-default-policy-algorithm}
-To get the [=default policy=] for a *factory*, execute the following steps:
+To get the [=default policy=] for a {{TrustedTypePolicyFactory}} (|factory|), execute the following steps:
 
-1.  Set *policyName* to `"default"`.
-1.  If *factory*'s `[[PolicyMap]]` internal slot does not have an entry
-    with the key *policyName*, return `null`.
-1.  Otherwise, return the value of the *policyName* entry of
-    *factory*'s `[[PolicyMap]]`.
-
-
-### <dfn abstract-op>Is policy name allowed</dfn> ### {#is-policy-name-allow-algorithm}
-
-Let *policyName* and *factory* be the same variables as those of the
-same name in the algorithm that invoked these steps.
-
-1.  Let *configuration* be the value of *factory*'s internal
-    `[[Configuration]]` slot.
-1.  If *configuration*'s
-    {{TrustedTypeConfiguration/unknownPolicyName|unknownPolicyName}}'s
-    is `"allow"`, return true.
-1.  Otherwise, if *factory*'s `[[Configuration]]`'s
-    {{TrustedTypeConfiguration/allowedNames|allowedNames}} set
-    contains *policyName*, return true.
-1.  Return false.
-
-
-### <dfn abstract-op>Is a default policy</dfn> ### {#is-default-policy-algorithm}
-
-Let *policyName* be the same variable as that of the same name in the
-algorithm that invoked these steps.
-
-1.  If *policyName* equals `"default"`, return true.
-1.  Otherwise, return false.
-
+1.  Return the value of |factory|'s `[[DefaultPolicy]]` slot
+    (null if the slot is empty).
 
 ### <dfn abstract-op>Create a Trusted Type</dfn> ### {#create-a-trusted-type-algorithm}
 
@@ -952,150 +744,47 @@ and a string |value|, execute the following steps:
 
 ## Enforcement ## {#enforcement-algorithms}
 
-### <dfn abstract-op>Obtain a Trusted Type Configuration for a response</dfn> ### {#obtain-a-trusted-type-configuration-for-a-response-algorithm}
-
-This algorithm parses the [=Trusted-Types HTTP Response Header=] from
-the response as a [[HTTP-JFV]] value and creates a configuration
-object.  The header value consists of a list of values.
-Every string value is assumed to be an
-{{TrustedTypeConfiguration/allowedNames|allowed policy name}},
-and the presence of the header by default
-[=enforcement|enforces=] the types at every sink type.
-
-Given a {{Response}} (|response|), perform the following steps:
-
-1.  Let |config| be a new {{TrustedTypeConfiguration}}.
-1.  Let |defaultSinkDisposition| be `“unsafe-allow”`.
-1.  Let |hasWildcardPolicy| be true
-1.  Let |header| be the value of the header in |response|’s <a>header list</a>
-    whose name is `“Trusted-Types”`
-1.  Let |list| be the result of executing the algorithm defined in
-    Section 4 of [[HTTP-JFV]] on |header|. If that algorithm results
-    in an error, abort these steps.
-
-    Issue: A trailing comma should not disable enforcement.  Do we
-    need to leave the document in a locked down state?
-    Maybe set *config*.domSinks to "reject" and return *config*.
-1.  If |list| is not empty, then set |hasWildcardPolicy| to false and set
-    defaultSinkDisposition to `“reject”`.
-1.  For each |item| in |list|:
-    1.  If |item| is a <a href="https://tools.ietf.org/html/rfc8259#section-7">string</a> :
-        1.  If |item| is equal to `“*”`, then set |hasWildcardPolicy| to true.
-        1.  Otherwise, add |item| to |config|'s
-            {{TrustedTypeConfiguration/allowedNames|allowedNames}} set.
-    1.  Otherwise, if |item| is an
-        <a href="https://tools.ietf.org/html/rfc8259#section-4">object</a>,
-        for each |name| → |value| of |item|, execute the following steps:
-        1.  Let |propertyName| be the result of running |=ASCII lowercase=| on |name|.
-        1.  Execute the first statement, switching on |propertyName|:
-            1.  case `“dom”`:
-                If value is a valid {{StringAtSinkDisposition}}, set
-                |defaultSinkDisposition| to that value. Otherwise, throw
-                an error.
-            1.  case `“report”`:
-                If value is a
-                <a href="https://tools.ietf.org/html/rfc8259#section-7">string</a>,
-                set |config|'s
-                {{TrustedTypeConfiguration/reportingGroup|reportingGroup}}
-                to that value.
-                Otherwise, throw an error.
-            1.  Otherwise, continue.
-    1.  Otherwise, throw an error.
-1.  If |hasWildcardPolicy| is false, then set |config|'s
-    {{TrustedTypeConfiguration/unknownPolicyName}} to `“reject”`.
-1.  If |config|’s {{TrustedTypeConfiguration/domSinks|domSinks}} is `null`,
-    set |config|’s domSinks to |defaultSinkDisposition|’s value.
-1.  Return |config|.
-
-
 ### <dfn abstract-op>Get Trusted Type compliant string</dfn> ### {#get-trusted-type-compliant-string-algorithm}
 
 This algorithm will return a string that can be assigned to a DOM
 [=injection sink=], optionally unwrapping it from a matching [=Trusted Type=].
 It will ensure that the Trusted Type [=enforcement=] rules were respected.
 
-Given a {{TrustedType}} type (|expectedType|), a {{Document}}
-(|document|), and a {{TrustedType}} (|input|) run these steps:
+Given a {{TrustedType}} type (|expectedType|), a  [=Realm/global object=] (|global|),
+and a {{TrustedType}} or a string (|input|) run these steps:
 
-1.  Let |disposition| be |document|’s {{TrustedTypeConfiguration}}'s
-    {{TrustedTypeConfiguration/domSinks}}.
-1.  If |disposition| is `“unsafe-allow”`, return stringified |input| and abort these steps.
+1.  Assert: |global| is a {{Window}}.
+
+    Issue: Synchronize when TT are added to workers (perhaps use "has a CSP list"?)
+1.  Let |sink| be an empty string.
+
+    Issue: Get the sink from the callers.
+1.  Let |cspList| be the |global|'s <a>CSP list</a>.
+1.  If |cspList| does not contain a [[CSP3#content-security-policy-object|policy]]
+    which <a>directive set</a> containing a [[CSP3#directives|directive]] with a name `"trusted-types"`,
+    return stringified |input| and abort these steps.
 1.  If |input| has type |expectedType|, return stringified
     |input| and abort these steps.
 1.  Otherwise, execute the following steps:
     1.  Let |defaultPolicy| be the result of executing
-        [$Get default policy$] algorithm on |document|’s
-        [[HTML5#concept-document-bc|browsing context]]'s {{Window}}
-        object.
-    1.  If |defaultPolicy| is `null`, abort these steps.
-
-        Issue: Do we need some "resume below" language?
+        [$Get default policy$] algorithm on |global|'s [=Window/trusted type policy factory=].
+    1.  If |defaultPolicy| is `null`, abort these steps and resume below.
     1.  Let |convertedInput| be the result of executing [$Create a
         Trusted Type$] algorithm, with the following arguments:
         *  |defaultPolicy| as |policy|
         *  |input| as |value|
         *  |expectedType|’s type name as |trustedTypeName|
-    1.  If |convertedInput| is an error, then return error and abort the following steps.
+    1.  If |convertedInput| is an error, abort the following steps.
     1.  If |convertedInput| has type |expectedType|, then return
         stringified |convertedInput| and abort the following steps.
     1.  Set |input| to |convertedInput|’s value.
-1.  Execute [$Report sink type mismatch violation$] algorithm.
-1.  If |disposition| is `“report”`, then return stringified |input| and abort these steps.
+1.  Let |disposition| be the result of executing [$Should sink type mismatch violation be blocked by Content Security Policy?$] algorithm,
+    passing |global|, |input| as |source|, and |sink|.
+1.  If |disposition| is `“Allowed”`, then return stringified |input| and abort these steps.
 1.  Throw a {{TypeError}}.
 
-### <dfn abstract-op>Enforce a Trusted Type</dfn> ### {#enforce-a-trusted-type-algorithm}
+    Issue: Populate the TypeError object.
 
-Enforce a Trusted Type algorithm describes a modification to the [=injection sinks=],
-asserting that the input meets [=Trusted Type=]
-restrictions set for the current {{Document}}.  It accepts an input
-value that the original function would and will optionally
-pass-through to the original function -- all original arguments to the
-function apart from input are passed through without modification.
-
-Given |input| and |expectedType|, perform the following steps.
-
-1.  Let |compliantValue| be the result of executing [$Get Trusted Type
-    compliant string$] algorithm with
-    *  |document| being the current {{Document}}
-    *  |input|
-    *  |expectedType|
-
-1.  If the previous algorithm throws an exception, rethrow the exception,
-    and abort these steps.
-
-    Issue: can we use "|compliantValue| is an error" language here?
-
-1.  Execute the original function with |compliantValue| instead of the
-    original value.  If the original functions accepts other
-    arguments, pass-them through to the original function.  Return the
-    result.
-
-### <dfn abstract-op>Create a Violation for</dfn> ### {#create-a-violation-for-algorithm}
-
-Issue: TODO: write and link to it
-
-### <dfn abstract-op>Report sink type mismatch violation</dfn> ### {#report-sink-type-mismatch-violation-algorithm}
-
-Issue: Check that this algorithm is complete.
-
-Given a [[#violation|violation]] (|violation|), this algorithm reports
-it to the {{TrustedTypeConfiguration/reportingGroup|endpoint}}
-specified in the |violation|’s {{TrustedTypeConfiguration|configuration
-object}}.
-
-1.  Enqueue a task to run the following steps:
-    1.  Let |group| be |violation|’s configuration's
-        {{TrustedTypeConfiguration/reportingGroup}}.
-    1.  Let |settings| be |violation|’s [[CSP3#violation-global-object|global object]]’s
-        relevant settings object.
-    1.  Execute [[REPORTING#queue-report|Queue data as type for endpoint group on settings algorithm]]
-        with the following arguments:
-        *  <var ignore>data</var> = |violation|
-        *  <var ignore>type</var> = `“trusted-types”`
-        *  <var ignore>endpoint group</var> = |group|
-        *  |settings| = |settings|
-
-        Note: The optional <var ignore>url</var> parameter is not provided.
 
 # Integrations # {#integrations}
 
@@ -1120,36 +809,10 @@ This already caused problems in the polyfill.
 
 ## Integration with HTML ## {#integration-with-html}
 
-{{Window}} objects have a {{Window/TrustedTypes|trusted type policy factory}},
+{{Window}} objects have a <dfn for="Window">trusted type policy factory</dfn>,
 which is a {{TrustedTypePolicyFactory}} object.
 
-{{Document}} objects have a trusted type configuration,
-which is a {{TrustedTypeConfiguration}} object.
-
-
-### <dfn abstract-op>Initialize a Document’s trusted type configuration algorithm</dfn> ### {#initialize-a-documents-trusted-type-configuration-algorithm}
-
-This algorithm should be executed during the
-[[HTML5#initialise-the-document-object|Initializing a new Document
-object]] algorithm.
-
-Given a {{Document}} (*document*), a
-[[HTML5#concept-document-bc|browsing context]] (*browsingContext*) and
-a [[Fetch#response-class|response]] (*response*), the user agent performs the
-following steps in order to initialize
-[[#integration-with-html|*document*'s TrustedTypePolicyConfiguration]]:
-
-1.  Let *configuration* be the result of executing the [$Obtain a Trusted
-    Type Configuration for a response$] algorithm on *response*. If that
-    algorithm results in an error, abort these steps.
-1.  Set [[#integration-with-html|*document*'s TrustedTypePolicyConfiguration]]
-    to *configuration*.
-1.  Let *factory* be the result of executing the [$Initialize policy
-    factory$] algorithm on *configuration*.
-1.  Set *browsingContext*’s {{WindowProxy}} object's {{Window/TrustedTypes}}
-    attribute to *factory*.
-
-
+Issue: Define for workers.
 
 ### Extensions to the Window interface ### {#extensions-to-the-window-interface}
 
@@ -1168,8 +831,7 @@ partial interface mixin Window {
 </pre>
 
 {{Window/TrustedTypes}} returns the [[#integration-with-html|trusted
-type policy factory]] of the current {{Window}}, if the current Window
-has a trusted type policy factory, or `null` otherwise.
+type policy factory]] of the current {{Window}}.
 
 ### Extensions to the Document interface ### {#extensions-to-the-document-interface}
 
@@ -1272,7 +934,7 @@ partial interface HTMLTrackElement : HTMLElement {
 
 ### Enforcement for script text contents ### {#enforcement-in-script-text}
 
-This document modifies how {{HTMLScriptElement}} [=child text content=] can be set to allow documents to control dynamically created scripts. It does so by
+This document modifies how {{HTMLScriptElement}} [=child text content=] can be set to allow applications to control dynamically created scripts. It does so by
 adding the {{HTMLElement/innerText}} and {{Node/textContent}} attributes directly on {{HTMLScriptElement}}. The behavior of the attributes remains the same
 as in their original counterparts, apart from additional behavior triggered by the {{TrustedTypes}} extended attribute presence.
 
@@ -1285,15 +947,14 @@ partial interface mixin HTMLScriptElement : HTMLElement {
 
 Additionally, this document defines [$insert text node validation steps$] for {{HTMLScriptElement}} to ascertain that text nodes inserted to {{HTMLScriptElement}} elements will satisfy Trusted Types restrictions:
 
-1.  Let |disposition| be |parent|’s {{document}}'s {{TrustedTypeConfiguration}}'s
-    {{TrustedTypeConfiguration/domSinks}}.
-1.  If |disposition| is `“unsafe-allow”`, abort the following steps.
 1.  Let |text| be |node|'s [=child text content=].
-1.  Let |convertedText| be the result of running [$Get Trusted Type compliant string$], passing |parent|'s {{document}} as *document*, {{TrustedScript}} as *expectedType* and |text| as input.
+1.  Let |convertedText| be the result of running [$Get Trusted Type compliant string$], passing |parent|'s [=relevant global object=] as |global|, {{TrustedScript}} as |expectedType| and |text| as |input|.
     If the algorithm threw an error, rethrow the error.
+
+    Note: If Trusted Types are not enforced, this algorithm will return early and return |input| unmodified.
 1.  Set |node|'s data to |convertedText|.
 
-Note: This prevent calling ChildNode.after(aTrustedScript, ...), as the type information is lost before insert is run. To fix that, an additional metadata in Text nodes would be needed. Removed that use case for simplicity.
+Note: This prevents calling `ChildNode.after(aTrustedScript, ...)`, as the type information is lost before insert is run. To fix that, an additional metadata in Text nodes would be needed. Removed that use case for simplicity.
 
 ### Enforcement in timer functions ### {#enforcement-in-timer-functions}
 
@@ -1313,9 +974,9 @@ add this step between 7.1 and 7.2:
 
 1.  If the first operation argument is not a {{Function}}, or if the first operation argument is a {{TrustedType}}, set the first operation argument to the result of executing
     the [$Get Trusted Type compliant string$] algorithm, with
-    *   *document* set to the document of the method content proxy.
-    *   *input* set to the first method argument, and
-    *   *expectedType* set to {{TrustedScript}}.
+    *   |global| set to the [=context object=]'s [=relevant global object=].
+    *   |input| set to the first method argument, and
+    *   |expectedType| set to {{TrustedScript}}.
 
 Note: This makes sure that a {{TrustedScript}} is passed to timer
 functions in place of a string when Trusted Types are enforced, but
@@ -1328,11 +989,11 @@ This document modifies the
 
 At the beginning of step 5, insert the following steps:
 
-1.  Let *value* be the result of executing the
+1.  Let |value| be the result of executing the
     [$Get Trusted Type compliant string$] algorithm, with
-    *   *document* set to the owner document of *eventTarget*,
-    *   *input* set to *value*,
-    *   *expectedType* set to {{TrustedScript}}
+    *   |global| set to the |eventTarget|'s [=relevant global object=],
+    *   |input| set to |value|,
+    *   |expectedType| set to {{TrustedScript}}.
 1.  If the algorithm throws an error, abort these steps.
 
 ## Integration with DOM ## {#integration-with-dom}
@@ -1371,6 +1032,129 @@ interface DOMParser {
 
 ## Integration with Content-Security-Policy ## {#integration-with-content-security-policy}
 
+### <dfn lt="trusted-types-directive">trusted-types</dfn> directive ### {#trusted-types-csp-directive}
+
+This document defines *trusted-types* - a new [[CSP3#directives|Content Security Policy directive]].
+
+{{#trusted-types-directive|trusted-types}} directive configures the Trusted
+Types framework for all the [=injection sinks=] in a current [=Realm|realm=]. Specifically, it
+defines which policies (identified by name) can be created, and what should
+be the behavior when a string value is passed to an [=injection sink=]
+(i.e. should the type-based enforcement be enabled).
+
+The syntax for the directive's [=directive/name=] and [=directive/value=] is described by the following
+ABNF:
+
+<pre>
+directive-name = "trusted-types"
+directive-value = <a>serialized-tt-configuration</a>
+<dfn>serialized-tt-configuration</dfn> = ( <a>tt-expression</a> *( <a href="https://w3c.github.io/webappsec-csp/#grammardef-required-ascii-whitespace">required-ascii-whitespace</a> <a>tt-expression</a> ) )
+<dfn>tt-expression</dfn> = "*" / <a>tt-policy-name</a> ; In the future, add keywords
+<dfn>tt-policy-name</dfn> = 1*( %x21-%x26 / %x28-%x29 / %x2B / %x2D-%x3A / %x3C-%x7E )
+; Policy name can consist of any <a href="https://tools.ietf.org/html/rfc5234#appendix-B.1">VCHAR</a> character, apart from ";", ",", "*" and "'".
+</pre>
+
+<div class="example" id="whitelist-of-policy-names-in-header">
+Types are enforced at sinks, and only policies named “one” and “two”
+may be created.
+
+<pre class="http">
+Content-Security-Policy: trusted-types one two
+</pre>
+</div>
+
+<div class="example" id="header-that-allows-no-policy-names">
+An empty [=directive=] [=directive/value=] indicates policies may not be created,
+and sinks expect Trusted Type values.  I.e. no [=injection sinks=] can be used
+in a document.
+
+<pre class="http">
+Content-Security-Policy: trusted-types
+</pre>
+</div>
+
+Value `*` makes it possible to create policies with any
+previously unused name.
+
+<div class="example" id="wildcard-policy-name-in-header">
+<pre class="http">
+Content-Security-Policy: trusted-types *
+</pre>
+</div>
+
+If the policy named `default` is present in the list, it refers to the
+[=default policy=], and unless otherwise configured,
+all strings passed to [=injection sinks=] will be passed through it instead
+of being rejected outright.
+
+<div class="example" id="default-in-header">
+<pre class="http">
+Content-Security-Policy: trusted-types one two default
+</pre>
+</div>
+
+Issue(WICG/trusted-types#66): Decide if separate per-type enforcement settings should be exposed to the authors.
+
+### <dfn abstract-op>Should sink type mismatch violation be blocked by Content Security Policy?</dfn> ### {#should-block-sink-type-mismatch}
+
+Given a [=Realm/global object=] (|global|), a string (|sink|) and a string (|source|) this algorithm
+returns `"Blocked"` if the [=injection sink=] requires a [=Trusted Type=], and
+`"Allowed"` otherwise.
+
+1.  Let |result| be `"Allowed"`.
+1.  For each |policy| in |global|'s <a>CSP list</a>:
+    1.  If |policy|'s <a>directive set</a> does not contain a <a>directive</a>
+        which [=directive/name=] is `"trusted-types"`, skip to the next |policy|.
+    1.  Let |violation| be the result of executing
+        [[CSP#create-violation-for-global|Create a violation object for global, policy, and directive]]
+        on |global|, |policy| and `"trusted-types"`
+    1. Set |violation|'s [=violation/resource=] to `"trusted-types-sink"`.
+    1. Let |sample| be the result of [=concatenate|concatenating=] the list << |sink|, |source| >> using space (`"\x20"`) as a |separator|.
+    1. Set |violation|'s [=violation/sample=] to the substring of |sample|, containing its first 40 characters.
+    1.  Execute [[CSP#report-violation|Report a violation]] on |violation|.
+    1.  If |policy|'s [=policy/disposition=] is `"enforce"`, then set |result| to
+        `"Blocked"`.
+1. Return |result|.
+
+### <dfn abstract-op>Should Trusted Type policy creation be blocked by Content Security Policy?</dfn> ### {#should-block-create-policy}
+
+Given a [=Realm/global object=] (|global|), a string (|policyName|) and a list of
+strings (|createdPolicyNames|), this algorithm returns `"Blocked"` if the
+[=Trusted Type Policy=] should not be created, and `"Allowed"` otherwise.
+
+1.  Let |result| be `"Allowed"`.
+1.  For each |policy| in |global|'s <a>CSP list</a>:
+    1.  Let |createViolation| be false.
+    1.  If |policy|'s <a>directive set</a> does not contain a <a>directive</a>
+        which name is `"trusted-types"`, skip to the next |policy|.
+    1.  Let |directive| be the |policy|'s |directive set|'s [=directive=] which name
+        is `"trusted-types"`
+    1.  If |directive|'s [=directive/value=] contains a <a>tt-expression</a> which is a match
+        for a value `*`, skip to the next |policy|.
+
+        Note: `trusted-types *` allows authors to create policies with
+        duplicated names.
+    1.  If |createdPolicyNames| contains |policyName|, set |createViolation| to true.
+    1.  If |directive|'s [=directive/value=] does not contain a <a>tt-policy-name</a>,
+        which value is |policyName|, set |createViolation| to true.
+    1.  If |createViolation| is false, skip to the next |policy|.
+    1.  Let |violation| be the result of executing
+        [[CSP#create-violation-for-global|Create a violation object for global, policy, and directive]] on |global|, |policy| and
+        `"trusted-types"`
+    1. Set |violation|'s [=violation/resource=] to `"trusted-types-policy"`.
+    1. Set |violation|'s [=violation/sample=] to the substring of |policyName|, containing its first 40 characters.
+    1.  Execute [[CSP#report-violation|Report a violation]] on |violation|.
+    1.  If |policy|'s [=policy/disposition=] is `"enforce"`, then set |result| to
+        `"Blocked"`.
+1. Return |result|.
+
+### Violation object changes ### {#csp-violation-object-hdr}
+
+[=violation|Violation=] object [=violation/resource=] also allows `"trusted-types-policy"`
+and `"trusted-types-sink"` as values.
+
+### 'trusted-script' keyword ### {#trusted-script-csp-keyword}
+
 Note: See <a href="https://github.com/tc39/ecma262/issues/938">TC39/ecma262 issue #938</a>
 (adding the value to be compiled to algorithm parameters).
 
@@ -1408,25 +1192,21 @@ Given two [[ECMASCRIPT#realm|realms]] (|callerRealm| and
 <ins>the source string to compile</ins> if compilation is allowed, and
 throws an "`EvalError`" if not:
 
-1.  <ins>Let |document| be |calleeRealm|’s
-    [[HTML5#environment-settings-object|environment setting object]]'s
-    [[HTML5#responsible-document|responsible document]].</ins>
-
-2.  <ins>Let |sourceString| be the result of executing the
+1.  <ins>Let |sourceString| be the result of executing the
     [$Get Trusted Type compliant string$] algorithm, with:
-    *   |document| as |document|,
+    *   |calleeRealm| as |global|,
     *   |source| as |input|,
     *   {{TrustedScript}} as |expectedType|.</ins>
 
-3.  <ins>If the algorithm throws an error, throw an {{EvalError}}.</ins>
+2.  <ins>If the algorithm throws an error, throw an {{EvalError}}.</ins>
 
-4.  <ins>Let |isExempt| be the result of executing the [$IsSourceExempt$] algorithm with:
-    *   |document|’s {{TrustedTypeConfiguration}} as |ttConfig|.</ins>
+3.  <ins>Let |isExempt| be the result of executing the [$IsSourceExempt$] algorithm with:
+    *   |calleeRealm|’s {{CSP list}} as |cspList|.</ins>
 
-5.  Let |globals| be a list containing |calleeRealm|'s [=Realm/global object=] and |calleeRealm|'s
+4.  Let |globals| be a list containing |calleeRealm|'s [=Realm/global object=] and |calleeRealm|'s
     [=Realm/global object=].
 
-6.  For each |global| in |globals|:
+5.  For each |global| in |globals|:
 
     1.  Let |result| be "`Allowed`".
 
@@ -1463,7 +1243,7 @@ throws an "`EvalError`" if not:
 
     3.  If |result| is "`Blocked`", throw an `EvalError` exception.
 
-9. <ins>Return |sourceString|.</ins>
+6. <ins>Return |sourceString|.</ins>
 
 Note: returning |sourceString| means that the string that gets
 compiled is that returned by any [=default policy=] in the course of
@@ -1487,11 +1267,12 @@ error, it only reports it via its |calleeRealm|'s report-uri.
 
 ### <dfn abstract-op>IsSourceExempt</dfn> Algorithm ### {#is-source-exempt-algorithm}
 
-The IsSourceExempt algorithm takes a {{TrustedTypeConfiguration}}
-(|ttConfig|) and executes the following steps:
+The IsSourceExempt algorithm takes a {{CSP List}} (|cspList|) and executes
+the following steps:
 
-1.  If |ttConfig|'s {{TrustedTypeConfiguration/domSinks}} is
-    {{StringAtSinkDisposition|"reject"}} then return true.
+1.  If |cspList| contains a [[CSP3#content-security-policy-object|policy]] whose
+    <a>directive set</a> contains a [[CSP3#directives|directive]] with a name
+    `"trusted-types"`, return true.
 1.  Return false.
 
 Note: This checks whether Trusted Types enforcement would have rejected the
@@ -1535,10 +1316,10 @@ Issue: Refer to the external document on secure policy design.
 
 ## Vendor-specific Extensions and Addons ## {#vendor-specific-extensions-and-addons}
 
-Restriction imposed by the {{TrustedTypeConfiguration}} objects SHOULD
+Restriction imposed by Trusted Types SHOULD
 NOT interfere with the operation of user-agent features like addons,
 extensions, or bookmarklets. These kinds of features generally advance
 the user’s priority over page authors, as espoused in
 [[html-design-principles]]. Specifically, extensions SHOULD be able to pass strings
-to the DOM XSS [=injection sinks=] of the document without triggering [=default policy=]
-execution, [[#violation|violation]] generation, or the rejection of the value.
+to the DOM XSS [=injection sinks=] without triggering [=default policy=]
+execution, violation generation, or the rejection of the value.
