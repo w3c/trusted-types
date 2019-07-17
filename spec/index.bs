@@ -947,6 +947,7 @@ partial interface mixin HTMLScriptElement : HTMLElement {
 
 Additionally, this document defines [$insert text node validation steps$] for {{HTMLScriptElement}} to ascertain that text nodes inserted to {{HTMLScriptElement}} elements will satisfy Trusted Types restrictions:
 
+<<<<<<< HEAD
 1.  Let |text| be |node|'s [=child text content=].
 1.  Let |convertedText| be the result of running [$Get Trusted Type compliant string$], passing |parent|'s [=relevant global object=] as |global|, {{TrustedScript}} as |expectedType| and |text| as |input|.
     If the algorithm threw an error, rethrow the error.
@@ -955,6 +956,17 @@ Additionally, this document defines [$insert text node validation steps$] for {{
 1.  Set |node|'s data to |convertedText|.
 
 Note: This prevent calling `ChildNode.after(aTrustedScript, ...)`, as the type information is lost before insert is run. To fix that, an additional metadata in Text nodes would be needed. Removed that use case for simplicity.
+=======
+1.  Let |disposition| be |parent|’s {{document}}'s {{TrustedTypeConfiguration}}'s
+    {{TrustedTypeConfiguration/domSinks}}.
+1.  If |disposition| is `“unsafe-allow”`, abort the following steps.
+1.  Let |text| be |node|'s [=child text content=].
+1.  Let |convertedText| be the result of running [$Get Trusted Type compliant string$], passing |parent|'s {{document}} as *document*, {{TrustedScript}} as *expectedType* and |text| as input.
+    If the algorithm threw an error, rethrow the error.
+1.  Set |node|'s data to |convertedText|.
+
+Note: This prevent calling ChildNode.after(aTrustedScript, ...), as the type information is lost before insert is run. To fix that, an additional metadata in Text nodes would be needed. Removed that use case for simplicity.
+>>>>>>> master
 
 ### Enforcement in timer functions ### {#enforcement-in-timer-functions}
 
