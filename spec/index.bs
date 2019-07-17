@@ -144,8 +144,8 @@ value is indeed *safe*.
 Note: This allows the authors to specify the intention when creating a given
 value, and the user agents to introduce checks based on the type of
 such value to preserve the authors' intent. For example, if the
-authors intends a value to be used as a URL of an image, an attempt to
-load a script from that URL would fail.
+authors intends a value to be used as an HTML snippet, an attempt to
+load a script from that value would fail.
 
 Note: All Trusted Types wrap over an immutable string, specified when the
 objects are created. These objects are unforgable in a sense that
@@ -159,39 +159,6 @@ Trusted Types in place of DOM strings (it's possible to start
 producing types in parts of the application, while still using and
 accepting strings in other parts of the codebase). In that sense,
 Trusted Types are backwards-compatible with the regular DOM APIs.
-
-### TrustedTypes extended attribute ### {#!trustedtypes-extended-attribute}
-
-To ensure that Trusted Types are required in DOM property setters [=injection sinks=], we introduce
-<dfn data-dfn-type="extended-attribute" data-x="TrustedTypes" data-lt="TrustedTypes"><code>[TrustedTypes]</code></dfn>
-IDL [=extended attributes|extended attribute=]. It indicates that the relevant setter algorithm is to be supplemented with additional
-enforcing steps.
-
-The {{TrustedTypes}} extended attribute [=extended attribute/takes an identifier=] as an argument.
-The only valid values for the identifier are {{TrustedHTML}}, {{TrustedScript}}, {{TrustedScriptURL}} or {{TrustedURL}}.
-This extended attribute must not appear on anything other than an attribute or an [=operation=] argument.
-Additionally, it must not appear on readonly attributes.
-
-When the extended attribute appears on an attribute, the setter for that attribute must run the following steps in place of the ones specified in their description:
-
- 1. If [=context object=]'s [=relevant global object=] has a [=Window/trusted type policy factory=]:
-
-    Issue: Update when workers have TT.
-    1. Set |value| to the result of running the [$Get Trusted Type compliant string$] algorithm, with |input| being the new value, |expectedType| being the {{TrustedType}} extended attribute identifier, and |global| being the [=context object=]'s [=relevant global object=].
-    1. If an exception was thrown, rethrow exception and abort further steps.
- 1. Run the originally specified steps for this construct, using |value| as a new value to set.
-
-Note: If the IDL attribute [=reflect/reflects=] a given content attribute, identical steps should be performed when the content attribute is modified by JavaScript code e.g. via ''Element.setAttribute()'' function.
-
-When the extended attribute appears on an [=operation=] argument, before its operation is invoked, run the following steps:
-
- 1. If [=context object=]'s [=relevant global object=] has a [=Window/trusted type policy factory=]:
-
-    Issue: Update when workers have TT.
-    1. Set the new argument value to the result of running the [$Get Trusted Type compliant string$] algorithm, with |input| being the argument value, |expectedType| being the {{TrustedType}} extended attribute identifier, and |global| being the [=context object=]'s [=relevant global object=].
-    1. If an exception was thrown, rethrow exception and abort further steps.
- 1. Invoke the originally specified steps for the operation.
-
 
 ### <dfn type>TrustedHTML</dfn> ### {#trusted-html}
 
@@ -266,8 +233,8 @@ To stringify a TrustedScriptURL object, return the USVString from its
 ### <dfn type>TrustedURL</dfn> ### {#trusted-url}
 
 The TrustedURL interface represents a string that a developer
-can confidently pass into an [=injection sink=] that will be parse it a URL of
-an external resource that is not scripted.
+can confidently pass into an [=injection sink=] that may cause
+navigation to that URL string.
 These objects are immutable wrappers around a
 string, constructed via a {{TrustedTypePolicy}}'s
 {{TrustedTypePolicy/createURL(input)|createURL}} method.
@@ -343,21 +310,20 @@ myLibrary.init({policy: cdnScriptsPolicy});
 
 Note: As Trusted Type objects can only be created via policies, if
 [=enforcement=] is enabled, only the policy code can introduce a DOM
-XSS, and hence call-sites of the policies' factory functions are the
+XSS, and hence call-sites of the policies' `create*` functions are the
 *only* security-sensitive code in the entire program. Only this
 typically small subset of the entire code base needs to be
 security-reviewed for DOM XSS - there's no need to monitor or review
-the traditional DOM sinks, as User Agents [=enforcement|enforce=] that
+the [=injection sinks=] themselves, as User Agents [=enforcement|enforce=] that
 those sinks will only accept Trusted Type objects, and these in turn
 can only be created via policies.
 
-The {{TrustedTypePolicyFactory/createPolicy()|createPolicy}} function returns a policy object whose create\* functions
+The {{TrustedTypePolicyFactory/createPolicy()|createPolicy}} function returns a policy object which `create*` functions
 will create Trusted Type objects after applying the policy
 rules.
 
-Note: While it's safe to expose a policy that sanitizes its input
-(and allow any part of the application to use it), there might be a
-need to create lax policies to be used internally, and only to be
+Note: While it's safe to freely use a policy that sanitizes its input anywhere in the application
+, there might be a need to create lax policies to be used internally, and only to be
 called with author-controlled input. For example, a client-side HTML
 templating library, an HTML sanitizer library, or a JS asynchronous
 code plugin loading subsystem each will likely need full control over
@@ -414,11 +380,11 @@ initially empty.
 <div dfn-type="method" dfn-for="TrustedTypePolicyFactory">
 
 :   <dfn>createPolicy(policyName, policyOptions)</dfn>
-::  Creates a uniquely named policy object that will implement the rules
-    passed in the {{TrustedTypePolicyOptions}} object.
-    Allowed policy names may be restricted by the response header - if that
-    is present, and the policy name is not on the whitelist defined in the
-    header, the policy creation fails with a [[WebIDL-1#idl-Error|TypeError]].
+::  Creates a policy object that will implement the rules
+    passed in the {{TrustedTypePolicyOptions}} |policyOptions| object.
+    The allowed policy names may be restricted by [[#content-security-policy-hdr|Content Security Policy]].
+    If the policy name is not on the whitelist defined in the [=trusted-types-directive|trusted-types=] CSP directive,
+    the policy creation fails with a [[WebIDL-1#idl-Error|TypeError]].
     Also, if unique policy names are enforced (i.e. `trusted-types *` is not used),
     and `createPolicy` is called more than once with any given `policyName`,
     policy creation fails with a TypeError.
@@ -446,14 +412,24 @@ initially empty.
     </dl>
 
 : <dfn>getPolicyNames()</dfn>
-::  Returns a new list, comprising of all entries  of the
+::  This function returns the names of all the policies that were alaredy created.
+
+    Returns a new list, comprising of all entries  of the
     `[[CreatedPolicyNames]]` slot.
+
+    <div class="example" id="get-policy-names-example">
+    <xmp highlight=js>
+    TrustedTypes.createPolicy('foo', ...);
+    TrustedTypes.createPolicy('bar', ...);
+    TrustedTypes.getPolicyNames(); // ['foo', 'bar']
+    </xmp>
+
 
 : <dfn>isHTML(value)</dfn>
 :: Returns true if value is an instance of {{TrustedHTML}} and has its `[[Data]]`  internal slot set, false otherwise.
 
     Note: `is*` functions are used to check if a given object is truly a legitimate
-    [=Trusted Type=] object (e.g. it was created via one of the configured
+    [=Trusted Type=] object (i.e. it was created via one of the configured
     policies). This is to be able to detect a forgery of the objects via
     e.g. [[ECMASCRIPT#sec-object.create|Object.create]]
     or prototype chains manipulation.
@@ -485,7 +461,7 @@ initially empty.
 <div class="example" id="create-and-used-unexposed-policy">
 <xmp highlight="js">
 const myPolicy = TrustedTypes.createPolicy('myPolicy', {
-  // This needs security review, as it's security critical code;
+  // This security-critical code needs a security review;
   // a flaw in this code could cause DOM XSS.
   createHTML(input) { return ASanitizer.sanitize(input) },
   createScriptURL(input) {
@@ -496,8 +472,6 @@ const myPolicy = TrustedTypes.createPolicy('myPolicy', {
     throw new Error('Cannot load scripts from this origin');
   },
 });
-TrustedTypes.getPolicyNames();
-// ['myPolicy']
 
 document.querySelector("#foo").innerHTML = myPolicy.createHTML(aValue);
 scriptElement.src = myPolicy.createScriptURL(
@@ -510,14 +484,18 @@ scriptElement.src = myPolicy.createScriptURL(
 : <dfn>emptyHTML</dfn>
 :: is a {{TrustedHTML}} object with its `[[Data]]` internal slot value set to an empty string.
 
+<div class="example" id="empty-html-example">
+<xmp highlight="js">
+anElement.innerHTML = TrustedTypes.emptyHTML; // no need to create a policy
+</xmp>
+</div>
 </div>
 
 ### <dfn type>TrustedTypePolicy</dfn> ### {#trusted-type-policy}
 
 Policy objects implement a TrustedTypePolicy interface and define a
-group of functions creating Trusted Type objects. Each policy is
-identified by a name unique within a realm. Each of the create
-functions converts a string value to a given Trusted Type variant, or
+group of functions creating Trusted Type objects.
+Each of the `create*` functions converts a string value to a given Trusted Type variant, or
 throws a TypeError if a conversion of a given value is disallowed.
 
 <pre class="idl">
@@ -530,6 +508,8 @@ interface TrustedTypePolicy {
   [Unforgeable] TrustedURL createURL(DOMString input);
 };
 </pre>
+
+Each policy has a <dfn dfn-for="TrustedTypePolicy">name</dfn>.
 
 Each TrustedTypePolicy object has an `[[options]]` internal slot, holding the {{TrustedTypePolicyOptions}} object describing the actual behavior of the policy.
 
@@ -616,26 +596,43 @@ callback CreateScriptURLCallback = USVString (DOMString input);
 
 *This section is not normative.*
 
-One of the policies, the `default` policy, is special; while all other
+One of the policies, the policy with a [=TrustedTypePolicy/name=] `"default"`, is special; while all other
 policies have to be called explicitly to create a TrustedType object,
 the default policy can also be called implicitly by the user agent. It
 allows the application to define the rules that should be run as a
 fallback, in case an [=injection sink=] is passed a string (instead of a
 Trusted Type object).
 
-This optional behavior allows for introducing Trusted Type [=enforcement=]
-to applications that are still using legacy code that writes to the DOM
-(or calls `eval`) directly. Needless to say, this policy should
+Note: This optional behavior allows for introducing Trusted Type [=enforcement=]
+to applications that are still using legacy code that uses injection sinks.
+Needless to say, this policy should
 necessarily be defined with very strict rules not to introduce a DOM
 XSS vulnerability in unknown parts of the application. In an extreme
 case, a lax, no-op default policy could bring the application DOM XSS
 security posture back to the pre-Trusted Types level. If possible,
 authors should resort to a default policy in a transitional period
-only, use it to detect and rewrite "raw DOM writes" dependencies and
-eventually phase out its usage entirely.
+only, use it to detect and rewrite their dependencies that use injection
+sinks unsafely and eventually phase out the usage of the default policy entirely.
 
 Note: See [[#get-trusted-type-compliant-string-algorithm]] for details on how
 the default policy is applied.
+
+<div class="example" id="default-policy-example">
+<xmp highlight="js">
+// Content-Security-Policy: trusted-types default
+
+TrustedTypes.createPolicy('default', {
+  createScriptURL: (s) => {
+    console.log("Please don't use this");
+    return s + "?default-policy-used";
+  }
+});
+
+aScriptElement.src = "https://cdn.example/script.js";
+console.log(aScriptElement.src);
+// https://cdn.example/script.js?default-policy-used
+</xmp>
+</div>
 
 
 ## <dfn>Enforcement</dfn> ## {#enforcement-hdr}
@@ -643,23 +640,58 @@ the default policy is applied.
 Note: Enforcement is the process of checking that a value
 has an appropriate type before it reaches an [=injection sink=].
 
-While the JavaScript API that allows authors to create Trusted Types is always
-available (via {{Window/TrustedTypes}}), the enforcement is optional.
-Applications may opt-in to require [=Trusted Types=] values for their [=injection sinks=]
-via [[CSP#policy-delivery|configuring a Content-Security-Policy]]. This document defines a new [=trusted-types-directive|trusted-types=]
+### Content Security Policy ### {#content-security-policy-hdr}
+
+The JavaScript API that allows authors to create policies and Trusted Types objects from them is always
+available (via {{Window/TrustedTypes}}). Since [=injection sinks=] stringify their security sensitive
+arguments, and [=Trusted Type=] objects stringify to their inner string values, this allows the authors
+to use Trusted Types in place of strings.
+
+However, to assert that the injection sinks are *never* called with string values, and only
+Trusted Type values are used instead, the applications may enable the enforcement via [[CSP#policy-delivery|configuring a Content Security Policy]]. This document defines a new [=trusted-types-directive|trusted-types=]
 Content Security Policy directive controlling that behavior.
 
-This allows the authors to prepare their applicaiton for enforcing Trusted Types
-via using the {{CSP#csp-ro|Content-Security-Report-Only}} HTTP Response header.
+Note: Using CSP mechanisms allows the authors to prepare their applicaiton for enforcing Trusted Types
+via using the {{CSP#cspro-header|Content-Security-Report-Only}} HTTP Response header.
 
 Note: Most of the enforcement rules are defined as modifications of the
 algorithms in other specifiactions, see [[#integrations]].
 
+### TrustedTypes extended attribute ### {#!trustedtypes-extended-attribute}
+
+To annotate the [=injection sink=] functions that require Trusted Types, we introduce
+<dfn data-dfn-type="extended-attribute" data-x="TrustedTypes" data-lt="TrustedTypes"><code>[TrustedTypes]</code></dfn>
+IDL [=extended attributes|extended attribute=]. Its presence indicates that the relevant setter algorithm is to be supplemented with additional
+enforcing steps (if enforcing is enabled).
+
+The {{TrustedTypes}} extended attribute [=extended attribute/takes an identifier=] as an argument.
+The only valid values for the identifier are {{TrustedHTML}}, {{TrustedScript}}, {{TrustedScriptURL}} or {{TrustedURL}}.
+This extended attribute must not appear on anything other than an attribute or an [=operation=] argument.
+Additionally, it must not appear on readonly attributes.
+
+When the extended attribute appears on an attribute, the setter for that attribute must run the following steps in place of the ones specified in their description:
+
+ 1. If [=context object=]'s [=relevant global object=] has a [=Window/trusted type policy factory=]:
+
+    Issue: Update when workers have TT.
+    1. Set |value| to the result of running the [$Get Trusted Type compliant string$] algorithm, with |input| being the new value, |expectedType| being the {{TrustedType}} extended attribute identifier, and |global| being the [=context object=]'s [=relevant global object=].
+    1. If an exception was thrown, rethrow exception and abort further steps.
+ 1. Run the originally specified steps for this construct, using |value| as a new value to set.
+
+Note: If the IDL attribute [=reflect/reflects=] a given content attribute, identical steps should be performed when the content attribute is modified by JavaScript code e.g. via `Element.setAttribute()` function.
+
+When the extended attribute appears on an [=operation=] argument, before its operation is invoked, run the following steps:
+
+ 1. If [=context object=]'s [=relevant global object=] has a [=Window/trusted type policy factory=]:
+
+    Issue: Update when workers have TT.
+    1. Set the new argument value to the result of running the [$Get Trusted Type compliant string$] algorithm, with |input| being the argument value, |expectedType| being the {{TrustedType}} extended attribute identifier, and |global| being the [=context object=]'s [=relevant global object=].
+    1. If an exception was thrown, rethrow exception and abort further steps.
+ 1. Invoke the originally specified steps for the operation.
+
 # Algorithms # {#algorithms}
 
-## Policies ## {#policy-algorithms}
-
-### <dfn abstract-op>Create a Trusted Type Policy</dfn> ### {#create-trusted-type-policy-algorithm}
+## <dfn abstract-op>Create a Trusted Type Policy</dfn> ## {#create-trusted-type-policy-algorithm}
 
 To create a {{TrustedTypePolicy}}, given a {{TrustedTypePolicyFactory}} (|factory|),
 a string (|policyName|), {{TrustedTypePolicyOptions}} dictionary (|options|), and a
@@ -691,13 +723,13 @@ a string (|policyName|), {{TrustedTypePolicyOptions}} dictionary (|options|), an
 1.  Append |policyName| to |factory|'s `[[CreatedPolicyNames]]`.
 1.  Return |policy|.
 
-### <dfn abstract-op>Get default policy</dfn> ### {#get-default-policy-algorithm}
+## <dfn abstract-op>Get default policy</dfn> ## {#get-default-policy-algorithm}
 To get the [=default policy=] for a {{TrustedTypePolicyFactory}} (|factory|), execute the following steps:
 
 1.  Return the value of |factory|'s `[[DefaultPolicy]]` slot
     (null if the slot is empty).
 
-### <dfn abstract-op>Create a Trusted Type</dfn> ### {#create-a-trusted-type-algorithm}
+## <dfn abstract-op>Create a Trusted Type</dfn> ## {#create-a-trusted-type-algorithm}
 
 Given a {{TrustedTypePolicy}} |policy|, a type name |trustedTypeName|,
 and a string |value|, execute the following steps:
@@ -742,9 +774,7 @@ and a string |value|, execute the following steps:
     set to |dataString|.
 1.  Return |trustedObject|.
 
-## Enforcement ## {#enforcement-algorithms}
-
-### <dfn abstract-op>Get Trusted Type compliant string</dfn> ### {#get-trusted-type-compliant-string-algorithm}
+## <dfn abstract-op>Get Trusted Type compliant string</dfn> ## {#get-trusted-type-compliant-string-algorithm}
 
 This algorithm will return a string that can be assigned to a DOM
 [=injection sink=], optionally unwrapping it from a matching [=Trusted Type=].
@@ -784,7 +814,6 @@ and a {{TrustedType}} or a string (|input|) run these steps:
 1.  Throw a {{TypeError}}.
 
     Issue: Populate the TypeError object.
-
 
 # Integrations # {#integrations}
 
@@ -991,7 +1020,7 @@ At the beginning of step 5, insert the following steps:
 
 1.  Let |value| be the result of executing the
     [$Get Trusted Type compliant string$] algorithm, with
-    *   |global| set to the |eventTarget|'s [=relevant global object=],
+    *   |global| set to the <var ignore>eventTarget</var>'s [=relevant global object=],
     *   |input| set to |value|,
     *   |expectedType| set to {{TrustedScript}}.
 1.  If the algorithm throws an error, abort these steps.
@@ -1030,7 +1059,7 @@ interface DOMParser {
 };
 </pre>
 
-## Integration with Content-Security-Policy ## {#integration-with-content-security-policy}
+## Integration with Content Security Policy ## {#integration-with-content-security-policy}
 
 ### <dfn lt="trusted-types-directive">trusted-types</dfn> directive ### {#trusted-types-csp-directive}
 
@@ -1055,8 +1084,7 @@ directive-value = <a>serialized-tt-configuration</a>
 </pre>
 
 <div class="example" id="whitelist-of-policy-names-in-header">
-Types are enforced at sinks, and only policies named “one” and “two”
-may be created.
+Types are enforced at sinks, and only two policies may be created: “one” and “two”.
 
 <pre class="http">
 Content-Security-Policy: trusted-types one two
@@ -1065,16 +1093,15 @@ Content-Security-Policy: trusted-types one two
 
 <div class="example" id="header-that-allows-no-policy-names">
 An empty [=directive=] [=directive/value=] indicates policies may not be created,
-and sinks expect Trusted Type values.  I.e. no [=injection sinks=] can be used
-in a document.
+and sinks expect Trusted Type values, i.e. no [=injection sinks=] can be used
+at all.
 
 <pre class="http">
 Content-Security-Policy: trusted-types
 </pre>
 </div>
 
-Value `*` makes it possible to create policies with any
-previously unused name.
+A value `"*"` allows for creating policies with any name, including policies with a name that was already used.
 
 <div class="example" id="wildcard-policy-name-in-header">
 <pre class="http">
@@ -1083,8 +1110,7 @@ Content-Security-Policy: trusted-types *
 </div>
 
 If the policy named `default` is present in the list, it refers to the
-[=default policy=], and unless otherwise configured,
-all strings passed to [=injection sinks=] will be passed through it instead
+[=default policy=]. All strings passed to [=injection sinks=] will be passed through it instead
 of being rejected outright.
 
 <div class="example" id="default-in-header">
