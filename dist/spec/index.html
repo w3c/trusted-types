@@ -1461,7 +1461,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Trusted Types</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-07-16">16 July 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-07-17">17 July 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1570,8 +1570,9 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
         <li><a href="#trusted-types-csp-directive"><span class="secno">4.4.1</span> <span class="content"><span>trusted-types</span> directive</span></a>
         <li><a href="#should-block-sink-type-mismatch"><span class="secno">4.4.2</span> <span class="content"><span>Should sink type mismatch violation be blocked by Content Security Policy?</span></span></a>
         <li><a href="#should-block-create-policy"><span class="secno">4.4.3</span> <span class="content"><span>Should Trusted Type policy creation be blocked by Content Security Policy?</span></span></a>
-        <li><a href="#trusted-script-csp-keyword"><span class="secno">4.4.4</span> <span class="content">'trusted-script' keyword</span></a>
-        <li><a href="#is-source-exempt-algorithm"><span class="secno">4.4.5</span> <span class="content"><span>IsSourceExempt</span> Algorithm</span></a>
+        <li><a href="#csp-violation-object-hdr"><span class="secno">4.4.4</span> <span class="content">Violation object changes</span></a>
+        <li><a href="#trusted-script-csp-keyword"><span class="secno">4.4.5</span> <span class="content">'trusted-script' keyword</span></a>
+        <li><a href="#is-source-exempt-algorithm"><span class="secno">4.4.6</span> <span class="content"><span>IsSourceExempt</span> Algorithm</span></a>
        </ol>
      </ol>
     <li>
@@ -2232,7 +2233,8 @@ stringified <var>convertedInput</var> and abort the following steps.</p>
        <p>Set <var>input</var> to <var>convertedInput</var>’s value.</p>
      </ol>
     <li data-md>
-     <p>Let <var>disposition</var> be the result of executing <a data-link-type="abstract-op" href="#abstract-opdef-should-sink-type-mismatch-violation-be-blocked-by-content-security-policy" id="ref-for-abstract-opdef-should-sink-type-mismatch-violation-be-blocked-by-content-security-policy">Should sink type mismatch violation be blocked by Content Security Policy?</a> on <var>document</var>, algorithm, passing <var>input</var>, <var>cspList</var> and <var>sink</var>.</p>
+     <p>Let <var>disposition</var> be the result of executing <a data-link-type="abstract-op" href="#abstract-opdef-should-sink-type-mismatch-violation-be-blocked-by-content-security-policy" id="ref-for-abstract-opdef-should-sink-type-mismatch-violation-be-blocked-by-content-security-policy">Should sink type mismatch violation be blocked by Content Security Policy?</a> algorithm,
+passing <var>document</var>, <var>input</var> as <var>source</var>, and <var>sink</var>.</p>
     <li data-md>
      <p>If <var>disposition</var> is <code>“Allowed”</code>, then return stringified <var>input</var> and abort these steps.</p>
     <li data-md>
@@ -2512,7 +2514,12 @@ returns <code>"Blocked"</code> if the <a data-link-type="dfn" href="#injection-s
        <p>If <var>policy</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#policy-directive-set" id="ref-for-policy-directive-set①">directive set</a> does not contain a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives①">directive</a> which <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-name" id="ref-for-directive-name①">name</a> is <code>"trusted-types"</code>, skip to the next <var>policy</var>.</p>
       <li data-md>
        <p>Let <var>violation</var> be the result of executing <a href="https://www.w3.org/TR/CSP3/#create-violation-for-global">Create a violation object for global, policy, and directive</a> on the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#current-settings-object" id="ref-for-current-settings-object">current settings object</a>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global②">global object</a>, <var>policy</var> and <code>"trusted-types"</code></p>
-       <p class="issue" id="issue-565a1020"><a class="self-link" href="#issue-565a1020"></a> Populate the violation object here.</p>
+      <li data-md>
+       <p>Set <var>violation</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation-resource" id="ref-for-violation-resource">resource</a> to <code>"trusted-types-sink"</code>.</p>
+      <li data-md>
+       <p>Let <var>sample</var> be the result of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-concatenate" id="ref-for-string-concatenate">concatenating</a> the list &lt;&lt; <var>sink</var>, <var>source</var> >> using space (<code>"\x20"</code>) as a <var>separator</var>.</p>
+      <li data-md>
+       <p>Set <var>violation</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation-sample" id="ref-for-violation-sample">sample</a> to the substring of <var>sample</var>, containing its first 40 characters.</p>
       <li data-md>
        <p>Execute <a href="https://www.w3.org/TR/CSP3/#report-violation">Report a violation</a> on <var>violation</var>.</p>
       <li data-md>
@@ -2550,7 +2557,10 @@ duplicated names.</p>
        <p>If <var>reason</var> is an empty string, skip to the next <var>policy</var>.</p>
       <li data-md>
        <p>Let <var>violation</var> be the result of executing <a href="https://www.w3.org/TR/CSP3/#create-violation-for-global">Create a violation object for global, policy, and directive</a> on the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#current-settings-object" id="ref-for-current-settings-object①">current settings object</a>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global④">global object</a>, <var>policy</var> and <code>"trusted-types"</code></p>
-       <p class="issue" id="issue-c5475d45"><a class="self-link" href="#issue-c5475d45"></a> Populate the violation object here, using <var>reason</var>.</p>
+      <li data-md>
+       <p>Set <var>violation</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation-resource" id="ref-for-violation-resource①">resource</a> to <code>"trusted-types-policy"</code>.</p>
+      <li data-md>
+       <p>Set <var>violation</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation-sample" id="ref-for-violation-sample①">sample</a> to the substring of <var>policyName</var>, containing its first 40 characters.</p>
       <li data-md>
        <p>Execute <a href="https://www.w3.org/TR/CSP3/#report-violation">Report a violation</a> on <var>violation</var>.</p>
       <li data-md>
@@ -2559,7 +2569,9 @@ duplicated names.</p>
     <li data-md>
      <p>Return <var>result</var>.</p>
    </ol>
-   <h4 class="heading settled" data-level="4.4.4" id="trusted-script-csp-keyword"><span class="secno">4.4.4. </span><span class="content">'trusted-script' keyword</span><a class="self-link" href="#trusted-script-csp-keyword"></a></h4>
+   <h4 class="heading settled" data-level="4.4.4" id="csp-violation-object-hdr"><span class="secno">4.4.4. </span><span class="content">Violation object changes</span><a class="self-link" href="#csp-violation-object-hdr"></a></h4>
+   <p><a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation" id="ref-for-violation">Violation</a> object <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation-resource" id="ref-for-violation-resource②">resource</a> also allows <code>"trusted-types-policy"</code> and <code>"trusted-types-sink"</code> as values.</p>
+   <h4 class="heading settled" data-level="4.4.5" id="trusted-script-csp-keyword"><span class="secno">4.4.5. </span><span class="content">'trusted-script' keyword</span><a class="self-link" href="#trusted-script-csp-keyword"></a></h4>
    <p class="note" role="note"><span>Note:</span> See <a href="https://github.com/tc39/ecma262/issues/938">TC39/ecma262 issue #938</a> (adding the value to be compiled to algorithm parameters).</p>
    <div class="note" role="note">
     Note: EcmaScript code may call <code>Function()</code> and <code>eval</code> cross realm. 
@@ -2647,11 +2659,11 @@ string "<a data-link-type="grammar" href="#grammardef-trusted-script" id="ref-fo
           <li data-md>
            <p>Let <var>violation</var> be the result of executing <a href="https://www.w3.org/TR/CSP3/#create-violation-for-global">Content Security Policy Level 3 §create-violation-for-global</a> on <var>global</var>, <var>policy</var>, and "<code>script-src</code>".</p>
           <li data-md>
-           <p>Set <var>violation</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation-resource" id="ref-for-violation-resource">resource</a> to "<code>inline</code>".</p>
+           <p>Set <var>violation</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation-resource" id="ref-for-violation-resource③">resource</a> to "<code>inline</code>".</p>
           <li data-md>
            <p>
             If <var>source-list</var> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain">contains</a> the expression
-"<a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-report-sample" id="ref-for-grammardef-report-sample"><code>'report-sample'</code></a>", then set <var>violation</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation-sample" id="ref-for-violation-sample">sample</a> to
+"<a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-report-sample" id="ref-for-grammardef-report-sample"><code>'report-sample'</code></a>", then set <var>violation</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation-sample" id="ref-for-violation-sample②">sample</a> to
 the substring of 
             <del><var>source</var></del>
             <ins><var>sourceString</var></ins>
@@ -2683,7 +2695,7 @@ Is this a feature or a bug?</p>
    <p class="note" role="note"><span>Note:</span> The previous algorithm reports violations via both report-uris where
 callerRealm != calleeRealm.  If <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string⑦">Get Trusted Type compliant string</a> reports an
 error, it only reports it via its <var>calleeRealm</var>’s report-uri.</p>
-   <h4 class="heading settled" data-level="4.4.5" id="is-source-exempt-algorithm"><span class="secno">4.4.5. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-issourceexempt">IsSourceExempt</dfn> Algorithm</span><a class="self-link" href="#is-source-exempt-algorithm"></a></h4>
+   <h4 class="heading settled" data-level="4.4.6" id="is-source-exempt-algorithm"><span class="secno">4.4.6. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-issourceexempt">IsSourceExempt</dfn> Algorithm</span><a class="self-link" href="#is-source-exempt-algorithm"></a></h4>
    <p>The IsSourceExempt algorithm takes a <code class="idl"><a data-link-type="idl">CSP List</a></code> (<var>cspList</var>) and executes
 the following steps:</p>
    <ol>
@@ -2924,9 +2936,9 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <li><a href="#dom-trustedtypepolicyfactory-ishtml">isHTML(value)</a><span>, in §2.3.1</span>
    <li><a href="#dom-trustedtypepolicyfactory-isscripturl">isScriptURL(value)</a><span>, in §2.3.1</span>
    <li><a href="#dom-trustedtypepolicyfactory-isscript">isScript(value)</a><span>, in §2.3.1</span>
-   <li><a href="#abstract-opdef-issourceexempt">IsSourceExempt</a><span>, in §4.4.5</span>
+   <li><a href="#abstract-opdef-issourceexempt">IsSourceExempt</a><span>, in §4.4.6</span>
    <li><a href="#dom-trustedtypepolicyfactory-isurl">isURL(value)</a><span>, in §2.3.1</span>
-   <li><a href="#grammardef-keyword-source">keyword-source</a><span>, in §4.4.4</span>
+   <li><a href="#grammardef-keyword-source">keyword-source</a><span>, in §4.4.5</span>
    <li><a href="#dom-trustedtypepolicy-name">name</a><span>, in §2.3.2</span>
    <li><a href="#dom-window-open">open()</a><span>, in §4.1.1</span>
    <li><a href="#dom-window-open">open(url)</a><span>, in §4.1.1</span>
@@ -2979,7 +2991,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
      <li><a href="#trustedhtml">(interface)</a><span>, in §2.2.2</span>
      <li><a href="#typedef-trustedhtml">(type)</a><span>, in §2.2.2</span>
     </ul>
-   <li><a href="#grammardef-trusted-script">'trusted-script'</a><span>, in §4.4.4</span>
+   <li><a href="#grammardef-trusted-script">'trusted-script'</a><span>, in §4.4.5</span>
    <li>
     TrustedScript
     <ul>
@@ -3037,13 +3049,13 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
   <aside class="dfn-panel" data-for="term-for-grammardef-report-sample">
    <a href="https://w3c.github.io/webappsec-csp/#grammardef-report-sample">https://w3c.github.io/webappsec-csp/#grammardef-report-sample</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-grammardef-report-sample">4.4.4. 'trusted-script' keyword</a>
+    <li><a href="#ref-for-grammardef-report-sample">4.4.5. 'trusted-script' keyword</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-grammardef-unsafe-eval">
    <a href="https://w3c.github.io/webappsec-csp/#grammardef-unsafe-eval">https://w3c.github.io/webappsec-csp/#grammardef-unsafe-eval</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-grammardef-unsafe-eval">4.4.4. 'trusted-script' keyword</a>
+    <li><a href="#ref-for-grammardef-unsafe-eval">4.4.5. 'trusted-script' keyword</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-policy-directive-set">
@@ -3052,7 +3064,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
     <li><a href="#ref-for-policy-directive-set">3.2.1. Get Trusted Type compliant string</a>
     <li><a href="#ref-for-policy-directive-set①">4.4.2. Should sink type mismatch violation be blocked by Content Security Policy?</a>
     <li><a href="#ref-for-policy-directive-set②">4.4.3. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
-    <li><a href="#ref-for-policy-directive-set③">4.4.5. IsSourceExempt Algorithm</a>
+    <li><a href="#ref-for-policy-directive-set③">4.4.6. IsSourceExempt Algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-directives">
@@ -3061,7 +3073,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
     <li><a href="#ref-for-directives">4.4.1. trusted-types directive</a>
     <li><a href="#ref-for-directives①">4.4.2. Should sink type mismatch violation be blocked by Content Security Policy?</a>
     <li><a href="#ref-for-directives②">4.4.3. Should Trusted Type policy creation be blocked by Content Security Policy?</a> <a href="#ref-for-directives③">(2)</a>
-    <li><a href="#ref-for-directives④">4.4.4. 'trusted-script' keyword</a> <a href="#ref-for-directives⑤">(2)</a> <a href="#ref-for-directives⑥">(3)</a>
+    <li><a href="#ref-for-directives④">4.4.5. 'trusted-script' keyword</a> <a href="#ref-for-directives⑤">(2)</a> <a href="#ref-for-directives⑥">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-policy-disposition">
@@ -3069,7 +3081,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <ul>
     <li><a href="#ref-for-policy-disposition">4.4.2. Should sink type mismatch violation be blocked by Content Security Policy?</a>
     <li><a href="#ref-for-policy-disposition①">4.4.3. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
-    <li><a href="#ref-for-policy-disposition②">4.4.4. 'trusted-script' keyword</a>
+    <li><a href="#ref-for-policy-disposition②">4.4.5. 'trusted-script' keyword</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-directive-name">
@@ -3077,25 +3089,30 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <ul>
     <li><a href="#ref-for-directive-name">4.4.1. trusted-types directive</a>
     <li><a href="#ref-for-directive-name①">4.4.2. Should sink type mismatch violation be blocked by Content Security Policy?</a>
-    <li><a href="#ref-for-directive-name②">4.4.4. 'trusted-script' keyword</a> <a href="#ref-for-directive-name③">(2)</a>
+    <li><a href="#ref-for-directive-name②">4.4.5. 'trusted-script' keyword</a> <a href="#ref-for-directive-name③">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-violation-resource">
    <a href="https://w3c.github.io/webappsec-csp/#violation-resource">https://w3c.github.io/webappsec-csp/#violation-resource</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-violation-resource">4.4.4. 'trusted-script' keyword</a>
+    <li><a href="#ref-for-violation-resource">4.4.2. Should sink type mismatch violation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-violation-resource①">4.4.3. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-violation-resource②">4.4.4. Violation object changes</a>
+    <li><a href="#ref-for-violation-resource③">4.4.5. 'trusted-script' keyword</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-violation-sample">
    <a href="https://w3c.github.io/webappsec-csp/#violation-sample">https://w3c.github.io/webappsec-csp/#violation-sample</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-violation-sample">4.4.4. 'trusted-script' keyword</a>
+    <li><a href="#ref-for-violation-sample">4.4.2. Should sink type mismatch violation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-violation-sample①">4.4.3. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-violation-sample②">4.4.5. 'trusted-script' keyword</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-source-expression">
    <a href="https://w3c.github.io/webappsec-csp/#source-expression">https://w3c.github.io/webappsec-csp/#source-expression</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-source-expression">4.4.4. 'trusted-script' keyword</a> <a href="#ref-for-source-expression①">(2)</a>
+    <li><a href="#ref-for-source-expression">4.4.5. 'trusted-script' keyword</a> <a href="#ref-for-source-expression①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-directive-value">
@@ -3103,7 +3120,13 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <ul>
     <li><a href="#ref-for-directive-value">4.4.1. trusted-types directive</a> <a href="#ref-for-directive-value①">(2)</a>
     <li><a href="#ref-for-directive-value②">4.4.3. Should Trusted Type policy creation be blocked by Content Security Policy?</a> <a href="#ref-for-directive-value③">(2)</a>
-    <li><a href="#ref-for-directive-value④">4.4.4. 'trusted-script' keyword</a> <a href="#ref-for-directive-value⑤">(2)</a>
+    <li><a href="#ref-for-directive-value④">4.4.5. 'trusted-script' keyword</a> <a href="#ref-for-directive-value⑤">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-violation">
+   <a href="https://w3c.github.io/webappsec-csp/#violation">https://w3c.github.io/webappsec-csp/#violation</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-violation">4.4.4. Violation object changes</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-document">
@@ -3326,7 +3349,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
     <li><a href="#ref-for-concept-realm-global">3.1.1. Create a Trusted Type Policy</a>
     <li><a href="#ref-for-concept-realm-global①">4.4.2. Should sink type mismatch violation be blocked by Content Security Policy?</a> <a href="#ref-for-concept-realm-global②">(2)</a>
     <li><a href="#ref-for-concept-realm-global③">4.4.3. Should Trusted Type policy creation be blocked by Content Security Policy?</a> <a href="#ref-for-concept-realm-global④">(2)</a>
-    <li><a href="#ref-for-concept-realm-global⑤">4.4.4. 'trusted-script' keyword</a> <a href="#ref-for-concept-realm-global⑥">(2)</a>
+    <li><a href="#ref-for-concept-realm-global⑤">4.4.5. 'trusted-script' keyword</a> <a href="#ref-for-concept-realm-global⑥">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-innertext">
@@ -3345,13 +3368,19 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
   <aside class="dfn-panel" data-for="term-for-ascii-case-insensitive">
    <a href="https://infra.spec.whatwg.org/#ascii-case-insensitive">https://infra.spec.whatwg.org/#ascii-case-insensitive</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-ascii-case-insensitive">4.4.4. 'trusted-script' keyword</a> <a href="#ref-for-ascii-case-insensitive①">(2)</a>
+    <li><a href="#ref-for-ascii-case-insensitive">4.4.5. 'trusted-script' keyword</a> <a href="#ref-for-ascii-case-insensitive①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-string-concatenate">
+   <a href="https://infra.spec.whatwg.org/#string-concatenate">https://infra.spec.whatwg.org/#string-concatenate</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-string-concatenate">4.4.2. Should sink type mismatch violation be blocked by Content Security Policy?</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-list-contain">
    <a href="https://infra.spec.whatwg.org/#list-contain">https://infra.spec.whatwg.org/#list-contain</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-list-contain">4.4.4. 'trusted-script' keyword</a>
+    <li><a href="#ref-for-list-contain">4.4.5. 'trusted-script' keyword</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-ordered-set">
@@ -3376,7 +3405,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
   <aside class="dfn-panel" data-for="term-for-exceptiondef-evalerror">
    <a href="https://heycam.github.io/webidl/#exceptiondef-evalerror">https://heycam.github.io/webidl/#exceptiondef-evalerror</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-exceptiondef-evalerror">4.4.4. 'trusted-script' keyword</a>
+    <li><a href="#ref-for-exceptiondef-evalerror">4.4.5. 'trusted-script' keyword</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-Exposed">
@@ -3480,6 +3509,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
      <li><span class="dfn-paneled" id="term-for-violation-sample" style="color:initial">sample</span>
      <li><span class="dfn-paneled" id="term-for-source-expression" style="color:initial">source expression</span>
      <li><span class="dfn-paneled" id="term-for-directive-value" style="color:initial">value</span>
+     <li><span class="dfn-paneled" id="term-for-violation" style="color:initial">violation</span>
     </ul>
    <li>
     <a data-link-type="biblio">[DOM]</a> defines the following terms:
@@ -3533,6 +3563,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
     <a data-link-type="biblio">[INFRA]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-ascii-case-insensitive" style="color:initial">ascii case-insensitive</span>
+     <li><span class="dfn-paneled" id="term-for-string-concatenate" style="color:initial">concatenate</span>
      <li><span class="dfn-paneled" id="term-for-list-contain" style="color:initial">contain</span>
      <li><span class="dfn-paneled" id="term-for-ordered-set" style="color:initial">ordered set</span>
     </ul>
@@ -3772,8 +3803,6 @@ See note "It should not be used in specifications unless ...".
 For some sinks a <code>null</code> value will result in "", and "null" for others.
 This already caused problems in the polyfill. <a href="https://github.com/WICG/trusted-types/issues/2">&lt;https://github.com/WICG/trusted-types/issues/2></a><a href="#issue-52d7d8d6"> ↵ </a></div>
    <div class="issue"> Decide if separate per-type enforcement settings should be exposed to the authors. <a href="https://github.com/WICG/trusted-types/issues/66">&lt;https://github.com/WICG/trusted-types/issues/66></a><a href="#issue-20410262"> ↵ </a></div>
-   <div class="issue"> Populate the violation object here.<a href="#issue-565a1020"> ↵ </a></div>
-   <div class="issue"> Populate the violation object here, using <var>reason</var>.<a href="#issue-c5475d45"> ↵ </a></div>
    <div class="issue"> This depends on a solution to <a href="https://github.com/WICG/trusted-types/issues/144">issue #144</a> like <a href="https://github.com/tc39-transfer/dynamic-code-brand-checks#problem-host-callout-does-not-receive-type-information">TC39 HostBeforeCompile</a><a href="#issue-e28ea232"> ↵ </a></div>
    <div class="issue"> In some cases, the violation "<code>'report-sample'</code>" contain the result of
 applying the default policy to a string argument which differs.
@@ -3854,7 +3883,7 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
     <li><a href="#ref-for-trustedscript⑥">4.1.5. Enforcement for script text contents</a> <a href="#ref-for-trustedscript⑦">(2)</a> <a href="#ref-for-trustedscript⑧">(3)</a>
     <li><a href="#ref-for-trustedscript⑨">4.1.6. Enforcement in timer functions</a> <a href="#ref-for-trustedscript①⓪">(2)</a>
     <li><a href="#ref-for-trustedscript①①">4.1.7. Enforcement in event handler content attributes</a>
-    <li><a href="#ref-for-trustedscript①②">4.4.4. 'trusted-script' keyword</a>
+    <li><a href="#ref-for-trustedscript①②">4.4.5. 'trusted-script' keyword</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="trustedscripturl">
@@ -4037,7 +4066,7 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
    <ul>
     <li><a href="#ref-for-default-policy">3.1.2. Get default policy</a>
     <li><a href="#ref-for-default-policy①">4.4.1. trusted-types directive</a>
-    <li><a href="#ref-for-default-policy②">4.4.4. 'trusted-script' keyword</a> <a href="#ref-for-default-policy③">(2)</a>
+    <li><a href="#ref-for-default-policy②">4.4.5. 'trusted-script' keyword</a> <a href="#ref-for-default-policy③">(2)</a>
     <li><a href="#ref-for-default-policy④">6.1. Vendor-specific Extensions and Addons</a>
    </ul>
   </aside>
@@ -4075,8 +4104,8 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string②">4.1.5. Enforcement for script text contents</a>
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string③">4.1.6. Enforcement in timer functions</a>
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string④">4.1.7. Enforcement in event handler content attributes</a>
-    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑤">4.4.4. 'trusted-script' keyword</a> <a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑥">(2)</a> <a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑦">(3)</a>
-    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑧">4.4.5. IsSourceExempt Algorithm</a>
+    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑤">4.4.5. 'trusted-script' keyword</a> <a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑥">(2)</a> <a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑦">(3)</a>
+    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑧">4.4.6. IsSourceExempt Algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="typedefdef-htmlstring">
@@ -4205,13 +4234,13 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
   <aside class="dfn-panel" data-for="grammardef-trusted-script">
    <b><a href="#grammardef-trusted-script">#grammardef-trusted-script</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-grammardef-trusted-script">4.4.4. 'trusted-script' keyword</a>
+    <li><a href="#ref-for-grammardef-trusted-script">4.4.5. 'trusted-script' keyword</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="abstract-opdef-issourceexempt">
    <b><a href="#abstract-opdef-issourceexempt">#abstract-opdef-issourceexempt</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-abstract-opdef-issourceexempt">4.4.4. 'trusted-script' keyword</a>
+    <li><a href="#ref-for-abstract-opdef-issourceexempt">4.4.5. 'trusted-script' keyword</a>
    </ul>
   </aside>
 <script>/* script-dfn-panel */

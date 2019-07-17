@@ -770,8 +770,8 @@ Given a {{TrustedType}} type (|expectedType|), a {{Document}}
     1.  If |convertedInput| has type |expectedType|, then return
         stringified |convertedInput| and abort the following steps.
     1.  Set |input| to |convertedInput|’s value.
-1.  Let |disposition| be the result of executing [$Should sink type mismatch violation be blocked by Content Security Policy?$]
-    on |document|, algorithm, passing |input|, |cspList| and |sink|.
+1.  Let |disposition| be the result of executing [$Should sink type mismatch violation be blocked by Content Security Policy?$] algorithm,
+    passing |document|, |input| as |source|, and |sink|.
 1.  If |disposition| is `“Allowed”`, then return stringified |input| and abort these steps.
 1.  Throw a {{TypeError}}.
 
@@ -1101,8 +1101,9 @@ returns `"Blocked"` if the [=injection sink=] requires a [=Trusted Type=], and
         [[CSP#create-violation-for-global|Create a violation object for global, policy, and directive]] on the
         <a>current settings object</a>'s [=Realm/global object=], |policy| and
         `"trusted-types"`
-
-        Issue: Populate the violation object here.
+    1. Set |violation|'s [=violation/resource=] to `"trusted-types-sink"`.
+    1. Let |sample| be the result of [=concatenate|concatenating=] the list << |sink|, |source| >> using space (`"\x20"`) as a |separator|.
+    1. Set |violation|'s [=violation/sample=] to the substring of |sample|, containing its first 40 characters.
     1.  Execute [[CSP#report-violation|Report a violation]] on |violation|.
     1.  If |policy|'s [=policy/disposition=] is `"enforce"`, then set |result| to
         `"Blocked"`.
@@ -1134,12 +1135,17 @@ strings (|createdPolicyNames|), this algorithm returns `"Blocked"` if the
         [[CSP#create-violation-for-global|Create a violation object for global, policy, and directive]] on the
         <a>current settings object</a>'s [=Realm/global object=], |policy| and
         `"trusted-types"`
-
-        Issue: Populate the violation object here, using |reason|.
+    1. Set |violation|'s [=violation/resource=] to `"trusted-types-policy"`.
+    1. Set |violation|'s [=violation/sample=] to the substring of |policyName|, containing its first 40 characters.
     1.  Execute [[CSP#report-violation|Report a violation]] on |violation|.
     1.  If |policy|'s [=policy/disposition=] is `"enforce"`, then set |result| to
         `"Blocked"`.
 1. Return |result|.
+
+### Violation object changes ### {#csp-violation-object-hdr}
+
+[=violation|Violation=] object [=violation/resource=] also allows `"trusted-types-policy"`
+and `"trusted-types-sink"` as values.
 
 ### 'trusted-script' keyword ### {#trusted-script-csp-keyword}
 
