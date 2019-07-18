@@ -502,10 +502,10 @@ throws a TypeError if a conversion of a given value is disallowed.
 [Exposed=Window]
 interface TrustedTypePolicy {
   [Unforgeable] readonly attribute DOMString name;
-  [Unforgeable] TrustedHTML createHTML(DOMString input);
-  [Unforgeable] TrustedScript createScript(DOMString input);
-  [Unforgeable] TrustedScriptURL createScriptURL(DOMString input);
-  [Unforgeable] TrustedURL createURL(DOMString input);
+  [Unforgeable] TrustedHTML createHTML(DOMString input, any... arguments);
+  [Unforgeable] TrustedScript createScript(DOMString input, any... arguments);
+  [Unforgeable] TrustedScriptURL createScriptURL(DOMString input, any... arguments);
+  [Unforgeable] TrustedURL createURL(DOMString input, any... arguments);
 };
 </pre>
 
@@ -515,7 +515,7 @@ Each TrustedTypePolicy object has an `[[options]]` internal slot, holding the {{
 
 <div dfn-type="method" dfn-for="TrustedTypePolicy">
 
-: <dfn>createHTML(input)</dfn>
+: <dfn>createHTML(input, ...arguments)</dfn>
 ::  Returns the
     result of executing the [$Create a Trusted Type$] algorithm, with the
     following arguments:
@@ -526,9 +526,11 @@ Each TrustedTypePolicy object has an `[[options]]` internal slot, holding the {{
       <dd>`"TrustedHTML"`</dd>
       <dt>value</dt>
       <dd>input</dd>
+      <dt>arguments</dt>
+      <dd>arguments</dd>
     </dl>
 
-: <dfn>createScript(input)</dfn>
+: <dfn>createScript(input, ...arguments)</dfn>
 ::  Returns the
     result of executing the [$Create a Trusted Type$] algorithm, with the
     following arguments:
@@ -539,10 +541,12 @@ Each TrustedTypePolicy object has an `[[options]]` internal slot, holding the {{
       <dd>`"TrustedScript"`</dd>
       <dt>value</dt>
       <dd>input</dd>
+      <dt>arguments</dt>
+      <dd>arguments</dd>
     </dl>
 
 
-: <dfn>createScriptURL(input)</dfn>
+: <dfn>createScriptURL(input, ...arguments)</dfn>
 ::  Returns the
     result of executing the [$Create a Trusted Type$] algorithm, with the
     following arguments:
@@ -553,10 +557,12 @@ Each TrustedTypePolicy object has an `[[options]]` internal slot, holding the {{
       <dd>`"TrustedScriptURL"`</dd>
       <dt>value</dt>
       <dd>input</dd>
+      <dt>arguments</dt>
+      <dd>arguments</dd>
     </dl>
 
 
-: <dfn>createURL(input)</dfn>
+: <dfn>createURL(input, ...arguments)</dfn>
 ::  Returns the
     result of executing the [$Create a Trusted Type$] algorithm, with the
     following arguments:
@@ -567,6 +573,8 @@ Each TrustedTypePolicy object has an `[[options]]` internal slot, holding the {{
       <dd>`"TrustedURL"`</dd>
       <dt>value</dt>
       <dd>input</dd>
+      <dt>arguments</dt>
+      <dd>arguments</dd>
     </dl>
 
 
@@ -597,7 +605,7 @@ callback CreateScriptURLCallback = USVString (DOMString input);
 *This section is not normative.*
 
 One of the policies, the policy with a [=TrustedTypePolicy/name=] `"default"`, is special; while all other
-policies have to be called explicitly to create a TrustedType object,
+policies have to be called explicitly to create a Trusted Type object,
 the default policy can also be called implicitly by the user agent. It
 allows the application to define the rules that should be run as a
 fallback, in case an [=injection sink=] is passed a string (instead of a
@@ -774,8 +782,7 @@ To get the [=default policy=] for a {{TrustedTypePolicyFactory}} (|factory|), ex
 ## <dfn abstract-op>Create a Trusted Type</dfn> ## {#create-a-trusted-type-algorithm}
 
 Given a {{TrustedTypePolicy}} |policy|, a type name |trustedTypeName|,
-and a string |value|, execute the following steps:
-
+, a string |value| and a list |arguments|, execute the following steps:
 
 1.  Let |functionName| be a function name for the given |trustedTypeName|,
     based on the following table:
@@ -807,8 +814,8 @@ and a string |value|, execute the following steps:
 1.  Let |function| be the value of the property in |options| named |functionName|.
 1.  If |function| is `null`, throw a {{TypeError}}.
 1.  Let |policyValue| be the result of invoking |function| with
-    |value| as a first argument, and [[ECMASCRIPT#sec-method|callback **this** value]]
-    set to `null`.
+    |value| as a first argument, items of |arguments| as subsequent arguments,
+    and [[ECMASCRIPT#sec-method|callback **this** value]] set to `null`.
 1.  If |policyValue| is an error, return |policyValue| and abort the following steps.
 1.  Let |dataString| be the result of stringifying |policyValue|.
 1.  Let |trustedObject| be a new instance of an interface with a type
