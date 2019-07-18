@@ -1461,7 +1461,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Trusted Types</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-07-17">17 July 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-07-18">18 July 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -2101,12 +2101,12 @@ via using the <code class="idl"><a data-link-type="idl">Content-Security-Report-
    <p class="note" role="note"><span>Note:</span> Most of the enforcement rules are defined as modifications of the
 algorithms in other specifiactions, see <a href="#integrations">§ 4 Integrations</a>.</p>
    <h4 class="heading settled" data-level="2.4.2" id="!trustedtypes-extended-attribute"><span class="secno">2.4.2. </span><span class="content">TrustedTypes extended attribute</span><a class="self-link" href="#!trustedtypes-extended-attribute"></a></h4>
-   <p>To annotate the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①①">injection sink</a> functions that require Trusted Types, we introduce <dfn class="dfn-paneled idl-code" data-dfn-type="extended-attribute" data-export data-lt="TrustedTypes" data-x="TrustedTypes" id="extendedattrdef-trustedtypes"><code>[TrustedTypes]</code></dfn> IDL <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-extended-attribute" id="ref-for-dfn-extended-attribute">extended attribute</a>. Its presence indicates that the relevant setter algorithm is to be supplemented with additional
-enforcing steps (if enforcing is enabled).</p>
+   <p>To annotate the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①①">injection sink</a> functions that require Trusted Types, we introduce <dfn class="dfn-paneled idl-code" data-dfn-type="extended-attribute" data-export data-lt="TrustedTypes" data-x="TrustedTypes" id="extendedattrdef-trustedtypes"><code>[TrustedTypes]</code></dfn> IDL <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-extended-attribute" id="ref-for-dfn-extended-attribute">extended attribute</a>. Its presence indicates that the relevant construct is to be supplemented with additional
+Trusted Types enforcement logic (if enforcing is enabled).</p>
    <p>The <code class="idl"><a data-link-type="idl" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes">TrustedTypes</a></code> extended attribute <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-xattr-identifier" id="ref-for-dfn-xattr-identifier">takes an identifier</a> as an argument.
 The only valid values for the identifier are <code class="idl"><a data-link-type="idl" href="#trustedhtml" id="ref-for-trustedhtml⑥">TrustedHTML</a></code>, <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript②">TrustedScript</a></code>, <code class="idl"><a data-link-type="idl" href="#trustedscripturl" id="ref-for-trustedscripturl②">TrustedScriptURL</a></code> or <code class="idl"><a data-link-type="idl" href="#trustedurl" id="ref-for-trustedurl②">TrustedURL</a></code>.
-This extended attribute must not appear on anything other than an attribute or an <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-operation" id="ref-for-dfn-operation">operation</a> argument.
-Additionally, it must not appear on readonly attributes.</p>
+This extended attribute must not appear on anything other than an <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-attribute" id="ref-for-dfn-attribute">attribute</a> or an <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-operation" id="ref-for-dfn-operation">operation</a> argument.
+Additionally, it must not appear on <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-read-only" id="ref-for-dfn-read-only">read only</a> attributes.</p>
    <p>When the extended attribute appears on an attribute, the setter for that attribute must run the following steps in place of the ones specified in their description:</p>
    <ol>
     <li data-md>
@@ -2114,7 +2114,34 @@ Additionally, it must not appear on readonly attributes.</p>
      <p class="issue" id="issue-b92c7a17"><a class="self-link" href="#issue-b92c7a17"></a> Update when workers have TT.</p>
      <ol>
       <li data-md>
-       <p>Set <var>value</var> to the result of running the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string">Get Trusted Type compliant string</a> algorithm, with <var>input</var> being the new value, <var>expectedType</var> being the <code class="idl"><a data-link-type="idl" href="#typedefdef-trustedtype" id="ref-for-typedefdef-trustedtype">TrustedType</a></code> extended attribute identifier, and <var>global</var> being the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object③">context object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global②">relevant global object</a>.</p>
+       <p>If the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object③">context object</a> is an <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-namednodemap-element" id="ref-for-concept-namednodemap-element">Element</a>, let <var>objectName</var> be the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object④">context object</a>'s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-local-name" id="ref-for-concept-element-local-name">local name</a>; Otherwise, let <var>objectName</var> be the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object⑤">context object</a>'s constructor name.</p>
+      <li data-md>
+       <p>Set <var>sink</var> to the result of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-concatenate" id="ref-for-string-concatenate">concatenating</a> the list « <var>objectName</var>, <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-attribute" id="ref-for-dfn-attribute①">attribute</a> identifier. » with the <code>"."</code> as <var>separator</var>.</p>
+       <div class="example" id="example-ad311f67">
+        <a class="self-link" href="#example-ad311f67"></a> For example, the following annotation and JavaScript code: 
+<pre class="highlight"><c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <c- g>HTMLHyperlinkElementUtils</c-> {
+  [<c- g>CEReactions</c->, <c- g>TrustedTypes</c->=<c- n>TrustedURL</c->] <c- b>stringifier</c-> <c- b>attribute</c-> <c- n>URLString</c-> <c- g>href</c->;
+};
+</pre>
+<pre class="highlight">document<c- p>.</c->createElement<c- p>(</c-><c- t>'a'</c-><c- p>).</c->href <c- o>=</c-> foo<c- p>;</c->
+document<c- p>.</c->createElement<c- p>(</c-><c- t>'a'</c-><c- p>).</c->setAttribute<c- p>(</c-><c- t>'HREF'</c-><c- p>,</c-> foo<c- p>);</c->
+</pre>
+        <p>causes the <var>sink</var> value to be <code>"a.href"</code>.</p>
+       </div>
+      <li data-md>
+       <p>Set <var>value</var> to the result of running the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string">Get Trusted Type compliant string</a> algorithm, passing the following arguments:</p>
+     </ol>
+     <ul>
+      <li data-md>
+       <p>the new value as <var>input</var>,</p>
+      <li data-md>
+       <p><code class="idl"><a data-link-type="idl" href="#typedefdef-trustedtype" id="ref-for-typedefdef-trustedtype">TrustedType</a></code> extended attribute identifier as <var>expectedType</var>,</p>
+      <li data-md>
+       <p><var>sink</var> as <var>sink</var>,</p>
+      <li data-md>
+       <p><a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object⑥">context object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global②">relevant global object</a> as <var>global</var>.</p>
+     </ul>
+     <ol>
       <li data-md>
        <p>If an exception was thrown, rethrow exception and abort further steps.</p>
      </ol>
@@ -2125,11 +2152,37 @@ Additionally, it must not appear on readonly attributes.</p>
    <p>When the extended attribute appears on an <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-operation" id="ref-for-dfn-operation①">operation</a> argument, before its operation is invoked, run the following steps:</p>
    <ol>
     <li data-md>
-     <p>If <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object④">context object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global③">relevant global object</a> has a <a data-link-type="dfn" href="#window-trusted-type-policy-factory" id="ref-for-window-trusted-type-policy-factory①">trusted type policy factory</a>:</p>
+     <p>If <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object⑦">context object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global③">relevant global object</a> has a <a data-link-type="dfn" href="#window-trusted-type-policy-factory" id="ref-for-window-trusted-type-policy-factory①">trusted type policy factory</a>:</p>
      <p class="issue" id="issue-b92c7a17①"><a class="self-link" href="#issue-b92c7a17①"></a> Update when workers have TT.</p>
      <ol>
       <li data-md>
-       <p>Set the new argument value to the result of running the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string①">Get Trusted Type compliant string</a> algorithm, with <var>input</var> being the argument value, <var>expectedType</var> being the <code class="idl"><a data-link-type="idl" href="#typedefdef-trustedtype" id="ref-for-typedefdef-trustedtype①">TrustedType</a></code> extended attribute identifier, and <var>global</var> being the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object⑤">context object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global④">relevant global object</a>.</p>
+       <p>If the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object⑧">context object</a> is an <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-namednodemap-element" id="ref-for-concept-namednodemap-element①">Element</a>, let <var>objectName</var> be the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object⑨">context object</a>'s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-local-name" id="ref-for-concept-element-local-name①">local name</a>; Otherwise, let <var>objectName</var> be the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object①⓪">context object</a>'s constructor name.</p>
+      <li data-md>
+       <p>Set <var>sink</var> to the result of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-concatenate" id="ref-for-string-concatenate①">concatenating</a> the list « <var>objectName</var>, <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-operation" id="ref-for-dfn-operation②">operation</a> identifier. » with the <code>"."</code> as <var>separator</var>.</p>
+       <div class="example" id="example-7849b301">
+        <a class="self-link" href="#example-7849b301"></a> For example, the following annotation and JavaScript code: 
+<pre class="highlight"><c- b>partial</c-> <c- b>interface</c-> <c- g>Element</c-> {
+  <c- b>void</c-> <c- g>insertAdjacentHTML</c->(<c- b>DOMString</c-> <c- g>position</c->, [<c- g>TrustedTypes</c->=<c- n>TrustedHTML</c->] <c- n>HTMLString</c-> <c- g>text</c->);
+};
+</pre>
+<pre class="highlight">document<c- p>.</c->createElement<c- p>(</c-><c- t>'a'</c-><c- p>).</c->insertAdjacentHTML<c- p>(</c-><c- t>'beforebegin'</c-><c- p>,</c-> foo<c- p>);</c->
+</pre>
+        <p>causes the <var>sink</var> value to be <code>"a.insertAdjacentHTML"</code>.</p>
+       </div>
+      <li data-md>
+       <p>Set the new argument value to the result of running the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string①">Get Trusted Type compliant string</a> algorithm, passing the following arguments:</p>
+     </ol>
+     <ul>
+      <li data-md>
+       <p>the argument value as <var>input</var>,</p>
+      <li data-md>
+       <p><code class="idl"><a data-link-type="idl" href="#typedefdef-trustedtype" id="ref-for-typedefdef-trustedtype①">TrustedType</a></code> extended attribute identifier as <var>expectedType</var>,</p>
+      <li data-md>
+       <p><var>sink</var> as <var>sink</var>,</p>
+      <li data-md>
+       <p><a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object①①">context object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global④">relevant global object</a> as <var>global</var>.</p>
+     </ul>
+     <ol>
       <li data-md>
        <p>If an exception was thrown, rethrow exception and abort further steps.</p>
      </ol>
@@ -2224,15 +2277,11 @@ set to <var>dataString</var>.</p>
    <h3 class="heading settled" data-level="3.4" id="get-trusted-type-compliant-string-algorithm"><span class="secno">3.4. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-get-trusted-type-compliant-string">Get Trusted Type compliant string</dfn></span><a class="self-link" href="#get-trusted-type-compliant-string-algorithm"></a></h3>
    <p>This algorithm will return a string that can be assigned to a DOM <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①②">injection sink</a>, optionally unwrapping it from a matching <a data-link-type="dfn" href="#trusted-type" id="ref-for-trusted-type④">Trusted Type</a>.
 It will ensure that the Trusted Type <a data-link-type="dfn" href="#enforcement" id="ref-for-enforcement③">enforcement</a> rules were respected.</p>
-   <p>Given a <code class="idl"><a data-link-type="idl" href="#typedefdef-trustedtype" id="ref-for-typedefdef-trustedtype②">TrustedType</a></code> type (<var>expectedType</var>), a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global①">global object</a> (<var>global</var>),
-and a <code class="idl"><a data-link-type="idl" href="#typedefdef-trustedtype" id="ref-for-typedefdef-trustedtype③">TrustedType</a></code> or a string (<var>input</var>) run these steps:</p>
+   <p>Given a <code class="idl"><a data-link-type="idl" href="#typedefdef-trustedtype" id="ref-for-typedefdef-trustedtype②">TrustedType</a></code> type (<var>expectedType</var>), a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global①">global object</a> (<var>global</var>), <code class="idl"><a data-link-type="idl" href="#typedefdef-trustedtype" id="ref-for-typedefdef-trustedtype③">TrustedType</a></code> or a string (<var>input</var>), and a string (<var>sink</var>), run these steps:</p>
    <ol>
     <li data-md>
      <p class="assertion">Assert: <var>global</var> is a <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/window-object.html#window" id="ref-for-window">Window</a></code>.</p>
      <p class="issue" id="issue-74c24ff1"><a class="self-link" href="#issue-74c24ff1"></a> Synchronize when TT are added to workers (perhaps use "has a CSP list"?)</p>
-    <li data-md>
-     <p>Let <var>sink</var> be an empty string.</p>
-     <p class="issue" id="issue-22c7f802"><a class="self-link" href="#issue-22c7f802"></a> Get the sink from the callers.</p>
     <li data-md>
      <p>Let <var>cspList</var> be the <var>global</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#concept-document-csp-list" id="ref-for-concept-document-csp-list">CSP list</a>.</p>
     <li data-md>
@@ -2408,7 +2457,7 @@ as in their original counterparts, apart from additional behavior triggered by t
     <li data-md>
      <p>Let <var>text</var> be <var>node</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-child-text-content" id="ref-for-concept-child-text-content①">child text content</a>.</p>
     <li data-md>
-     <p>Let <var>convertedText</var> be the result of running <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string②">Get Trusted Type compliant string</a>, passing <var>parent</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global⑤">relevant global object</a> as <var>global</var>, <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript⑧">TrustedScript</a></code> as <var>expectedType</var> and <var>text</var> as <var>input</var>.
+     <p>Let <var>convertedText</var> be the result of running <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string②">Get Trusted Type compliant string</a>, passing <var>parent</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global⑤">relevant global object</a> as <var>global</var>, <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript⑧">TrustedScript</a></code> as <var>expectedType</var>, <var>text</var> as <var>input</var> and <code>"script.text"</code> as <var>sink</var>.
 If the algorithm threw an error, rethrow the error.</p>
      <p class="note" role="note"><span>Note:</span> If Trusted Types are not enforced, this algorithm will return early and return <var>input</var> unmodified.</p>
     <li data-md>
@@ -2432,11 +2481,14 @@ add this step between 7.1 and 7.2:</p>
 the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string③">Get Trusted Type compliant string</a> algorithm, with</p>
      <ul>
       <li data-md>
-       <p><var>global</var> set to the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object⑥">context object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global⑥">relevant global object</a>.</p>
+       <p><var>global</var> set to the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object①②">context object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global⑥">relevant global object</a>.</p>
       <li data-md>
        <p><var>input</var> set to the first method argument, and</p>
       <li data-md>
        <p><var>expectedType</var> set to <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript⑨">TrustedScript</a></code>.</p>
+      <li data-md>
+       <p><var>sink</var> set to <code>"Window.setInterval"</code> if <var>repeat</var> is true, <code>"Window.setTimeout"</code> otherwise.</p>
+       <p class="note" role="note"><span>Note:</span> This matches the logic that the extended attribute would apply.</p>
      </ul>
    </ol>
    <p class="note" role="note"><span>Note:</span> This makes sure that a <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①⓪">TrustedScript</a></code> is passed to timer
@@ -2447,14 +2499,17 @@ also unconditionally accepts any <code class="idl"><a data-link-type="idl" href=
    <p>At the beginning of step 5, insert the following steps:</p>
    <ol>
     <li data-md>
-     <p>Let <var>value</var> be the result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string④">Get Trusted Type compliant string</a> algorithm, with</p>
+     <p>Let <var>value</var> be the result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string④">Get Trusted Type compliant string</a> algorithm, with the following arguments:</p>
      <ul>
       <li data-md>
-       <p><var>global</var> set to the <var>eventTarget</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global⑦">relevant global object</a>,</p>
+       <p><var>value</var> as <var>input</var>,</p>
       <li data-md>
-       <p><var>input</var> set to <var>value</var>,</p>
+       <p><code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①①">TrustedScript</a></code> as <var>expectedType</var>,</p>
       <li data-md>
-       <p><var>expectedType</var> set to <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①①">TrustedScript</a></code>.</p>
+       <p><var>sink</var> being the result of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-concatenate" id="ref-for-string-concatenate②">concatenating</a> the list « <var>element</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-local-name" id="ref-for-concept-element-local-name②">local name</a>, <var>localName</var> » with <code>"."</code> as a <var>separator</var>.</p>
+       <p class="note" role="note"><span>Note:</span> For example, <code>document.createElement('div').onclick = value</code> will result in <var>sink</var> being <code>'div.onclick'</code>.</p>
+      <li data-md>
+       <p><var>eventTarget</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global⑦">relevant global object</a> as <var>global</var>,</p>
      </ul>
     <li data-md>
      <p>If the algorithm throws an error, abort these steps.</p>
@@ -2545,7 +2600,7 @@ returns <code>"Blocked"</code> if the <a data-link-type="dfn" href="#injection-s
       <li data-md>
        <p>Set <var>violation</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation-resource" id="ref-for-violation-resource">resource</a> to <code>"trusted-types-sink"</code>.</p>
       <li data-md>
-       <p>Let <var>sample</var> be the result of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-concatenate" id="ref-for-string-concatenate">concatenating</a> the list &lt;&lt; <var>sink</var>, <var>source</var> >> using space (<code>"\x20"</code>) as a <var>separator</var>.</p>
+       <p>Let <var>sample</var> be the result of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-concatenate" id="ref-for-string-concatenate③">concatenating</a> the list « <var>sink</var>, <var>source</var> « using space (<code>"\x20"</code>) as a <var>separator</var>.</p>
       <li data-md>
        <p>Set <var>violation</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation-sample" id="ref-for-violation-sample">sample</a> to the substring of <var>sample</var>, containing its first 40 characters.</p>
       <li data-md>
@@ -2642,6 +2697,8 @@ throws an "<code>EvalError</code>" if not:
         <p><var>calleeRealm</var> as <var>global</var>,</p>
        <li data-md>
         <p><var>source</var> as <var>input</var>,</p>
+       <li data-md>
+        <p><code>"eval"</code> as <var>sink</var>,</p>
        <li data-md>
         <p><code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①②">TrustedScript</a></code> as <var>expectedType</var>.</p>
       </ul>
@@ -3205,8 +3262,21 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <a href="https://dom.spec.whatwg.org/#context-object">https://dom.spec.whatwg.org/#context-object</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-context-object">2.3.1. TrustedTypePolicyFactory</a> <a href="#ref-for-context-object①">(2)</a>
-    <li><a href="#ref-for-context-object②">2.4.2. TrustedTypes extended attribute</a> <a href="#ref-for-context-object③">(2)</a> <a href="#ref-for-context-object④">(3)</a> <a href="#ref-for-context-object⑤">(4)</a>
-    <li><a href="#ref-for-context-object⑥">4.1.6. Enforcement in timer functions</a>
+    <li><a href="#ref-for-context-object②">2.4.2. TrustedTypes extended attribute</a> <a href="#ref-for-context-object③">(2)</a> <a href="#ref-for-context-object④">(3)</a> <a href="#ref-for-context-object⑤">(4)</a> <a href="#ref-for-context-object⑥">(5)</a> <a href="#ref-for-context-object⑦">(6)</a> <a href="#ref-for-context-object⑧">(7)</a> <a href="#ref-for-context-object⑨">(8)</a> <a href="#ref-for-context-object①⓪">(9)</a> <a href="#ref-for-context-object①①">(10)</a>
+    <li><a href="#ref-for-context-object①②">4.1.6. Enforcement in timer functions</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-namednodemap-element">
+   <a href="https://dom.spec.whatwg.org/#concept-namednodemap-element">https://dom.spec.whatwg.org/#concept-namednodemap-element</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-namednodemap-element">2.4.2. TrustedTypes extended attribute</a> <a href="#ref-for-concept-namednodemap-element①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-element-local-name">
+   <a href="https://dom.spec.whatwg.org/#concept-element-local-name">https://dom.spec.whatwg.org/#concept-element-local-name</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-element-local-name">2.4.2. TrustedTypes extended attribute</a> <a href="#ref-for-concept-element-local-name①">(2)</a>
+    <li><a href="#ref-for-concept-element-local-name②">4.1.7. Enforcement in event handler content attributes</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-node-textcontent">
@@ -3405,7 +3475,9 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
   <aside class="dfn-panel" data-for="term-for-string-concatenate">
    <a href="https://infra.spec.whatwg.org/#string-concatenate">https://infra.spec.whatwg.org/#string-concatenate</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-string-concatenate">4.4.2. Should sink type mismatch violation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-string-concatenate">2.4.2. TrustedTypes extended attribute</a> <a href="#ref-for-string-concatenate①">(2)</a>
+    <li><a href="#ref-for-string-concatenate②">4.1.7. Enforcement in event handler content attributes</a>
+    <li><a href="#ref-for-string-concatenate③">4.4.2. Should sink type mismatch violation be blocked by Content Security Policy?</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-list-contain">
@@ -3495,6 +3567,12 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
     <li><a href="#ref-for-Unforgeable①③">4.1.3. Extensions to the Location interface</a> <a href="#ref-for-Unforgeable①④">(2)</a> <a href="#ref-for-Unforgeable①⑤">(3)</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-dfn-attribute">
+   <a href="https://heycam.github.io/webidl/#dfn-attribute">https://heycam.github.io/webidl/#dfn-attribute</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dfn-attribute">2.4.2. TrustedTypes extended attribute</a> <a href="#ref-for-dfn-attribute①">(2)</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-idl-boolean">
    <a href="https://heycam.github.io/webidl/#idl-boolean">https://heycam.github.io/webidl/#idl-boolean</a><b>Referenced in:</b>
    <ul>
@@ -3516,7 +3594,13 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
   <aside class="dfn-panel" data-for="term-for-dfn-operation">
    <a href="https://heycam.github.io/webidl/#dfn-operation">https://heycam.github.io/webidl/#dfn-operation</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dfn-operation">2.4.2. TrustedTypes extended attribute</a> <a href="#ref-for-dfn-operation①">(2)</a>
+    <li><a href="#ref-for-dfn-operation">2.4.2. TrustedTypes extended attribute</a> <a href="#ref-for-dfn-operation①">(2)</a> <a href="#ref-for-dfn-operation②">(3)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dfn-read-only">
+   <a href="https://heycam.github.io/webidl/#dfn-read-only">https://heycam.github.io/webidl/#dfn-read-only</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dfn-read-only">2.4.2. TrustedTypes extended attribute</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dfn-xattr-identifier">
@@ -3552,6 +3636,8 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
      <li><span class="dfn-paneled" id="term-for-text" style="color:initial">Text</span>
      <li><span class="dfn-paneled" id="term-for-concept-child-text-content" style="color:initial">child text content</span>
      <li><span class="dfn-paneled" id="term-for-context-object" style="color:initial">context object</span>
+     <li><span class="dfn-paneled" id="term-for-concept-namednodemap-element" style="color:initial">element</span>
+     <li><span class="dfn-paneled" id="term-for-concept-element-local-name" style="color:initial">local name</span>
      <li><span class="dfn-paneled" id="term-for-dom-node-textcontent" style="color:initial">textContent</span>
     </ul>
    <li>
@@ -3609,10 +3695,12 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
      <li><span class="dfn-paneled" id="term-for-exceptiondef-typeerror" style="color:initial">TypeError</span>
      <li><span class="dfn-paneled" id="term-for-idl-USVString" style="color:initial">USVString</span>
      <li><span class="dfn-paneled" id="term-for-Unforgeable" style="color:initial">Unforgeable</span>
+     <li><span class="dfn-paneled" id="term-for-dfn-attribute" style="color:initial">attribute</span>
      <li><span class="dfn-paneled" id="term-for-idl-boolean" style="color:initial">boolean</span>
      <li><span class="dfn-paneled" id="term-for-dfn-extended-attribute" style="color:initial">extended attribute</span>
      <li><span class="dfn-paneled" id="term-for-idl-long" style="color:initial">long</span>
      <li><span class="dfn-paneled" id="term-for-dfn-operation" style="color:initial">operation</span>
+     <li><span class="dfn-paneled" id="term-for-dfn-read-only" style="color:initial">read only</span>
      <li><span class="dfn-paneled" id="term-for-dfn-xattr-identifier" style="color:initial">takes an identifier</span>
     </ul>
   </ul>
@@ -3830,7 +3918,6 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <div class="issue"> Update when workers have TT.<a href="#issue-b92c7a17①"> ↵ </a></div>
    <div class="issue"> Populate TypeError.<a href="#issue-540495fa"> ↵ </a></div>
    <div class="issue"> Synchronize when TT are added to workers (perhaps use "has a CSP list"?)<a href="#issue-74c24ff1"> ↵ </a></div>
-   <div class="issue"> Get the sink from the callers.<a href="#issue-22c7f802"> ↵ </a></div>
    <div class="issue"> Populate the TypeError object.<a href="#issue-50a0f296"> ↵ </a></div>
    <div class="issue"> <a href="https://heycam.github.io/webidl/#TreatNullAs">TreatNullAs=EmptyString</a> is confusing.
 See note "It should not be used in specifications unless ...".
