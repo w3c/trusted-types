@@ -337,7 +337,7 @@ describe('v2 TrustedTypes', () => {
         expect(() => p.createScriptURL('foo')).toThrow();
       });
 
-      it('get their inputs casted to a string', () => {
+      it('get their first argument casted to a string', () => {
         const p = TrustedTypes.createPolicy('policy', {
           createHTML(s) {
             return typeof s;
@@ -345,6 +345,17 @@ describe('v2 TrustedTypes', () => {
         });
 
         expect('' + p.createHTML({})).toEqual('string');
+      });
+
+      it('support multiple arguments', () => {
+        const p = TrustedTypes.createPolicy('policy', {
+          createHTML(...args) {
+            return [].slice.call(args).join(' ');
+          },
+        });
+
+        expect('' + p.createHTML('a', 'b', {toString: () => 'c'}))
+            .toEqual('a b c');
       });
 
       it('can be used selectively', () => {
