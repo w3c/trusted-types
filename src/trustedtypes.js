@@ -432,8 +432,9 @@ export const trustedTypesBuilderTestOnly = function() {
       const method = innerPolicy[methodName] || rejectInputFn;
       const policySpecificType = freeze(new Ctor(creatorSymbol, policyName));
       const factory = {
-        [methodName](s) { // Trick to get methodName to show in stacktrace.
-          let result = method('' + s);
+        [methodName](s, ...args) {
+          // Trick to get methodName to show in stacktrace.
+          let result = method('' + s, ...args);
           if (result === undefined || result === null) {
             result = '';
           }

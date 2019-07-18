@@ -557,7 +557,7 @@ describe('TrustedTypesEnforcer', function() {
           enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
           enforcer.install();
           TrustedTypes.createPolicy('default', {
-            createScript: (s) => '/*' + s + '*/',
+            createScript: (s) => `/*${s}*/`,
           });
         });
 
@@ -646,6 +646,27 @@ describe('TrustedTypesEnforcer', function() {
           expect(s.childNodes[2]).toBe(span); // untouched by the wrapper
 
           expect(s.childNodes[3].textContent).toEqual('/*literaltext*/');
+        });
+
+        it('and is passed script.text as a sink name', () => {
+          enforcer.uninstall();
+          TrustedTypes.createPolicy('default', {
+            createScript: (_, sink) => `/*${sink}*/`,
+          });
+          enforcer.install();
+
+          const s = document.createElement('script');
+          const text = document.createTextNode('alert("hello");');
+
+          let addedNode;
+
+          expect(() => {
+            addedNode = s.appendChild(text);
+          }).not.toThrow();
+
+          expect(addedNode).not.toBe(text);
+          expect(addedNode.textContent).toEqual('/*script.text*/');
+          expect(s.textContent).toEqual('/*script.text*/');
         });
       });
 
@@ -1500,6 +1521,45 @@ describe('TrustedTypesEnforcer', function() {
       el.innerHTML = TEST_HTML;
 
       expect(el.innerHTML).toEqual('fallback:' + TEST_HTML);
+    });
+
+    it('is passed the sink name', function() {
+      enforcer.uninstall();
+      const mockOpen = spyOn(window, 'open');
+      const mockSetTimeout = spyOn(window, 'setTimeout');
+      enforcer.install();
+
+      TrustedTypes.createPolicy('default', {
+        'createHTML': (s, sink) => {
+          return `fallback:${sink}:${s}`;
+        },
+        'createURL': (s, sink) => {
+          return `${s}#${sink}`;
+        },
+        'createScript': (s, sink) => {
+          return `//${sink}`;
+        },
+
+      });
+      const el = document.createElement('div');
+      el.innerHTML = TEST_HTML;
+
+      expect(el.innerHTML).toEqual('fallback:div.innerHTML:' + TEST_HTML);
+
+
+      expect(function() {
+        window.open('/', 'foo', 'bar');
+      }).not.toThrow();
+
+      expect(function() {
+        setTimeout('/**/', 1);
+      }).not.toThrow();
+
+      expect(mockOpen).toHaveBeenCalledWith(
+          jasmine.stringMatching('/#Window.open'), 'foo', 'bar');
+
+      expect(mockSetTimeout).toHaveBeenCalledWith(
+          jasmine.stringMatching('//Window.setTimeout'), 1);
     });
 
     it('is not used on typed values', function() {
