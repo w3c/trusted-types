@@ -604,12 +604,18 @@ callback CreateScriptURLCallback = USVString (DOMString input);
 
 *This section is not normative.*
 
-One of the policies, the policy with a [=TrustedTypePolicy/name=] `"default"`, is special; while all other
-policies have to be called explicitly to create a Trusted Type object,
-the default policy can also be called implicitly by the user agent. It
-allows the application to define the rules that should be run as a
-fallback, in case an [=injection sink=] is passed a string (instead of a
-Trusted Type object).
+One of the policies, the policy with a [=TrustedTypePolicy/name=] `"default"`, is special;
+When an [=injection sink=] is passed a string (instead of a
+Trusted Type object), this policy will be implicitly called by
+the user agent with the string value as the first argument, and the sink name
+as a second argument.
+
+This allows the application to define a fallback behavior to use instead of
+causing a violation. The intention is to allow the applications to sanitize the
+data "as a last resort", or throw if a safe value cannot be created.
+
+If the default policy doesn't exist, of if it throws, it will cause a CSP
+violation, and a TypeError will be thrown.
 
 Note: This optional behavior allows for introducing Trusted Type [=enforcement=]
 to applications that are still using legacy code that uses injection sinks.
@@ -630,15 +636,15 @@ the default policy is applied.
 // Content-Security-Policy: trusted-types default
 
 TrustedTypes.createPolicy('default', {
-  createScriptURL: (s) => {
+  createScriptURL: (s, sink) => {
     console.log("Please don't use this");
-    return s + "?default-policy-used";
+    return s + "?default-policy-used&sink=" + encodeURIComponent(sink);
   }
 });
 
 aScriptElement.src = "https://cdn.example/script.js";
 console.log(aScriptElement.src);
-// https://cdn.example/script.js?default-policy-used
+// https://cdn.example/script.js?default-policy-used&sink=script.src
 </xmp>
 </div>
 

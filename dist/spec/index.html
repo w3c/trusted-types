@@ -2061,12 +2061,16 @@ values into trusted values. These functions do not create <a data-link-type="dfn
 </pre>
    <h4 class="heading settled" data-level="2.3.4" id="default-policy-hdr"><span class="secno">2.3.4. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="default-policy">Default policy</dfn></span><a class="self-link" href="#default-policy-hdr"></a></h4>
    <p><em>This section is not normative.</em></p>
-   <p>One of the policies, the policy with a <a data-link-type="dfn" href="#trustedtypepolicy-name" id="ref-for-trustedtypepolicy-name">name</a> <code>"default"</code>, is special; while all other
-policies have to be called explicitly to create a Trusted Type object,
-the default policy can also be called implicitly by the user agent. It
-allows the application to define the rules that should be run as a
-fallback, in case an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink⑧">injection sink</a> is passed a string (instead of a
-Trusted Type object).</p>
+   <p>One of the policies, the policy with a <a data-link-type="dfn" href="#trustedtypepolicy-name" id="ref-for-trustedtypepolicy-name">name</a> <code>"default"</code>, is special;
+When an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink⑧">injection sink</a> is passed a string (instead of a
+Trusted Type object), this policy will be implicitly called by
+the user agent with the string value as the first argument, and the sink name
+as a second argument.</p>
+   <p>This allows the application to define a fallback behavior to use instead of
+causing a violation. The intention is to allow the applications to sanitize the
+data "as a last resort", or throw if a safe value cannot be created.</p>
+   <p>If the default policy doesn’t exist, of if it throws, it will cause a CSP
+violation, and a TypeError will be thrown.</p>
    <p class="note" role="note"><span>Note:</span> This optional behavior allows for introducing Trusted Type <a data-link-type="dfn" href="#enforcement" id="ref-for-enforcement②">enforcement</a> to applications that are still using legacy code that uses injection sinks.
 Needless to say, this policy should
 necessarily be defined with very strict rules not to introduce a DOM
@@ -2083,15 +2087,15 @@ the default policy is applied.</p>
 <pre class="highlight"><c- c1>// Content-Security-Policy: trusted-types default</c->
 
 TrustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- t>'default'</c-><c- p>,</c-> <c- p>{</c->
-  createScriptURL<c- o>:</c-> <c- p>(</c->s<c- p>)</c-> <c- p>=></c-> <c- p>{</c->
+  createScriptURL<c- o>:</c-> <c- p>(</c->s<c- p>,</c-> sink<c- p>)</c-> <c- p>=></c-> <c- p>{</c->
     console<c- p>.</c->log<c- p>(</c-><c- u>"Please don’t use this"</c-><c- p>);</c->
-    <c- k>return</c-> s <c- o>+</c-> <c- u>"?default-policy-used"</c-><c- p>;</c->
+    <c- k>return</c-> s <c- o>+</c-> <c- u>"?default-policy-used&amp;sink="</c-> <c- o>+</c-> encodeURIComponent<c- p>(</c->sink<c- p>);</c->
   <c- p>}</c->
 <c- p>});</c->
 
 aScriptElement<c- p>.</c->src <c- o>=</c-> <c- u>"https://cdn.example/script.js"</c-><c- p>;</c->
 console<c- p>.</c->log<c- p>(</c->aScriptElement<c- p>.</c->src<c- p>);</c->
-<c- c1>// https://cdn.example/script.js?default-policy-used</c->
+<c- c1>// https://cdn.example/script.js?default-policy-used&amp;sink=script.src</c->
 </pre>
    </div>
    <h3 class="heading settled" data-level="2.4" id="enforcement-hdr"><span class="secno">2.4. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="enforcement">Enforcement</dfn></span><a class="self-link" href="#enforcement-hdr"></a></h3>
