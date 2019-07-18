@@ -661,20 +661,41 @@ algorithms in other specifiactions, see [[#integrations]].
 
 To annotate the [=injection sink=] functions that require Trusted Types, we introduce
 <dfn data-dfn-type="extended-attribute" data-x="TrustedTypes" data-lt="TrustedTypes"><code>[TrustedTypes]</code></dfn>
-IDL [=extended attributes|extended attribute=]. Its presence indicates that the relevant setter algorithm is to be supplemented with additional
-enforcing steps (if enforcing is enabled).
+IDL [=extended attributes|extended attribute=]. Its presence indicates that the relevant construct is to be supplemented with additional
+Trusted Types enforcement logic (if enforcing is enabled).
 
 The {{TrustedTypes}} extended attribute [=extended attribute/takes an identifier=] as an argument.
 The only valid values for the identifier are {{TrustedHTML}}, {{TrustedScript}}, {{TrustedScriptURL}} or {{TrustedURL}}.
-This extended attribute must not appear on anything other than an attribute or an [=operation=] argument.
-Additionally, it must not appear on readonly attributes.
+This extended attribute must not appear on anything other than an [=attribute=] or an [=operation=] argument.
+Additionally, it must not appear on [=read only=] attributes.
 
 When the extended attribute appears on an attribute, the setter for that attribute must run the following steps in place of the ones specified in their description:
 
  1. If [=context object=]'s [=relevant global object=] has a [=Window/trusted type policy factory=]:
 
     Issue: Update when workers have TT.
-    1. Set |value| to the result of running the [$Get Trusted Type compliant string$] algorithm, with |input| being the new value, |expectedType| being the {{TrustedType}} extended attribute identifier, and |global| being the [=context object=]'s [=relevant global object=].
+    1. If the [=context object=] is an [=Element=], let |objectName| be the [=context object=]'s [=Element/local name=]; Otherwise, let |objectName| be the [=context object=]'s constructor name.
+    1. Set |sink| to the result of [=concatenating=] the list &laquo; |objectName|, [=attribute=] identifier. &raquo; with the `"."` as |separator|.
+        <div class="example">
+        For example, the following annotation and JavaScript code:
+        <pre highlight=idl>
+        partial interface mixin HTMLHyperlinkElementUtils {
+          [CEReactions, TrustedTypes=TrustedURL] stringifier attribute URLString href;
+        };
+        </pre>
+        <pre highlight=js>
+        document.createElement('a').href = foo;
+        document.createElement('a').setAttribute('HREF', foo);
+        </pre>
+        causes the |sink| value to be `"a.href"`.
+        </div>
+    1. Set |value| to the result of running the [$Get Trusted Type compliant string$] algorithm, passing the following arguments:
+
+       * the new value as |input|,
+       * {{TrustedType}} extended attribute identifier as |expectedType|,
+       * |sink| as |sink|,
+       * [=context object=]'s [=relevant global object=] as |global|.
+
     1. If an exception was thrown, rethrow exception and abort further steps.
  1. Run the originally specified steps for this construct, using |value| as a new value to set.
 
@@ -685,7 +706,28 @@ When the extended attribute appears on an [=operation=] argument, before its ope
  1. If [=context object=]'s [=relevant global object=] has a [=Window/trusted type policy factory=]:
 
     Issue: Update when workers have TT.
-    1. Set the new argument value to the result of running the [$Get Trusted Type compliant string$] algorithm, with |input| being the argument value, |expectedType| being the {{TrustedType}} extended attribute identifier, and |global| being the [=context object=]'s [=relevant global object=].
+    1. If the [=context object=] is an [=Element=], let |objectName| be the [=context object=]'s [=Element/local name=]; Otherwise, let |objectName| be the [=context object=]'s constructor name.
+    1. Set |sink| to the result of [=concatenating=] the list &laquo; |objectName|, [=operation=] identifier. &raquo; with the `"."` as |separator|.
+        <div class="example">
+        For example, the following annotation and JavaScript code:
+        <pre highlight=idl>
+        partial interface Element {
+          void insertAdjacentHTML(DOMString position, [TrustedTypes=TrustedHTML] HTMLString text);
+        };
+        </pre>
+        <pre highlight=js>
+        document.createElement('a').insertAdjacentHTML('beforebegin', foo);
+        </pre>
+        causes the |sink| value to be `"a.insertAdjacentHTML"`.
+        </div>
+
+    1. Set the new argument value to the result of running the [$Get Trusted Type compliant string$] algorithm, passing the following arguments:
+
+       * the argument value as |input|,
+       * {{TrustedType}} extended attribute identifier as |expectedType|,
+       * |sink| as |sink|,
+       * [=context object=]'s [=relevant global object=] as |global|.
+
     1. If an exception was thrown, rethrow exception and abort further steps.
  1. Invoke the originally specified steps for the operation.
 
@@ -780,15 +822,12 @@ This algorithm will return a string that can be assigned to a DOM
 [=injection sink=], optionally unwrapping it from a matching [=Trusted Type=].
 It will ensure that the Trusted Type [=enforcement=] rules were respected.
 
-Given a {{TrustedType}} type (|expectedType|), a  [=Realm/global object=] (|global|),
-and a {{TrustedType}} or a string (|input|) run these steps:
+Given a {{TrustedType}} type (|expectedType|), a [=Realm/global object=] (|global|),
+{{TrustedType}} or a string (|input|), and a string (|sink|), run these steps:
 
 1.  Assert: |global| is a {{Window}}.
 
     Issue: Synchronize when TT are added to workers (perhaps use "has a CSP list"?)
-1.  Let |sink| be an empty string.
-
-    Issue: Get the sink from the callers.
 1.  Let |cspList| be the |global|'s <a>CSP list</a>.
 1.  If |cspList| does not contain a [[CSP3#content-security-policy-object|policy]]
     which <a>directive set</a> containing a [[CSP3#directives|directive]] with a name `"trusted-types"`,
@@ -977,7 +1016,7 @@ partial interface mixin HTMLScriptElement : HTMLElement {
 Additionally, this document defines [$insert text node validation steps$] for {{HTMLScriptElement}} to ascertain that text nodes inserted to {{HTMLScriptElement}} elements will satisfy Trusted Types restrictions:
 
 1.  Let |text| be |node|'s [=child text content=].
-1.  Let |convertedText| be the result of running [$Get Trusted Type compliant string$], passing |parent|'s [=relevant global object=] as |global|, {{TrustedScript}} as |expectedType| and |text| as |input|.
+1.  Let |convertedText| be the result of running [$Get Trusted Type compliant string$], passing |parent|'s [=relevant global object=] as |global|, {{TrustedScript}} as |expectedType|, |text| as |input| and `"script.text"` as |sink|.
     If the algorithm threw an error, rethrow the error.
 
     Note: If Trusted Types are not enforced, this algorithm will return early and return |input| unmodified.
@@ -1006,6 +1045,9 @@ add this step between 7.1 and 7.2:
     *   |global| set to the [=context object=]'s [=relevant global object=].
     *   |input| set to the first method argument, and
     *   |expectedType| set to {{TrustedScript}}.
+    *   |sink| set to `"Window.setInterval"` if <var ignore>repeat</var> is true, `"Window.setTimeout"` otherwise.
+
+        Note: This matches the logic that the extended attribute would apply.
 
 Note: This makes sure that a {{TrustedScript}} is passed to timer
 functions in place of a string when Trusted Types are enforced, but
@@ -1019,10 +1061,14 @@ This document modifies the
 At the beginning of step 5, insert the following steps:
 
 1.  Let |value| be the result of executing the
-    [$Get Trusted Type compliant string$] algorithm, with
-    *   |global| set to the <var ignore>eventTarget</var>'s [=relevant global object=],
-    *   |input| set to |value|,
-    *   |expectedType| set to {{TrustedScript}}.
+    [$Get Trusted Type compliant string$] algorithm, with the following arguments:
+    *   |value| as |input|,
+    *   {{TrustedScript}} as |expectedType|,
+    *   |sink| being the result of [=concatenating=] the list &laquo; |element|'s [=Element/local name=], |localName| &raquo; with `"."` as a |separator|.
+
+        Note: For example, `document.createElement('div').onclick = value` will result in |sink| being `'div.onclick'`.
+
+    *   <var ignore>eventTarget</var>'s [=relevant global object=] as |global|,
 1.  If the algorithm throws an error, abort these steps.
 
 ## Integration with DOM ## {#integration-with-dom}
@@ -1135,7 +1181,7 @@ returns `"Blocked"` if the [=injection sink=] requires a [=Trusted Type=], and
         [[CSP#create-violation-for-global|Create a violation object for global, policy, and directive]]
         on |global|, |policy| and `"trusted-types"`
     1. Set |violation|'s [=violation/resource=] to `"trusted-types-sink"`.
-    1. Let |sample| be the result of [=concatenate|concatenating=] the list << |sink|, |source| >> using space (`"\x20"`) as a |separator|.
+    1. Let |sample| be the result of [=concatenating=] the list &laquo; |sink|, |source| &laquo; using space (`"\x20"`) as a |separator|.
     1. Set |violation|'s [=violation/sample=] to the substring of |sample|, containing its first 40 characters.
     1.  Execute [[CSP#report-violation|Report a violation]] on |violation|.
     1.  If |policy|'s [=policy/disposition=] is `"enforce"`, then set |result| to
@@ -1222,6 +1268,7 @@ throws an "`EvalError`" if not:
     [$Get Trusted Type compliant string$] algorithm, with:
     *   |calleeRealm| as |global|,
     *   |source| as |input|,
+    *   `"eval"` as |sink|,
     *   {{TrustedScript}} as |expectedType|.</ins>
 
 2.  <ins>If the algorithm throws an error, throw an {{EvalError}}.</ins>
