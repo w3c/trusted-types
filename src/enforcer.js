@@ -499,7 +499,8 @@ export class TrustedTypesEnforcer {
         let fallbackValue;
         let exceptionThrown;
         try {
-          fallbackValue = this.maybeCallDefaultPolicy_('TrustedScript', arg);
+          fallbackValue = this.maybeCallDefaultPolicy_(
+              'TrustedScript', arg, 'script.text');
         } catch (e) {
           exceptionThrown = true;
         }
@@ -531,7 +532,7 @@ export class TrustedTypesEnforcer {
       let exceptionThrown;
       try {
         fallbackValue = this.maybeCallDefaultPolicy_('TrustedScript',
-            args[1]);
+            args[1], 'script.text');
       } catch (e) {
         exceptionThrown = true;
       }
@@ -759,10 +760,12 @@ export class TrustedTypesEnforcer {
    * Calls a default policy.
    * @param {string} typeName Type name to attempt to produce from a value.
    * @param {*} value The value to pass to a default policy
+   * @param {string} sink The sink name that the default policy will be called
+   *   with.
    * @throws {Error} If the default policy throws, or not exist.
    * @return {Function} The trusted value.
    */
-  maybeCallDefaultPolicy_(typeName, value) {
+  maybeCallDefaultPolicy_(typeName, value, sink = '') {
     // Apply a fallback policy, if it exists.
     const fallbackPolicy = getDefaultPolicy.call(TrustedTypes);
     if (!fallbackPolicy) {
@@ -771,7 +774,7 @@ export class TrustedTypesEnforcer {
     if (!TYPE_CHECKER_MAP.hasOwnProperty(typeName)) {
       throw new Error();
     }
-    return fallbackPolicy[TYPE_PRODUCER_MAP[typeName]](value);
+    return fallbackPolicy[TYPE_PRODUCER_MAP[typeName]](value, '' + sink);
   }
 
   /**
@@ -821,8 +824,12 @@ export class TrustedTypesEnforcer {
     // Apply a fallback policy, if it exists.
     let fallbackValue;
     let exceptionThrown;
+    const objName = context instanceof Element ?
+        context.localName :
+        getConstructorName_(context ? context.constructor : window.constructor);
     try {
-      fallbackValue = this.maybeCallDefaultPolicy_(typeName, value);
+      fallbackValue = this.maybeCallDefaultPolicy_(
+          typeName, value, objName + '.' + propertyName);
     } catch (e) {
       exceptionThrown = true;
     }
