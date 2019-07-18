@@ -1525,16 +1525,12 @@ describe('TrustedTypesEnforcer', function() {
 
     it('is passed the sink name', function() {
       enforcer.uninstall();
-      const mockOpen = spyOn(window, 'open');
       const mockSetTimeout = spyOn(window, 'setTimeout');
       enforcer.install();
 
       TrustedTypes.createPolicy('default', {
         'createHTML': (s, sink) => {
           return `fallback:${sink}:${s}`;
-        },
-        'createURL': (s, sink) => {
-          return `${s}#${sink}`;
         },
         'createScript': (s, sink) => {
           return `//${sink}`;
@@ -1546,17 +1542,9 @@ describe('TrustedTypesEnforcer', function() {
 
       expect(el.innerHTML).toEqual('fallback:div.innerHTML:' + TEST_HTML);
 
-
       expect(function() {
-        window.open('/', 'foo', 'bar');
+        window.setTimeout('/**/', 1);
       }).not.toThrow();
-
-      expect(function() {
-        setTimeout('/**/', 1);
-      }).not.toThrow();
-
-      expect(mockOpen).toHaveBeenCalledWith(
-          jasmine.stringMatching('/#Window.open'), 'foo', 'bar');
 
       expect(mockSetTimeout).toHaveBeenCalledWith(
           jasmine.stringMatching('//Window.setTimeout'), 1);
