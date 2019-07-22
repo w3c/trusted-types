@@ -368,6 +368,13 @@ reference - see [[#extensions-to-the-window-interface]].
     [Unforgeable] boolean isScriptURL(any value);
     [Unforgeable] boolean isURL(any value);
     [Unforgeable] readonly attribute TrustedHTML emptyHTML;
+    string? getAttributeType(
+        DOMString localName, DOMString attribute,
+        optional DOMString elementNs = "", optional DOMString attributeNs = "");
+    string? getPropertyType(
+        DOMString localName, DOMString property,
+        optional DOMString elementNs = "");
+
 };
 </pre>
 
@@ -411,6 +418,28 @@ initially empty.
     <dd>[=context object=]'s [=relevant global object=]</dd>
     </dl>
 
+    <div class="example" id="create-and-used-unexposed-policy">
+    <xmp highlight="js">
+    const myPolicy = TrustedTypes.createPolicy('myPolicy', {
+      // This security-critical code needs a security review;
+      // a flaw in this code could cause DOM XSS.
+      createHTML(input) { return ASanitizer.sanitize(input) },
+      createScriptURL(input) {
+        const u = new URL(dirty, document.baseURI);
+        if (APPLICATION_CONFIG.scriptOrigins.includes(u.origin)) {
+          return u.href;
+        }
+        throw new Error('Cannot load scripts from this origin');
+      },
+    });
+
+    document.querySelector("#foo").innerHTML = myPolicy.createHTML(aValue);
+    scriptElement.src = myPolicy.createScriptURL(
+        'https://scripts.myapp.example/script.js');
+    </xmp>
+    </div>
+
+
 : <dfn>getPolicyNames()</dfn>
 ::  This function returns the names of all the policies that were alaredy created.
 
@@ -423,6 +452,7 @@ initially empty.
     TrustedTypes.createPolicy('bar', ...);
     TrustedTypes.getPolicyNames(); // ['foo', 'bar']
     </xmp>
+    </div>
 
 
 : <dfn>isHTML(value)</dfn>
@@ -456,27 +486,60 @@ initially empty.
 : <dfn>isURL(value)</dfn>
 :: Returns true if value is an instance of {{TrustedURL}} and has its `[[Data]]` internal slot set, false otherwise.
 
-</div>
+: <dfn>getPropertyType(localName, attribute, elementNs)</dfn>
+:: Allows the authors to check if a Trusted Type is required for a given [=Element=]'s
+    property (IDL attribute).
 
-<div class="example" id="create-and-used-unexposed-policy">
-<xmp highlight="js">
-const myPolicy = TrustedTypes.createPolicy('myPolicy', {
-  // This security-critical code needs a security review;
-  // a flaw in this code could cause DOM XSS.
-  createHTML(input) { return ASanitizer.sanitize(input) },
-  createScriptURL(input) {
-    const u = new URL(dirty, document.baseURI);
-    if (APPLICATION_CONFIG.scriptOrigins.includes(u.origin)) {
-      return u.href;
-    }
-    throw new Error('Cannot load scripts from this origin');
-  },
-});
+    This function returns the result of the following algorithm:
 
-document.querySelector("#foo").innerHTML = myPolicy.createHTML(aValue);
-scriptElement.src = myPolicy.createScriptURL(
-    'https://scripts.myapp.example/script.js');
-</xmp>
+    1. Set |localName| to |localName| in [=ASCII lowercase=].
+    1. If |elementNs| is an empty string, set |elementNs| to [=HTML namespace=].
+    1. Let |interface| be the [=element interface=] for |localName| and |elementNs|.
+    1. If |interface| has an IDL [=attribute=] member which [=identifier=] is |attribute|, and
+        {{TrustedTypes}} IDL extended attribute appears on that attribute, return
+        stringified {{TrustedTypes}}'s identifier and abort futher steps.
+
+        Note: This also takes into account all members of [=interface mixins=] that
+        |interface| [=includes=].
+
+    1. Return undefined.
+
+    <div class="example" id="get-property-type-example">
+    <xmp highlight="js">
+    TrustedTypes.getPropertyType('div', 'innerHTML'); // "TrustedHTML"
+    TrustedTypes.getPropertyType('form', 'formAction'); // "TrustedURL"
+    TrustedTypes.getPropertyType('foo', 'bar'); // undefined
+    </xmp>
+    </div>
+
+
+: <dfn>getAtributeType(localName, attribute, elementNs, attributeNs)</dfn>
+:: Allows the authors to check if, (and if so, which) Trusted Type is required
+    for a given [=Element=]'s [=content attribute=], such that later on the call
+    to `Element.setAttribute` passes the correct argument type.
+
+    This function returns the result of the following algorithm:
+
+    1. Set |localName| to |localName| in [=ASCII lowercase=].
+    1. Set |attribute| to |attribute| in [=ASCII lowercase=].
+    1. If |elementNs| is an empty string, set |elementNs| to [=HTML namespace=].
+    1. If |attributeNs| is an empty string, set |attributeNs| to |elementNs|'s value.
+    1. Let |interface| be the [=element interface=] for |localName| and |elementNs|.
+    1. If |interface| does not have an IDL [=attribute=] that [=reflects=] a content attribute with
+        |localName| [=attribute/local name=] and |attributeNs| [=attribute/namespace=],
+        return undefined and abort further steps. Otherwise, let |idlAttribute| be that IDL [=attribute=].
+    1. If {{TrustedTypes}} IDL extended attribute appears on |idlAttribute|, return
+        stringified {{TrustedTypes}}'s identifier and abort futher steps.
+    1. Return undefined.
+
+    <div class="example" id="get-attribute-type-example">
+    <xmp highlight="js">
+    TrustedTypes.getPropertyType('a', 'HREF'); // "TrustedURL"
+    TrustedTypes.getPropertyType('form', 'formaction'); // "TrustedURL"
+    TrustedTypes.getPropertyType('foo', 'bar'); // undefined
+    </xmp>
+    </div>
+
 </div>
 
 <div dfn-type="attribute" dfn-for="TrustedTypePolicyFactory">
@@ -690,7 +753,7 @@ When the extended attribute appears on an attribute, the setter for that attribu
     Issue: Update when workers have TT.
     1. If the [=context object=] is an [=Element=], let |objectName| be the [=context object=]'s [=Element/local name=]; Otherwise, let |objectName| be the [=context object=]'s constructor name.
     1. Set |sink| to the result of [=concatenating=] the list &laquo; |objectName|, [=attribute=] identifier. &raquo; with the `"."` as |separator|.
-        <div class="example">
+        <div class="example" id="extended-attribute-attribute-example">
         For example, the following annotation and JavaScript code:
         <pre highlight=idl>
         partial interface mixin HTMLHyperlinkElementUtils {
@@ -722,7 +785,7 @@ When the extended attribute appears on an [=operation=] argument, before its ope
     Issue: Update when workers have TT.
     1. If the [=context object=] is an [=Element=], let |objectName| be the [=context object=]'s [=Element/local name=]; Otherwise, let |objectName| be the [=context object=]'s constructor name.
     1. Set |sink| to the result of [=concatenating=] the list &laquo; |objectName|, [=operation=] identifier. &raquo; with the `"."` as |separator|.
-        <div class="example">
+        <div class="example" id="extended-attribute-operation-example">
         For example, the following annotation and JavaScript code:
         <pre highlight=idl>
         partial interface Element {
