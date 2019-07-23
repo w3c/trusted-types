@@ -495,7 +495,7 @@ initially empty.
     1. Set |localName| to |localName| in [=ASCII lowercase=].
     1. If |elementNs| is an empty string, set |elementNs| to [=HTML namespace=].
     1. Let |interface| be the [=element interface=] for |localName| and |elementNs|.
-    1. If |interface| has an IDL [=attribute=] member which [=identifier=] is |attribute|, and
+    1. If |interface| has an IDL [=attribute=] member which identifier is |attribute|, and
         {{TrustedTypes}} IDL extended attribute appears on that attribute, return
         stringified {{TrustedTypes}}'s identifier and abort futher steps.
 
@@ -1120,12 +1120,38 @@ At the beginning of step 5, insert the following steps:
     [$Get Trusted Type compliant string$] algorithm, with the following arguments:
     *   |value| as |input|,
     *   {{TrustedScript}} as |expectedType|,
-    *   |sink| being the result of [=concatenating=] the list &laquo; |element|'s [=Element/local name=], |localName| &raquo; with `"."` as a |separator|.
+    *   |sink| being the result of [=concatenating=] the list &laquo; <var ignore>element</var>'s [=Element/local name=], |localName| &raquo; with `"."` as a |separator|.
 
         Note: For example, `document.createElement('div').onclick = value` will result in |sink| being `'div.onclick'`.
 
     *   <var ignore>eventTarget</var>'s [=relevant global object=] as |global|,
 1.  If the algorithm throws an error, abort these steps.
+
+Note: This also applies to events in [[SVG2#EventAttributes]].
+## Integration with SVG ## {#integration-with-svg}
+
+This document modifies the {{SVGScriptElement}} interface and {{SVGURIReference}} interfaces to enforce Trusted Types on those:
+
+<pre class="idl">
+partial interface SVGURIReference {
+  [SameObject, TrustedTypes=TrustedURL] readonly attribute SVGAnimatedString href;
+};
+
+partial interface mixin SVGScriptElement : SVGElement {
+ // overwrites the definition in SVGURIReference.
+ [TrustedTypes=TrustedScriptURL] readonly attribute ScriptURLString href;
+};
+</pre>
+
+Additionally, this document defines [$insert text node validation steps$] for {{SVGScriptElement}} to ascertain that text nodes inserted to {{SVGScriptElement}} elements will satisfy Trusted Types restrictions:
+
+1.  Let |text| be |node|'s [=child text content=].
+1.  Let |convertedText| be the result of running [$Get Trusted Type compliant string$], passing |parent|'s [=relevant global object=] as |global|, {{TrustedScript}} as |expectedType|, |text| as |input| and `"script.text"` as |sink|.
+    If the algorithm threw an error, rethrow the error.
+
+    Note: If Trusted Types are not enforced, this algorithm will return early and return |input| unmodified.
+1.  Set |node|'s data to |convertedText|.
+
 
 ## Integration with DOM ## {#integration-with-dom}
 
