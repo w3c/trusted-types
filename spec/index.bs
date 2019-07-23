@@ -1028,15 +1028,7 @@ partial interface HTMLObjectElement : HTMLElement {
   [CEReactions, TrustedTypes=TrustedScriptURL] attribute DOMString codeBase; // obsolete
 };
 
-partial interface HTMLLinkElement : HTMLElement {
-  [CEReactions, TrustedTypes=TrustedURL] attribute URLString href;
-};
-
 partial interface HTMLFrameElement : HTMLElement { // obsolete
-  [CEReactions, TrustedTypes=TrustedURL] attribute URLString src;
-};
-
-partial interface HTMLImageElement : HTMLElement {
   [CEReactions, TrustedTypes=TrustedURL] attribute URLString src;
 };
 
@@ -1059,18 +1051,6 @@ partial interface mixin HTMLHyperlinkElementUtils {
 
 partial interface HTMLBaseElement : HTMLElement {
   [CEReactions, TrustedTypes=TrustedURL] attribute URLString href;
-};
-
-partial interface HTMLMediaElement : HTMLElement {
-  [CEReactions, TrustedTypes=TrustedURL] attribute URLString src;
-};
-
-partial interface HTMLSourceElement : HTMLElement {
-  [CEReactions, TrustedTypes=TrustedURL] attribute URLString src;
-};
-
-partial interface HTMLTrackElement : HTMLElement {
-  [CEReactions, TrustedTypes=TrustedURL] attribute URLString src;
 };
 
 // TODO: Add HTMLPortalElement.src from https://github.com/WICG/portals once it's specced.

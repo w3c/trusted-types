@@ -145,7 +145,8 @@ describe('v2 TrustedTypes', () => {
       expect(TrustedTypes.getAttributeType('script', 'src')).toEqual(
           'TrustedScriptURL');
 
-      expect(TrustedTypes.getAttributeType('img', 'src')).toEqual('TrustedURL');
+      expect(TrustedTypes.getAttributeType('input', 'formaction')).toEqual(
+          'TrustedURL');
     });
 
     it('supports xlink attributes', () => {
@@ -163,14 +164,16 @@ describe('v2 TrustedTypes', () => {
       expect(TrustedTypes.getAttributeType('SCRIPT', 'src')).toEqual(
           'TrustedScriptURL');
 
-      expect(TrustedTypes.getAttributeType('imG', 'src')).toEqual('TrustedURL');
+      expect(TrustedTypes.getAttributeType('inPut', 'formaction')).toEqual(
+          'TrustedURL');
     });
 
     it('is case insensitive for the attribute names', () => {
       expect(TrustedTypes.getAttributeType('script', 'SRC')).toEqual(
           'TrustedScriptURL');
 
-      expect(TrustedTypes.getAttributeType('imG', 'srC')).toEqual('TrustedURL');
+      expect(TrustedTypes.getAttributeType('input', 'formActioN')).toEqual(
+          'TrustedURL');
     });
 
     it('supports the inline event handlers', () => {
@@ -184,7 +187,7 @@ describe('v2 TrustedTypes', () => {
     it('defaults to undefined', () => {
       expect(TrustedTypes.getAttributeType('unknown', 'src')).toBe(undefined);
 
-      expect(TrustedTypes.getAttributeType('img', 'bar')).toBe(undefined);
+      expect(TrustedTypes.getAttributeType('input', 'bar')).toBe(undefined);
     });
   });
 
@@ -193,14 +196,16 @@ describe('v2 TrustedTypes', () => {
       expect(TrustedTypes.getPropertyType('script', 'src')).toEqual(
           'TrustedScriptURL');
 
-      expect(TrustedTypes.getPropertyType('img', 'src')).toEqual('TrustedURL');
+      expect(TrustedTypes.getPropertyType('input', 'formAction')).toEqual(
+          'TrustedURL');
     });
 
     it('is case insensitive for tag names', () => {
       expect(TrustedTypes.getPropertyType('SCRIPT', 'src')).toEqual(
           'TrustedScriptURL');
 
-      expect(TrustedTypes.getPropertyType('ImG', 'src')).toEqual('TrustedURL');
+      expect(TrustedTypes.getPropertyType('INPut', 'formAction')).toEqual(
+          'TrustedURL');
     });
 
     it('is case sensitive for property names', () => {
@@ -234,7 +239,7 @@ describe('v2 TrustedTypes', () => {
 
       expect(map['SCRIPT'].attributes.src).toEqual('TrustedScriptURL');
 
-      expect(map['IMG'].attributes.src).toEqual('TrustedURL');
+      expect(map['INPUT'].attributes.formaction).toEqual('TrustedURL');
     });
 
     it('returns a map that has a wildcard entry', () => {

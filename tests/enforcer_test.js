@@ -912,24 +912,24 @@ describe('TrustedTypesEnforcer', function() {
       expect(el.src).toEqual('');
     });
 
-    it('on audio.src', function() {
-      const el = document.createElement('audio');
+    it('on input.formAction', function() {
+      const el = document.createElement('input');
 
       expect(function() {
-        el.src = TEST_URL;
+        el.formAction = TEST_URL;
       }).toThrow();
 
-      expect(el.src).toEqual('');
+      expect(el.formAction).not.toContain(TEST_URL);
     });
 
-    it('on audio.src via setAttribute', function() {
-      const el = document.createElement('audio');
+    it('on input.formAction via setAttribute', function() {
+      const el = document.createElement('input');
 
       expect(function() {
-        el.setAttribute('src', TEST_URL);
+        el.setAttribute('formaction', TEST_URL);
       }).toThrow();
 
-      expect(el.src).toEqual('');
+      expect(el.formAction).not.toContain(TEST_URL);
     });
 
     it('on inline event handlers via setAttribute', function() {
@@ -1126,17 +1126,17 @@ describe('TrustedTypesEnforcer', function() {
     // eslint-disable-next-line jasmine/no-disabled-tests
     xit('on copy attribute crossing types', function() {
       const div = document.createElement('div');
-      const img = document.createElement('img');
+      const input = document.createElement('input');
 
-      div.setAttribute('src', TEST_URL);
-      const attr = div.getAttributeNode('src');
+      div.setAttribute('formaction', TEST_URL);
+      const attr = div.getAttributeNode('formaction');
       div.removeAttributeNode(attr);
 
       expect(function() {
-        img.setAttributeNode(attr);
+        input.setAttributeNode(attr);
       }).toThrow();
 
-      expect(img.src).toEqual('');
+      expect(input.formAction).toEqual('');
     });
 
     it('on copy innocuous attribute', function() {
@@ -1284,20 +1284,20 @@ describe('TrustedTypesEnforcer', function() {
       expect(el.src).toEqual(TEST_URL);
     });
 
-    it('on audio.src', function() {
-      const el = document.createElement('audio');
+    it('on input.formAction', function() {
+      const el = document.createElement('input');
 
-      el.src = policy.createURL(TEST_URL);
+      el.formAction = policy.createURL(TEST_URL);
 
-      expect(el.src).toEqual(TEST_URL);
+      expect(el.formAction).toEqual(TEST_URL);
     });
 
-    it('on audio.src via setAttribute', function() {
-      const el = document.createElement('audio');
+    it('on input.formAction via setAttribute', function() {
+      const el = document.createElement('input');
 
-      el.setAttribute('src', policy.createURL(TEST_URL));
+      el.setAttribute('formaction', policy.createURL(TEST_URL));
 
-      expect(el.src).toEqual(TEST_URL);
+      expect(el.formAction).toEqual(TEST_URL);
     });
 
     it('on inline event handlers via setAttribute', function() {
