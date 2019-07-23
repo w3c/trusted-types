@@ -247,11 +247,6 @@ export const trustedTypesBuilderTestOnly = function() {
           'href': TrustedURL.name,
         },
       },
-      'AUDIO': {
-        'attributes': {
-          'src': TrustedURL.name,
-        },
-      },
       'BASE': {
         'attributes': {
           'href': TrustedURL.name,
@@ -283,21 +278,9 @@ export const trustedTypesBuilderTestOnly = function() {
           'srcdoc': TrustedHTML.name,
         },
       },
-      'IMG': {
-        'attributes': {
-          'src': TrustedURL.name,
-          // TODO(slekies): add special handling for srcset
-        },
-      },
       'INPUT': {
         'attributes': {
-          'src': TrustedURL.name,
           'formaction': TrustedURL.name,
-        },
-      },
-      'LINK': {
-        'attributes': {
-          'href': TrustedURL.name,
         },
       },
       'OBJECT': {
@@ -316,21 +299,6 @@ export const trustedTypesBuilderTestOnly = function() {
           'innerText': TrustedScript.name,
           'textContent': TrustedScript.name,
           'text': TrustedScript.name,
-        },
-      },
-      'SOURCE': {
-        'attributes': {
-          'src': TrustedURL.name,
-        },
-      },
-      'TRACK': {
-        'attributes': {
-          'src': TrustedURL.name,
-        },
-      },
-      'VIDEO': {
-        'attributes': {
-          'src': TrustedURL.name,
         },
       },
       '*': {
