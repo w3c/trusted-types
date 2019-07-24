@@ -1575,8 +1575,10 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li>
      <a href="#security-considerations"><span class="secno">5</span> <span class="content">Security Considerations</span></a>
      <ol class="toc">
-      <li><a href="#bypass-vectors"><span class="secno">5.1</span> <span class="content">Bypass vectors</span></a>
-      <li><a href="#best-practices-for-policy-design"><span class="secno">5.2</span> <span class="content">Best practices for policy design</span></a>
+      <li><a href="##cross-document-vectors"><span class="secno">5.1</span> <span class="content">Cross-document vectors</span></a>
+      <li><a href="##deprecated-features"><span class="secno">5.2</span> <span class="content">Deprecated features</span></a>
+      <li><a href="#bypass-vectors"><span class="secno">5.3</span> <span class="content">Bypass vectors</span></a>
+      <li><a href="#best-practices-for-policy-design"><span class="secno">5.4</span> <span class="content">Best practices for policy design</span></a>
      </ol>
     <li>
      <a href="#implementation-considerations"><span class="secno">6</span> <span class="content">Implementation Considerations</span></a>
@@ -1655,8 +1657,8 @@ control loading resources that can script the current document, but not
 other subresources.</p>
     <li data-md>
      <p>Prevent malicious authors of the web application’s JavaScript code of the
-from being able to trigger DOM XSS; including malicious authors
-in the threat model would result in an overtly complex and not-practical
+from being able to trigger DOM XSS; attempting to protect against  malicious
+authors would result in an overtly complex and not-practical
 design; such authors already <em>have</em> code execution capabilities, creating
 DOM XSS flaws from this starting position is not a privilege escalation.</p>
    </ul>
@@ -2917,14 +2919,33 @@ input, were it problematic in the callout to <a data-link-type="abstract-op" hre
    <p>Trusted Types are not intended to defend against XSS in an actively malicious
 execution environment. It’s assumed that the application is written by
 non-malicious authors; the intent is to prevent developer mistakes that could
-result in security bugs, and not to defend against first-party malicious code actively trying to bypass policy restrictions.</p>
-   <h3 class="heading settled" data-level="5.1" id="bypass-vectors"><span class="secno">5.1. </span><span class="content">Bypass vectors</span><a class="self-link" href="#bypass-vectors"></a></h3>
-   <p class="issue" id="issue-31966331"><a class="self-link" href="#issue-31966331"></a> Mention node-adoption bypass vectors. <a href="https://github.com/WICG/trusted-types/issues/49">&lt;https://github.com/WICG/trusted-types/issues/49></a></p>
-   <p class="issue" id="issue-1c3973fc"><a class="self-link" href="#issue-1c3973fc"></a> Mention anchor element properties bypass. <a href="https://github.com/WICG/trusted-types/issues/64">&lt;https://github.com/WICG/trusted-types/issues/64></a></p>
-   <p class="issue" id="issue-fb0cfdf0"><a class="self-link" href="#issue-fb0cfdf0"></a> Mention text/attribute node copy bypass vectors. <a href="https://github.com/WICG/trusted-types/issues/47">&lt;https://github.com/WICG/trusted-types/issues/47></a></p>
-   <p class="issue" id="issue-80906c67"><a class="self-link" href="#issue-80906c67"></a> Mention bypass vectors with template elements. <a href="https://github.com/WICG/trusted-types/issues/42">&lt;https://github.com/WICG/trusted-types/issues/42></a></p>
-   <p class="issue" id="issue-f9e3242a"><a class="self-link" href="#issue-f9e3242a"></a> Mention corner cases with types that depend on a different attribute value. <a href="https://github.com/WICG/trusted-types/issues/6">&lt;https://github.com/WICG/trusted-types/issues/6></a></p>
-   <h3 class="heading settled" data-level="5.2" id="best-practices-for-policy-design"><span class="secno">5.2. </span><span class="content">Best practices for policy design</span><a class="self-link" href="#best-practices-for-policy-design"></a></h3>
+result in security bugs, and not to defend against first-party malicious code
+actively trying to bypass policy restrictions. Below we enumerate already
+identified vectors that remain risky even in environments with enforced
+Trusted Types.</p>
+   <h3 class="heading settled" data-level="5.1" id="#cross-document-vectors"><span class="secno">5.1. </span><span class="content">Cross-document vectors</span><a class="self-link" href="#%23cross-document-vectors"></a></h3>
+   <p>While the code running in a window in which Trusted Types are enforced cannot
+dynamically create nodes that would bypass the policy restrictions, it is
+possible that such nodes can be imported or adopted from documents in other
+windows, that don’t have the same set of restrictions. In essence - it is
+possible to bypass Trusted Types if a malicious author creates a setup in which
+a restricted document colludes with an unrestricted one.</p>
+   <p>CSP propagation rules (see <a href="https://www.w3.org/TR/CSP3/#initialize-document-csp">Content Security Policy Level 3 §initialize-document-csp</a> partially address this
+issue, as new <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#local-scheme" id="ref-for-local-scheme">local scheme</a> documents will inherit the same set of restrictions.
+To address this issue comprehensively, other mechanisms like <a href="https://wicg.github.io/origin-policy/">Origin Policy</a> should be used to ensure that baseline security rules are applied for the whole
+origin.</p>
+   <h3 class="heading settled" data-level="5.2" id="#deprecated-features"><span class="secno">5.2. </span><span class="content">Deprecated features</span><a class="self-link" href="#%23deprecated-features"></a></h3>
+   <p>Some long-deprecated and rarely used plaform features are not subject to Trusted
+Types, and could potentially be used by malicious authors to overcome the
+restrictions:</p>
+   <ul>
+    <li data-md>
+     <p><a href="https://w3c.github.io/webcomponents/spec/imports/">HTML imports</a></p>
+   </ul>
+   <h3 class="heading settled" data-level="5.3" id="bypass-vectors"><span class="secno">5.3. </span><span class="content">Bypass vectors</span><a class="self-link" href="#bypass-vectors"></a></h3>
+   <p class="issue" id="issue-47ed4864"><a class="self-link" href="#issue-47ed4864"></a> Mention anchor element properties bypass.
+Issue(WICG/trusted-types#47): Mention text/attribute node copy bypass vectors. <a href="https://github.com/WICG/trusted-types/issues/64">&lt;https://github.com/WICG/trusted-types/issues/64></a></p>
+   <h3 class="heading settled" data-level="5.4" id="best-practices-for-policy-design"><span class="secno">5.4. </span><span class="content">Best practices for policy design</span><a class="self-link" href="#best-practices-for-policy-design"></a></h3>
    <p>Trusted Types limit the scope of the code that can introduce DOM XSS
 vulnerabilities to the implementation of <a href="#policies">policies</a>. In this design,
 insecure policies can still enable XSS. Special emphasis needs to be taken by
@@ -3343,6 +3364,12 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
     <li><a href="#ref-for-h-the-domparser-interface">4.4. Integration with DOM Parsing</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-local-scheme">
+   <a href="https://fetch.spec.whatwg.org/#local-scheme">https://fetch.spec.whatwg.org/#local-scheme</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-local-scheme">5.1. Cross-document vectors</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-cereactions">
    <a href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions">https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions</a><b>Referenced in:</b>
    <ul>
@@ -3716,6 +3743,11 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
      <li><span class="dfn-paneled" id="term-for-h-the-domparser-interface" style="color:initial">SupportedType</span>
     </ul>
    <li>
+    <a data-link-type="biblio">[Fetch]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-local-scheme" style="color:initial">local scheme</span>
+    </ul>
+   <li>
     <a data-link-type="biblio">[HTML]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-cereactions" style="color:initial">CEReactions</span>
@@ -3792,6 +3824,8 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <dd>Anne van Kesteren. <a href="https://dom.spec.whatwg.org/">DOM Standard</a>. Living Standard. URL: <a href="https://dom.spec.whatwg.org/">https://dom.spec.whatwg.org/</a>
    <dt id="biblio-dom-parsing">[DOM-Parsing]
    <dd>Travis Leithead. <a href="https://www.w3.org/TR/DOM-Parsing/">DOM Parsing and Serialization</a>. 17 May 2016. WD. URL: <a href="https://www.w3.org/TR/DOM-Parsing/">https://www.w3.org/TR/DOM-Parsing/</a>
+   <dt id="biblio-fetch">[Fetch]
+   <dd>Anne van Kesteren. <a href="https://fetch.spec.whatwg.org/">Fetch Standard</a>. Living Standard. URL: <a href="https://fetch.spec.whatwg.org/">https://fetch.spec.whatwg.org/</a>
    <dt id="biblio-html">[HTML]
    <dd>Anne van Kesteren; et al. <a href="https://html.spec.whatwg.org/multipage/">HTML Standard</a>. Living Standard. URL: <a href="https://html.spec.whatwg.org/multipage/">https://html.spec.whatwg.org/multipage/</a>
    <dt id="biblio-infra">[INFRA]
@@ -3805,8 +3839,6 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
   </dl>
   <h3 class="no-num no-ref heading settled" id="informative"><span class="content">Informative References</span><a class="self-link" href="#informative"></a></h3>
   <dl>
-   <dt id="biblio-fetch">[Fetch]
-   <dd>Anne van Kesteren. <a href="https://fetch.spec.whatwg.org/">Fetch Standard</a>. Living Standard. URL: <a href="https://fetch.spec.whatwg.org/">https://fetch.spec.whatwg.org/</a>
    <dt id="biblio-html-design-principles">[HTML-DESIGN-PRINCIPLES]
    <dd>Anne van Kesteren; Maciej Stachowiak. <a href="https://www.w3.org/TR/html-design-principles/">HTML Design Principles</a>. 26 November 2007. WD. URL: <a href="https://www.w3.org/TR/html-design-principles/">https://www.w3.org/TR/html-design-principles/</a>
    <dt id="biblio-html5">[HTML5]
@@ -4005,11 +4037,8 @@ applying the default policy to a string argument which differs.
 Specifically when, there is a <a data-link-type="dfn" href="#default-policy">default policy</a>, <var>isExempt</var> is false,
 and <var>source</var> there is a CSP policy for either the <var>callerRealm</var> or <var>callerRealm</var> that disallows "<code>'unsafe-eval'"</code>.
 Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
-   <div class="issue"> Mention node-adoption bypass vectors. <a href="https://github.com/WICG/trusted-types/issues/49">&lt;https://github.com/WICG/trusted-types/issues/49></a><a href="#issue-31966331"> ↵ </a></div>
-   <div class="issue"> Mention anchor element properties bypass. <a href="https://github.com/WICG/trusted-types/issues/64">&lt;https://github.com/WICG/trusted-types/issues/64></a><a href="#issue-1c3973fc"> ↵ </a></div>
-   <div class="issue"> Mention text/attribute node copy bypass vectors. <a href="https://github.com/WICG/trusted-types/issues/47">&lt;https://github.com/WICG/trusted-types/issues/47></a><a href="#issue-fb0cfdf0"> ↵ </a></div>
-   <div class="issue"> Mention bypass vectors with template elements. <a href="https://github.com/WICG/trusted-types/issues/42">&lt;https://github.com/WICG/trusted-types/issues/42></a><a href="#issue-80906c67"> ↵ </a></div>
-   <div class="issue"> Mention corner cases with types that depend on a different attribute value. <a href="https://github.com/WICG/trusted-types/issues/6">&lt;https://github.com/WICG/trusted-types/issues/6></a><a href="#issue-f9e3242a"> ↵ </a></div>
+   <div class="issue"> Mention anchor element properties bypass.
+Issue(WICG/trusted-types#47): Mention text/attribute node copy bypass vectors. <a href="https://github.com/WICG/trusted-types/issues/64">&lt;https://github.com/WICG/trusted-types/issues/64></a><a href="#issue-47ed4864"> ↵ </a></div>
    <div class="issue"> Mention the policy is global state-dependant. <a href="https://github.com/WICG/trusted-types/issues/78">&lt;https://github.com/WICG/trusted-types/issues/78></a><a href="#issue-fe3b0564"> ↵ </a></div>
    <div class="issue"> Refer to the external document on secure policy design.<a href="#issue-2eb927d2"> ↵ </a></div>
   </div>
