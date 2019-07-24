@@ -88,10 +88,11 @@ which are substantially easier to safeguard, monitor and review.
     control loading resources that can script the current document, but not
     other subresources.
 *   Prevent malicious authors of the web application's JavaScript code of the
-    from being able to trigger DOM XSS; including malicious authors
-    in the threat model would result in an overtly complex and not-practical
+    from being able to trigger DOM XSS; attempting to protect against  malicious
+    authors would result in an overtly complex and not-practical
     design; such authors already *have* code execution capabilities, creating
     DOM XSS flaws from this starting position is not a privilege escalation.
+
 
 
 
@@ -1480,20 +1481,40 @@ input, were it problematic in the callout to [$Get Trusted Type compliant string
 Trusted Types are not intended to defend against XSS in an actively malicious
 execution environment. It's assumed that the application is written by
 non-malicious authors; the intent is to prevent developer mistakes that could
-result in security bugs, and not to defend against first-party malicious code actively trying to bypass policy restrictions.
+result in security bugs, and not to defend against first-party malicious code
+actively trying to bypass policy restrictions. Below we enumerate already
+identified vectors that remain risky even in environments with enforced
+Trusted Types.
+
+## Cross-document vectors ## {##cross-document-vectors}
+
+While the code running in a window in which Trusted Types are enforced cannot
+dynamically create nodes that would bypass the policy restrictions, it is
+possible that such nodes can be imported or adopted from documents in other
+windows, that don't have the same set of restrictions. In essence - it is
+possible to bypass Trusted Types if a malicious author creates a setup in which
+a restricted document colludes with an unrestricted one.
+
+CSP propagation rules (see [[CSP3#initialize-document-csp]] partially address this
+issue, as new [=local scheme=] documents will inherit the same set of restrictions.
+To address this issue comprehensively, other mechanisms like
+<a href="https://wicg.github.io/origin-policy/">Origin Policy</a>
+should be used to ensure that baseline security rules are applied for the whole
+origin.
+
+## Deprecated features ## {##deprecated-features}
+
+Some long-deprecated and rarely used plaform features are not subject to Trusted
+Types, and could potentially be used by malicious authors to overcome the
+restrictions:
+
+* <a href="https://w3c.github.io/webcomponents/spec/imports/">HTML imports</a>
 
 ## Bypass vectors ## {#bypass-vectors}
 
-Issue(WICG/trusted-types#49): Mention node-adoption bypass vectors.
-
 Issue(WICG/trusted-types#64): Mention anchor element properties bypass.
-
-
 Issue(WICG/trusted-types#47): Mention text/attribute node copy bypass vectors.
 
-Issue(WICG/trusted-types#42): Mention bypass vectors with template elements.
-
-Issue(WICG/trusted-types#6): Mention corner cases with types that depend on a different attribute value.
 
 ## Best practices for policy design ## {#best-practices-for-policy-design}
 
