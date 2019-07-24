@@ -63,35 +63,81 @@ which are substantially easier to safeguard, monitor and review.
 
 ## Goals ## {#goals}
 
-*   Minimize the likelihood of accidental DOM XSS introduction by the authors.
+*   Minimize the likelihood of DOM XSS vulnerabilities.
 
 *   Encourage a design in which XSS-related security decisions are
     encapsulated within a small part of the application.
 
-*   Reduce DOM XSS security review surface for complex web application codebases.
+*   Reduce DOM XSS security review surface for complex web application
+    codebases.
 
+*   Allow the detection of DOM XSS vulnerabilities similar to how regular
+    programming errors are detected and surfaced to the developers, with the
+    assist of dynamic and static analysis tools.
 
 ## Non-goals ## {#non-goals}
 
-*   Address injections into server-side generated markup, in specific
-    reflections into the body of the scripts running in a document.
+*   Prevent, or mitigate the result of injections into server-side generated
+    markup, in specific reflections into the body of the scripts running in a
+    document. To address server-side XSS vectors, we recommend existing
+    solutions like templating systems or [[CSP3|CSP]]
+    [=script-src=].
+*   Address resource confinement, e.g. to prevent data exfiltration, or
+    connecting to external sources via [[Fetch]].
+*   Control subresource loading. Trusted Types aim to allow the authors to
+    control loading resources that can script the current document, but not
+    other subresources.
+*   Prevent malicious authors of the web application's JavaScript code of the
+    from being able to trigger DOM XSS; including malicious authors
+    in the threat model would result in an overtly complex and not-practical
+    design; such authors already *have* code execution capabilities, creating
+    DOM XSS flaws from this starting position is not a privilege escalation.
 
-Issue:  mention other solutions, like templating systems, or CSP for mitigating
+
+
+
 
 
 ## Use cases ## {#use-cases}
-
-Issue: figure out if we need this section here. CSP has none, SRI has one and it looks useful.
 
 *   An author maintains a complex web application written in a framework
     that uses a secure templating system to generate the UI
     components. The application also depends on 3rd party client-side
     libraries that perform auxiliary tasks (e.g. analytics, performance
-    monitoring). To ensure that none of these components introduces DOM
+    monitoring). To ensure that none of these components introduce DOM
     XSS vulnerabilities, author defines a Trusted Type policy in the
     templating policy and enables the enforcement for the DOM sinks.
-*   Issue: Something about reducing the review surface
 
+*   An existing web application interacts with the DOM mostly using XSS-safe
+    patterns (i.e. withour using [=injection sinks=]). In a few places, however,
+    it resorts to using risky patterns like calling into `innerHTML`, `eval`, or
+    creating `javascript:` URIs.
+
+    Review finds that those places do not cause XSS (e.g. because
+    user-controlled data is not part of the input to those sinks), but it's
+    hard to migrate the application off using these patterns.
+
+    As such, CSP cannot be enforced on this application (without resorting to
+    an unsafe version using `'unsafe-eval' 'unsafe-inline'`), and it's possible
+    there are other places causing DOM XSS that were missed in a review, or will
+    be introduced later.
+
+    To address this risk, the author converts the reviewed parts to using
+    Trusted Types, and enables Trusted Type [=enforcement=]. Addditional places
+    using the injection sinks, should they exist in the future, are correctly
+    blocked and reported.
+
+*   A security team is tasked with assuring that the client-side heavy
+    application code does not contain XSS vulnerabilities. Since the server side
+    code is homogeneous (it's moslty an API backend), and the application
+    enforces Trusted Types, the review only focuses on the Trusted Type
+    [=policies=] and their rules. Later on the reviewed policy names are
+    allowed in the 'trusted-types' CSP directive, safe for the developers to
+    use.
+
+    Any additonal code, including the code of often-changing dependencies,
+    can be excluded from the review, unless it creates a Trusted Type policy.
+    Without it, the code cannot cause a DOM XSS.
 
 # Framework # {#framework}
 
@@ -126,9 +172,6 @@ sensitive DOM and JavaScript functions, we introduce Trusted Types.
 
 Note: The exact list of injection sinks covered by this document is defined in
 [[#integrations]].
-
-Issue(WICG/trusted-types#43): Consider surfacing the DOM sink (node + attr) => type mapping in the API, to faciliate building HTML sanitizers.
-
 
 ## Trusted Types ## {#trusted-types}
 
@@ -728,7 +771,7 @@ However, to assert that the injection sinks are *never* called with string value
 Trusted Type values are used instead, the applications may enable the enforcement via [[CSP#policy-delivery|configuring a Content Security Policy]]. This document defines a new [=trusted-types-directive|trusted-types=]
 Content Security Policy directive controlling that behavior.
 
-Note: Using CSP mechanisms allows the authors to prepare their applicaiton for enforcing Trusted Types
+Note: Using CSP mechanisms allows the authors to prepare their application for enforcing Trusted Types
 via using the {{CSP#cspro-header|Content-Security-Report-Only}} HTTP Response header.
 
 Note: Most of the enforcement rules are defined as modifications of the
@@ -1246,8 +1289,6 @@ of being rejected outright.
 Content-Security-Policy: trusted-types one two default
 </pre>
 </div>
-
-Issue(WICG/trusted-types#66): Decide if separate per-type enforcement settings should be exposed to the authors.
 
 ### <dfn abstract-op>Should sink type mismatch violation be blocked by Content Security Policy?</dfn> ### {#should-block-sink-type-mismatch}
 
