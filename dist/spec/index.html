@@ -1461,7 +1461,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Trusted Types</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-07-23">23 July 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-07-24">24 July 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -2683,9 +2683,9 @@ returns <code>"Blocked"</code> if the <a data-link-type="dfn" href="#injection-s
       <li data-md>
        <p>Set <var>violation</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation-resource" id="ref-for-violation-resource">resource</a> to <code>"trusted-types-sink"</code>.</p>
       <li data-md>
-       <p>Let <var>sample</var> be the result of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-concatenate" id="ref-for-string-concatenate③">concatenating</a> the list « <var>sink</var>, <var>source</var> « using space (<code>"\x20"</code>) as a <var>separator</var>.</p>
+       <p>Let <var>trimmedSource</var> be the substring of <var>source</var>, containing its first 40 characters.</p>
       <li data-md>
-       <p>Set <var>violation</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation-sample" id="ref-for-violation-sample">sample</a> to the substring of <var>sample</var>, containing its first 40 characters.</p>
+       <p>Set <var>violation</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation-sample" id="ref-for-violation-sample">sample</a> to be the result of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-concatenate" id="ref-for-string-concatenate③">concatenating</a> the list « <var>sink</var>, <var>trimmedSource</var> « using space (<code>"\x20"</code>) as a <var>separator</var>.</p>
       <li data-md>
        <p>Execute <a href="https://www.w3.org/TR/CSP3/#report-violation">Report a violation</a> on <var>violation</var>.</p>
       <li data-md>

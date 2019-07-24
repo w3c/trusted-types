@@ -1263,8 +1263,8 @@ returns `"Blocked"` if the [=injection sink=] requires a [=Trusted Type=], and
         [[CSP#create-violation-for-global|Create a violation object for global, policy, and directive]]
         on |global|, |policy| and `"trusted-types"`
     1. Set |violation|'s [=violation/resource=] to `"trusted-types-sink"`.
-    1. Let |sample| be the result of [=concatenating=] the list &laquo; |sink|, |source| &laquo; using space (`"\x20"`) as a |separator|.
-    1. Set |violation|'s [=violation/sample=] to the substring of |sample|, containing its first 40 characters.
+    1. Let |trimmedSource| be the substring of |source|, containing its first 40 characters.
+    1. Set |violation|'s [=violation/sample=] to be the result of [=concatenating=] the list &laquo; |sink|, |trimmedSource| &laquo; using space (`"\x20"`) as a |separator|.
     1.  Execute [[CSP#report-violation|Report a violation]] on |violation|.
     1.  If |policy|'s [=policy/disposition=] is `"enforce"`, then set |result| to
         `"Blocked"`.
