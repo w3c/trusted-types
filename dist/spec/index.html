@@ -1213,7 +1213,7 @@ Possible extra rowspan handling
 	}
 </style>
   <link href="https://www.w3.org/StyleSheets/TR/2016/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version 08c4b0e94d147852f66673459784d3429bb3bda1" name="generator">
+  <meta content="Bikeshed version f7860c06eaec18afc415bf3f4a7b90aee58ca680" name="generator">
   <link href="https://wicg.github.io/trusted-types/dist/spec/" rel="canonical">
 <style>/* style-md-lists */
 
@@ -1461,7 +1461,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Trusted Types</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-09-03">3 September 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-09-04">4 September 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1564,7 +1564,11 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <li>
        <a href="#integration-with-content-security-policy"><span class="secno">4.5</span> <span class="content">Integration with Content Security Policy</span></a>
        <ol class="toc">
-        <li><a href="#trusted-types-csp-directive"><span class="secno">4.5.1</span> <span class="content"><span>trusted-types</span> directive</span></a>
+        <li>
+         <a href="#trusted-types-csp-directive"><span class="secno">4.5.1</span> <span class="content"><span>trusted-types</span> directive</span></a>
+         <ol class="toc">
+          <li><a href="#trusted-types-pre-navigation-check"><span class="secno">4.5.1.1</span> <span class="content"><code>trusted-types</code> Pre-Navigation check</span></a>
+         </ol>
         <li><a href="#should-block-sink-type-mismatch"><span class="secno">4.5.2</span> <span class="content"><span>Should sink type mismatch violation be blocked by Content Security Policy?</span></span></a>
         <li><a href="#should-block-create-policy"><span class="secno">4.5.3</span> <span class="content"><span>Should Trusted Type policy creation be blocked by Content Security Policy?</span></span></a>
         <li><a href="#csp-violation-object-hdr"><span class="secno">4.5.4</span> <span class="content">Violation object changes</span></a>
@@ -2750,6 +2754,45 @@ of being rejected outright.</p>
 <pre class="http">Content-Security-Policy: trusted-types one two default
 </pre>
    </div>
+   <h5 class="heading settled" data-level="4.5.1.1" id="trusted-types-pre-navigation-check"><span class="secno">4.5.1.1. </span><span class="content"><code>trusted-types</code> Pre-Navigation check</span><a class="self-link" href="#trusted-types-pre-navigation-check"></a></h5>
+   <p>Given a <a href="https://fetch.spec.whatwg.org/#concept-request">request</a> (<var>request</var>), a string <var>navigation type</var>, two <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#browsing-context" id="ref-for-browsing-context">browsing contexts</a> (<var>source</var> and <var>target</var>), and a <a href="https://www.w3.org/TR/CSP3/#content-security-policy-object">policy</a> (<var>policy</var>), this algorithm returns <code>"Blocked"</code> if a navigation violates the <code class="idl"><a data-link-type="idl">trusted-types</a></code> directive’s constraints and <code>"Allowed"</code> otherwise. This constitutes the <code class="idl"><a data-link-type="idl">trusted-types</a></code> directive’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-pre-navigation-check" id="ref-for-directive-pre-navigation-check">pre-navigation check</a>:</p>
+   <p class="note" role="note"><span>Note:</span> This algorithm assures that the code to be executed by a navigation to a <code>javascript:</code> URL will have to pass through a <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy②">default policy</a>’s <code>createScript</code> function, in addition to all other restrictions imposed by other CSP directives.</p>
+   <ol>
+    <li data-md>
+     <p>If <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-url" id="ref-for-concept-request-url">url</a>'s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-scheme" id="ref-for-concept-url-scheme">scheme</a> is not <code>"javascript"</code>, return <code>"Allowed"</code> and abort further steps.</p>
+    <li data-md>
+     <p>Let <var>urlString</var> be the result of running the <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-serializer" id="ref-for-concept-url-serializer">URL serializer</a> on <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-url" id="ref-for-concept-request-url①">url</a>.</p>
+    <li data-md>
+     <p>Let <var>encodedScriptSource</var> be the result of removing the leading <code>"javascript:"</code> from <var>urlString</var>.</p>
+    <li data-md>
+     <p>Let <var>defaultPolicy</var> be the result of executing <a data-link-type="abstract-op" href="#abstract-opdef-get-default-policy" id="ref-for-abstract-opdef-get-default-policy①">Get default policy</a> algorithm on <var>source</var>’s <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/window-object.html#windowproxy" id="ref-for-windowproxy②">WindowProxy</a></code>'s <a data-link-type="dfn" href="#window-trusted-type-policy-factory" id="ref-for-window-trusted-type-policy-factory③">trusted type policy factory</a>.</p>
+    <li data-md>
+     <p>If <var>defaultPolicy</var> is <code>null</code>, return <code>"Blocked"</code> and abort further steps.</p>
+    <li data-md>
+     <p>Let <var>covertedScriptSource</var> be the result of executing <a data-link-type="abstract-op" href="#abstract-opdef-create-a-trusted-type" id="ref-for-abstract-opdef-create-a-trusted-type⑤">Create a Trusted Type</a> algorithm, with the following arguments:</p>
+     <ul>
+      <li data-md>
+       <p><var>defaultPolicy</var> as <var>policy</var></p>
+      <li data-md>
+       <p><var>encodedScriptSource</var> as <var>value</var></p>
+      <li data-md>
+       <p><code>"TrustedScript</code> as <var>trustedTypeName</var></p>
+      <li data-md>
+       <p>« <code>"Location.href"</code> » as <var>arguments</var></p>
+     </ul>
+    <li data-md>
+     <p>If <var>convertedScriptSource</var> does not have a type <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①③">TrustedScript</a></code>, return <code>"Blocked"</code> and abort further steps.</p>
+    <li data-md>
+     <p>Set <var>urlString</var> to be the result of prepending <code>"javascript:"</code> to stringified <var>convertedScriptSource</var>.</p>
+    <li data-md>
+     <p>Let <var>newURL</var> be the result of running the <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-parser" id="ref-for-concept-url-parser">URL parser</a> on <var>urlString</var>. If the parser returns a failure, return <code>"Blocked"</code> and abort further steps.</p>
+    <li data-md>
+     <p>Set <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-url" id="ref-for-concept-request-url②">url</a> to <var>newURL</var>.</p>
+     <p class="note" role="note"><span>Note:</span> No other CSP directives operate on <code>javascript:</code> URLs in a pre-navigation check. Other directives that check javascript: URLs
+       will operate on the modified URL later, in the <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-inline-check" id="ref-for-directive-inline-check">inline check</a>.</p>
+    <li data-md>
+     <p>Return <code>"Allowed"</code>.</p>
+   </ol>
    <h4 class="heading settled" data-level="4.5.2" id="should-block-sink-type-mismatch"><span class="secno">4.5.2. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-should-sink-type-mismatch-violation-be-blocked-by-content-security-policy">Should sink type mismatch violation be blocked by Content Security Policy?</dfn></span><a class="self-link" href="#should-block-sink-type-mismatch"></a></h4>
    <p>Given a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global②">global object</a> (<var>global</var>), a string (<var>sink</var>) and a string (<var>source</var>) this algorithm
 returns <code>"Blocked"</code> if the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⑧">injection sink</a> requires a <a data-link-type="dfn" href="#trusted-type" id="ref-for-trusted-type⑤">Trusted Type</a>, and <code>"Allowed"</code> otherwise.</p>
@@ -2866,7 +2909,7 @@ throws an "<code>EvalError</code>" if not:
        <li data-md>
         <p><code>"eval"</code> as <var>sink</var>,</p>
        <li data-md>
-        <p><code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①③">TrustedScript</a></code> as <var>expectedType</var>.</p>
+        <p><code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①④">TrustedScript</a></code> as <var>expectedType</var>.</p>
       </ul>
      </ins>
     <li data-md>
@@ -2934,12 +2977,12 @@ the substring of
      <ins>Return <var>sourceString</var>.</ins>
    </ol>
    <p class="note" role="note"><span>Note:</span> returning <var>sourceString</var> means that the string that gets
-compiled is that returned by any <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy②">default policy</a> in the course of
+compiled is that returned by any <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy③">default policy</a> in the course of
 executing <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string⑦">Get Trusted Type compliant string</a>.</p>
    <p class="issue" id="issue-e28ea232"><a class="self-link" href="#issue-e28ea232"></a> This depends on a solution to <a href="https://github.com/WICG/trusted-types/issues/144">issue #144</a> like <a href="https://github.com/tc39-transfer/dynamic-code-brand-checks#problem-host-callout-does-not-receive-type-information">TC39 HostBeforeCompile</a></p>
    <p class="issue" id="issue-649f8da4"><a class="self-link" href="#issue-649f8da4"></a> In some cases, the violation "<code>'report-sample'</code>" contain the result of
 applying the default policy to a string argument which differs.
-Specifically when, there is a <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy③">default policy</a>, <var>isExempt</var> is false,
+Specifically when, there is a <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy④">default policy</a>, <var>isExempt</var> is false,
 and <var>source</var> there is a CSP policy for either the <var>callerRealm</var> or <var>callerRealm</var> that disallows "<code>'unsafe-eval'"</code>.
 Is this a feature or a bug?</p>
    <p class="note" role="note"><span>Note:</span> The previous algorithm reports violations via both report-uris where
@@ -3005,7 +3048,7 @@ together.</p>
 NOT interfere with the operation of user-agent features like addons,
 extensions, or bookmarklets. These kinds of features generally advance
 the user’s priority over page authors, as espoused in <a data-link-type="biblio" href="#biblio-html-design-principles">[html-design-principles]</a>. Specifically, extensions SHOULD be able to pass strings
-to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⑨">injection sinks</a> without triggering <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy④">default policy</a> execution, violation generation, or the rejection of the value.</p>
+to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⑨">injection sinks</a> without triggering <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy⑤">default policy</a> execution, violation generation, or the rejection of the value.</p>
   </main>
   <div data-fill-with="conformance">
    <h2 class="no-ref no-num heading settled" id="conformance"><span class="content"> Conformance</span><a class="self-link" href="#conformance"></a></h2>
@@ -3410,6 +3453,12 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
     <li><a href="#ref-for-local-scheme">5.1. Cross-document vectors</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-request-url">
+   <a href="https://fetch.spec.whatwg.org/#concept-request-url">https://fetch.spec.whatwg.org/#concept-request-url</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-request-url">4.5.1.1. trusted-types Pre-Navigation check</a> <a href="#ref-for-concept-request-url①">(2)</a> <a href="#ref-for-concept-request-url②">(3)</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-cereactions">
    <a href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions">https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions</a><b>Referenced in:</b>
    <ul>
@@ -3512,6 +3561,13 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <ul>
     <li><a href="#ref-for-windowproxy">4.1.1. Extensions to the Window interface</a>
     <li><a href="#ref-for-windowproxy①">4.1.2. Extensions to the Document interface</a>
+    <li><a href="#ref-for-windowproxy②">4.5.1.1. trusted-types Pre-Navigation check</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-browsing-context">
+   <a href="https://html.spec.whatwg.org/multipage/browsers.html#browsing-context">https://html.spec.whatwg.org/multipage/browsers.html#browsing-context</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-browsing-context">4.5.1.1. trusted-types Pre-Navigation check</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-document-csp-list">
@@ -3623,6 +3679,24 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <a href="https://svgwg.org/svg2-draft/types.html#InterfaceSVGURIReference">https://svgwg.org/svg2-draft/types.html#InterfaceSVGURIReference</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-InterfaceSVGURIReference">4.2. Integration with SVG</a> <a href="#ref-for-InterfaceSVGURIReference①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-url-scheme">
+   <a href="https://url.spec.whatwg.org/#concept-url-scheme">https://url.spec.whatwg.org/#concept-url-scheme</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-url-scheme">4.5.1.1. trusted-types Pre-Navigation check</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-url-parser">
+   <a href="https://url.spec.whatwg.org/#concept-url-parser">https://url.spec.whatwg.org/#concept-url-parser</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-url-parser">4.5.1.1. trusted-types Pre-Navigation check</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-url-serializer">
+   <a href="https://url.spec.whatwg.org/#concept-url-serializer">https://url.spec.whatwg.org/#concept-url-serializer</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-url-serializer">4.5.1.1. trusted-types Pre-Navigation check</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idl-DOMString">
@@ -3787,6 +3861,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
     <a data-link-type="biblio">[Fetch]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-local-scheme" style="color:initial">local scheme</span>
+     <li><span class="dfn-paneled" id="term-for-concept-request-url" style="color:initial">url</span>
     </ul>
    <li>
     <a data-link-type="biblio">[HTML]</a> defines the following terms:
@@ -3807,6 +3882,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
      <li><span class="dfn-paneled" id="term-for-window" style="color:initial">Window</span>
      <li><span class="dfn-paneled" id="term-for-windoworworkerglobalscope" style="color:initial">WindowOrWorkerGlobalScope</span>
      <li><span class="dfn-paneled" id="term-for-windowproxy" style="color:initial">WindowProxy</span>
+     <li><span class="dfn-paneled" id="term-for-browsing-context" style="color:initial">browsing context</span>
      <li><span class="dfn-paneled" id="term-for-concept-document-csp-list" style="color:initial">csp list</span>
      <li><span class="dfn-paneled" id="term-for-concept-realm-global" style="color:initial">global object</span>
      <li><span class="dfn-paneled" id="term-for-dom-innertext" style="color:initial">innerText</span>
@@ -3831,6 +3907,13 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
      <li><span class="dfn-paneled" id="term-for-InterfaceSVGElement" style="color:initial">SVGElement</span>
      <li><span class="dfn-paneled" id="term-for-InterfaceSVGScriptElement" style="color:initial">SVGScriptElement</span>
      <li><span class="dfn-paneled" id="term-for-InterfaceSVGURIReference" style="color:initial">SVGURIReference</span>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[URL]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-concept-url-scheme" style="color:initial">scheme</span>
+     <li><span class="dfn-paneled" id="term-for-concept-url-parser" style="color:initial">url parser</span>
+     <li><span class="dfn-paneled" id="term-for-concept-url-serializer" style="color:initial">url serializer</span>
     </ul>
    <li>
     <a data-link-type="biblio">[WebIDL]</a> defines the following terms:
@@ -3875,6 +3958,8 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <dd>S. Bradner. <a href="https://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>. March 1997. Best Current Practice. URL: <a href="https://tools.ietf.org/html/rfc2119">https://tools.ietf.org/html/rfc2119</a>
    <dt id="biblio-svg2">[SVG2]
    <dd>Amelia Bellamy-Royds; et al. <a href="https://www.w3.org/TR/SVG2/">Scalable Vector Graphics (SVG) 2</a>. 4 October 2018. CR. URL: <a href="https://www.w3.org/TR/SVG2/">https://www.w3.org/TR/SVG2/</a>
+   <dt id="biblio-url">[URL]
+   <dd>Anne van Kesteren. <a href="https://url.spec.whatwg.org/">URL Standard</a>. Living Standard. URL: <a href="https://url.spec.whatwg.org/">https://url.spec.whatwg.org/</a>
    <dt id="biblio-webidl">[WebIDL]
    <dd>Boris Zbarsky. <a href="https://heycam.github.io/webidl/">Web IDL</a>. 15 December 2016. ED. URL: <a href="https://heycam.github.io/webidl/">https://heycam.github.io/webidl/</a>
   </dl>
@@ -3931,7 +4016,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
 <c- b>interface</c-> <a href="#trustedtypepolicy"><code><c- g>TrustedTypePolicy</c-></code></a> {
   [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable⑦①"><c- g>Unforgeable</c-></a>] <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①①①"><c- b>DOMString</c-></a> <a data-readonly data-type="DOMString" href="#dom-trustedtypepolicy-name"><code><c- g>name</c-></code></a>;
   [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable⑧①"><c- g>Unforgeable</c-></a>] <a class="n" data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml⑤①"><c- n>TrustedHTML</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createhtml" id="ref-for-dom-trustedtypepolicy-createhtml①"><c- g>createHTML</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①②①"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicy-createhtml-input-arguments-input"><code><c- g>input</c-></code></a>, <c- b>any</c->... <a href="#dom-trustedtypepolicy-createhtml-input-arguments-arguments"><code><c- g>arguments</c-></code></a>);
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable⑨①"><c- g>Unforgeable</c-></a>] <a class="n" data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript①④"><c- n>TrustedScript</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createscript" id="ref-for-dom-trustedtypepolicy-createscript②"><c- g>createScript</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①③①"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicy-createscript-input-arguments-input"><code><c- g>input</c-></code></a>, <c- b>any</c->... <a href="#dom-trustedtypepolicy-createscript-input-arguments-arguments"><code><c- g>arguments</c-></code></a>);
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable⑨①"><c- g>Unforgeable</c-></a>] <a class="n" data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript①⑤"><c- n>TrustedScript</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createscript" id="ref-for-dom-trustedtypepolicy-createscript②"><c- g>createScript</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①③①"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicy-createscript-input-arguments-input"><code><c- g>input</c-></code></a>, <c- b>any</c->... <a href="#dom-trustedtypepolicy-createscript-input-arguments-arguments"><code><c- g>arguments</c-></code></a>);
   [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable①⓪①"><c- g>Unforgeable</c-></a>] <a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl①①"><c- n>TrustedScriptURL</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createscripturl" id="ref-for-dom-trustedtypepolicy-createscripturl②"><c- g>createScriptURL</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①④①"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicy-createscripturl-input-arguments-input"><code><c- g>input</c-></code></a>, <c- b>any</c->... <a href="#dom-trustedtypepolicy-createscripturl-input-arguments-arguments"><code><c- g>arguments</c-></code></a>);
   [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable①①①"><c- g>Unforgeable</c-></a>] <a class="n" data-link-type="idl-name" href="#trustedurl" id="ref-for-trustedurl①⑨"><c- n>TrustedURL</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createurl" id="ref-for-dom-trustedtypepolicy-createurl②"><c- g>createURL</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①⑤①"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicy-createurl-input-arguments-input"><code><c- g>input</c-></code></a>, <c- b>any</c->... <a href="#dom-trustedtypepolicy-createurl-input-arguments-arguments"><code><c- g>arguments</c-></code></a>);
 };
@@ -3959,7 +4044,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
   [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable①②①"><c- g>Unforgeable</c-></a>] <c- b>readonly</c-> <c- b>attribute</c->
       <a class="n" data-link-type="idl-name" href="#trustedtypepolicyfactory" id="ref-for-trustedtypepolicyfactory③①"><c- n>TrustedTypePolicyFactory</c-></a> <a data-readonly data-type="TrustedTypePolicyFactory" href="#dom-window-trustedtypes"><code><c- g>trustedTypes</c-></code></a>;
 
-  <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/window-object.html#windowproxy" id="ref-for-windowproxy②"><c- n>WindowProxy</c-></a>? <a href="#dom-window-open"><code><c- g>open</c-></code></a>(
+  <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/window-object.html#windowproxy" id="ref-for-windowproxy③"><c- n>WindowProxy</c-></a>? <a href="#dom-window-open"><code><c- g>open</c-></code></a>(
       [<a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes⑦①"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedurl" id="ref-for-trustedurl⑤①"><c- n>TrustedURL</c-></a>] <c- b>optional</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-urlstring" id="ref-for-typedefdef-urlstring①④"><c- n>URLString</c-></a> <a href="#dom-window-open-url-target-features-url"><code><c- g>url</c-></code></a> = "about:blank",
       <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②⑤①"><c- b>DOMString</c-></a> <a href="#dom-window-open-url-target-features-target"><code><c- g>target</c-></code></a> = "_blank",
       <c- b>optional</c-> ([<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#TreatNullAs" id="ref-for-TreatNullAs①①"><c- g>TreatNullAs</c-></a>=<a class="n" data-link-type="idl-name"><c- n>EmptyString</c-></a>] <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②⑥①"><c- b>DOMString</c-></a>) <a href="#dom-window-open-url-target-features-features"><code><c- g>features</c-></code></a> = "");
@@ -4140,7 +4225,8 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
     <li><a href="#ref-for-trustedscript⑨">4.1.6. Enforcement in timer functions</a> <a href="#ref-for-trustedscript①⓪">(2)</a>
     <li><a href="#ref-for-trustedscript①①">4.1.7. Enforcement in event handler content attributes</a>
     <li><a href="#ref-for-trustedscript①②">4.2. Integration with SVG</a>
-    <li><a href="#ref-for-trustedscript①③">4.5.5. 'trusted-script' keyword</a>
+    <li><a href="#ref-for-trustedscript①③">4.5.1.1. trusted-types Pre-Navigation check</a>
+    <li><a href="#ref-for-trustedscript①④">4.5.5. 'trusted-script' keyword</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="trustedscripturl">
@@ -4345,8 +4431,9 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
    <ul>
     <li><a href="#ref-for-default-policy">3.2. Get default policy</a>
     <li><a href="#ref-for-default-policy①">4.5.1. trusted-types directive</a>
-    <li><a href="#ref-for-default-policy②">4.5.5. 'trusted-script' keyword</a> <a href="#ref-for-default-policy③">(2)</a>
-    <li><a href="#ref-for-default-policy④">6.1. Vendor-specific Extensions and Addons</a>
+    <li><a href="#ref-for-default-policy②">4.5.1.1. trusted-types Pre-Navigation check</a>
+    <li><a href="#ref-for-default-policy③">4.5.5. 'trusted-script' keyword</a> <a href="#ref-for-default-policy④">(2)</a>
+    <li><a href="#ref-for-default-policy⑤">6.1. Vendor-specific Extensions and Addons</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="enforcement">
@@ -4382,6 +4469,7 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
    <b><a href="#abstract-opdef-get-default-policy">#abstract-opdef-get-default-policy</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-abstract-opdef-get-default-policy">3.4. Get Trusted Type compliant string</a>
+    <li><a href="#ref-for-abstract-opdef-get-default-policy①">4.5.1.1. trusted-types Pre-Navigation check</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="abstract-opdef-create-a-trusted-type">
@@ -4389,6 +4477,7 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
    <ul>
     <li><a href="#ref-for-abstract-opdef-create-a-trusted-type">2.3.2. TrustedTypePolicy</a> <a href="#ref-for-abstract-opdef-create-a-trusted-type①">(2)</a> <a href="#ref-for-abstract-opdef-create-a-trusted-type②">(3)</a> <a href="#ref-for-abstract-opdef-create-a-trusted-type③">(4)</a>
     <li><a href="#ref-for-abstract-opdef-create-a-trusted-type④">3.4. Get Trusted Type compliant string</a>
+    <li><a href="#ref-for-abstract-opdef-create-a-trusted-type⑤">4.5.1.1. trusted-types Pre-Navigation check</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="abstract-opdef-get-trusted-type-compliant-string">
@@ -4454,6 +4543,7 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
    <ul>
     <li><a href="#ref-for-window-trusted-type-policy-factory">2.4.2. TrustedTypes extended attribute</a> <a href="#ref-for-window-trusted-type-policy-factory①">(2)</a>
     <li><a href="#ref-for-window-trusted-type-policy-factory②">3.4. Get Trusted Type compliant string</a>
+    <li><a href="#ref-for-window-trusted-type-policy-factory③">4.5.1.1. trusted-types Pre-Navigation check</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-window-trustedtypes">

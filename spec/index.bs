@@ -1330,6 +1330,37 @@ Content-Security-Policy: trusted-types one two default
 </pre>
 </div>
 
+#### `trusted-types` Pre-Navigation check #### {#trusted-types-pre-navigation-check}
+
+Given a [[Fetch#concept-request|request]] (|request|), a string |navigation type|, two [=browsing contexts=]
+(|source| and |target|), and a [[CSP3#content-security-policy-object|policy]] (|policy|), this algorithm returns `"Blocked"`
+if a navigation violates the {{#trusted-types-directive|trusted-types}} directive's constraints and `"Allowed"`
+otherwise. This constitutes the {{#trusted-types-directive|trusted-types}} directive's [=pre-navigation check=]:
+
+Note: This algorithm assures that the code to be executed by a navigation to a `javascript:` URL will have to pass through a
+<a>default policy</a>'s `createScript` function, in addition to all other restrictions imposed by other CSP directives.
+
+1. If |request|'s [=request/url=]'s [=url/scheme=] is not `"javascript"`, return `"Allowed"` and abort further steps.
+1. Let |urlString| be the result of running the [=URL serializer=] on |request|'s [=request/url=].
+1. Let |encodedScriptSource| be the result of removing the leading `"javascript:"` from |urlString|.
+1. Let |defaultPolicy| be the result of executing [$Get default policy$] algorithm on |source|'s {{WindowProxy}}'s [=trusted type policy factory=].
+1. If |defaultPolicy| is `null`, return `"Blocked"` and abort further steps.
+1. Let |covertedScriptSource| be the result of executing [$Create a Trusted Type$] algorithm, with the following arguments:
+
+    * |defaultPolicy| as |policy|
+    * |encodedScriptSource| as |value|
+    * `"TrustedScript` as |trustedTypeName|
+    * &laquo; `"Location.href"` &raquo; as |arguments|
+1. If |convertedScriptSource| does not have a type {{TrustedScript}}, return `"Blocked"` and abort further steps.
+1. Set |urlString| to be the result of prepending `"javascript:"` to stringified |convertedScriptSource|.
+1. Let |newURL| be the result of running the [=URL parser=] on |urlString|. If the parser returns a failure, return `"Blocked"` and abort further steps.
+1. Set |request|'s [=request/url=] to |newURL|.
+
+     Note: No other CSP directives operate on `javascript:` URLs in a pre-navigation check. Other directives that check javascript: URLs
+           will operate on the modified URL later, in the [=inline check=].
+1. Return `"Allowed"`.
+
+
 ### <dfn abstract-op>Should sink type mismatch violation be blocked by Content Security Policy?</dfn> ### {#should-block-sink-type-mismatch}
 
 Given a [=Realm/global object=] (|global|), a string (|sink|) and a string (|source|) this algorithm
