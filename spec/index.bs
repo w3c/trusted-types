@@ -895,7 +895,7 @@ To get the [=default policy=] for a {{TrustedTypePolicyFactory}} (|factory|), ex
 ## <dfn abstract-op>Create a Trusted Type</dfn> ## {#create-a-trusted-type-algorithm}
 
 Given a {{TrustedTypePolicy}} |policy|, a type name |trustedTypeName|,
-, a string |value| and a list |arguments|, execute the following steps:
+a string |value| and a list |arguments|, execute the following steps:
 
 1.  Let |functionName| be a function name for the given |trustedTypeName|,
     based on the following table:
@@ -963,6 +963,7 @@ Given a {{TrustedType}} type (|expectedType|), a [=Realm/global object=] (|globa
         *  |defaultPolicy| as |policy|
         *  |input| as |value|
         *  |expectedType|’s type name as |trustedTypeName|
+        *  &laquo; |sink| &raquo; as |arguments|
     1.  If |convertedInput| is an error, abort the following steps.
     1.  If |convertedInput| has type |expectedType|, then return
         stringified |convertedInput| and abort the following steps.

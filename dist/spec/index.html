@@ -1213,7 +1213,7 @@ Possible extra rowspan handling
 	}
 </style>
   <link href="https://www.w3.org/StyleSheets/TR/2016/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version b9c59eccbcc25454195a0043aa99cbc393f9772d" name="generator">
+  <meta content="Bikeshed version 5a2c04fbf9f3418b378c5d733b60fe6fc575091b" name="generator">
   <link href="https://wicg.github.io/trusted-types/dist/spec/" rel="canonical">
 <style>/* style-md-lists */
 
@@ -1461,7 +1461,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Trusted Types</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-07-24">24 July 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-08-06">6 August 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -2354,7 +2354,7 @@ creation be blocked by Content Security Policy?</a> algorithm with <var>global</
    </ol>
    <h3 class="heading settled" data-level="3.3" id="create-a-trusted-type-algorithm"><span class="secno">3.3. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-create-a-trusted-type">Create a Trusted Type</dfn></span><a class="self-link" href="#create-a-trusted-type-algorithm"></a></h3>
    <p>Given a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy①⓪">TrustedTypePolicy</a></code> <var>policy</var>, a type name <var>trustedTypeName</var>,
-, a string <var>value</var> and a list <var>arguments</var>, execute the following steps:</p>
+a string <var>value</var> and a list <var>arguments</var>, execute the following steps:</p>
    <ol>
     <li data-md>
      <p>Let <var>functionName</var> be a function name for the given <var>trustedTypeName</var>,
@@ -2429,6 +2429,8 @@ Trusted Type</a> algorithm, with the following arguments:</p>
          <p><var>input</var> as <var>value</var></p>
         <li data-md>
          <p><var>expectedType</var>’s type name as <var>trustedTypeName</var></p>
+        <li data-md>
+         <p>« <var>sink</var> » as <var>arguments</var></p>
        </ul>
       <li data-md>
        <p>If <var>convertedInput</var> is an error, abort the following steps.</p>
