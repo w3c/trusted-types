@@ -49,7 +49,7 @@
   (function() {
     // Create an unsafe policy - it can only be used on a trusted input,
     // inside of this function.
-    var policy = TrustedTypes.createPolicy('unsafe', {
+    var policy = trustedTypes.createPolicy('unsafe', {
       'createHTML': function(unsafe) {
         return unsafe;
       },
@@ -58,7 +58,7 @@
   })();
 
   // Create escaping policy
-  var escapePolicy = TrustedTypes.createPolicy('escape', {
+  var escapePolicy = trustedTypes.createPolicy('escape', {
     'createHTML': function(unsafe) {
       return unsafe
            .replace(/&/g, "&amp;")
@@ -128,7 +128,7 @@
     el.appendChild(document.createElement('script')).src = 'data:,';
   }, true);
   runTest(['creating policy from outside whitelist'], function(el) {
-    TrustedTypes.createPolicy('foo', {});
+    trustedTypes.createPolicy('foo', {});
   }, true);
 
   </script>

@@ -25,7 +25,7 @@ The ES5 / ES6 builds can be loaded directly in the browsers. There are two varia
 <!-- API only -->
 <script src="https://wicg.github.io/trusted-types/dist/es5/trustedtypes.api_only.build.js"></script>
 <script>
-     const p = TrustedTypes.createPolicy('foo', ...)
+     const p = trustedTypes.createPolicy('foo', ...)
      document.body.innerHTML = p.createHTML('foo'); // works
      document.body.innerHTML = 'foo'; // but this one works too (no enforcement).
 </script>
@@ -35,8 +35,8 @@ The ES5 / ES6 builds can be loaded directly in the browsers. There are two varia
 <!-- Full -->
 <script src="https://wicg.github.io/trusted-types/dist/es5/trustedtypes.build.js" data-csp="trusted-types foo bar"></script>
 <script>
-    TrustedTypes.createPolicy('foo', ...);
-    TrustedTypes.createPolicy('unknown', ...); // throws
+    trustedTypes.createPolicy('foo', ...);
+    trustedTypes.createPolicy('unknown', ...); // throws
     document.body.innerHTML = 'foo'; // throws
 </script>
 ```
@@ -57,10 +57,10 @@ tt.createPolicy(...);
 ### Tinyfill
 
 Due to the way the API is designed, it's possible to polyfill the most important
-API surface (`TrustedTypes.createPolicy` function) with the following snippet:
+API surface (`trustedTypes.createPolicy` function) with the following snippet:
 
 ```javascript
-if(typeof TrustedTypes == 'undefined')TrustedTypes={createPolicy:(n, rules) => rules};
+if(typeof trustedTypes == 'undefined')trustedTypes={createPolicy:(n, rules) => rules};
 ```
 
 It does not enable the enforcement, but allows the creation of policies that

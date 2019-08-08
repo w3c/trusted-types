@@ -18,7 +18,7 @@ describe('v2 TrustedTypes', () => {
   beforeEach(() => {
     // We need separate instances.
     ({
-      TrustedTypes,
+      trustedTypes: TrustedTypes,
       setAllowedPolicyNames,
       getDefaultPolicy,
       resetDefaultPolicy} = trustedTypesBuilderTestOnly());
