@@ -510,6 +510,27 @@ describe('v2 TrustedTypes', () => {
     });
   });
 
+  describe('factory defaultPolicy property', () => {
+    it('returns null initially', () => {
+      expect(TrustedTypes.defaultPolicy).toBe(null);
+    });
+
+    it('returns the default policy if created', () => {
+      TrustedTypes.createPolicy('foo', {});
+      const policy = TrustedTypes.createPolicy('default', {});
+      TrustedTypes.createPolicy('bar', {});
+
+      expect(TrustedTypes.defaultPolicy).toBe(policy);
+    });
+
+    it('is readonly', () => {
+      TrustedTypes.defaultPolicy = TrustedTypes.createPolicy('foo', {});
+
+      expect(TrustedTypes.defaultPolicy).toBe(null);
+    });
+  });
+
+
   describe('resetDefaultPolicy', () => {
     beforeEach(() => {
       TrustedTypes.createPolicy('default', {});

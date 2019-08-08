@@ -12,7 +12,6 @@ import {DIRECTIVE_NAME, TrustedTypeConfig} from './data/trustedtypeconfig.js';
 import {
   trustedTypes as TrustedTypes,
   setAllowedPolicyNames,
-  getDefaultPolicy,
   resetDefaultPolicy,
   HTML_NS,
 } from
@@ -767,7 +766,7 @@ export class TrustedTypesEnforcer {
    */
   maybeCallDefaultPolicy_(typeName, value, sink = '') {
     // Apply a fallback policy, if it exists.
-    const fallbackPolicy = getDefaultPolicy.call(TrustedTypes);
+    const fallbackPolicy = TrustedTypes.defaultPolicy;
     if (!fallbackPolicy) {
       throw new Error('Default policy does not exist');
     }

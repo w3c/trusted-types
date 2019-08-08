@@ -629,11 +629,17 @@ const trustedTypesBuilderTestOnly = function() {
     getPropertyType,
     getTypeMapping,
     emptyHTML,
+    defaultPolicy, // Just to make the compiler happy, this is overridden below.
 
     TrustedHTML: TrustedHTML,
     TrustedURL: TrustedURL,
     TrustedScriptURL: TrustedScriptURL,
     TrustedScript: TrustedScript,
+  });
+
+  defineProperty(api, 'defaultPolicy', {
+    get: getDefaultPolicy,
+    set: () => {},
   });
 
   return {
@@ -697,6 +703,11 @@ function setupPolyfill() {
     'emptyHTML': tt.emptyHTML,
     '_isPolyfill_': true,
   });
+  Object.defineProperty(
+      publicApi,
+      'defaultPolicy',
+      Object.getOwnPropertyDescriptor(tt, 'defaultPolicy') || {});
+
   window[rootProperty] = Object.freeze(publicApi);
 
   window['TrustedHTML'] = tt.TrustedHTML;
