@@ -69,6 +69,12 @@ TrustedTypePolicyFactory.prototype.createPolicy = function(name, policy){};
 TrustedTypePolicyFactory.prototype.getPolicyNames = function(){};
 
 /**
+ * A reference to a default policy, if it was created, null otherwise.
+ * @type {?TrustedTypePolicy}
+ */
+TrustedTypePolicyFactory.prototype.defaultPolicy;
+
+/**
  * Returns the name of the Trusted Type required for a given element
  *   attribute.
  * @param {string} tagName The name of the tag of the element.

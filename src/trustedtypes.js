@@ -644,11 +644,17 @@ export const trustedTypesBuilderTestOnly = function() {
     getPropertyType,
     getTypeMapping,
     emptyHTML,
+    defaultPolicy, // Just to make the compiler happy, this is overridden below.
 
     TrustedHTML: TrustedHTML,
     TrustedURL: TrustedURL,
     TrustedScriptURL: TrustedScriptURL,
     TrustedScript: TrustedScript,
+  });
+
+  defineProperty(api, 'defaultPolicy', {
+    get: getDefaultPolicy,
+    set: () => {},
   });
 
   return {

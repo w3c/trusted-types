@@ -50,6 +50,11 @@ function setupPolyfill() {
     'emptyHTML': tt.emptyHTML,
     '_isPolyfill_': true,
   });
+  Object.defineProperty(
+      publicApi,
+      'defaultPolicy',
+      Object.getOwnPropertyDescriptor(tt, 'defaultPolicy') || {});
+
   window[rootProperty] = Object.freeze(publicApi);
 
   window['TrustedHTML'] = tt.TrustedHTML;
