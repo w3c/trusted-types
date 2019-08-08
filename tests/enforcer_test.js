@@ -10,7 +10,7 @@
 import '@babel/polyfill';
 import {TrustedTypeConfig} from '../src/data/trustedtypeconfig.js';
 import {TrustedTypesEnforcer} from '../src/enforcer.js';
-import {TrustedTypes} from '../src/trustedtypes.js';
+import {trustedTypes as TrustedTypes} from '../src/trustedtypes.js';
 
 describe('TrustedTypesEnforcer', function() {
   const TEST_HTML = '<b>html</b>';

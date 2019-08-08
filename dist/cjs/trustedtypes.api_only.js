@@ -565,7 +565,7 @@ const trustedTypesBuilderTestOnly = function() {
       }
     } else {
       // eslint-disable-next-line no-console
-      console.warn('TrustedTypes.createPolicy ' + pName +
+      console.warn('trustedTypes.createPolicy ' + pName +
           ' was given an empty policy');
     }
     freeze(innerPolicy);
@@ -637,7 +637,7 @@ const trustedTypesBuilderTestOnly = function() {
   });
 
   return {
-    TrustedTypes: freeze(api),
+    trustedTypes: freeze(api),
     setAllowedPolicyNames,
     getDefaultPolicy,
     resetDefaultPolicy,
@@ -646,7 +646,7 @@ const trustedTypesBuilderTestOnly = function() {
 
 
 const {
-  TrustedTypes,
+  trustedTypes,
   setAllowedPolicyNames,
   getDefaultPolicy,
   resetDefaultPolicy,
@@ -661,15 +661,25 @@ const {
  *  https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
  */
 
-const tt = TrustedTypes;
+const tt = trustedTypes;
 
 /**
  * Sets up the public Trusted Types API in the global object.
  */
 function setupPolyfill() {
-  // Make sure Closure compiler exposes the names.
-  if (typeof window === 'undefined' ||
-      typeof window['TrustedTypes'] !== 'undefined') {
+  // We use array accessors to make sure Closure compiler will not alter the
+  // names of the properties..
+  if (typeof window === 'undefined') {
+    return;
+  }
+  const rootProperty = 'trustedTypes';
+
+  // Convert old window.TrustedTypes to window.trustedTypes.
+  if (window['TrustedTypes'] && typeof window[rootProperty] === 'undefined') {
+    window[rootProperty] = Object.freeze(window['TrustedTypes']);
+  }
+
+  if (typeof window[rootProperty] !== 'undefined') {
     return;
   }
 
@@ -687,7 +697,7 @@ function setupPolyfill() {
     'emptyHTML': tt.emptyHTML,
     '_isPolyfill_': true,
   });
-  window['TrustedTypes'] = Object.freeze(publicApi);
+  window[rootProperty] = Object.freeze(publicApi);
 
   window['TrustedHTML'] = tt.TrustedHTML;
   window['TrustedURL'] = tt.TrustedURL;

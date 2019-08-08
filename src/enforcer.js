@@ -10,7 +10,7 @@
 /* eslint-disable no-unused-vars */
 import {DIRECTIVE_NAME, TrustedTypeConfig} from './data/trustedtypeconfig.js';
 import {
-  TrustedTypes,
+  trustedTypes as TrustedTypes,
   setAllowedPolicyNames,
   getDefaultPolicy,
   resetDefaultPolicy,

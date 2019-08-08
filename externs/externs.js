@@ -176,4 +176,4 @@ TrustedTypePolicy.prototype.createScript = function(s) {};
 /**
  * @const {!TrustedTypePolicyFactory}
  */
-var TrustedTypes;
+var trustedTypes;

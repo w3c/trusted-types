@@ -580,7 +580,7 @@ export const trustedTypesBuilderTestOnly = function() {
       }
     } else {
       // eslint-disable-next-line no-console
-      console.warn('TrustedTypes.createPolicy ' + pName +
+      console.warn('trustedTypes.createPolicy ' + pName +
           ' was given an empty policy');
     }
     freeze(innerPolicy);
@@ -652,7 +652,7 @@ export const trustedTypesBuilderTestOnly = function() {
   });
 
   return {
-    TrustedTypes: freeze(api),
+    trustedTypes: freeze(api),
     setAllowedPolicyNames,
     getDefaultPolicy,
     resetDefaultPolicy,
@@ -661,7 +661,7 @@ export const trustedTypesBuilderTestOnly = function() {
 
 
 export const {
-  TrustedTypes,
+  trustedTypes,
   setAllowedPolicyNames,
   getDefaultPolicy,
   resetDefaultPolicy,
