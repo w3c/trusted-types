@@ -1677,8 +1677,8 @@ templating policy and enables the enforcement for the DOM sinks.</p>
     <li data-md>
      <p>An existing web application interacts with the DOM mostly using XSS-safe
 patterns (i.e. withour using <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink">injection sinks</a>). In a few places, however,
-it resorts to using risky patterns like calling into <code>innerHTML</code>, <code>eval</code>, or
-creating <code>javascript:</code> URIs.</p>
+it resorts to using risky patterns like loading additional script using
+JSONP, calling into <code>innerHTML</code> or <code>eval</code>.</p>
      <p>Review finds that those places do not cause XSS (e.g. because
 user-controlled data is not part of the input to those sinks), but it’s
 hard to migrate the application off using these patterns.</p>
@@ -1709,19 +1709,19 @@ string value in a way that could result in XSS if that value is untrusted.</p>
    <p>Examples of injection sinks include:</p>
    <ul>
     <li data-md>
-     <p>Functions that parse &amp; insert HTML strings into the document like <a href="https://www.w3.org/TR/DOM-Parsing/#widl-Element-innerHTML">Element.innerHTML</a> setter</p>
+     <p>Functions that parse &amp; insert HTML strings into the document like <a href="https://www.w3.org/TR/DOM-Parsing/#widl-Element-innerHTML">Element.innerHTML</a> setter,</p>
     <li data-md>
      <p>Setters for <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#element" id="ref-for-element">Element</a></code> attributes that accept a URL of the code to load
-like <code class="idl"><a class="idl-code" data-link-type="attribute" href="#dom-htmlscriptelement-src" id="ref-for-dom-htmlscriptelement-src">HTMLScriptElement.src</a></code></p>
+like <code class="idl"><a class="idl-code" data-link-type="attribute" href="#dom-htmlscriptelement-src" id="ref-for-dom-htmlscriptelement-src">HTMLScriptElement.src</a></code>,</p>
     <li data-md>
-     <p>Setters for <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#element" id="ref-for-element①">Element</a></code> attributes that accept a code to execute like <code class="idl"><a class="idl-code" data-link-type="attribute" href="#dom-htmlscriptelement-text" id="ref-for-dom-htmlscriptelement-text">HTMLScriptElement.text</a></code></p>
+     <p>Setters for <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#element" id="ref-for-element①">Element</a></code> attributes that accept a code to execute like <code class="idl"><a class="idl-code" data-link-type="attribute" href="#dom-htmlscriptelement-text" id="ref-for-dom-htmlscriptelement-text">HTMLScriptElement.text</a></code>,</p>
     <li data-md>
-     <p>Functions that execute code directly like <code>eval</code>.</p>
-    <li data-md>
-     <p>Functions that accept URLs with <code>javascript:</code> scheme</p>
+     <p>Functions that execute code directly like <code>eval</code>,</p>
     <li data-md>
      <p>Functions that create a new same-origin <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document">Document</a></code> with caller-controlled
-markup like <code class="idl"><a data-link-type="idl" href="#dom-domparser-parsefromstring" id="ref-for-dom-domparser-parsefromstring">parseFromString()</a></code>.</p>
+markup like <code class="idl"><a data-link-type="idl" href="#dom-domparser-parsefromstring" id="ref-for-dom-domparser-parsefromstring">parseFromString()</a></code>,</p>
+    <li data-md>
+     <p>Navigation to 'javascript:' URLs.</p>
    </ul>
    <p>An application is vulnerable to DOM XSS if it permits a flow of data from an
 attacker-controlled source and permits that data to reach an injection sink

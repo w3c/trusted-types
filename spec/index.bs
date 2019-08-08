@@ -105,8 +105,8 @@ which are substantially easier to safeguard, monitor and review.
 
 *   An existing web application interacts with the DOM mostly using XSS-safe
     patterns (i.e. withour using [=injection sinks=]). In a few places, however,
-    it resorts to using risky patterns like calling into `innerHTML`, `eval`, or
-    creating `javascript:` URIs.
+    it resorts to using risky patterns like loading additional script using
+    JSONP, calling into `innerHTML` or `eval`.
 
     Review finds that those places do not cause XSS (e.g. because
     user-controlled data is not part of the input to those sinks), but it's
@@ -146,15 +146,15 @@ string value in a way that could result in XSS if that value is untrusted.
 Examples of injection sinks include:
 
   * Functions that parse & insert HTML strings into the document like
-    [[DOM-Parsing#widl-Element-innerHTML|Element.innerHTML]] setter
+    [[DOM-Parsing#widl-Element-innerHTML|Element.innerHTML]] setter,
   * Setters for {{Element}} attributes that accept a URL of the code to load
-    like {{HTMLScriptElement/src!!attribute|HTMLScriptElement.src}}
+    like {{HTMLScriptElement/src!!attribute|HTMLScriptElement.src}},
   * Setters for {{Element}} attributes that accept a code to execute like
-    {{HTMLScriptElement/text!!attribute|HTMLScriptElement.text}}
-  * Functions that execute code directly like `eval`.
-  * Functions that accept URLs with `javascript:` scheme
+    {{HTMLScriptElement/text!!attribute|HTMLScriptElement.text}},
+  * Functions that execute code directly like `eval`,
   * Functions that create a new same-origin {{Document}} with caller-controlled
-    markup like {{DOMParser/parseFromString()}}.
+    markup like {{DOMParser/parseFromString()}},
+  * Navigation to 'javascript:' URLs.
 
 An application is vulnerable to DOM XSS if it permits a flow of data from an
 attacker-controlled source and permits that data to reach an injection sink
