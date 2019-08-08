@@ -138,7 +138,7 @@ interface TrustedTypePolicyFactory {
     Array<DOMString> getPolicyNames();
 }
 ```
-We propose to provide a `TrustedTypePolicyFactory` implementation under `window.TrustedTypes`. The most important function available in a `TrustedTypePolicyFactory` is `createPolicy`.
+We propose to provide a `TrustedTypePolicyFactory` implementation under `window.trustedTypes`. The most important function available in a `TrustedTypePolicyFactory` is `createPolicy`.
 
 The policy rules for creating individual types are configured via the properties of `TrustedTypeInnerPolicy` object. Note that the functions operate on strings. The actual type construction is provided by the private API, not exposed to the authors.
 
@@ -154,7 +154,7 @@ interface TrustedTypeInnerPolicy {
 Policy (with a unique name) can be created like this:
 
 ```javascript
-const myPolicy = TrustedTypes.createPolicy('https://example.com#mypolicy', {
+const myPolicy = trustedTypes.createPolicy('https://example.com#mypolicy', {
     createHTML: (s) => { return customSanitize(s) },
     createURL: (s) => { /* parse and validate the url. throw if non-conformant */ },
 })
