@@ -1213,7 +1213,7 @@ Possible extra rowspan handling
 	}
 </style>
   <link href="https://www.w3.org/StyleSheets/TR/2016/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version 5a2c04fbf9f3418b378c5d733b60fe6fc575091b" name="generator">
+  <meta content="Bikeshed version 220086d88511a9c99d7a1f9b5447db7e7b99e053" name="generator">
   <link href="https://wicg.github.io/trusted-types/dist/spec/" rel="canonical">
 <style>/* style-md-lists */
 
@@ -1461,7 +1461,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Trusted Types</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-08-06">6 August 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-08-08">8 August 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1822,7 +1822,7 @@ execution. Any <code class="idl"><a data-link-type="idl" href="#trustedhtml" id=
 be safely used in the application, and e.g. passed to <code>innerHTML</code> setter - even if the input value was controlled by the attacker, the
 policy rules neutralized it to adhere to policy-specific
 contract. 
-<pre class="highlight"><c- kr>const</c-> sanitizingPolicy <c- o>=</c-> TrustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- t>'sanitize-html'</c-><c- p>,</c-> <c- p>{</c->
+<pre class="highlight"><c- kr>const</c-> sanitizingPolicy <c- o>=</c-> trustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- t>'sanitize-html'</c-><c- p>,</c-> <c- p>{</c->
   createHTML<c- o>:</c-> <c- p>(</c->input<c- p>)</c-> <c- p>=></c-> myTrustedSanitizer<c- p>(</c->input<c- p>,</c-> <c- p>{</c-> superSafe<c- o>:</c-> <c- t>'ok'</c-><c- p>}),</c->
 <c- p>});</c->
 
@@ -1841,7 +1841,7 @@ codebase.</p>
    <div class="example" id="policy-reference">
     <a class="self-link" href="#policy-reference"></a> Library initialized with a policy allowing it to load additional scripts from
 a given host. 
-<pre class="highlight"><c- kr>const</c-> cdnScriptsPolicy <c- o>=</c-> TrustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- t>'cdn-scripts'</c-><c- p>,</c-> <c- p>{</c->
+<pre class="highlight"><c- kr>const</c-> cdnScriptsPolicy <c- o>=</c-> trustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- t>'cdn-scripts'</c-><c- p>,</c-> <c- p>{</c->
   createScriptURL<c- p>(</c->url<c- p>)</c-> <c- p>{</c->
     <c- kr>const</c-> parsed <c- o>=</c-> <c- k>new</c-> URL<c- p>(</c->url<c- p>,</c-> document<c- p>.</c->baseURI<c- p>);</c->
     <c- k>if</c-> <c- p>(</c->parsed<c- p>.</c->origin <c- o>==</c-> <c- t>'https://mycdn.example'</c-><c- p>)</c-> <c- p>{</c->
@@ -1879,7 +1879,7 @@ access to which can be controlled using JavaScript techniques
     <a class="self-link" href="#policy-capability"></a> Unsafe no-op policy reachable only from within a single code block to ascertain
 that it’s called only with no attacker-controlled values. 
 <pre class="highlight"><c- p>(</c-><c- a>function</c-> renderFootnote<c- p>()</c-> <c- p>{</c->
-  <c- kr>const</c-> unsafePolicy <c- o>=</c-> TrustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- t>'html'</c-><c- p>,</c-> <c- p>{</c->
+  <c- kr>const</c-> unsafePolicy <c- o>=</c-> trustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- t>'html'</c-><c- p>,</c-> <c- p>{</c->
     createHTML<c- o>:</c-> input <c- p>=></c-> input<c- p>,</c->
   <c- p>});</c->
   <c- kr>const</c-> footnote <c- o>=</c-> await fetch<c- p>(</c-><c- t>'/footnote.html'</c-><c- p>).</c->then<c- p>(</c->r <c- p>=></c-> r<c- p>.</c->text<c- p>());</c->
@@ -1890,7 +1890,7 @@ that it’s called only with no attacker-controlled values.
    <h4 class="heading settled" data-level="2.3.1" id="trusted-type-policy-factory"><span class="secno">2.3.1. </span><span class="content"><dfn class="css" data-dfn-type="type" data-export id="typedef-trustedtypepolicyfactory">TrustedTypePolicyFactory<a class="self-link" href="#typedef-trustedtypepolicyfactory"></a></dfn></span><a class="self-link" href="#trusted-type-policy-factory"></a></h4>
    <p>TrustedTypePolicyFactory creates <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy④">policies</a></code> and verifies that Trusted Type object instances
 were created via one of the policies.</p>
-   <p class="note" role="note"><span>Note:</span> This factory object is exposed to JavaScript through <code>window.TrustedTypes</code> reference - see <a href="#extensions-to-the-window-interface">§ 4.1.1 Extensions to the Window interface</a>.</p>
+   <p class="note" role="note"><span>Note:</span> This factory object is exposed to JavaScript through <code>window.trustedTypes</code> reference - see <a href="#extensions-to-the-window-interface">§ 4.1.1 Extensions to the Window interface</a>.</p>
 <pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed④"><c- g>Exposed</c-></a>=<c- n>Window</c->] <c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="trustedtypepolicyfactory"><code><c- g>TrustedTypePolicyFactory</c-></code></dfn> {
     [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable"><c- g>Unforgeable</c-></a>] <a class="n" data-link-type="idl-name" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy⑤"><c- n>TrustedTypePolicy</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicyfactory-createpolicy" id="ref-for-dom-trustedtypepolicyfactory-createpolicy②"><c- g>createPolicy</c-></a>(
         <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="TrustedTypePolicyFactory/createPolicy(policyName, policyOptions), TrustedTypePolicyFactory/createPolicy(policyName)" data-dfn-type="argument" data-export id="dom-trustedtypepolicyfactory-createpolicy-policyname-policyoptions-policyname"><code><c- g>policyName</c-></code><a class="self-link" href="#dom-trustedtypepolicyfactory-createpolicy-policyname-policyoptions-policyname"></a></dfn>, <c- b>optional</c-> <a class="n" data-link-type="idl-name" href="#dictdef-trustedtypepolicyoptions" id="ref-for-dictdef-trustedtypepolicyoptions"><c- n>TrustedTypePolicyOptions</c-></a> <dfn class="idl-code" data-dfn-for="TrustedTypePolicyFactory/createPolicy(policyName, policyOptions), TrustedTypePolicyFactory/createPolicy(policyName)" data-dfn-type="argument" data-export id="dom-trustedtypepolicyfactory-createpolicy-policyname-policyoptions-policyoptions"><code><c- g>policyOptions</c-></code><a class="self-link" href="#dom-trustedtypepolicyfactory-createpolicy-policyname-policyoptions-policyoptions"></a></dfn>);
@@ -1928,9 +1928,9 @@ policy creation fails with a TypeError.</p>
       <div class="example" id="create-policy-example">
        <a class="self-link" href="#create-policy-example"></a> 
 <pre class="highlight"><c- c1>// HTTP Response header: Content-Security-Policy: trusted-types foo</c->
-TrustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- u>"foo"</c-><c- p>,</c-> <c- p>{});</c-> <c- c1>// ok.</c->
-TrustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- u>"bar"</c-><c- p>,</c-> <c- p>{});</c-> <c- c1>// throws - name not on the whitelist.</c->
-TrustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- u>"foo"</c-><c- p>,</c-> <c- p>{});</c-> <c- c1>// throws - duplicate name.</c->
+trustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- u>"foo"</c-><c- p>,</c-> <c- p>{});</c-> <c- c1>// ok.</c->
+trustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- u>"bar"</c-><c- p>,</c-> <c- p>{});</c-> <c- c1>// throws - name not on the whitelist.</c->
+trustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- u>"foo"</c-><c- p>,</c-> <c- p>{});</c-> <c- c1>// throws - duplicate name.</c->
 </pre>
       </div>
       <p>Returns the result of executing a <a data-link-type="abstract-op" href="#abstract-opdef-create-a-trusted-type-policy" id="ref-for-abstract-opdef-create-a-trusted-type-policy">Create a Trusted Type Policy</a> algorithm,
@@ -1947,7 +1947,7 @@ with the following arguments:</p>
       </dl>
       <div class="example" id="create-and-used-unexposed-policy">
        <a class="self-link" href="#create-and-used-unexposed-policy"></a> 
-<pre class="highlight"><c- kr>const</c-> myPolicy <c- o>=</c-> TrustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- t>'myPolicy'</c-><c- p>,</c-> <c- p>{</c->
+<pre class="highlight"><c- kr>const</c-> myPolicy <c- o>=</c-> trustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- t>'myPolicy'</c-><c- p>,</c-> <c- p>{</c->
   <c- c1>// This security-critical code needs a security review;</c->
   <c- c1>// a flaw in this code could cause DOM XSS.</c->
   createHTML<c- p>(</c->input<c- p>)</c-> <c- p>{</c-> <c- k>return</c-> ASanitizer<c- p>.</c->sanitize<c- p>(</c->input<c- p>)</c-> <c- p>},</c->
@@ -1971,9 +1971,9 @@ scriptElement<c- p>.</c->src <c- o>=</c-> myPolicy<c- p>.</c->createScriptURL<c-
       <p>Returns a new list, comprising of all entries  of the <code>[[CreatedPolicyNames]]</code> slot.</p>
       <div class="example" id="get-policy-names-example">
        <a class="self-link" href="#get-policy-names-example"></a> 
-<pre class="highlight">TrustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- t>'foo'</c-><c- p>,</c-> <c- p>...);</c->
-TrustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- t>'bar'</c-><c- p>,</c-> <c- p>...);</c->
-TrustedTypes<c- p>.</c->getPolicyNames<c- p>();</c-> <c- c1>// ['foo', 'bar']</c->
+<pre class="highlight">trustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- t>'foo'</c-><c- p>,</c-> <c- p>...);</c->
+trustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- t>'bar'</c-><c- p>,</c-> <c- p>...);</c->
+trustedTypes<c- p>.</c->getPolicyNames<c- p>();</c-> <c- c1>// ['foo', 'bar']</c->
 </pre>
       </div>
      <dt data-md><dfn class="dfn-paneled idl-code" data-dfn-for="TrustedTypePolicyFactory" data-dfn-type="method" data-export id="dom-trustedtypepolicyfactory-ishtml"><code>isHTML(value)</code></dfn>
@@ -1985,12 +1985,12 @@ e.g. <a href="https://tc39.github.io/ecma262/#sec-object.create">Object.create</
       <div class="example" id="is-html-example">
        <a class="self-link" href="#is-html-example"></a> 
 <pre class="highlight"><c- kr>const</c-> html <c- o>=</c-> policy<c- p>.</c->createHTML<c- p>(</c-><c- t>'&lt;div>'</c-><c- p>);</c->
-TrustedTypes<c- p>.</c->isHTML<c- p>(</c->html<c- p>)</c-> <c- c1>// true</c->
+trustedTypes<c- p>.</c->isHTML<c- p>(</c->html<c- p>)</c-> <c- c1>// true</c->
 
 <c- kr>const</c-> fake <c- o>=</c-> Object<c- p>.</c->create<c- p>(</c->TrustedHTML<c- p>.</c->prototype<c- p>);</c->
-TrustedTypes<c- p>.</c->isHTML<c- p>(</c->fake<c- p>)</c-> <c- c1>// false</c->
+trustedTypes<c- p>.</c->isHTML<c- p>(</c->fake<c- p>)</c-> <c- c1>// false</c->
 
-TrustedTypes<c- p>.</c->isHTML<c- p>(</c-><c- u>"&lt;div>plain string&lt;/div>"</c-><c- p>)</c-> <c- c1>// false</c->
+trustedTypes<c- p>.</c->isHTML<c- p>(</c-><c- u>"&lt;div>plain string&lt;/div>"</c-><c- p>)</c-> <c- c1>// false</c->
 </pre>
       </div>
      <dt data-md><dfn class="dfn-paneled idl-code" data-dfn-for="TrustedTypePolicyFactory" data-dfn-type="method" data-export id="dom-trustedtypepolicyfactory-isscript"><code>isScript(value)</code></dfn>
@@ -2023,9 +2023,9 @@ stringified <code class="idl"><a data-link-type="idl" href="#extendedattrdef-tru
       </ol>
       <div class="example" id="get-property-type-example">
        <a class="self-link" href="#get-property-type-example"></a> 
-<pre class="highlight">TrustedTypes<c- p>.</c->getPropertyType<c- p>(</c-><c- t>'div'</c-><c- p>,</c-> <c- t>'innerHTML'</c-><c- p>);</c-> <c- c1>// "TrustedHTML"</c->
-TrustedTypes<c- p>.</c->getPropertyType<c- p>(</c-><c- t>'form'</c-><c- p>,</c-> <c- t>'formAction'</c-><c- p>);</c-> <c- c1>// "TrustedURL"</c->
-TrustedTypes<c- p>.</c->getPropertyType<c- p>(</c-><c- t>'foo'</c-><c- p>,</c-> <c- t>'bar'</c-><c- p>);</c-> <c- c1>// undefined</c->
+<pre class="highlight">trustedTypes<c- p>.</c->getPropertyType<c- p>(</c-><c- t>'div'</c-><c- p>,</c-> <c- t>'innerHTML'</c-><c- p>);</c-> <c- c1>// "TrustedHTML"</c->
+trustedTypes<c- p>.</c->getPropertyType<c- p>(</c-><c- t>'form'</c-><c- p>,</c-> <c- t>'formAction'</c-><c- p>);</c-> <c- c1>// "TrustedURL"</c->
+trustedTypes<c- p>.</c->getPropertyType<c- p>(</c-><c- t>'foo'</c-><c- p>,</c-> <c- t>'bar'</c-><c- p>);</c-> <c- c1>// undefined</c->
 </pre>
       </div>
      <dt data-md><dfn class="idl-code" data-dfn-for="TrustedTypePolicyFactory" data-dfn-type="method" data-export id="dom-trustedtypepolicyfactory-getatributetype"><code>getAtributeType(localName, attribute, elementNs, attributeNs)</code><a class="self-link" href="#dom-trustedtypepolicyfactory-getatributetype"></a></dfn>
@@ -2056,9 +2056,9 @@ stringified <code class="idl"><a data-link-type="idl" href="#extendedattrdef-tru
       </ol>
       <div class="example" id="get-attribute-type-example">
        <a class="self-link" href="#get-attribute-type-example"></a> 
-<pre class="highlight">TrustedTypes<c- p>.</c->getPropertyType<c- p>(</c-><c- t>'a'</c-><c- p>,</c-> <c- t>'HREF'</c-><c- p>);</c-> <c- c1>// "TrustedURL"</c->
-TrustedTypes<c- p>.</c->getPropertyType<c- p>(</c-><c- t>'form'</c-><c- p>,</c-> <c- t>'formaction'</c-><c- p>);</c-> <c- c1>// "TrustedURL"</c->
-TrustedTypes<c- p>.</c->getPropertyType<c- p>(</c-><c- t>'foo'</c-><c- p>,</c-> <c- t>'bar'</c-><c- p>);</c-> <c- c1>// undefined</c->
+<pre class="highlight">trustedTypes<c- p>.</c->getPropertyType<c- p>(</c-><c- t>'a'</c-><c- p>,</c-> <c- t>'HREF'</c-><c- p>);</c-> <c- c1>// "TrustedURL"</c->
+trustedTypes<c- p>.</c->getPropertyType<c- p>(</c-><c- t>'form'</c-><c- p>,</c-> <c- t>'formaction'</c-><c- p>);</c-> <c- c1>// "TrustedURL"</c->
+trustedTypes<c- p>.</c->getPropertyType<c- p>(</c-><c- t>'foo'</c-><c- p>,</c-> <c- t>'bar'</c-><c- p>);</c-> <c- c1>// undefined</c->
 </pre>
       </div>
     </dl>
@@ -2071,7 +2071,7 @@ TrustedTypes<c- p>.</c->getPropertyType<c- p>(</c-><c- t>'foo'</c-><c- p>,</c-> 
     </dl>
     <div class="example" id="empty-html-example">
      <a class="self-link" href="#empty-html-example"></a> 
-<pre class="highlight">anElement<c- p>.</c->innerHTML <c- o>=</c-> TrustedTypes<c- p>.</c->emptyHTML<c- p>;</c-> <c- c1>// no need to create a policy</c->
+<pre class="highlight">anElement<c- p>.</c->innerHTML <c- o>=</c-> trustedTypes<c- p>.</c->emptyHTML<c- p>;</c-> <c- c1>// no need to create a policy</c->
 </pre>
     </div>
    </div>
@@ -2196,7 +2196,7 @@ the default policy is applied.</p>
     <a class="self-link" href="#default-policy-example"></a> 
 <pre class="highlight"><c- c1>// Content-Security-Policy: trusted-types default</c->
 
-TrustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- t>'default'</c-><c- p>,</c-> <c- p>{</c->
+trustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- t>'default'</c-><c- p>,</c-> <c- p>{</c->
   createScriptURL<c- o>:</c-> <c- p>(</c->s<c- p>,</c-> sink<c- p>)</c-> <c- p>=></c-> <c- p>{</c->
     console<c- p>.</c->log<c- p>(</c-><c- u>"Please don’t use this"</c-><c- p>);</c->
     <c- k>return</c-> s <c- o>+</c-> <c- u>"?default-policy-used&amp;sink="</c-> <c- o>+</c-> encodeURIComponent<c- p>(</c->sink<c- p>);</c->
@@ -2213,7 +2213,7 @@ console<c- p>.</c->log<c- p>(</c->aScriptElement<c- p>.</c->src<c- p>);</c->
 has an appropriate type before it reaches an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⓪">injection sink</a>.</p>
    <h4 class="heading settled" data-level="2.4.1" id="content-security-policy-hdr"><span class="secno">2.4.1. </span><span class="content">Content Security Policy</span><a class="self-link" href="#content-security-policy-hdr"></a></h4>
    <p>The JavaScript API that allows authors to create policies and Trusted Types objects from them is always
-available (via <code class="idl"><a data-link-type="idl" href="#dom-window-trustedtypes" id="ref-for-dom-window-trustedtypes">TrustedTypes</a></code>). Since <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①①">injection sinks</a> stringify their security sensitive
+available (via <code class="idl"><a data-link-type="idl" href="#dom-window-trustedtypes" id="ref-for-dom-window-trustedtypes">trustedTypes</a></code>). Since <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①①">injection sinks</a> stringify their security sensitive
 arguments, and <a data-link-type="dfn" href="#trusted-type" id="ref-for-trusted-type③">Trusted Type</a> objects stringify to their inner string values, this allows the authors
 to use Trusted Types in place of strings.</p>
    <p>However, to assert that the injection sinks are <em>never</em> called with string values, and only
@@ -2473,7 +2473,7 @@ which is a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicyfac
    <p>This document extends the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/window-object.html#window" id="ref-for-window②">Window</a></code> interface defined by <a data-link-type="biblio" href="#biblio-html5">HTML</a>:</p>
 <pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/window-object.html#window" id="ref-for-window③"><c- g>Window</c-></a> {
   [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable①②"><c- g>Unforgeable</c-></a>] <c- b>readonly</c-> <c- b>attribute</c->
-      <a class="n" data-link-type="idl-name" href="#trustedtypepolicyfactory" id="ref-for-trustedtypepolicyfactory③"><c- n>TrustedTypePolicyFactory</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="Window" data-dfn-type="attribute" data-export data-readonly data-type="TrustedTypePolicyFactory" id="dom-window-trustedtypes"><code><c- g>TrustedTypes</c-></code></dfn>;
+      <a class="n" data-link-type="idl-name" href="#trustedtypepolicyfactory" id="ref-for-trustedtypepolicyfactory③"><c- n>TrustedTypePolicyFactory</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="Window" data-dfn-type="attribute" data-export data-readonly data-type="TrustedTypePolicyFactory" id="dom-window-trustedtypes"><code><c- g>trustedTypes</c-></code></dfn>;
 
   <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/window-object.html#windowproxy" id="ref-for-windowproxy"><c- n>WindowProxy</c-></a>? <dfn class="idl-code" data-dfn-for="Window" data-dfn-type="method" data-export data-lt="open(url, target, features)|open(url, target)|open(url)|open()" id="dom-window-open"><code><c- g>open</c-></code><a class="self-link" href="#dom-window-open"></a></dfn>(
       [<a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes⑤"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedurl" id="ref-for-trustedurl⑤"><c- n>TrustedURL</c-></a>] <c- b>optional</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-urlstring" id="ref-for-typedefdef-urlstring"><c- n>URLString</c-></a> <dfn class="idl-code" data-dfn-for="Window/open(url, target, features), Window/open(url, target), Window/open(url), Window/open()" data-dfn-type="argument" data-export id="dom-window-open-url-target-features-url"><code><c- g>url</c-></code><a class="self-link" href="#dom-window-open-url-target-features-url"></a></dfn> = "about:blank",
@@ -2481,8 +2481,11 @@ which is a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicyfac
       <c- b>optional</c-> ([<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#TreatNullAs" id="ref-for-TreatNullAs①"><c- g>TreatNullAs</c-></a>=<a class="n" data-link-type="idl-name"><c- n>EmptyString</c-></a>] <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②④"><c- b>DOMString</c-></a>) <dfn class="idl-code" data-dfn-for="Window/open(url, target, features), Window/open(url, target), Window/open(url), Window/open()" data-dfn-type="argument" data-export id="dom-window-open-url-target-features-features"><code><c- g>features</c-></code><a class="self-link" href="#dom-window-open-url-target-features-features"></a></dfn> = "");
 };
 </pre>
-   <p><code class="idl"><a data-link-type="idl" href="#dom-window-trustedtypes" id="ref-for-dom-window-trustedtypes①">TrustedTypes</a></code> returns the <a href="#integration-with-html">trusted
+   <p><code class="idl"><a data-link-type="idl" href="#dom-window-trustedtypes" id="ref-for-dom-window-trustedtypes①">trustedTypes</a></code> returns the <a href="#integration-with-html">trusted
 type policy factory</a> of the current <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/window-object.html#window" id="ref-for-window④">Window</a></code>.</p>
+   <p class="note" role="note"><span>Note:</span> The implementation in Chrome &lt; 78 uses <code>window.TrustedTypes</code> instead
+      of <code>window.trustedTypes</code>.</p>
+   <p class="issue" id="issue-3d9ee9e6"><a class="self-link" href="#issue-3d9ee9e6"></a> Remove the note when the API in Chrome is shipped.</p>
    <h4 class="heading settled" data-level="4.1.2" id="extensions-to-the-document-interface"><span class="secno">4.1.2. </span><span class="content">Extensions to the Document interface</span><a class="self-link" href="#extensions-to-the-document-interface"></a></h4>
    <p>This document modifies the <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document①">Document</a></code> interface defined by <a data-link-type="biblio" href="#biblio-html5">HTML</a>:</p>
 <pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#document" id="ref-for-document②"><c- g>Document</c-></a> {
@@ -3265,12 +3268,8 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
      <li><a href="#dictdef-trustedtypepolicyoptions">(dictionary)</a><span>, in §2.3.3</span>
      <li><a href="#typedef-trustedtypepolicyoptions">(type)</a><span>, in §2.3.3</span>
     </ul>
-   <li>
-    TrustedTypes
-    <ul>
-     <li><a href="#extendedattrdef-trustedtypes">(extended-attribute)</a><span>, in §2.4.2</span>
-     <li><a href="#dom-window-trustedtypes">attribute for Window</a><span>, in §4.1.1</span>
-    </ul>
+   <li><a href="#extendedattrdef-trustedtypes">TrustedTypes</a><span>, in §2.4.2</span>
+   <li><a href="#dom-window-trustedtypes">trustedTypes</a><span>, in §4.1.1</span>
    <li><a href="#trusted-types-directive">trusted-types-directive</a><span>, in §4.5.1</span>
    <li>
     TrustedURL
@@ -3915,7 +3914,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
 
 <c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/window-object.html#window" id="ref-for-window③①"><c- g>Window</c-></a> {
   [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable①②①"><c- g>Unforgeable</c-></a>] <c- b>readonly</c-> <c- b>attribute</c->
-      <a class="n" data-link-type="idl-name" href="#trustedtypepolicyfactory" id="ref-for-trustedtypepolicyfactory③①"><c- n>TrustedTypePolicyFactory</c-></a> <a data-readonly data-type="TrustedTypePolicyFactory" href="#dom-window-trustedtypes"><code><c- g>TrustedTypes</c-></code></a>;
+      <a class="n" data-link-type="idl-name" href="#trustedtypepolicyfactory" id="ref-for-trustedtypepolicyfactory③①"><c- n>TrustedTypePolicyFactory</c-></a> <a data-readonly data-type="TrustedTypePolicyFactory" href="#dom-window-trustedtypes"><code><c- g>trustedTypes</c-></code></a>;
 
   <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/window-object.html#windowproxy" id="ref-for-windowproxy②"><c- n>WindowProxy</c-></a>? <a href="#dom-window-open"><code><c- g>open</c-></code></a>(
       [<a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes⑤①"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedurl" id="ref-for-trustedurl⑤①"><c- n>TrustedURL</c-></a>] <c- b>optional</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-urlstring" id="ref-for-typedefdef-urlstring①④"><c- n>URLString</c-></a> <a href="#dom-window-open-url-target-features-url"><code><c- g>url</c-></code></a> = "about:blank",
@@ -4033,6 +4032,7 @@ See note "It should not be used in specifications unless ...".
 For some sinks a <code>null</code> value will result in "", and "null" for others.
 This already caused problems in the polyfill. <a href="https://github.com/WICG/trusted-types/issues/2">&lt;https://github.com/WICG/trusted-types/issues/2></a><a href="#issue-52d7d8d6"> ↵ </a></div>
    <div class="issue"> Define for workers.<a href="#issue-a5679137"> ↵ </a></div>
+   <div class="issue"> Remove the note when the API in Chrome is shipped.<a href="#issue-3d9ee9e6"> ↵ </a></div>
    <div class="issue"> This depends on a solution to <a href="https://github.com/WICG/trusted-types/issues/144">issue #144</a> like <a href="https://github.com/tc39-transfer/dynamic-code-brand-checks#problem-host-callout-does-not-receive-type-information">TC39 HostBeforeCompile</a><a href="#issue-e28ea232"> ↵ </a></div>
    <div class="issue"> In some cases, the violation "<code>'report-sample'</code>" contain the result of
 applying the default policy to a string argument which differs.

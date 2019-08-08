@@ -314,7 +314,7 @@ setter - even if the input value was controlled by the attacker, the
 policy rules neutralized it to adhere to policy-specific
 contract.
 <xmp highlight=js>
-const sanitizingPolicy = TrustedTypes.createPolicy('sanitize-html', {
+const sanitizingPolicy = trustedTypes.createPolicy('sanitize-html', {
   createHTML: (input) => myTrustedSanitizer(input, { superSafe: 'ok'}),
 });
 
@@ -338,7 +338,7 @@ Library initialized with a policy allowing it to load additional scripts from
 a given host.
 <xmp highlight=js>
 
-const cdnScriptsPolicy = TrustedTypes.createPolicy('cdn-scripts', {
+const cdnScriptsPolicy = trustedTypes.createPolicy('cdn-scripts', {
   createScriptURL(url) {
     const parsed = new URL(url, document.baseURI);
     if (parsed.origin == 'https://mycdn.example') {
@@ -384,7 +384,7 @@ Unsafe no-op policy reachable only from within a single code block to ascertain
 that it's called only with no attacker-controlled values.
 <xmp highlight=js>
 (function renderFootnote() {
-  const unsafePolicy = TrustedTypes.createPolicy('html', {
+  const unsafePolicy = trustedTypes.createPolicy('html', {
     createHTML: input => input,
   });
   const footnote = await fetch('/footnote.html').then(r => r.text());
@@ -399,7 +399,7 @@ TrustedTypePolicyFactory creates
 {{TrustedTypePolicy|policies}} and verifies that Trusted Type object instances
 were created via one of the policies.
 
-Note: This factory object is exposed to JavaScript through `window.TrustedTypes`
+Note: This factory object is exposed to JavaScript through `window.trustedTypes`
 reference - see [[#extensions-to-the-window-interface]].
 
 <pre class="idl">
@@ -443,9 +443,9 @@ initially empty.
     <div class="example" id="create-policy-example">
     <xmp highlight=js>
     // HTTP Response header: Content-Security-Policy: trusted-types foo
-    TrustedTypes.createPolicy("foo", {}); // ok.
-    TrustedTypes.createPolicy("bar", {}); // throws - name not on the whitelist.
-    TrustedTypes.createPolicy("foo", {}); // throws - duplicate name.
+    trustedTypes.createPolicy("foo", {}); // ok.
+    trustedTypes.createPolicy("bar", {}); // throws - name not on the whitelist.
+    trustedTypes.createPolicy("foo", {}); // throws - duplicate name.
     </xmp>
     </div>
 
@@ -464,7 +464,7 @@ initially empty.
 
     <div class="example" id="create-and-used-unexposed-policy">
     <xmp highlight="js">
-    const myPolicy = TrustedTypes.createPolicy('myPolicy', {
+    const myPolicy = trustedTypes.createPolicy('myPolicy', {
       // This security-critical code needs a security review;
       // a flaw in this code could cause DOM XSS.
       createHTML(input) { return ASanitizer.sanitize(input) },
@@ -492,9 +492,9 @@ initially empty.
 
     <div class="example" id="get-policy-names-example">
     <xmp highlight=js>
-    TrustedTypes.createPolicy('foo', ...);
-    TrustedTypes.createPolicy('bar', ...);
-    TrustedTypes.getPolicyNames(); // ['foo', 'bar']
+    trustedTypes.createPolicy('foo', ...);
+    trustedTypes.createPolicy('bar', ...);
+    trustedTypes.getPolicyNames(); // ['foo', 'bar']
     </xmp>
     </div>
 
@@ -511,12 +511,12 @@ initially empty.
     <div class="example" id="is-html-example">
     <xmp highlight=js>
     const html = policy.createHTML('<div>');
-    TrustedTypes.isHTML(html) // true
+    trustedTypes.isHTML(html) // true
 
     const fake = Object.create(TrustedHTML.prototype);
-    TrustedTypes.isHTML(fake) // false
+    trustedTypes.isHTML(fake) // false
 
-    TrustedTypes.isHTML("<div>plain string</div>") // false
+    trustedTypes.isHTML("<div>plain string</div>") // false
     </xmp>
     </div>
 
@@ -550,9 +550,9 @@ initially empty.
 
     <div class="example" id="get-property-type-example">
     <xmp highlight="js">
-    TrustedTypes.getPropertyType('div', 'innerHTML'); // "TrustedHTML"
-    TrustedTypes.getPropertyType('form', 'formAction'); // "TrustedURL"
-    TrustedTypes.getPropertyType('foo', 'bar'); // undefined
+    trustedTypes.getPropertyType('div', 'innerHTML'); // "TrustedHTML"
+    trustedTypes.getPropertyType('form', 'formAction'); // "TrustedURL"
+    trustedTypes.getPropertyType('foo', 'bar'); // undefined
     </xmp>
     </div>
 
@@ -578,9 +578,9 @@ initially empty.
 
     <div class="example" id="get-attribute-type-example">
     <xmp highlight="js">
-    TrustedTypes.getPropertyType('a', 'HREF'); // "TrustedURL"
-    TrustedTypes.getPropertyType('form', 'formaction'); // "TrustedURL"
-    TrustedTypes.getPropertyType('foo', 'bar'); // undefined
+    trustedTypes.getPropertyType('a', 'HREF'); // "TrustedURL"
+    trustedTypes.getPropertyType('form', 'formaction'); // "TrustedURL"
+    trustedTypes.getPropertyType('foo', 'bar'); // undefined
     </xmp>
     </div>
 
@@ -593,7 +593,7 @@ initially empty.
 
 <div class="example" id="empty-html-example">
 <xmp highlight="js">
-anElement.innerHTML = TrustedTypes.emptyHTML; // no need to create a policy
+anElement.innerHTML = trustedTypes.emptyHTML; // no need to create a policy
 </xmp>
 </div>
 </div>
@@ -742,7 +742,7 @@ the default policy is applied.
 <xmp highlight="js">
 // Content-Security-Policy: trusted-types default
 
-TrustedTypes.createPolicy('default', {
+trustedTypes.createPolicy('default', {
   createScriptURL: (s, sink) => {
     console.log("Please don't use this");
     return s + "?default-policy-used&sink=" + encodeURIComponent(sink);
@@ -764,7 +764,7 @@ has an appropriate type before it reaches an [=injection sink=].
 ### Content Security Policy ### {#content-security-policy-hdr}
 
 The JavaScript API that allows authors to create policies and Trusted Types objects from them is always
-available (via {{Window/TrustedTypes}}). Since [=injection sinks=] stringify their security sensitive
+available (via {{Window/trustedTypes}}). Since [=injection sinks=] stringify their security sensitive
 arguments, and [=Trusted Type=] objects stringify to their inner string values, this allows the authors
 to use Trusted Types in place of strings.
 
@@ -1010,7 +1010,7 @@ This document extends the {{Window}} interface defined by [[HTML5|HTML]]:
 <pre class="idl">
 partial interface mixin Window {
   [Unforgeable] readonly attribute
-      TrustedTypePolicyFactory TrustedTypes;
+      TrustedTypePolicyFactory trustedTypes;
 
   WindowProxy? open(
       [TrustedTypes=TrustedURL] optional URLString url = "about:blank",
@@ -1019,8 +1019,13 @@ partial interface mixin Window {
 };
 </pre>
 
-{{Window/TrustedTypes}} returns the [[#integration-with-html|trusted
+{{Window/trustedTypes}} returns the [[#integration-with-html|trusted
 type policy factory]] of the current {{Window}}.
+
+Note: The implementation in Chrome &lt; 78 uses `window.TrustedTypes` instead
+      of `window.trustedTypes`.
+
+Issue: Remove the note when the API in Chrome is shipped.
 
 ### Extensions to the Document interface ### {#extensions-to-the-document-interface}
 
