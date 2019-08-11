@@ -1213,7 +1213,7 @@ Possible extra rowspan handling
 	}
 </style>
   <link href="https://www.w3.org/StyleSheets/TR/2016/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version 220086d88511a9c99d7a1f9b5447db7e7b99e053" name="generator">
+  <meta content="Bikeshed version 450e0499b28bb4c684052ad936ad1e7d36c4eac5" name="generator">
   <link href="https://wicg.github.io/trusted-types/dist/spec/" rel="canonical">
 <style>/* style-md-lists */
 
@@ -1461,7 +1461,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Trusted Types</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-08-08">8 August 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-08-10">10 August 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1575,8 +1575,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li>
      <a href="#security-considerations"><span class="secno">5</span> <span class="content">Security Considerations</span></a>
      <ol class="toc">
-      <li><a href="##cross-document-vectors"><span class="secno">5.1</span> <span class="content">Cross-document vectors</span></a>
-      <li><a href="##deprecated-features"><span class="secno">5.2</span> <span class="content">Deprecated features</span></a>
+      <li><a href="#cross-document-vectors"><span class="secno">5.1</span> <span class="content">Cross-document vectors</span></a>
+      <li><a href="#deprecated-features"><span class="secno">5.2</span> <span class="content">Deprecated features</span></a>
       <li><a href="#bypass-vectors"><span class="secno">5.3</span> <span class="content">Bypass vectors</span></a>
       <li><a href="#best-practices-for-policy-design"><span class="secno">5.4</span> <span class="content">Best practices for policy design</span></a>
      </ol>
@@ -2940,7 +2940,7 @@ result in security bugs, and not to defend against first-party malicious code
 actively trying to bypass policy restrictions. Below we enumerate already
 identified vectors that remain risky even in environments with enforced
 Trusted Types.</p>
-   <h3 class="heading settled" data-level="5.1" id="#cross-document-vectors"><span class="secno">5.1. </span><span class="content">Cross-document vectors</span><a class="self-link" href="#%23cross-document-vectors"></a></h3>
+   <h3 class="heading settled" data-level="5.1" id="cross-document-vectors"><span class="secno">5.1. </span><span class="content">Cross-document vectors</span><a class="self-link" href="#cross-document-vectors"></a></h3>
    <p>While the code running in a window in which Trusted Types are enforced cannot
 dynamically create nodes that would bypass the policy restrictions, it is
 possible that such nodes can be imported or adopted from documents in other
@@ -2951,7 +2951,7 @@ a restricted document colludes with an unrestricted one.</p>
 issue, as new <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#local-scheme" id="ref-for-local-scheme">local scheme</a> documents will inherit the same set of restrictions.
 To address this issue comprehensively, other mechanisms like <a href="https://wicg.github.io/origin-policy/">Origin Policy</a> should be used to ensure that baseline security rules are applied for the whole
 origin.</p>
-   <h3 class="heading settled" data-level="5.2" id="#deprecated-features"><span class="secno">5.2. </span><span class="content">Deprecated features</span><a class="self-link" href="#%23deprecated-features"></a></h3>
+   <h3 class="heading settled" data-level="5.2" id="deprecated-features"><span class="secno">5.2. </span><span class="content">Deprecated features</span><a class="self-link" href="#deprecated-features"></a></h3>
    <p>Some long-deprecated and rarely used plaform features are not subject to Trusted
 Types, and could potentially be used by malicious authors to overcome the
 restrictions:</p>

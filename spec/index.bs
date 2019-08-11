@@ -1504,7 +1504,7 @@ actively trying to bypass policy restrictions. Below we enumerate already
 identified vectors that remain risky even in environments with enforced
 Trusted Types.
 
-## Cross-document vectors ## {##cross-document-vectors}
+## Cross-document vectors ## {#cross-document-vectors}
 
 While the code running in a window in which Trusted Types are enforced cannot
 dynamically create nodes that would bypass the policy restrictions, it is
@@ -1520,7 +1520,7 @@ To address this issue comprehensively, other mechanisms like
 should be used to ensure that baseline security rules are applied for the whole
 origin.
 
-## Deprecated features ## {##deprecated-features}
+## Deprecated features ## {#deprecated-features}
 
 Some long-deprecated and rarely used plaform features are not subject to Trusted
 Types, and could potentially be used by malicious authors to overcome the
