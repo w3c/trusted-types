@@ -2,3 +2,4 @@
 node_modules/
 local.log
 browserstack.err
+build/

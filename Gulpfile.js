@@ -1,4 +1,4 @@
-/* eslint-disable require-jsdoc */
+/* eslint-disable */
 /**
  * @license
  * Copyright 2017 Google Inc. All Rights Reserved.
@@ -103,7 +103,7 @@ gulp.task('es5.api', function() {
     .pipe(gulp.dest('dist/es5'));
 });
 
-gulp.task('es5.full', function(done) {
+gulp.task('es5.full', function() {
   return gulp.src([
     './src/**/*.js',
   ], {base: './'})
