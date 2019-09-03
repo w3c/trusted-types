@@ -833,7 +833,7 @@ When the extended attribute appears on an attribute, the setter for that attribu
         * |sink| as |sink|,
         * [=context object=]'s [=relevant global object=] as |global|.
     1. If an exception was thrown, rethrow exception and abort further steps.
- 1. Run the originally specified steps for this construct, using |value| as a new value to set.
+ 1. Run the originally specified steps for this construct, using |value| as a new value to set, additionally passing |trusted types verified| argument to all algorithms called from the construct.
 
 Note: If the IDL attribute [=reflect/reflects=] a content attribute, identical steps should be performed when that content attribute is modified by JavaScript code e.g. via `Element.setAttribute()` function.
 
@@ -1269,6 +1269,15 @@ interface DOMParser {
   [NewObject] Document parseFromString([TrustedTypes=TrustedHTML] HTMLString str, SupportedType type);
 };
 </pre>
+
+### Guards for HTML parsing algorithms
+
+This document modifies the [=fragment parsing algorithm=] and {{DOMParser/parseFromString()}} steps, adding the following step at their beginning:
+
+1. Assert: This algorithm is called with |trusted types verified| argument, and |trusted types verified| is true.
+
+Note: These assertions verify that algorithms implementing the primitives are only called after Trusted Types complilance has been verified in the {{TrustedTypes}} extended attribute handling. These prevent the accidental introduction of new [=injection sinks=] without taking Trusted Types into account.
+
 
 ## Integration with Content Security Policy ## {#integration-with-content-security-policy}
 
