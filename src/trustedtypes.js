@@ -7,6 +7,10 @@
  *  https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
  */
 
+import {getUnsafeAttributeEventHandlers} from './utils/eventHandlers.js';
+
+const isBrowser = typeof window !== 'undefined';
+
 const rejectInputFn = (s) => {
   throw new TypeError('undefined conversion');
 };
@@ -337,7 +341,7 @@ export const trustedTypesBuilderTestOnly = function() {
   };
 
   // Edge doesn't support srcdoc.
-  if (!('srcdoc' in HTMLIFrameElement.prototype)) {
+  if (isBrowser && !('srcdoc' in HTMLIFrameElement.prototype)) {
     delete TYPE_MAP[HTML_NS]['IFRAME']['attributes']['srcdoc'];
   }
 
@@ -354,10 +358,9 @@ export const trustedTypesBuilderTestOnly = function() {
   }
 
   // Add inline event handlers attribute names.
-  for (const name of getOwnPropertyNames(HTMLElement.prototype)) {
-    if (name.slice(0, 2) === 'on') {
-      TYPE_MAP[HTML_NS]['*']['attributes'][name] = 'TrustedScript';
-    }
+  for (const name of getUnsafeAttributeEventHandlers()) {
+    TYPE_MAP[HTML_NS]['*']['attributes'][name] = 'TrustedScript';
+    TYPE_MAP[SVG_NS]['*']['attributes'][name] = 'TrustedScript';
   }
 
   /**
