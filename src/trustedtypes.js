@@ -437,14 +437,14 @@ export const trustedTypesBuilderTestOnly = function() {
    * @param {string} attribute The name of the attribute.
    * @param {string=} elementNs Element namespace.
    * @param {string=} attributeNs The attribute namespace.
-   * @return {string|undefined} Required type name or undefined, if a Trusted
+   * @return {string?} Required type name or null, if a Trusted
    *   Type is not required.
    */
   function getAttributeType(tagName, attribute, elementNs = '',
       attributeNs = '') {
     const canonicalAttr = toLowerCase.apply(String(attribute));
     return getTypeInternal_(tagName, 'attributes', canonicalAttr,
-        elementNs, attributeNs);
+        elementNs, attributeNs) || null;
   }
 
   /**
@@ -487,12 +487,13 @@ export const trustedTypesBuilderTestOnly = function() {
    * @param {string} tagName The name of the tag of the element.
    * @param {string} property The property.
    * @param {string=} elementNs Element namespace.
-   * @return {string|undefined} Required type name or undefined, if a Trusted
+   * @return {string?} Required type name or null, if a Trusted
    *   Type is not required.
    */
   function getPropertyType(tagName, property, elementNs = '') {
     // TODO: Support namespaces.
-    return getTypeInternal_(tagName, 'properties', String(property), elementNs);
+    return getTypeInternal_(
+        tagName, 'properties', String(property), elementNs) || null;
   }
 
   /**
