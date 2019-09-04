@@ -2678,7 +2678,7 @@ of being rejected outright.</p>
     <li data-md>
      <p>If <var>defaultPolicy</var> is <code>null</code>, return <code>"Blocked"</code> and abort further steps.</p>
     <li data-md>
-     <p>Let <var>covertedScriptSource</var> be the result of executing <a data-link-type="abstract-op" href="#abstract-opdef-create-a-trusted-type" id="ref-for-abstract-opdef-create-a-trusted-type④">Create a Trusted Type</a> algorithm, with the following arguments:</p>
+     <p>Let <var>convertedScriptSource</var> be the result of executing <a data-link-type="abstract-op" href="#abstract-opdef-create-a-trusted-type" id="ref-for-abstract-opdef-create-a-trusted-type④">Create a Trusted Type</a> algorithm, with the following arguments:</p>
      <ul>
       <li data-md>
        <p><var>defaultPolicy</var> as <var>policy</var></p>
@@ -2690,7 +2690,7 @@ of being rejected outright.</p>
        <p>« <code>"Location.href"</code> » as <var>arguments</var></p>
      </ul>
     <li data-md>
-     <p>If <var>convertedScriptSource</var> does not have a type <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①③">TrustedScript</a></code>, return <code>"Blocked"</code> and abort further steps.</p>
+     <p>If <var>convertedScriptSource</var> is not a <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①③">TrustedScript</a></code> object, return <code>"Blocked"</code> and abort further steps.</p>
     <li data-md>
      <p>Set <var>urlString</var> to be the result of prepending <code>"javascript:"</code> to stringified <var>convertedScriptSource</var>.</p>
     <li data-md>
