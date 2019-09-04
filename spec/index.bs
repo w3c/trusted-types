@@ -1343,6 +1343,8 @@ This document modifies the grammar for [[CSP3#keyword-source]]:
                        / "'unsafe-allow-redirects'" <ins>/ "<dfn>'trusted-script'</dfn>"</ins>
 </pre>
 
+#### 'trusted-script' support for eval #### {#csp-trusted-script-eval}
+
 This document modifies the [[CSP3#can-compile-strings|EnsureCSPDoesNotBlockStringCompilation]]
 which is reproduced in its entirety below with additions and deletions.
 
@@ -1424,6 +1426,17 @@ Is this a feature or a bug?
 Note: The previous algorithm reports violations via both report-uris where
 callerRealm != calleeRealm.  If [$Get Trusted Type compliant string$] reports an
 error, it only reports it via its |calleeRealm|'s report-uri.
+
+#### 'trusted-script' support for javascript: URLs #### {#csp-trusted-script-javascript-url}
+
+This document modifies the [[CSP3#match-element-to-source-list|Does element match source list for type and source?]]
+algorithm, for it to recognize the 'trusted-script' keyword for `javascript:` navigations.
+
+Add the following step after step 1:
+
+2.  If |type| is `"navigation"`, |list| [=list/contains=] an [=ASCII case-insensitive=]
+    match for the string "<a grammar>`'trusted-script'`</a>" and [$IsSourceExempt$] algorithm executed on [=active document=]'s <a>CSP list</a> returns true,
+    return `"Matches"`.
 
 
 ### <dfn abstract-op>IsSourceExempt</dfn> Algorithm ### {#is-source-exempt-algorithm}

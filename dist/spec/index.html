@@ -1570,7 +1570,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
         <li><a href="#should-block-sink-type-mismatch"><span class="secno">4.5.2</span> <span class="content"><span>Should sink type mismatch violation be blocked by Content Security Policy?</span></span></a>
         <li><a href="#should-block-create-policy"><span class="secno">4.5.3</span> <span class="content"><span>Should Trusted Type policy creation be blocked by Content Security Policy?</span></span></a>
         <li><a href="#csp-violation-object-hdr"><span class="secno">4.5.4</span> <span class="content">Violation object changes</span></a>
-        <li><a href="#trusted-script-csp-keyword"><span class="secno">4.5.5</span> <span class="content">'trusted-script' keyword</span></a>
+        <li>
+         <a href="#trusted-script-csp-keyword"><span class="secno">4.5.5</span> <span class="content">'trusted-script' keyword</span></a>
+         <ol class="toc">
+          <li><a href="#csp-trusted-script-eval"><span class="secno">4.5.5.1</span> <span class="content">'trusted-script' support for eval</span></a>
+          <li><a href="#csp-trusted-script-javascript-url"><span class="secno">4.5.5.2</span> <span class="content">'trusted-script' support for javascript: URLs</span></a>
+         </ol>
         <li><a href="#is-source-exempt-algorithm"><span class="secno">4.5.6</span> <span class="content"><span>IsSourceExempt</span> Algorithm</span></a>
        </ol>
      </ol>
@@ -2795,6 +2800,7 @@ the <var>calleeRealm</var> or <var>callerRealm</var>’s Content-Security-Policy
                      / "'strict-dynamic'" / "'unsafe-hashes'" / "'report-sample'"
                      / "'unsafe-allow-redirects'" <ins>/ "<dfn class="dfn-paneled" data-dfn-type="grammar" data-export id="grammardef-trusted-script">'trusted-script'</dfn>"</ins>
 </pre>
+   <h5 class="heading settled" data-level="4.5.5.1" id="csp-trusted-script-eval"><span class="secno">4.5.5.1. </span><span class="content">'trusted-script' support for eval</span><a class="self-link" href="#csp-trusted-script-eval"></a></h5>
    <p>This document modifies the <a href="https://www.w3.org/TR/CSP3/#can-compile-strings">EnsureCSPDoesNotBlockStringCompilation</a> which is reproduced in its entirety below with additions and deletions.</p>
    <p>
     Given two <a href="https://tc39.github.io/ecma262/#realm">realms</a> (<var>callerRealm</var> and <var>calleeRealm</var>), and a 
@@ -2897,8 +2903,16 @@ Is this a feature or a bug?</p>
    <p class="note" role="note"><span>Note:</span> The previous algorithm reports violations via both report-uris where
 callerRealm != calleeRealm.  If <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string⑧">Get Trusted Type compliant string</a> reports an
 error, it only reports it via its <var>calleeRealm</var>’s report-uri.</p>
+   <h5 class="heading settled" data-level="4.5.5.2" id="csp-trusted-script-javascript-url"><span class="secno">4.5.5.2. </span><span class="content">'trusted-script' support for javascript: URLs</span><a class="self-link" href="#csp-trusted-script-javascript-url"></a></h5>
+   <p>This document modifies the <a href="https://www.w3.org/TR/CSP3/#match-element-to-source-list">Does element match source list for type and source?</a> algorithm, for it to recognize the 'trusted-script' keyword for <code>javascript:</code> navigations.</p>
+   <p>Add the following step after step 1:</p>
+   <ol start="2">
+    <li data-md>
+     <p>If <var>type</var> is <code>"navigation"</code>, <var>list</var> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain①">contains</a> an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ascii-case-insensitive" id="ref-for-ascii-case-insensitive②">ASCII case-insensitive</a> match for the string "<a data-link-type="grammar" href="#grammardef-trusted-script" id="ref-for-grammardef-trusted-script①"><code>'trusted-script'</code></a>" and <a data-link-type="abstract-op" href="#abstract-opdef-issourceexempt" id="ref-for-abstract-opdef-issourceexempt①">IsSourceExempt</a> algorithm executed on <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#active-document" id="ref-for-active-document">active document</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#concept-document-csp-list" id="ref-for-concept-document-csp-list③">CSP list</a> returns true,
+return <code>"Matches"</code>.</p>
+   </ol>
    <h4 class="heading settled" data-level="4.5.6" id="is-source-exempt-algorithm"><span class="secno">4.5.6. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-issourceexempt">IsSourceExempt</dfn> Algorithm</span><a class="self-link" href="#is-source-exempt-algorithm"></a></h4>
-   <p>The IsSourceExempt algorithm takes a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#concept-document-csp-list" id="ref-for-concept-document-csp-list③">CSP List</a> (<var>cspList</var>) and executes
+   <p>The IsSourceExempt algorithm takes a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#concept-document-csp-list" id="ref-for-concept-document-csp-list④">CSP List</a> (<var>cspList</var>) and executes
 the following steps:</p>
    <ol>
     <li data-md>
@@ -3390,6 +3404,12 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
     <li><a href="#ref-for-windowproxy">4.5.1.1. trusted-types Pre-Navigation check</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-active-document">
+   <a href="https://html.spec.whatwg.org/multipage/browsers.html#active-document">https://html.spec.whatwg.org/multipage/browsers.html#active-document</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-active-document">4.5.5.2. 'trusted-script' support for javascript: URLs</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-browsing-context">
    <a href="https://html.spec.whatwg.org/multipage/browsers.html#browsing-context">https://html.spec.whatwg.org/multipage/browsers.html#browsing-context</a><b>Referenced in:</b>
    <ul>
@@ -3402,7 +3422,8 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
     <li><a href="#ref-for-concept-document-csp-list">3.4. Get Trusted Type compliant string</a>
     <li><a href="#ref-for-concept-document-csp-list①">4.5.2. Should sink type mismatch violation be blocked by Content Security Policy?</a>
     <li><a href="#ref-for-concept-document-csp-list②">4.5.3. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
-    <li><a href="#ref-for-concept-document-csp-list③">4.5.6. IsSourceExempt Algorithm</a>
+    <li><a href="#ref-for-concept-document-csp-list③">4.5.5.2. 'trusted-script' support for javascript: URLs</a>
+    <li><a href="#ref-for-concept-document-csp-list④">4.5.6. IsSourceExempt Algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-realm-global">
@@ -3412,7 +3433,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
     <li><a href="#ref-for-concept-realm-global①">3.4. Get Trusted Type compliant string</a>
     <li><a href="#ref-for-concept-realm-global②">4.5.2. Should sink type mismatch violation be blocked by Content Security Policy?</a>
     <li><a href="#ref-for-concept-realm-global③">4.5.3. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
-    <li><a href="#ref-for-concept-realm-global④">4.5.5. 'trusted-script' keyword</a> <a href="#ref-for-concept-realm-global⑤">(2)</a>
+    <li><a href="#ref-for-concept-realm-global④">4.5.5.1. 'trusted-script' support for eval</a> <a href="#ref-for-concept-realm-global⑤">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-innertext">
@@ -3448,7 +3469,8 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
   <aside class="dfn-panel" data-for="term-for-ascii-case-insensitive">
    <a href="https://infra.spec.whatwg.org/#ascii-case-insensitive">https://infra.spec.whatwg.org/#ascii-case-insensitive</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-ascii-case-insensitive">4.5.5. 'trusted-script' keyword</a> <a href="#ref-for-ascii-case-insensitive①">(2)</a>
+    <li><a href="#ref-for-ascii-case-insensitive">4.5.5.1. 'trusted-script' support for eval</a> <a href="#ref-for-ascii-case-insensitive①">(2)</a>
+    <li><a href="#ref-for-ascii-case-insensitive②">4.5.5.2. 'trusted-script' support for javascript: URLs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-ascii-lowercase">
@@ -3468,7 +3490,8 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
   <aside class="dfn-panel" data-for="term-for-list-contain">
    <a href="https://infra.spec.whatwg.org/#list-contain">https://infra.spec.whatwg.org/#list-contain</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-list-contain">4.5.5. 'trusted-script' keyword</a>
+    <li><a href="#ref-for-list-contain">4.5.5.1. 'trusted-script' support for eval</a>
+    <li><a href="#ref-for-list-contain①">4.5.5.2. 'trusted-script' support for javascript: URLs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-html-namespace">
@@ -3527,7 +3550,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
   <aside class="dfn-panel" data-for="term-for-exceptiondef-evalerror">
    <a href="https://heycam.github.io/webidl/#exceptiondef-evalerror">https://heycam.github.io/webidl/#exceptiondef-evalerror</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-exceptiondef-evalerror">4.5.5. 'trusted-script' keyword</a>
+    <li><a href="#ref-for-exceptiondef-evalerror">4.5.5.1. 'trusted-script' support for eval</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-Exposed">
@@ -3678,6 +3701,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
      <li><span class="dfn-paneled" id="term-for-window" style="color:initial">Window</span>
      <li><span class="dfn-paneled" id="term-for-windoworworkerglobalscope" style="color:initial">WindowOrWorkerGlobalScope</span>
      <li><span class="dfn-paneled" id="term-for-windowproxy" style="color:initial">WindowProxy</span>
+     <li><span class="dfn-paneled" id="term-for-active-document" style="color:initial">active document</span>
      <li><span class="dfn-paneled" id="term-for-browsing-context" style="color:initial">browsing context</span>
      <li><span class="dfn-paneled" id="term-for-concept-document-csp-list" style="color:initial">csp list</span>
      <li><span class="dfn-paneled" id="term-for-concept-realm-global" style="color:initial">global object</span>
@@ -3967,7 +3991,7 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
     <li><a href="#ref-for-trustedscript①①">4.1.6. Enforcement in event handler content attributes</a>
     <li><a href="#ref-for-trustedscript①②">4.2. Integration with SVG</a>
     <li><a href="#ref-for-trustedscript①③">4.5.1.1. trusted-types Pre-Navigation check</a>
-    <li><a href="#ref-for-trustedscript①④">4.5.5. 'trusted-script' keyword</a>
+    <li><a href="#ref-for-trustedscript①④">4.5.5.1. 'trusted-script' support for eval</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="trustedscripturl">
@@ -4133,7 +4157,7 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
     <li><a href="#ref-for-default-policy">3.2. Get default policy</a>
     <li><a href="#ref-for-default-policy①">4.5.1. trusted-types directive</a>
     <li><a href="#ref-for-default-policy②">4.5.1.1. trusted-types Pre-Navigation check</a>
-    <li><a href="#ref-for-default-policy③">4.5.5. 'trusted-script' keyword</a> <a href="#ref-for-default-policy④">(2)</a>
+    <li><a href="#ref-for-default-policy③">4.5.5.1. 'trusted-script' support for eval</a> <a href="#ref-for-default-policy④">(2)</a>
     <li><a href="#ref-for-default-policy⑤">6.1. Vendor-specific Extensions and Addons</a>
    </ul>
   </aside>
@@ -4187,7 +4211,7 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string③">4.1.5. Enforcement in timer functions</a>
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string④">4.1.6. Enforcement in event handler content attributes</a>
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑤">4.2. Integration with SVG</a>
-    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑥">4.5.5. 'trusted-script' keyword</a> <a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑦">(2)</a> <a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑧">(3)</a>
+    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑥">4.5.5.1. 'trusted-script' support for eval</a> <a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑦">(2)</a> <a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑧">(3)</a>
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑨">4.5.6. IsSourceExempt Algorithm</a>
    </ul>
   </aside>
@@ -4317,13 +4341,15 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
   <aside class="dfn-panel" data-for="grammardef-trusted-script">
    <b><a href="#grammardef-trusted-script">#grammardef-trusted-script</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-grammardef-trusted-script">4.5.5. 'trusted-script' keyword</a>
+    <li><a href="#ref-for-grammardef-trusted-script">4.5.5.1. 'trusted-script' support for eval</a>
+    <li><a href="#ref-for-grammardef-trusted-script①">4.5.5.2. 'trusted-script' support for javascript: URLs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="abstract-opdef-issourceexempt">
    <b><a href="#abstract-opdef-issourceexempt">#abstract-opdef-issourceexempt</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-abstract-opdef-issourceexempt">4.5.5. 'trusted-script' keyword</a>
+    <li><a href="#ref-for-abstract-opdef-issourceexempt">4.5.5.1. 'trusted-script' support for eval</a>
+    <li><a href="#ref-for-abstract-opdef-issourceexempt①">4.5.5.2. 'trusted-script' support for javascript: URLs</a>
    </ul>
   </aside>
 <script>/* script-dfn-panel */
