@@ -18,7 +18,7 @@
  * @return {!Array<string>}
  */
 export function getUnsafeAttributeEventHandlers() {
-  // TODO check attributes in safari
+  // TODO check attributes in safari, remove legacy safe handlers
   return [
     'onabort',
     'onactivate',
@@ -202,6 +202,5 @@ export function getUnsafeAttributeEventHandlers() {
     'onwebkitfullscreenerror',
     'onwebkittransitionend',
     'onwheel',
-    'seeksegmenttime',
   ];
 }
