@@ -490,24 +490,20 @@ export class TrustedTypesEnforcer {
         } else if (TrustedTypes.isScript(arg)) {
           // TODO(koto): Consider removing this branch, as it's hard to spec.
           // Convert to text node and go on.
-          args[argNumber] = document.createTextNode(arg);
+          args[argNumber] = document.createTextNode('' + arg);
           continue;
         }
 
         // Try to run a default policy on argsthe argument
-        let fallbackValue;
-        let exceptionThrown;
-        try {
-          fallbackValue = this.maybeCallDefaultPolicy_(
-              'TrustedScript', arg, 'script.text');
-        } catch (e) {
-          exceptionThrown = true;
-        }
-        if (exceptionThrown) {
+        const fallbackValue = this.maybeCallDefaultPolicy_(
+            'TrustedScript', '' + arg, 'script.text');
+        if (fallbackValue === null || fallbackValue === undefined) {
           this.processViolation_(context, originalFn.name,
               TrustedTypes.TrustedScript, arg);
+        } else {
+          arg = fallbackValue;
         }
-        args[argNumber] = document.createTextNode('' + fallbackValue);
+        args[argNumber] = document.createTextNode('' + arg);
       }
     }
     return apply(originalFn, context, args);
@@ -527,20 +523,17 @@ export class TrustedTypesEnforcer {
         riskyPositions.includes(args[0]) &&
         !(TrustedTypes.isScript(args[1]))) {
       // Run a default policy on args[1]
-      let fallbackValue;
-      let exceptionThrown;
-      try {
-        fallbackValue = this.maybeCallDefaultPolicy_('TrustedScript',
-            args[1], 'script.text');
-      } catch (e) {
-        exceptionThrown = true;
-      }
-      if (exceptionThrown) {
+      args[1] = '' + args[1];
+      const fallbackValue = this.maybeCallDefaultPolicy_('TrustedScript',
+          args[1], 'script.text');
+      if (fallbackValue === null || fallbackValue === undefined) {
         this.processViolation_(context, 'insertAdjacentText',
             TrustedTypes.TrustedScript, args[1]);
+      } else {
+        args[1] = fallbackValue;
       }
 
-      const textNode = document.createTextNode('' + fallbackValue);
+      const textNode = document.createTextNode('' + args[1]);
 
 
       const insertBefore = /** @type function(this: Node) */(
@@ -754,7 +747,6 @@ export class TrustedTypesEnforcer {
     return ctrName + '-' + name;
   }
 
-
   /**
    * Calls a default policy.
    * @param {string} typeName Type name to attempt to produce from a value.
@@ -762,16 +754,17 @@ export class TrustedTypesEnforcer {
    * @param {string} sink The sink name that the default policy will be called
    *   with.
    * @throws {Error} If the default policy throws, or not exist.
-   * @return {Function} The trusted value.
+   * @return {Function?} The trusted value or null, if the input value shoudl
+   *   be rejected.
    */
   maybeCallDefaultPolicy_(typeName, value, sink = '') {
     // Apply a fallback policy, if it exists.
     const fallbackPolicy = TrustedTypes.defaultPolicy;
     if (!fallbackPolicy) {
-      throw new Error('Default policy does not exist');
+      return null;
     }
     if (!TYPE_CHECKER_MAP.hasOwnProperty(typeName)) {
-      throw new Error();
+      return null;
     }
     return fallbackPolicy[TYPE_PRODUCER_MAP[typeName]](value, '' + sink);
   }
@@ -821,25 +814,19 @@ export class TrustedTypesEnforcer {
     }
 
     // Apply a fallback policy, if it exists.
-    let fallbackValue;
-    let exceptionThrown;
+    args[argNumber] = '' + value;
     const objName = context instanceof Element ?
         context.localName :
         getConstructorName_(context ? context.constructor : window.constructor);
-    try {
-      fallbackValue = this.maybeCallDefaultPolicy_(
-          typeName, value, objName + '.' + propertyName);
-    } catch (e) {
-      exceptionThrown = true;
-    }
-    if (!exceptionThrown) {
+    const fallbackValue = this.maybeCallDefaultPolicy_(
+        typeName, value, objName + '.' + propertyName);
+    if (fallbackValue === null || fallbackValue === undefined) {
+      // This will throw a TypeError if enforcement is enabled.
+      this.processViolation_(context, propertyName, typeToEnforce, value);
+    } else {
+      // Use the value modified by the default policy.
       args[argNumber] = fallbackValue;
-      return apply(originalSetter, context, args);
     }
-
-    // This will throw a TypeError if enforcement is enabled.
-    this.processViolation_(context, propertyName, typeToEnforce, value);
-
     return apply(originalSetter, context, args);
   }
 

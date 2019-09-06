@@ -11,6 +11,8 @@ const rejectInputFn = (s) => {
   throw new TypeError('undefined conversion');
 };
 
+const rejectInputDefaultPolicyFn = (s) => null;
+
 const {toLowerCase, toUpperCase} = String.prototype;
 
 export const HTML_NS = 'http://www.w3.org/1999/xhtml';
@@ -397,13 +399,21 @@ export const trustedTypesBuilderTestOnly = function() {
      */
     function creator(Ctor, methodName) {
       // This causes thisValue to be null when called below.
-      const method = innerPolicy[methodName] || rejectInputFn;
+      const method = innerPolicy[methodName] || (
+        policyName == DEFAULT_POLICY_NAME ?
+            rejectInputDefaultPolicyFn : rejectInputFn
+      );
       const policySpecificType = freeze(new Ctor(creatorSymbol, policyName));
       const factory = {
         [methodName](s, ...args) {
           // Trick to get methodName to show in stacktrace.
           let result = method('' + s, ...args);
           if (result === undefined || result === null) {
+            if (policyName == DEFAULT_POLICY_NAME) {
+              // These values mean that the input was rejected. This will cause
+              // a violation later, don't create types for them.
+              return result;
+            }
             result = '';
           }
           const allowedValue = '' + result;
