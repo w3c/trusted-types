@@ -557,7 +557,7 @@ const trustedTypesBuilderTestOnly = function() {
       throw new TypeError('Policy ' + pName + ' disallowed.');
     }
 
-    if (policyNames.indexOf(pName) !== -1) {
+    if (enforceNameWhitelist && policyNames.indexOf(pName) !== -1) {
       throw new TypeError('Policy ' + pName + ' exists.');
     }
     // Register the name early so that if policy getters unwisely calls

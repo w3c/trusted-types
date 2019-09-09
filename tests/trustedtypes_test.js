@@ -73,13 +73,6 @@ describe('v2 TrustedTypes', () => {
       expect(() => policy.createHTML('<foo>')).toThrow();
     });
 
-    it('does not allow for policy name collisions', () => {
-      TrustedTypes.createPolicy('conflicting', {});
-
-      expect(() => TrustedTypes.createPolicy('conflicting', {}))
-          .toThrow();
-    });
-
     it('returns a frozen policy object', () => {
       const p = TrustedTypes.createPolicy('frozencheck', {});
 
@@ -542,9 +535,6 @@ describe('v2 TrustedTypes', () => {
     });
 
     it('allows creating a new default policy', () => {
-      expect(() => {
-        TrustedTypes.createPolicy('default', {});
-      }).toThrow();
       resetDefaultPolicy();
 
       expect(() => {
@@ -561,6 +551,14 @@ describe('v2 TrustedTypes', () => {
 
       expect(TrustedTypes.getPolicyNames()).not.toContain('default');
       expect(TrustedTypes.getPolicyNames()).toContain('a');
+    });
+
+    it('allows policy collision only when allowed policies includes *', () => {
+      expect(() => TrustedTypes.createPolicy('default', {})).not.toThrow();
+
+      setAllowedPolicyNames(['default']);
+
+      expect(() => TrustedTypes.createPolicy('default', {})).toThrow();
     });
   });
 
