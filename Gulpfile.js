@@ -67,8 +67,8 @@ var flags = {
     "newCheckTypes",
     "nonStandardJsDocs",
 //  "reportUnknownTypes", // Too many "could not determine the type of this expression" errors
-//  "strictCheckTypes", // Implies "strictMissingProperties"
-//  "strictMissingProperties", // Triggers a bug with Object destructuring.
+    "strictCheckTypes",
+    "strictMissingProperties",
     "strictMissingRequire",
     "strictModuleDepCheck",
     "strictPrimitiveOperators",

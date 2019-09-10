@@ -552,13 +552,20 @@ describe('v2 TrustedTypes', () => {
       expect(TrustedTypes.getPolicyNames()).not.toContain('default');
       expect(TrustedTypes.getPolicyNames()).toContain('a');
     });
+  });
 
-    it('allows policy collision only when allowed policies includes *', () => {
-      expect(() => TrustedTypes.createPolicy('default', {})).not.toThrow();
+  describe('policy name collision', () => {
+    it('allowed policies include *', () => {
+      TrustedTypes.createPolicy('foo', {});
 
-      setAllowedPolicyNames(['default']);
+      expect(() => TrustedTypes.createPolicy('foo', {})).not.toThrow();
+    });
 
-      expect(() => TrustedTypes.createPolicy('default', {})).toThrow();
+    it('allowed policies doesn\'t include *', () => {
+      setAllowedPolicyNames(['foo']);
+      TrustedTypes.createPolicy('foo', {});
+
+      expect(() => TrustedTypes.createPolicy('foo', {})).toThrow();
     });
   });
 
