@@ -23,7 +23,7 @@ function setupPolyfill() {
   // We use array accessors to make sure Closure compiler will not alter the
   // names of the properties..
 
-  // we only setup the polyfill only in browser environment.
+  // we setup the polyfill only in browser environment.
   if (typeof window === 'undefined') {
     return;
   }
