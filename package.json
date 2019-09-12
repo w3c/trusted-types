@@ -1,6 +1,6 @@
 {
   "name": "trusted-types",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Polyfill for the Trusted Types",
   "main": "build/cjs/trustedtypes.api_only.js",
   "module": "build/esm/trustedtypes.api_only.js",
@@ -66,6 +66,7 @@
     "add_build"
   ],
   "files": [
+    "build",
     "dist",
     "externs/externs.js",
     "package.json",
