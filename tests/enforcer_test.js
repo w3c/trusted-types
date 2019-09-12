@@ -236,6 +236,43 @@ describe('TrustedTypesEnforcer', function() {
       expect(el.innerHTML).toEqual(TEST_HTML);
     });
 
+    it('runs a default policy', function() {
+      TrustedTypes.createPolicy('default', {
+        'createHTML': (s) => 'default: ' + s,
+      });
+
+      expect(function() {
+        el.innerHTML = TEST_HTML;
+      }).not.toThrow();
+
+      expect(el.innerHTML).toEqual('default: ' + TEST_HTML);
+    });
+
+    it('runs an incomplete default policy', function() {
+      TrustedTypes.createPolicy('default', {
+        // Missing createHTML function.
+      });
+
+      expect(function() {
+        el.innerHTML = TEST_HTML;
+      }).not.toThrow();
+
+      expect(el.innerHTML).toEqual(TEST_HTML);
+    });
+
+    [null, undefined].forEach((v) =>
+      it('uses original input if default policy returns ' + v, function() {
+        TrustedTypes.createPolicy('default', {
+          createHTML: (_) => v,
+        });
+
+        expect(function() {
+          el.innerHTML = TEST_HTML;
+        }).not.toThrow();
+
+        expect(el.innerHTML).toEqual(TEST_HTML);
+      }));
+
     it('logs for string assignments', function() {
       expect(function() {
         el.innerHTML = TEST_HTML;
@@ -282,6 +319,52 @@ describe('TrustedTypesEnforcer', function() {
 
         expect(caughtEvent).not.toBe(null);
       });
+
+      [null, undefined].forEach((v) =>
+        it('is dispatched when default policy returns ' + v, () => {
+          TrustedTypes.createPolicy('default', {
+            'createHTML': (_) => v,
+          });
+
+          expect(function() {
+            el.innerHTML = TEST_HTML;
+          }).not.toThrow();
+
+          expect(el.innerHTML).toEqual(TEST_HTML);
+
+          expect(caughtEvent).not.toBe(null);
+        }));
+
+      it('is not dispatched when default policy returns a string', () => {
+        TrustedTypes.createPolicy('default', {
+          'createHTML': (_) => 'default',
+        });
+
+        expect(function() {
+          el.innerHTML = TEST_HTML;
+        }).not.toThrow();
+
+        expect(el.innerHTML).toEqual('default');
+
+        expect(caughtEvent).toBe(null);
+      });
+
+      it('is not dispatched when default policy throws', () => {
+        TrustedTypes.createPolicy('default', {
+          'createHTML': (_) => {
+            throw new RangeError();
+          },
+        });
+
+        expect(function() {
+          el.innerHTML = TEST_HTML;
+        }).toThrowError(RangeError);
+
+        expect(el.innerHTML).toEqual('');
+
+        expect(caughtEvent).toBe(null);
+      });
+
 
       it('dispatches if element is not in any document', () => {
         const standaloneEl = document.createElement('div');
@@ -384,7 +467,7 @@ describe('TrustedTypesEnforcer', function() {
       });
     });
 
-    it('does not logs for typed assignments', function() {
+    it('does not log for typed assignments', function() {
       expect(function() {
         el.innerHTML = policy.createHTML(TEST_HTML);
       }).not.toThrow();
@@ -1570,7 +1653,7 @@ describe('TrustedTypesEnforcer', function() {
       expect(el.innerHTML).toEqual('');
     });
 
-    it('fails if policy throws an error', function() {
+    it('propagates the error thrown from the policy', function() {
       TrustedTypes.createPolicy('default', {
         'createHTML': (s) => {
           throw new EvalError();
@@ -1578,12 +1661,43 @@ describe('TrustedTypesEnforcer', function() {
       });
       const el = document.createElement('div');
 
-      // Throws a generic enforcement error, not the one from the policy.
+      expect(() => el.innerHTML = 'throw,please')
+          .toThrowError(EvalError);
+
+      expect(el.innerHTML).toEqual('');
+    });
+
+    it('prevents value change if error is thrown from the policy', function() {
+      TrustedTypes.createPolicy('default', {
+        'createHTML': (s) => {
+          if (s == 'foo') {
+            return 'foo';
+          }
+          throw new EvalError();
+        },
+      });
+      const el = document.createElement('div');
+      el.innerHTML = 'foo';
+
+      expect(() => el.innerHTML = 'throw,please')
+          .toThrowError(EvalError);
+
+      expect(el.innerHTML).toEqual('foo');
+    });
+
+    [null, undefined].forEach((v) => it('throws TypeError on ' + v, function() {
+      TrustedTypes.createPolicy('default', {
+        'createHTML': (s) => {
+          return v;
+        },
+      });
+      const el = document.createElement('div');
+
       expect(() => el.innerHTML = 'throw,please')
           .toThrowError(TypeError);
 
       expect(el.innerHTML).toEqual('');
-    });
+    }));
   });
 
   describe('enforcement does not mix the types', function() {

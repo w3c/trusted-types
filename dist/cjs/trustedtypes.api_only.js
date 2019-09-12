@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @license
  * Copyright 2017 Google Inc. All Rights Reserved.
@@ -7,10 +9,6 @@
  *  https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
  */
 
-import {getUnsafeAttributeEventHandlers} from './utils/eventHandlers.js';
-
-const isBrowser = typeof window !== 'undefined';
-
 const rejectInputFn = (s) => {
   throw new TypeError('undefined conversion');
 };
@@ -19,9 +17,9 @@ const rejectInputDefaultPolicyFn = (s) => null;
 
 const {toLowerCase, toUpperCase} = String.prototype;
 
-export const HTML_NS = 'http://www.w3.org/1999/xhtml';
-export const XLINK_NS = 'http://www.w3.org/1999/xlink';
-export const SVG_NS = 'http://www.w3.org/2000/svg';
+const HTML_NS = 'http://www.w3.org/1999/xhtml';
+const XLINK_NS = 'http://www.w3.org/1999/xlink';
+const SVG_NS = 'http://www.w3.org/2000/svg';
 
 /**
  * @constructor
@@ -31,39 +29,22 @@ export const SVG_NS = 'http://www.w3.org/2000/svg';
  * @property {!function(string):TrustedScript} createScript
  * @property {!string} name
  */
-export const TrustedTypePolicy = function() {
+const TrustedTypePolicy = function() {
   throw new TypeError('Illegal constructor');
 };
 
 /**
  * @constructor
  */
-export const TrustedTypePolicyFactory = function() {
+const TrustedTypePolicyFactory = function() {
   throw new TypeError('Illegal constructor');
 };
-
-/* eslint-disable no-unused-vars */
-/**
- * @typedef {TrustedTypesInnerPolicy}
- * @property {function(string):string} createHTML
- * @property {function(string):string} createURL
- * @property {function(string):string} createScriptURL
- * @property {function(string):string} createScript
- */
-const TrustedTypesInnerPolicy = {};
-
-/**
- * @typedef {!Object<string, {
- *   attributes: !Object<string, string>,
- *   properties: !Object<string, string>}>}
- */
-const TrustedTypesTypeMap = {};
 /* eslint-enable no-unused-vars */
 
-export const DEFAULT_POLICY_NAME = 'default';
+const DEFAULT_POLICY_NAME = 'default';
 
 
-export const trustedTypesBuilderTestOnly = function() {
+const trustedTypesBuilderTestOnly = function() {
   // Capture common names early.
   const {
     assign, create, defineProperty, freeze, getOwnPropertyNames,
@@ -343,7 +324,7 @@ export const trustedTypesBuilderTestOnly = function() {
   };
 
   // Edge doesn't support srcdoc.
-  if (isBrowser && !('srcdoc' in HTMLIFrameElement.prototype)) {
+  if (!('srcdoc' in HTMLIFrameElement.prototype)) {
     delete TYPE_MAP[HTML_NS]['IFRAME']['attributes']['srcdoc'];
   }
 
@@ -360,9 +341,10 @@ export const trustedTypesBuilderTestOnly = function() {
   }
 
   // Add inline event handlers attribute names.
-  for (const name of getUnsafeAttributeEventHandlers()) {
-    TYPE_MAP[HTML_NS]['*']['attributes'][name] = 'TrustedScript';
-    TYPE_MAP[SVG_NS]['*']['attributes'][name] = 'TrustedScript';
+  for (const name of getOwnPropertyNames(HTMLElement.prototype)) {
+    if (name.slice(0, 2) === 'on') {
+      TYPE_MAP[HTML_NS]['*']['attributes'][name] = 'TrustedScript';
+    }
   }
 
   /**
@@ -680,10 +662,73 @@ export const trustedTypesBuilderTestOnly = function() {
 };
 
 
-export const {
+const {
   trustedTypes,
   setAllowedPolicyNames,
   getDefaultPolicy,
   resetDefaultPolicy,
 } = trustedTypesBuilderTestOnly();
 
+/**
+ * @license
+ * Copyright 2017 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the W3C SOFTWARE AND DOCUMENT NOTICE AND LICENSE.
+ *
+ *  https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
+ */
+
+const tt = trustedTypes;
+
+/**
+ * Sets up the public Trusted Types API in the global object.
+ */
+function setupPolyfill() {
+  // We use array accessors to make sure Closure compiler will not alter the
+  // names of the properties..
+  if (typeof window === 'undefined') {
+    return;
+  }
+  const rootProperty = 'trustedTypes';
+
+  // Convert old window.TrustedTypes to window.trustedTypes.
+  if (window['TrustedTypes'] && typeof window[rootProperty] === 'undefined') {
+    window[rootProperty] = Object.freeze(window['TrustedTypes']);
+  }
+
+  if (typeof window[rootProperty] !== 'undefined') {
+    return;
+  }
+
+  const publicApi = Object.create(TrustedTypePolicyFactory.prototype);
+  Object.assign(publicApi, {
+    'isHTML': tt.isHTML,
+    'isURL': tt.isURL,
+    'isScriptURL': tt.isScriptURL,
+    'isScript': tt.isScript,
+    'createPolicy': tt.createPolicy,
+    'getPolicyNames': tt.getPolicyNames,
+    'getAttributeType': tt.getAttributeType,
+    'getPropertyType': tt.getPropertyType,
+    'getTypeMapping': tt.getTypeMapping,
+    'emptyHTML': tt.emptyHTML,
+    '_isPolyfill_': true,
+  });
+  Object.defineProperty(
+      publicApi,
+      'defaultPolicy',
+      Object.getOwnPropertyDescriptor(tt, 'defaultPolicy') || {});
+
+  window[rootProperty] = Object.freeze(publicApi);
+
+  window['TrustedHTML'] = tt.TrustedHTML;
+  window['TrustedURL'] = tt.TrustedURL;
+  window['TrustedScriptURL'] = tt.TrustedScriptURL;
+  window['TrustedScript'] = tt.TrustedScript;
+  window['TrustedTypePolicy'] = TrustedTypePolicy;
+  window['TrustedTypePolicyFactory'] = TrustedTypePolicyFactory;
+}
+
+setupPolyfill();
+
+module.exports = tt;

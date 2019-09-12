@@ -157,7 +157,7 @@ describe('v2 TrustedTypes', () => {
 
     it('ignores attributes from unknown namespaces', () => {
       expect(TrustedTypes.getAttributeType(
-          'a', 'href', '', 'http://foo.bar')).toBe(undefined);
+          'a', 'href', '', 'http://foo.bar')).toBe(null);
     });
 
     it('is case insensitive for element names', () => {
@@ -184,10 +184,10 @@ describe('v2 TrustedTypes', () => {
           'TrustedScript');
     });
 
-    it('defaults to undefined', () => {
-      expect(TrustedTypes.getAttributeType('unknown', 'src')).toBe(undefined);
+    it('defaults to null', () => {
+      expect(TrustedTypes.getAttributeType('unknown', 'src')).toBe(null);
 
-      expect(TrustedTypes.getAttributeType('input', 'bar')).toBe(undefined);
+      expect(TrustedTypes.getAttributeType('input', 'bar')).toBe(null);
     });
   });
 
@@ -209,11 +209,9 @@ describe('v2 TrustedTypes', () => {
     });
 
     it('is case sensitive for property names', () => {
-      expect(TrustedTypes.getPropertyType('script', 'sRc')).toBe(
-          undefined);
+      expect(TrustedTypes.getPropertyType('script', 'sRc')).toBe(null);
 
-      expect(TrustedTypes.getPropertyType('div', 'innerhtml')).toBe(
-          undefined);
+      expect(TrustedTypes.getPropertyType('div', 'innerhtml')).toBe(null);
     });
 
     it('returns the proper type for innerHTML', () => {
@@ -321,10 +319,10 @@ describe('v2 TrustedTypes', () => {
       // eslint-disable-next-line no-extend-native
       Object.prototype['newattr'] = 'TrustedHTML';
       try {
-        expect(TrustedTypes.getPropertyType('foo', 'baz')).toBeUndefined();
-        expect(TrustedTypes.getAttributeType('foo', 'bar')).toBeUndefined();
+        expect(TrustedTypes.getPropertyType('foo', 'baz')).toBeNull();
+        expect(TrustedTypes.getAttributeType('foo', 'bar')).toBeNull();
         expect(TrustedTypes.getAttributeType('SCRIPT', 'newattr'))
-            .toBeUndefined();
+            .toBeNull();
       } finally {
         delete Object.prototype.FOO;
         delete Object.prototype.newattr;
