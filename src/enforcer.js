@@ -45,7 +45,7 @@ let stringifyForRangeHack;
 /**
  * Return object constructor name
  * (their function.name is not available in IE 11).
- * @param {*} fn
+ * @param {Function} fn
  * @return {string}
  * @private
  */
@@ -278,7 +278,7 @@ export class TrustedTypesEnforcer {
           Node.prototype,
           fnName,
           /**
-         * @this {TrustedTypesEnforcer}
+         * @this {Node}
          * @param {function(!Function, ...*)} originalFn
          * @return {*}
          */
@@ -292,7 +292,7 @@ export class TrustedTypesEnforcer {
         insertAdjacentObject,
         'insertAdjacentText',
         /**
-         * @this {TrustedTypesEnforcer}
+         * @this {Element}
          * @param {function(!Function, ...*)} originalFn
          * @return {*}
          */
@@ -308,7 +308,7 @@ export class TrustedTypesEnforcer {
             Element.prototype,
             fnName,
             /**
-           * @this {TrustedTypesEnforcer}
+           * @this {Element}
            * @param {function(!Function, ...*)} originalFn
            * @return {*}
            */
@@ -323,7 +323,7 @@ export class TrustedTypesEnforcer {
             Element.prototype,
             fnName,
             /**
-           * @this {TrustedTypesEnforcer}
+           * @this {Element}
            * @param {function(!Function, ...*)} originalFn
            * @return {*}
            */
@@ -472,7 +472,8 @@ export class TrustedTypesEnforcer {
    * For each argument, it will make sure that text nodes pass through a
    * default policy, or generate a violation. To skip that check, pass
    * TrustedScript objects instead.
-   * @param {!Object} context The context for the call to the original function.
+   * @param {!Element|!Node} context The context for the call to the original
+   * function.
    * @param {boolean} checkParent Check parent of context instead.
    * @param {!Function} originalFn The original mutator function.
    * @return {*}
@@ -759,7 +760,7 @@ export class TrustedTypesEnforcer {
    */
   maybeCallDefaultPolicy_(typeName, value, sink = '') {
     // Apply a fallback policy, if it exists.
-    const fallbackPolicy = TrustedTypes.defaultPolicy;
+    const fallbackPolicy = TrustedTypes['defaultPolicy'];
     if (!fallbackPolicy) {
       return null;
     }
