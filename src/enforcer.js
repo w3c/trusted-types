@@ -7,7 +7,8 @@
  *  https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
  */
 
-/* eslint-disable no-unused-vars */
+// TrustedTypeConfig is used only as jsdoc type
+// eslint-disable-next-line
 import {DIRECTIVE_NAME, TrustedTypeConfig} from './data/trustedtypeconfig.js';
 import {
   trustedTypes as TrustedTypes,
@@ -17,7 +18,6 @@ import {
 } from
   './trustedtypes.js';
 
-/* eslint-enable no-unused-vars */
 import {installFunction, installSetter, installSetterAndGetter}
   from './utils/wrapper.js';
 

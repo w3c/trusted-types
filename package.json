@@ -2,7 +2,8 @@
   "name": "trusted-types",
   "version": "1.0.6",
   "description": "Polyfill for the Trusted Types",
-  "main": "dist/cjs/trustedtypes.api_only.js",
+  "main": "build/cjs/trustedtypes.api_only.js",
+  "module": "build/esm/trustedtypes.api_only.js",
   "directories": {
     "test": "tests"
   },
@@ -17,10 +18,11 @@
     "test:localonly": "karma start --single-run --browsers ChromeHeadless,FirefoxHeadlessDev",
     "karma": "karma start --browsers ChromeHeadless",
     "karma:firefox": "karma start --browsers Firefox",
-    "build": "npm-run-all --parallel build:cjs build:es6 build:es5 --sequential sizereport",
-    "build:cjs": "rollup -c",
-    "build:es5": "gulp es5",
-    "build:es6": "gulp es6",
+    "build": "npm-run-all --parallel build:cjs build:esm build:dist-es5 build:dist-es6 --sequential sizereport",
+    "build:cjs": "rollup --file build/cjs/trustedtypes.api_only.js --format cjs --input src/polyfill/api_only.js",
+    "build:esm": "rollup --file build/esm/trustedtypes.api_only.js --format esm --input src/polyfill/api_only.js",
+    "build:dist-es5": "gulp es5",
+    "build:dist-es6": "gulp es6",
     "spec": "gulp spec",
     "sizereport": "gulp sizereport",
     "add_build": "git add ./dist/"
