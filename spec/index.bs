@@ -1400,11 +1400,12 @@ throws an "`EvalError`" if not:
             Otherwise if |policy| contains a [=directive=] whose [=directive/name=] is
             "`default-src`", then set |source-list| to that directive's [=directive/value=].
 
-        3.  If |source-list| is not `null`, and does not contain a [=source expression=] which is
-            an [=ASCII case-insensitive=] match for the string "<a grammar>`'unsafe-eval'`</a>", <ins>and
-            it is the case that (|isExempt| is not true or |source-list| does not contain a
+        3. <ins>If |isExempt| is true and |source-list| contains a
             [=source expression=] which is an [=ASCII case-insensitive=] match for the
-            string "<a grammar>`'trusted-script'`</a>")</ins> then:
+            string "<a grammar>`'trusted-script'`</a>"), [=continue=].</ins>
+
+        4.  If |source-list| is not `null`, and does not contain a [=source expression=] which is
+            an [=ASCII case-insensitive=] match for the string "<a grammar>`'unsafe-eval'`</a>" then:
 
             1.  Let |violation| be the result of executing [[CSP3#create-violation-for-global]] on
                 |global|, |policy|, and "`script-src`".
