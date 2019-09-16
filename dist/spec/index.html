@@ -1461,7 +1461,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Trusted Types</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-09-14">14 September 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-09-15">15 September 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -2683,7 +2683,7 @@ of being rejected outright.</p>
 </pre>
    </div>
    <h5 class="heading settled" data-level="4.5.1.1" id="trusted-types-pre-navigation-check"><span class="secno">4.5.1.1. </span><span class="content"><code>trusted-types</code> Pre-Navigation check</span><a class="self-link" href="#trusted-types-pre-navigation-check"></a></h5>
-   <p>Given a <a href="https://fetch.spec.whatwg.org/#concept-request">request</a> (<var>request</var>), a string <var>navigation type</var>, two <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#browsing-context" id="ref-for-browsing-context">browsing contexts</a> (<var>source</var> and <var>target</var>), and a <a href="https://www.w3.org/TR/CSP3/#content-security-policy-object">policy</a> (<var>policy</var>), this algorithm returns <code>"Blocked"</code> if a navigation violates the <code class="idl"><a data-link-type="idl">trusted-types</a></code> directive’s constraints and <code>"Allowed"</code> otherwise. This constitutes the <code class="idl"><a data-link-type="idl">trusted-types</a></code> directive’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-pre-navigation-check" id="ref-for-directive-pre-navigation-check">pre-navigation check</a>:</p>
+   <p>Given a <a href="https://fetch.spec.whatwg.org/#concept-request">request</a> (<var>request</var>), a string <var>navigation type</var> and a <a href="https://www.w3.org/TR/CSP3/#content-security-policy-object">policy</a> (<var>policy</var>), this algorithm returns <code>"Blocked"</code> if a navigation violates the <code class="idl"><a data-link-type="idl">trusted-types</a></code> directive’s constraints and <code>"Allowed"</code> otherwise. This constitutes the <code class="idl"><a data-link-type="idl">trusted-types</a></code> directive’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-pre-navigation-check" id="ref-for-directive-pre-navigation-check">pre-navigation check</a>:</p>
    <p class="note" role="note"><span>Note:</span> This algorithm assures that the code to be executed by a navigation to a <code>javascript:</code> URL will have to pass through a <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy②">default policy</a>’s <code>createScript</code> function, in addition to all other restrictions imposed by other CSP directives.</p>
    <ol>
     <li data-md>
@@ -2693,7 +2693,7 @@ of being rejected outright.</p>
     <li data-md>
      <p>Let <var>encodedScriptSource</var> be the result of removing the leading <code>"javascript:"</code> from <var>urlString</var>.</p>
     <li data-md>
-     <p>Let <var>defaultPolicy</var> be the result of executing <a data-link-type="abstract-op" href="#abstract-opdef-get-default-policy" id="ref-for-abstract-opdef-get-default-policy①">Get default policy</a> algorithm on <var>source</var>’s <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/window-object.html#windowproxy" id="ref-for-windowproxy">WindowProxy</a></code>'s <a data-link-type="dfn" href="#window-trusted-type-policy-factory" id="ref-for-window-trusted-type-policy-factory③">trusted type policy factory</a>.</p>
+     <p>Let <var>defaultPolicy</var> be the result of executing <a data-link-type="abstract-op" href="#abstract-opdef-get-default-policy" id="ref-for-abstract-opdef-get-default-policy①">Get default policy</a> algorithm on <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-client" id="ref-for-concept-request-client">clients</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-global" id="ref-for-concept-settings-object-global">global object</a>'s <a data-link-type="dfn" href="#window-trusted-type-policy-factory" id="ref-for-window-trusted-type-policy-factory③">trusted type policy factory</a>.</p>
     <li data-md>
      <p>If <var>defaultPolicy</var> is <code>null</code>, return <code>"Blocked"</code> and abort further steps.</p>
     <li data-md>
@@ -3343,6 +3343,12 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
     <li><a href="#ref-for-h-the-domparser-interface">4.4. Integration with DOM Parsing</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-request-client">
+   <a href="https://fetch.spec.whatwg.org/#concept-request-client">https://fetch.spec.whatwg.org/#concept-request-client</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-request-client">4.5.1.1. trusted-types Pre-Navigation check</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-local-scheme">
    <a href="https://fetch.spec.whatwg.org/#local-scheme">https://fetch.spec.whatwg.org/#local-scheme</a><b>Referenced in:</b>
    <ul>
@@ -3410,22 +3416,10 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
     <li><a href="#ref-for-windoworworkerglobalscope">4.1.5. Enforcement in timer functions</a> <a href="#ref-for-windoworworkerglobalscope①">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-windowproxy">
-   <a href="https://html.spec.whatwg.org/multipage/window-object.html#windowproxy">https://html.spec.whatwg.org/multipage/window-object.html#windowproxy</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-windowproxy">4.5.1.1. trusted-types Pre-Navigation check</a>
-   </ul>
-  </aside>
   <aside class="dfn-panel" data-for="term-for-active-document">
    <a href="https://html.spec.whatwg.org/multipage/browsers.html#active-document">https://html.spec.whatwg.org/multipage/browsers.html#active-document</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-active-document">4.5.5.2. 'trusted-script' support for javascript: URLs</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-browsing-context">
-   <a href="https://html.spec.whatwg.org/multipage/browsers.html#browsing-context">https://html.spec.whatwg.org/multipage/browsers.html#browsing-context</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-browsing-context">4.5.1.1. trusted-types Pre-Navigation check</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-document-csp-list">
@@ -3438,15 +3432,10 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
     <li><a href="#ref-for-concept-document-csp-list④">4.5.6. IsSourceExempt Algorithm</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-realm-global">
-   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global">https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global</a><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="term-for-concept-settings-object-global">
+   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-global">https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-global</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-realm-global">3.1. Create a Trusted Type Policy</a>
-    <li><a href="#ref-for-concept-realm-global①">3.4. Get Trusted Type compliant string</a>
-    <li><a href="#ref-for-concept-realm-global②">3.5. Process value with a default policy</a>
-    <li><a href="#ref-for-concept-realm-global③">4.5.2. Should sink type mismatch violation be blocked by Content Security Policy?</a>
-    <li><a href="#ref-for-concept-realm-global④">4.5.3. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
-    <li><a href="#ref-for-concept-realm-global⑤">4.5.5.1. 'trusted-script' support for eval</a> <a href="#ref-for-concept-realm-global⑥">(2)</a>
+    <li><a href="#ref-for-concept-settings-object-global">4.5.1.1. trusted-types Pre-Navigation check</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-innertext">
@@ -3705,6 +3694,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <li>
     <a data-link-type="biblio">[Fetch]</a> defines the following terms:
     <ul>
+     <li><span class="dfn-paneled" id="term-for-concept-request-client" style="color:initial">client</span>
      <li><span class="dfn-paneled" id="term-for-local-scheme" style="color:initial">local scheme</span>
      <li><span class="dfn-paneled" id="term-for-concept-request-url" style="color:initial">url</span>
     </ul>
@@ -3719,11 +3709,9 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
      <li><span class="dfn-paneled" id="term-for-htmlscriptelement" style="color:initial">HTMLScriptElement</span>
      <li><span class="dfn-paneled" id="term-for-window" style="color:initial">Window</span>
      <li><span class="dfn-paneled" id="term-for-windoworworkerglobalscope" style="color:initial">WindowOrWorkerGlobalScope</span>
-     <li><span class="dfn-paneled" id="term-for-windowproxy" style="color:initial">WindowProxy</span>
      <li><span class="dfn-paneled" id="term-for-active-document" style="color:initial">active document</span>
-     <li><span class="dfn-paneled" id="term-for-browsing-context" style="color:initial">browsing context</span>
      <li><span class="dfn-paneled" id="term-for-concept-document-csp-list" style="color:initial">csp list</span>
-     <li><span class="dfn-paneled" id="term-for-concept-realm-global" style="color:initial">global object</span>
+     <li><span class="dfn-paneled" id="term-for-concept-settings-object-global" style="color:initial">global object <small>(for environment settings object)</small></span>
      <li><span class="dfn-paneled" id="term-for-dom-innertext" style="color:initial">innerText</span>
      <li><span class="dfn-paneled" id="term-for-concept-global-object-realm" style="color:initial">realm</span>
      <li><span class="dfn-paneled" id="term-for-reflect" style="color:initial">reflect</span>
