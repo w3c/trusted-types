@@ -177,13 +177,68 @@
   @HTML String linkifyHtml(@HTML String html) { … }
 </pre>
 
-Code that adopted this was easier to reason about, but it did not solve the underlying problems with static analysis.  In Java, you can put an @HTML String into a List&lt;Object&gt; but when you take that String out you lose information about whether it's an @HTML String.  This is a problem for tools like HTML template languages that use runtime type information, not static types.  Pluggable type systems help when almost as widely used as the language's built-in type system but don't help with whole program conclusions if you use third-party code that doesn't plug in the types, or the type system isn't tightly integrated with security-relevant tools.
+<p>
+  Code that adopted this was easier to reason about, but it did not
+  solve the underlying problems with static analysis.  In Java, you
+  can put an <code>@HTML String</code> into a
+  <code>List&lt;Object&gt;</code> but when you take that
+  <code>String</code> out you lose information about whether it's an
+  <code>@HTML String</code> or some other variant.  This is a
+  problem for tools like HTML template languages that use runtime type
+  information, not static types.  Pluggable type systems help when
+  almost as widely used as the language's built-in type system but
+  don't help with whole program conclusions if you use third-party
+  code that doesn't plug in the types, or the type system isn't
+  tightly integrated with security-relevant tools.
+</p>
+
+<h2>Automatically Make Code Better</h2>
+<p>
+  If you know that one way of expressing an idea in code is safer
+  than another, there's a temptation to just rewrite code.
+  For example, you might repeatedly see
+</p>
+
+<pre class="prettyprint">
+element.innerHTML = someText;
+</pre>
+
+<p>
+  and realize that 9 times out of 10, that could be replaced with
+</p>
+
+<pre class="prettyprint">
+element.textContent = someText;
+</pre>
+
+<p>
+  The cases where you can rewrite code without consulting its authors
+  are few and far between though.  Usually, there's some reason why
+  there are two APIs, and legitimate use-cases for the more powerful,
+  less safe API.  Also, subtle bugs can arise when replacing a use of
+  a dangerous API like <code>eval</code> with one that's widely
+  considered slightly less dangerous like <code>new Function</code>.
+</p>
+
+<p>
+  Instead of automatically rewriting code, Google Technical
+  Infrastructure has invested heavily in tools to make it easy for
+  code janitors to write a program that modifies many projects' source
+  files, bundle up the changes that can be sensibly reviewed by the
+  same person into a small number of patches, and quickly merge
+  uncontroversial ones.  This makes it feasible to aggressively
+  deprecate APIs in favor of better replacements, and was critical in
+  migrating our C++ codebase which had evolved over many years to
+  consistently use modern, safer idioms.
+</p>
 
 
 <h2>Better tooling</h2>
 
 <p>
-  Concurrently with these efforts, we were working on building secure abstractions: tools and libraries that are safe regardless of how they're used.  For example:</p>
+  Concurrently with these efforts, we were working on building secure
+  abstractions: tools and libraries that are safe regardless of how
+  they're used.  For example:</p>
 <ul>
   <li>
     <a href="https://rawgit.com/mikesamuel/sanitized-jquery-templates/trunk/safetemplate.html#problem_definition">Auto-escaping
@@ -278,6 +333,7 @@ response.write(myHTMLTemplate.apply({ userName }));
   they have.
 </p>
 
+
 <h2>Why Client-Side Trusted Types?</h2>
 <p>
   We've been using trusted types within Google across half a dozen
@@ -301,9 +357,12 @@ response.write(myHTMLTemplate.apply({ userName }));
   &ldquo;How do I allow one critical, third-party dependency, whose
   code I don't control but which I've concluded is safe, to use
   <code>eval</code> without allowing other third-party dependencies to
-  use eval?&rdquo; In other words, I can't use CSP to block eval
-  because <a href="https://www.w3.org/TR/CSP3/#grammardef-unsafe-eval">'unsafe-eval'</a>
-  is all or nothing.
+  use eval?&rdquo; Many projects
+  (<a href="https://github.com/airbnb/lottie-web/issues/289#issuecomment-491101730">ex.</a>)
+  that would like to use CSP to block <code>eval</code> cannot because
+  <a href="https://www.w3.org/TR/CSP3/#grammardef-unsafe-eval">'unsafe-eval'</a>
+  is all or nothing, and 80% <!-- TODO citation needed --> of CSP
+  policies end up not mitigating <code>eval</code> at all.
 </p>
 
 <p>
@@ -404,7 +463,7 @@ response.write(myHTMLTemplate.apply({ userName }));
 <p>
   At Google, we like nonce-source for deciding whether to load
   scripts.  It may be possible to extend nonce-source to guard APIs
-  like eval, but there are problems.  Instead of writing
+  like <code>eval</code>, but there are problems.  Instead of writing
 <p>
 <pre class="prettyprint">
 eval(code)
@@ -417,7 +476,7 @@ eval(code, nonce)
 </pre>
 <p>
   and the JavaScript engine could use the extra argument to decide
-  whether to parse and run code.
+  whether to parse and run <code>code</code>.
 </p>
 
 <p>
@@ -427,15 +486,17 @@ eval(code, nonce)
   <li>
     This requires changes to code that uses sinks.
   <li>
-    You need a way to get nonce to some code while denying it to other
-    code.  Embedding nonces in JavaScript breaks caching.
+    You need a way to get <code>nonce</code> to some code while
+    denying it to other code.  Embedding nonces in JavaScript breaks
+    caching.
   <li>
     This won't work for other sinks like <code>.innerHTML</code> without new
     JavaScript syntax.
   <li>
     As with host-source, this is backwards; it grants privilege to
-    sinks instead of value creators.  The decision to trust code
-    should be based on something about code.
+    sinks instead of value creators.  The decision to trust
+    <code>code</code> should be based on something about
+    <code>code</code>.
   <li>
     Nonces in HTML requires a nonce that lasts for a single
     request/response.  Reusing the same nonce in JavaScript loaded
@@ -456,6 +517,12 @@ eval(code, nonce)
   widely used meta-programming code like that in
   <a href="https://github.com/then/promise/blob/d980ed01b7a383bfec416c96095e2f40fd18ab34/src/node-extensions.js#L28-L48"><code>Promise.denodify</code></a>
   (32M downloads/month).
+</p>
+
+<p>
+  Expression whitelisting schemes in other contexts have had trouble
+  scaling; serving long hash lists with every HTML response could
+  cause latency problems.
 </p>
 
 <h2>Conclusion</h2>
