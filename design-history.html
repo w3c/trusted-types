@@ -1,0 +1,487 @@
+<!doctype html><meta charset="utf-8">
+<title>Lessons learned trying to put eval back in the bottle</title>
+<style>
+  body {
+    font-family: "Noto Sans", "Lucida Grande", "Lucida Sans", "Segoe UI", "Verdana", sans-serif;
+    background: #fafafa;
+    color: #222;
+    line-height: 1.5em;
+    padding: .25em .5em;
+    margin: 0;
+  }
+  code, pre, tt {
+      font-family: "Inconsolata", "Consolas", "Lucida Console", "Monaco", monospace
+  }
+  table, blockquote {
+    page-break-inside: avoid
+  }
+  blockquote > *:first-child:before {
+      font-size: 300%;
+      font-family: Georgia, serif;
+      content: '\201c';
+      line-height: 1em;
+  }
+  img.figure {
+      max-width: 100%;
+      max-height: 100%;
+      border: 1px dotted #222;
+  }
+</style>
+<body>
+<h1>Lessons learned trying to put <code>eval</code> back in the bottle</h1>
+<h3>Mike Samuel, Google Security Engineering</h3>
+<p>
+  Trusted Types protects web applications from remote code execution by
+  keeping attacker-controlled strings away from powerful web APIs like
+  <code>innerHTML</code> and <code>eval</code>.  It's the result of almost 8 years of
+  experimentation within Google on technical measures that help security
+  specialists assist developers in producing secure code.  It's now
+  Google's primary defense against XSS for most products including the
+  most sensitive like Gmail.
+</p>
+
+<p>
+  Others have written about
+  <a href="https://developers.google.com/web/updates/tags/trusted-types">how
+  to use Trusted Types</a> on the client to protect against DOM XSS
+  and &ldquo;<a href="https://ai.google/research/pubs/pub42934">Securing
+  the Tangled Web</a>&rdquo; by C. Kern explains how Google uses
+  Trusted Types (aka SafeHTML types) on the server.
+</p>
+
+<p>
+  Here I'd like to talk about other approaches that we in Google
+  Security tried which didn't pan out, and share my thoughts on why
+  Trusted Types delivered where those other approaches didn't.
+</p>
+
+<h2>Unaided Human Code Review</h2>
+<p>
+  When I started on Google Calendar around 2005, there was little in
+  the way of JavaScript infrastructure; jQuery wouldn't be created
+  until 2006.  The only way we knew of to prevent XSS was careful code
+  review.  We were meticulous about checking any code that produced
+  strings for <code>.innerHTML</code> and tried to use safer DOM APis
+  where possible despite IE6 performance woes.  Then two team members
+  went on vacation at the same time, stressing the team.  Our first
+  externally discovered XSS dated to that period.
+</p>
+
+<p>
+  Code review has
+  <a href="https://sback.it/publications/icse2018seip.pdf">many
+  benefits</a>, but humans are not good at consistently finding low
+  frequency problems over long periods of time, or quickly and
+  reliably taking into account transitive effects on code not edited.
+</p>
+
+<h2>Static Analysis</h2>
+<p>
+  Code scanners
+  <a href="https://ieeexplore.ieee.org/document/1366126">help</a>
+  identify problems early in the development process.  For example, Google
+  built <a href="https://github.com/google/closure-compiler/wiki/JS-Conformance-Framework">JSConformance</a>
+  to guide JavaScript developers away from code patterns (smells) that
+  have proven problematic, and towards safer abstractions.  Code
+  scanners work well when the code evolves alongside the scanner;
+  running a code scanner on a codebase that did not often results in a
+  shedload of
+  <a href="https://www.owasp.org/index.php/Static_Code_Analysis#False_Positives">false
+  positives</a> and true positives that show how code could have been
+  written a bit better, but which individually are not worth the
+  effort to fix.
+</p>
+
+<p>
+  Code scanners either have to be very strict, increasing the rate of
+  false and trivial-true positives, or they have to occasionally
+  conclude false things.  One of the best understood static checkers
+  for client-side code is TypeScript's type system.  It makes
+  necessary, pragmatic assumptions so that it's possible to
+  <a href="http://neugierig.org/software/blog/2018/09/typescript-at-google.html">migrate
+  JavaScript to TypeScript</a>, and does a great job identifying
+  common mistakes before they reach production.  But it's insufficient
+  for security.
+</p>
+
+<blockquote>
+  <h3>Type<span style="font-weight: 100">Script</span> : A Note on Soundness</h3>
+  <p>
+    TypeScript's type system allows certain operations that can't be
+    known at compile-time to be safe.
+  </p>
+</blockquote>
+
+<p>
+  Consider the
+  <a href="https://www.typescriptlang.org/play/#code/C4TwDgpgBAwg9gVwHbAE4EsIGcAqBDAIwBtoBeKAbwFgAoKeqAbQGsIQAuKLNdJAcwC6nanQZiWbTtwz8hUABTTefKAB8F8kBDyopPfgEoopAHxd9fAwdpiAvrVsBuWrQDGcJNyjvkPbJ3hfDGx8YjJKGygAIhgAQSjhSPoo2IAhBOiAUQATAFsPYA8ogBok6NSYDKiANXRXQow8ErKogFl0ziiAdV4kdEg+ZtF6AHoRqAhgVwA6SNtS0SiAVQBlDJExFIAZDLFNbVQjUzEI4YZ0ADMFAGotHSgAHigARgAOABYANiMKKFRJhCoJDRHAILCuPBEOBwLBNRxQexnej-YCA4FtAp8OC5CCoEBRMrzFqxADSVQAUshtAghptYgAlKoABQAFnAIH0AB60hhjCZTWaiIk0JwuGgXZD1dAebx4MDoYCQgDyF3kPhQeL0Mj4xXMeGAECVqCZqDgADdeK4IAA5PA4rXKXV3XTmbUGB38U5iEjAWXyxVEYwKdV+LCMEN4gRqdQUWwGRjcfWG42mi1IK22nECZxnADuLPQJAUoEgcCuEP9kOMpHIAHIJengNKkLWfmUxBWFVXyJ2A-sdAYc3Yyii0X6u4HVOpa30iLWc4i3B4sHASNMoXw1XKJyr5LX3J40Ah6nBULXdfvl0eT2eL5DccB5M8DK3B0A"><code>capitalOf</code></a>
+  program.  TypeScript
+  <a href="https://www.typescriptlang.org/docs/handbook/type-compatibility.html#a-note-on-soundness">assumes</a>,
+  reasonably but incorrectly, that the square bracket operator only
+  accesses members of the countries table, but it actually allows
+  access to the Function constructor.  This allows an attacker who
+  controls the inputs to run arbitrary code.
+</p>
+
+<p>
+  One limitation is that static analyses rarely extend beyond network
+  or memory boundaries.  If code trusts a signed input from a
+  micro-service which is written in a different language, it's hard to
+  make use of information about how that input was constructed that
+  was available to static analyzers that ran on that service's code.
+  As we re-architect monolithic services into micro-services, we're
+  perversely limiting the insights we can glean from static analysis.
+</p>
+
+<p>
+  This is why we in Google want to augment static analysis with
+  runtime enforcement; before a program does things it can't undo, check
+  that critical values were explicitly trusted.
+</p>
+
+<h2>Human-guided Static Analysis</h2>
+<p>
+  One intuitions about XSS and other injection attacks is that the
+  root cause is a type error.
+</p>
+
+<p>
+  <img class="figure" src="./assets/history-code-snippet-1.png"
+       title="element.innerHTML = '&lt;div class=&quot;foo&quot;&gt;' + str + '&lt;/div&gt;';">
+</p>
+
+<p>
+  is vulnerable because it incorrectly assumes that HTML can be
+  derived by adding strings without regards to the kind of content
+  they contain.
+</p>
+
+<p>
+  <img class="figure" src="./assets/history-code-snippet-2.png"
+       title="same code snippet but arrows identify innerHTML and quoted strings have
+              type string&lt;HTML&gt; while the variable str is a string with
+              unknown content.  An error message shows that concatenating HTML and
+              unknown content does not produce HTML.">
+</p>
+
+<p>
+  Java's annotation system enabled
+  <a href="http://web.cs.ucla.edu/~todd/research/oopsla06b.pdf">pluggable
+  static type systems</a> which we used to allow developers to
+  put hints about string types so that automated tools can identify
+  where strings of different &ldquo;types&rdquo; are unsafely
+  concatenated.
+</p>
+
+<pre class="prettyprint">
+  @HTML String linkifyHtml(@HTML String html) { … }
+</pre>
+
+Code that adopted this was easier to reason about, but it did not solve the underlying problems with static analysis.  In Java, you can put an @HTML String into a List&lt;Object&gt; but when you take that String out you lose information about whether it's an @HTML String.  This is a problem for tools like HTML template languages that use runtime type information, not static types.  Pluggable type systems help when almost as widely used as the language's built-in type system but don't help with whole program conclusions if you use third-party code that doesn't plug in the types, or the type system isn't tightly integrated with security-relevant tools.
+
+
+<h2>Better tooling</h2>
+
+<p>
+  Concurrently with these efforts, we were working on building secure abstractions: tools and libraries that are safe regardless of how they're used.  For example:</p>
+<ul>
+  <li>
+    <a href="https://rawgit.com/mikesamuel/sanitized-jquery-templates/trunk/safetemplate.html#problem_definition">Auto-escaping
+    template libraries</a> that understand the structure of HTML and
+    preserve template authors' intent regardless of attacker-controlled
+    inputs,
+  <li>HTML sanitizers that take untrusted HTML and produce trustworthy HTML,
+  <li>Escapers that convert plain text to another language,
+  <li>etc.
+</ul>
+
+<p>
+  These efforts, by and large, delivered on their design goals.
+  They've had a low rate of security-relevant bugs, and where they
+  replaced existing systems, they were roughly as easy to use and were
+  straightforward to migrate to.
+</p>
+
+<p>
+  Where security-team engaged other teams, those other teams were
+  receptive and happy to adopt.  Unfortunately, there are many product
+  teams, so without some measures to guide developers to these tools
+  we had to do a lot of outreach.  &ldquo;Build it and they will
+  come&rdquo; doesn't apply to solutions to problems that developers
+  don't know they have.
+</p>
+
+<p>
+  Another problem is that these tools still occasionally need to know
+  the content type of a string.  Consider this code:
+</p>
+
+<pre class="prettyprint">
+let userName = account.getUserName();
+if (account instanceof SparklyAccount) {
+  // When we acquired Sparkly, we copied their users' names
+  // into our DB but their users could enter HTML when creating
+  // accounts.  Don't over-escape.
+  userName = sanitizeHTML(userName);
+} else {
+  userName = escapeHTML(userName);
+}
+response.write(myHTMLTemplate.apply({ userName }));
+</pre>
+
+<p>
+  This code is brittle because the logic embeds assumptions about an
+  external database.  The decision about whether <code>userName</code>
+  is HTML is not made based on anything about the value
+  of <code>userName</code>, but instead based on something about its
+  source.  This code may be correct, but it's not likely to remain
+  correct since over-escaping bugs are more visible than security
+  bugs.  If escapeHTML just returned its input given a value known to
+  be HTML, then the author could always just escape then sanitize.
+</p>
+
+<p>
+  Worse, it requires the HTML template to embed knowledge about
+  whether <code>userName</code> is HTML or plain text.  If it didn't,
+  then an auto-escaping template language might render a sparkly
+  user-name <code class="prettyprint">"I &amp;lt;3 ponies!"</code> as
+  &ldquo;I &amp;amp;lt;3 ponies!&rdquo; If the template gets that
+  assumption wrong then it is vulnerable to XSS.
+</p>
+
+<p>
+  We saw developers getting into the habit of
+  sprinkling <i>|doNotEscape</i> directives throughout code.  Besides
+  being ambiguous, this made us again reliant on a combination of
+  human code review and static analysis to avoid vulnerabilities.  It
+  took a lot of work to rid our codebase of those directives, but we
+  did it.
+</p>
+
+<p>
+  Trusted Types turned out to be the single abstraction that solve
+  these myriad problems.  They have a runtime-type that is accessible
+  to tools and libraries, they mesh well with dynamic languages, and
+  they obviate the need for tricky code like the above; if
+  <code>SparklyAccount.getName</code> returns a TrustedHTML value,
+  there's no need for the JavaScript to escape or sanitize anything.
+  The template system knows what to do based on runtime type
+  information.
+</p>
+
+<p>
+  Google still invests heavily in tools and tool integration, and now
+  that we've got trusted types to organically guide developers towards
+  tools that just do what they need, our investment is amortized over
+  a large developer base and tools teams don't need to spend as much
+  time advocating solutions to problems that developers may not know
+  they have.
+</p>
+
+<h2>Why Client-Side Trusted Types?</h2>
+<p>
+  We've been using trusted types within Google across half a dozen
+  languages for 8 years now, and it integrates well with tools, works
+  in both deeply static and deeply dynamic languages, and enables an
+  effective partnership between security specialists and application
+  developers.
+</p>
+
+<p>
+  But when trying to figure out how to solve DOM XSS in the browser,
+  it's worth explaining why we're excited about trusted types instead
+  of restricting ourselves to new types of
+  <a href="https://www.w3.org/TR/CSP3/#grammardef-source-expression">Content-Security-Policy
+  (CSP) source-expressions.</a>
+</p>
+
+<h3>Why not host-source?</h3>
+<p>
+  To solve DOM XSS with CSP we'd need to answer questions like:
+  &ldquo;How do I allow one critical, third-party dependency, whose
+  code I don't control but which I've concluded is safe, to use
+  <code>eval</code> without allowing other third-party dependencies to
+  use eval?&rdquo; In other words, I can't use CSP to block eval
+  because <a href="https://www.w3.org/TR/CSP3/#grammardef-unsafe-eval">'unsafe-eval'</a>
+  is all or nothing.
+</p>
+
+<p>
+  One obvious solution seems to be: just list the JavaScript files
+  that you want to able to use <code>eval</code>,
+  <code>innerHTML</code>, and other kinds of sinks.  Host-source
+  provides a clear way to represent a list of JavaScript source files.
+  The CSP specification could require sink setters to look at the
+  JavaScript call stack to decide whether to run or not.  This idea
+  has clear precedents, for example, the Java security manager which
+  has a
+  <a href="https://www.cs.cmu.edu/~jssunshi/pubs/acsac15-javasandbox.pdf">mixed
+  track record</a>.  Unfortunately, host-source based CSP policies
+  have a
+  <a href="https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/45542.pdf">poor
+  track record</a>, and Google
+  <a href="https://csp.withgoogle.com/docs/strict-csp.html">recommends
+  using nonces</a> instead.
+</p>
+
+<p>
+  To answer the question above, host-source would need to list
+  individual files, but widely used <!-- TODO: stats --> code bundlers
+  like Webpack combine many JavaScript files into one to reduce load
+  time.  Any definition of &ldquo;privileged code&rdquo; that doesn't
+  survive web bundling is untenable.
+</p>
+
+<p>
+  Another problem is that this is assigning a different meaning to
+  host-source than its previous uses in CSP.  Existing uses of
+  host-source match against the list when deciding whether to load the
+  content, not when deciding whether to grant privileges to loaded
+  content.
+</p>
+
+<p>
+  The amount of spec work required is large.  Existing JavaScript engines
+  documents treat source metadata as entirely diagnostic. Node.js's
+  <a href="https://nodejs.org/api/vm.html"><code>vm</code> module</a>
+  lets JavaScript specify the filename used in stack traces, so we
+  can't just build security barriers on top of metadata like V8's
+  <a href="http://google3/third_party/v8/v6_9/src/objects/script.h?l=42&rcl=218695831"><code>source_url</code></a>.
+  The amount of spec work to thread reliable source metadata around
+  through JavaScript would be large, and would irreparably break
+  existing dynamic code loading mechanisms that fetch code and load it
+  using <code>new Function</code>.
+</p>
+
+<p>
+  Worse, allowing some files to use a sink is coming at the problem
+  from the wrong direction.  We want to grant privilege to some subset
+  of code that we have carefully checked.  Let's consider what we have
+  to do to check questions of the form &ldquo;is this safe?&rdquo;:
+</p>
+
+<p>
+  <img class="figure" src="./assets/is-safe-diagram-1.png"
+       title="Three JavaScript functions, f, g, and h.  H calls g
+       which calls f which assigns innerHTML.  A comment in f, asks
+       &quot;is this safe?&quot;">
+</p>
+
+<p>
+  To know whether it's safe to assign <code>x</code> to .innerHTML we
+  need to figure out where <code>x</code> comes from.
+</p>
+
+<p>
+  <img class="figure" src="./assets/is-safe-diagram-2.png"
+       title="arrows between f, g, and h show the flow of arguments to
+       innerHTML.  Comment notes that this analysis is flow-sensitive
+       and unbounded.  Takeaway: Safety of f is tightly coupled with
+       its present, and future callers.">
+</p>
+
+<p>
+  Without trusted types, concluding that <code>f</code>
+  uses <code>x</code> safely requires us to reason about all of the
+  present and future callers of <code>f</code>.  Unless <code>x</code>
+  comes from places on our list of host-sources, then are we really
+  listing the right things?  With trusted types, we can focus our
+  attention on checking that trusted values are properly constructed.
+  Trusted Types avoids this by letting us ignore <code>f</code>
+  and <code>g</code> entirely.
+</p>
+
+<p>
+  At Google, we do use lists of source files.  For example, when we
+  have unsafe APIs, we require calling code to be on a list of code
+  that has been checked by someone who understands the caveats for
+  those error-prone APIs.  That works when we can guard
+  <code>import</code> but just doesn't work for global APIs like
+  <code>eval</code> and the DOM APIs.
+</p>
+
+<h3>Why not use nonce-source?</h3>
+<p>
+  At Google, we like nonce-source for deciding whether to load
+  scripts.  It may be possible to extend nonce-source to guard APIs
+  like eval, but there are problems.  Instead of writing
+<p>
+<pre class="prettyprint">
+eval(code)
+</pre>
+<p>
+  you might write
+</p>
+<pre class="prettyprint">
+eval(code, nonce)
+</pre>
+<p>
+  and the JavaScript engine could use the extra argument to decide
+  whether to parse and run code.
+</p>
+
+<p>
+  This has problems though:
+</p>
+<ul>
+  <li>
+    This requires changes to code that uses sinks.
+  <li>
+    You need a way to get nonce to some code while denying it to other
+    code.  Embedding nonces in JavaScript breaks caching.
+  <li>
+    This won't work for other sinks like <code>.innerHTML</code> without new
+    JavaScript syntax.
+  <li>
+    As with host-source, this is backwards; it grants privilege to
+    sinks instead of value creators.  The decision to trust code
+    should be based on something about code.
+  <li>
+    Nonces in HTML requires a nonce that lasts for a single
+    request/response.  Reusing the same nonce in JavaScript loaded
+    via <code class="prettyprint">&lt;script src="&hellip;"&gt;&lt;/script&gt;</code>
+    not only encourages nonce-reuse, but requires it.
+</ul>
+
+<h3>Why not hash-source?</h3>
+<p>
+  CSP allows listing hashes.  This may make sense for commonly used
+  libraries loaded via a CDN, like jQuery.  Unlike the other CSP
+  source-expression variants, it is based on something about the
+  value.  So that's nice.
+</p>
+
+<p>
+  It only allows a closed set of possible inputs, so won't extend to
+  widely used meta-programming code like that in
+  <a href="https://github.com/then/promise/blob/d980ed01b7a383bfec416c96095e2f40fd18ab34/src/node-extensions.js#L28-L48"><code>Promise.denodify</code></a>
+  (32M downloads/month).
+</p>
+
+<h2>Conclusion</h2>
+<p>
+  Google's Security Engineering group tried many things over the last
+  eight years to make it easy to produce complex systems without
+  code-injection vulnerabilities.  Often, bits or pieces of those
+  efforts proved useful, but none was sufficient alone.  Trusted Types
+  is the unifying theme that ties these individual efforts into a
+  whole that is greater than the sum of its parts.
+</p>
+
+<p>
+  Trusted Types works because developers are already in the habit of
+  looking at the types of an API and working backwards to figure out
+  how to get what they have as that type.  Trusted Types are just
+  types that have additional security properties.  This enables a
+  sensible division of duties: security specialists provide safe
+  abstractions for creating trusted values from unsafe inputs, and
+  developers get to use powerful APIs safely.  In the rare case where
+  the safe abstractions aren't sufficient, security specialists work
+  with developers to craft new abstractions, or produce reliable,
+  application-specific code.
+</p>
+</html>
+
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/prettify.css">
