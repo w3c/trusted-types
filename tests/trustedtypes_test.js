@@ -555,17 +555,30 @@ describe('v2 TrustedTypes', () => {
   });
 
   describe('policy name collision', () => {
-    it('allowed policies include *', () => {
+    it('is allowed when policies include *', () => {
+      setAllowedPolicyNames(['*']);
+
       TrustedTypes.createPolicy('foo', {});
 
       expect(() => TrustedTypes.createPolicy('foo', {})).not.toThrow();
     });
 
-    it('allowed policies doesn\'t include *', () => {
+    it('is disallowed when policies doesn\'t include *', () => {
       setAllowedPolicyNames(['foo']);
       TrustedTypes.createPolicy('foo', {});
 
       expect(() => TrustedTypes.createPolicy('foo', {})).toThrow();
+    });
+
+    it('is allowed for policies with prefixed *', () => {
+      setAllowedPolicyNames(['foo*', 'bar']);
+
+      expect(() => TrustedTypes.createPolicy('foo', {})).not.toThrow();
+      expect(() => TrustedTypes.createPolicy('foo', {})).not.toThrow();
+      expect(() => TrustedTypes.createPolicy('foox', {})).not.toThrow();
+      expect(() => TrustedTypes.createPolicy('foox', {})).not.toThrow();
+      expect(() => TrustedTypes.createPolicy('bar', {})).not.toThrow();
+      expect(() => TrustedTypes.createPolicy('bar', {})).toThrow();
     });
   });
 

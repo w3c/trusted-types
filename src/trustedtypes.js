@@ -17,7 +17,8 @@ const rejectInputFn = (s) => {
 
 const rejectInputDefaultPolicyFn = (s) => null;
 
-const {toLowerCase, toUpperCase} = String.prototype;
+const {toLowerCase, toUpperCase, startsWith, endsWith, slice} =
+    String.prototype;
 
 export const HTML_NS = 'http://www.w3.org/1999/xhtml';
 export const XLINK_NS = 'http://www.w3.org/1999/xlink';
@@ -62,6 +63,7 @@ const TrustedTypesTypeMap = {};
 
 export const DEFAULT_POLICY_NAME = 'default';
 
+const WILDCARD = '*';
 
 export const trustedTypesBuilderTestOnly = function() {
   // Capture common names early.
@@ -73,7 +75,7 @@ export const trustedTypesBuilderTestOnly = function() {
   const {hasOwnProperty} = ObjectPrototype;
 
   const {
-    forEach, push,
+    forEach, push, find,
   } = Array.prototype;
 
   const creatorSymbol = Symbol();
@@ -126,22 +128,18 @@ export const trustedTypesBuilderTestOnly = function() {
   const policyNames = selfContained([]);
 
   /**
-   * Allowed policy namess for policy names.
-   * @type {Array<string>}
+   * Allowed policy names for policy names.
+   * At a start, everything is allowed, including name duplicates, until
+   * setAllowedPolicyNames are called.
+   * @type {Array<Array>}
    */
-  const allowedNames = selfContained([]);
+  const allowedPrefixes = selfContained([['', true]]);
 
   /**
    * A reference to a default policy, if created.
    * @type {TrustedTypePolicy}
    */
   let defaultPolicy = null;
-
-  /**
-   * Whether to enforce allowedNames in createPolicy().
-   * @type {boolean}
-   */
-  let enforceNameWhitelist = false;
 
 
   /**
@@ -571,13 +569,23 @@ export const trustedTypesBuilderTestOnly = function() {
   function createPolicy(name, policy) {
     const pName = '' + name; // Assert it's a string
 
-    if (enforceNameWhitelist && allowedNames.indexOf(pName) === -1) {
+    const found = find.call(allowedPrefixes, (p) => {
+      const [namePrefix, hasWildcard] = p;
+      return (hasWildcard && startsWith.call(
+          /** @type {?} */ (pName), namePrefix)) ||
+          (!hasWildcard && pName === namePrefix);
+    });
+
+    if (!found) {
       throw new TypeError('Policy ' + pName + ' disallowed.');
     }
 
-    if (enforceNameWhitelist && policyNames.indexOf(pName) !== -1) {
+    if (!found[1] /* no wildcard */ &&
+        policyNames.indexOf(pName) !== -1 /* policy already created */) {
       throw new TypeError('Policy ' + pName + ' exists.');
     }
+
+
     // Register the name early so that if policy getters unwisely calls
     // across protection domains to code that reenters this function,
     // policy author still has rights to the name.
@@ -613,15 +621,16 @@ export const trustedTypesBuilderTestOnly = function() {
    * @param {!Array<string>} allowedPolicyNames
    */
   function setAllowedPolicyNames(allowedPolicyNames) {
-    if (allowedPolicyNames.indexOf('*') !== -1) { // Any policy name is allowed.
-      enforceNameWhitelist = false;
-    } else {
-      enforceNameWhitelist = true;
-      allowedNames.length = 0;
-      forEach.call(allowedPolicyNames, (el) => {
-        push.call(allowedNames, '' + el);
-      });
-    }
+    allowedPrefixes.length = 0;
+    forEach.call(allowedPolicyNames, (el) => {
+      const pName = '' + el;
+      if (endsWith.call(/** @type {?} */ (pName), WILDCARD)) { // foo*
+        push.call(allowedPrefixes,
+            [slice.call(pName, 0, pName.length - 1), true]);
+      } else { // bar
+        push.call(allowedPrefixes, [pName, false]);
+      }
+    });
   }
 
   /**
