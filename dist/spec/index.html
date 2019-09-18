@@ -1213,7 +1213,7 @@ Possible extra rowspan handling
 	}
 </style>
   <link href="https://www.w3.org/StyleSheets/TR/2016/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version cb5a17652cb33dffd20b8b6a876bb811c1f749a9" name="generator">
+  <meta content="Bikeshed version 006238b6a4ecb490226e966221972e24832edfd7" name="generator">
   <link href="https://wicg.github.io/trusted-types/dist/spec/" rel="canonical">
 <style>/* style-md-lists */
 
@@ -1461,7 +1461,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Trusted Types</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-09-15">15 September 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-09-18">18 September 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1915,17 +1915,20 @@ initially empty.</p>
       <p>Creates a policy object that will implement the rules
 passed in the <code class="idl"><a data-link-type="idl" href="#dictdef-trustedtypepolicyoptions" id="ref-for-dictdef-trustedtypepolicyoptions①">TrustedTypePolicyOptions</a></code> <var>policyOptions</var> object.
 The allowed policy names may be restricted by <a href="#content-security-policy-hdr">Content Security Policy</a>.
-If the policy name is not on the whitelist defined in the <a data-link-type="dfn" href="#trusted-types-directive" id="ref-for-trusted-types-directive">trusted-types</a> CSP directive,
+If the policy name is not on the allowlist defined in the <a data-link-type="dfn" href="#trusted-types-directive" id="ref-for-trusted-types-directive">trusted-types</a> CSP directive,
 the policy creation fails with a <a href="https://www.w3.org/TR/2016/REC-WebIDL-1-20161215/#idl-Error">TypeError</a>.
-Also, if unique policy names are enforced (i.e. <code>trusted-types *</code> is not used),
-and <code>createPolicy</code> is called more than once with any given <code>policyName</code>,
+Also, if <code>createPolicy</code> is called more than once with any given <code>policyName</code>, and the matching policy name in the header does not end with "*",
 policy creation fails with a TypeError.</p>
       <div class="example" id="create-policy-example">
        <a class="self-link" href="#create-policy-example"></a> 
-<pre class="highlight"><c- c1>// HTTP Response header: Content-Security-Policy: trusted-types foo</c->
+<pre class="highlight"><c- c1>// HTTP Response header: Content-Security-Policy: trusted-types foo allowmany*</c->
 trustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- u>"foo"</c-><c- p>,</c-> <c- p>{});</c-> <c- c1>// ok.</c->
-trustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- u>"bar"</c-><c- p>,</c-> <c- p>{});</c-> <c- c1>// throws - name not on the whitelist.</c->
+trustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- u>"bar"</c-><c- p>,</c-> <c- p>{});</c-> <c- c1>// throws - name not on the allowlist.</c->
 trustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- u>"foo"</c-><c- p>,</c-> <c- p>{});</c-> <c- c1>// throws - duplicate name.</c->
+trustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- u>"allowmany"</c-><c- p>,</c-> <c- p>{});</c-> <c- c1>// ok.</c->
+trustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- u>"allowmany"</c-><c- p>,</c-> <c- p>{});</c-> <c- c1>// ok. (allowmany* allows for name duplication)</c->
+trustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- u>"allowmany2"</c-><c- p>,</c-> <c- p>{});</c-> <c- c1>// ok. (allowmany* allows for arbitrary suffix)</c->
+trustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- u>"allowmany2"</c-><c- p>,</c-> <c- p>{});</c-> <c- c1>// ok.</c->
 </pre>
       </div>
       <p>Returns the result of executing a <a data-link-type="abstract-op" href="#abstract-opdef-create-a-trusted-type-policy" id="ref-for-abstract-opdef-create-a-trusted-type-policy">Create a Trusted Type Policy</a> algorithm,
@@ -2653,9 +2656,9 @@ ABNF:</p>
 <pre>directive-name = "trusted-types"
 directive-value = <a data-link-type="dfn" href="#serialized-tt-configuration" id="ref-for-serialized-tt-configuration">serialized-tt-configuration</a>
 <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="serialized-tt-configuration">serialized-tt-configuration</dfn> = ( <a data-link-type="dfn" href="#tt-expression" id="ref-for-tt-expression">tt-expression</a> *( <a href="https://w3c.github.io/webappsec-csp/#grammardef-required-ascii-whitespace">required-ascii-whitespace</a> <a data-link-type="dfn" href="#tt-expression" id="ref-for-tt-expression①">tt-expression</a> ) )
-<dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="tt-expression">tt-expression</dfn> = "*" / <a data-link-type="dfn" href="#tt-policy-name" id="ref-for-tt-policy-name">tt-policy-name</a> ; In the future, add keywords
-<dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="tt-policy-name">tt-policy-name</dfn> = 1*( %x21-%x26 / %x28-%x29 / %x2B / %x2D-%x3A / %x3C-%x7E )
-; Policy name can consist of any <a href="https://tools.ietf.org/html/rfc5234#appendix-B.1">VCHAR</a> character, apart from ";", ",", "*" and "'".
+<dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="tt-expression">tt-expression</dfn> = <a data-link-type="dfn" href="#tt-policy-name-matcher" id="ref-for-tt-policy-name-matcher">tt-policy-name-matcher</a> ; In the future, add keywords
+<dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="tt-policy-name-matcher">tt-policy-name-matcher</dfn> = *( %x21-%x26 / %x28-%x29 / %x2B / %x2D-%x3A / %x3C-%x7E ) ["*"]
+; Policy name matcher can consist of 0..n <a href="https://tools.ietf.org/html/rfc5234#appendix-B.1">VCHAR</a> characters, apart from ";", ",", "*" and "'"m and is optionally suffixed with "*".
 </pre>
    <div class="example" id="whitelist-of-policy-names-in-header">
     <a class="self-link" href="#whitelist-of-policy-names-in-header"></a> Types are enforced at sinks, and only two policies may be created: “one” and “two”. 
@@ -2765,15 +2768,35 @@ strings (<var>createdPolicyNames</var>), this algorithm returns <code>"Blocked"<
        <p>Let <var>directive</var> be the <var>policy</var>’s <var>directive set</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives③">directive</a> which name
 is <code>"trusted-types"</code></p>
       <li data-md>
-       <p>If <var>directive</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-value" id="ref-for-directive-value②">value</a> contains a <a data-link-type="dfn" href="#tt-expression" id="ref-for-tt-expression②">tt-expression</a> which is a match
-for a value <code>*</code>, skip to the next <var>policy</var>.</p>
-       <p class="note" role="note"><span>Note:</span> <code>trusted-types *</code> allows authors to create policies with
-duplicated names.</p>
+       <p>Let <var>matchFound</var> be false.</p>
       <li data-md>
-       <p>If <var>createdPolicyNames</var> contains <var>policyName</var>, set <var>createViolation</var> to true.</p>
+       <p>For each <a data-link-type="dfn" href="#tt-expression" id="ref-for-tt-expression②">tt-expression</a> <var>expression</var> in the <var>directive</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-value" id="ref-for-directive-value②">value</a>:</p>
+       <ol>
+        <li data-md>
+         <p>If <var>expression</var> ends with "*", let <var>endsWithWildcard</var> be true and let <var>policyNamePrefix</var> be <var>expression</var>’s value with last character ("*") removed. Otherwise let <var>endsWithWildcard</var> be false and <var>policyNamePrefix</var> be <var>expression</var>’value.</p>
+         <p class="note" role="note"><span>Note:</span> Directive value <code>foo* bar</code> allows for creating multiple policies with names starting with <code>foo</code> (including policies with the same name), and one policy named <code>bar</code>.</p>
+        <li data-md>
+         <p>Switch on <var>endsWithWildcard</var>:</p>
+         <dl>
+          <dt data-md>true
+          <dd data-md>
+           <p>If <var>policyName</var> does not start with <var>policyNamePrefix</var>, <a data-link-type="dfn">skip</a> to next <var>expression</var>.</p>
+         </dl>
+         <p class="note" role="note"><span>Note:</span> In an extreme case of <code>trusted-types *</code>, <var>policyNamePrefix</var> is empty, allowing any policy name.</p>
+         <dl>
+          <dt data-md>false
+          <dd data-md>
+           <p>If <var>policyName</var> is not equal to <var>policyNamePrefix</var>, <a data-link-type="dfn">skip</a> to next <var>expression</var>.</p>
+         </dl>
+        <li data-md>
+         <p>Set <var>matchFound</var> to true.</p>
+        <li data-md>
+         <p>If <var>endsWithWildcard</var> is false and <var>createdPolicyNames</var> contains <var>policyName</var>, set <var>createViolation</var> to true.</p>
+        <li data-md>
+         <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-break" id="ref-for-iteration-break">Break</a> out of the loop.</p>
+       </ol>
       <li data-md>
-       <p>If <var>directive</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-value" id="ref-for-directive-value③">value</a> does not contain a <a data-link-type="dfn" href="#tt-policy-name" id="ref-for-tt-policy-name①">tt-policy-name</a>,
-which value is <var>policyName</var>, set <var>createViolation</var> to true.</p>
+       <p>If <var>matchFound</var> is false, set <var>createViolation</var> to true.</p>
       <li data-md>
        <p>If <var>createViolation</var> is false, skip to the next <var>policy</var>.</p>
       <li data-md>
@@ -2865,9 +2888,9 @@ throws an "<code>EvalError</code>" if not:
          <p>Let <var>source-list</var> be <code>null</code>.</p>
         <li data-md>
          <p>If <var>policy</var> contains a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives④">directive</a> whose <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-name" id="ref-for-directive-name②">name</a> is "<code>script-src</code>", then
-set <var>source-list</var> to that <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives⑤">directive</a>'s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-value" id="ref-for-directive-value④">value</a>.</p>
+set <var>source-list</var> to that <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives⑤">directive</a>'s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-value" id="ref-for-directive-value③">value</a>.</p>
          <p>Otherwise if <var>policy</var> contains a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives⑥">directive</a> whose <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-name" id="ref-for-directive-name③">name</a> is
-"<code>default-src</code>", then set <var>source-list</var> to that directive’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-value" id="ref-for-directive-value⑤">value</a>.</p>
+"<code>default-src</code>", then set <var>source-list</var> to that directive’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-value" id="ref-for-directive-value④">value</a>.</p>
         <li data-md>
          <ins>If <var>isExempt</var> is true and <var>source-list</var> contains a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#source-expression" id="ref-for-source-expression">source expression</a> which is an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ascii-case-insensitive" id="ref-for-ascii-case-insensitive">ASCII case-insensitive</a> match for the
 string "<a data-link-type="grammar" href="#grammardef-trusted-script" id="ref-for-grammardef-trusted-script"><code>'trusted-script'</code></a>"), <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-continue" id="ref-for-iteration-continue">continue</a>.</ins>
@@ -3257,7 +3280,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <li><a href="#extendedattrdef-trustedtypes">TrustedTypes</a><span>, in §2.4.2</span>
    <li><a href="#trusted-types-directive">trusted-types-directive</a><span>, in §4.5.1</span>
    <li><a href="#tt-expression">tt-expression</a><span>, in §4.5.1</span>
-   <li><a href="#tt-policy-name">tt-policy-name</a><span>, in §4.5.1</span>
+   <li><a href="#tt-policy-name-matcher">tt-policy-name-matcher</a><span>, in §4.5.1</span>
    <li><a href="#dom-document-write">write()</a><span>, in §4.1.2</span>
    <li><a href="#dom-document-writeln">writeln()</a><span>, in §4.1.2</span>
    <li><a href="#dom-document-writeln">writeln(...text)</a><span>, in §4.1.2</span>
@@ -3479,6 +3502,12 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <a href="https://infra.spec.whatwg.org/#ascii-lowercase">https://infra.spec.whatwg.org/#ascii-lowercase</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-ascii-lowercase">2.3.1. TrustedTypePolicyFactory</a> <a href="#ref-for-ascii-lowercase①">(2)</a> <a href="#ref-for-ascii-lowercase②">(3)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-iteration-break">
+   <a href="https://infra.spec.whatwg.org/#iteration-break">https://infra.spec.whatwg.org/#iteration-break</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-iteration-break">4.5.3. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-string-concatenate">
@@ -3722,6 +3751,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
     <ul>
      <li><span class="dfn-paneled" id="term-for-ascii-case-insensitive" style="color:initial">ascii case-insensitive</span>
      <li><span class="dfn-paneled" id="term-for-ascii-lowercase" style="color:initial">ascii lowercase</span>
+     <li><span class="dfn-paneled" id="term-for-iteration-break" style="color:initial">break</span>
      <li><span class="dfn-paneled" id="term-for-string-concatenate" style="color:initial">concatenate</span>
      <li><span class="dfn-paneled" id="term-for-list-contain" style="color:initial">contain</span>
      <li><span class="dfn-paneled" id="term-for-iteration-continue" style="color:initial">continue</span>
@@ -4337,11 +4367,10 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
     <li><a href="#ref-for-tt-expression②">4.5.3. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="tt-policy-name">
-   <b><a href="#tt-policy-name">#tt-policy-name</a></b><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="tt-policy-name-matcher">
+   <b><a href="#tt-policy-name-matcher">#tt-policy-name-matcher</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-tt-policy-name">4.5.1. trusted-types directive</a>
-    <li><a href="#ref-for-tt-policy-name①">4.5.3. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-tt-policy-name-matcher">4.5.1. trusted-types directive</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="abstract-opdef-should-sink-type-mismatch-violation-be-blocked-by-content-security-policy">

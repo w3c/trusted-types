@@ -407,18 +407,21 @@ initially empty.
 ::  Creates a policy object that will implement the rules
     passed in the {{TrustedTypePolicyOptions}} |policyOptions| object.
     The allowed policy names may be restricted by [[#content-security-policy-hdr|Content Security Policy]].
-    If the policy name is not on the whitelist defined in the [=trusted-types-directive|trusted-types=] CSP directive,
+    If the policy name is not on the allowlist defined in the [=trusted-types-directive|trusted-types=] CSP directive,
     the policy creation fails with a [[WebIDL-1#idl-Error|TypeError]].
-    Also, if unique policy names are enforced (i.e. `trusted-types *` is not used),
-    and `createPolicy` is called more than once with any given `policyName`,
+    Also, if `createPolicy` is called more than once with any given `policyName`, and the matching policy name in the header does not end with "*",
     policy creation fails with a TypeError.
 
     <div class="example" id="create-policy-example">
     <xmp highlight=js>
-    // HTTP Response header: Content-Security-Policy: trusted-types foo
+    // HTTP Response header: Content-Security-Policy: trusted-types foo allowmany*
     trustedTypes.createPolicy("foo", {}); // ok.
-    trustedTypes.createPolicy("bar", {}); // throws - name not on the whitelist.
+    trustedTypes.createPolicy("bar", {}); // throws - name not on the allowlist.
     trustedTypes.createPolicy("foo", {}); // throws - duplicate name.
+    trustedTypes.createPolicy("allowmany", {}); // ok.
+    trustedTypes.createPolicy("allowmany", {}); // ok. (allowmany* allows for name duplication)
+    trustedTypes.createPolicy("allowmany2", {}); // ok. (allowmany* allows for arbitrary suffix)
+    trustedTypes.createPolicy("allowmany2", {}); // ok.
     </xmp>
     </div>
 
@@ -1200,9 +1203,9 @@ ABNF:
 directive-name = "trusted-types"
 directive-value = <a>serialized-tt-configuration</a>
 <dfn>serialized-tt-configuration</dfn> = ( <a>tt-expression</a> *( <a href="https://w3c.github.io/webappsec-csp/#grammardef-required-ascii-whitespace">required-ascii-whitespace</a> <a>tt-expression</a> ) )
-<dfn>tt-expression</dfn> = "*" / <a>tt-policy-name</a> ; In the future, add keywords
-<dfn>tt-policy-name</dfn> = 1*( %x21-%x26 / %x28-%x29 / %x2B / %x2D-%x3A / %x3C-%x7E )
-; Policy name can consist of any <a href="https://tools.ietf.org/html/rfc5234#appendix-B.1">VCHAR</a> character, apart from ";", ",", "*" and "'".
+<dfn>tt-expression</dfn> = <a>tt-policy-name-matcher</a> ; In the future, add keywords
+<dfn>tt-policy-name-matcher</dfn> = *( %x21-%x26 / %x28-%x29 / %x2B / %x2D-%x3A / %x3C-%x7E ) ["*"]
+; Policy name matcher can consist of 0..n <a href="https://tools.ietf.org/html/rfc5234#appendix-B.1">VCHAR</a> characters, apart from ";", ",", "*" and "'"m and is optionally suffixed with "*".
 </pre>
 
 <div class="example" id="whitelist-of-policy-names-in-header">
@@ -1305,14 +1308,25 @@ strings (|createdPolicyNames|), this algorithm returns `"Blocked"` if the
         which name is `"trusted-types"`, skip to the next |policy|.
     1.  Let |directive| be the |policy|'s |directive set|'s [=directive=] which name
         is `"trusted-types"`
-    1.  If |directive|'s [=directive/value=] contains a <a>tt-expression</a> which is a match
-        for a value `*`, skip to the next |policy|.
+    1.  Let |matchFound| be false.
+    1.  For each <a>tt-expression</a> |expression| in the |directive|'s [=directive/value=]:
+        1.  If |expression| ends with "*", let |endsWithWildcard| be true and let |policyNamePrefix| be |expression|'s value with last character ("*") removed. Otherwise let |endsWithWildcard| be false and |policyNamePrefix| be |expression|'value.
 
-        Note: `trusted-types *` allows authors to create policies with
-        duplicated names.
-    1.  If |createdPolicyNames| contains |policyName|, set |createViolation| to true.
-    1.  If |directive|'s [=directive/value=] does not contain a <a>tt-policy-name</a>,
-        which value is |policyName|, set |createViolation| to true.
+            Note: Directive value `foo* bar` allows for creating multiple policies with names starting with `foo` (including policies with the same name), and one policy named `bar`.
+        1.  Switch on |endsWithWildcard|:
+
+            : true
+            :: If |policyName| does not start with |policyNamePrefix|, [=skip=] to next |expression|.
+
+               Note: In an extreme case of `trusted-types *`, |policyNamePrefix| is empty, allowing any policy name.
+
+            : false
+            :: If |policyName| is not equal to |policyNamePrefix|, [=skip=] to next |expression|.
+
+        1.  Set |matchFound| to true.
+        1.  If |endsWithWildcard| is false and |createdPolicyNames| contains |policyName|, set |createViolation| to true.
+        1.  [=Break=] out of the loop.
+    1.  If |matchFound| is false, set |createViolation| to true.
     1.  If |createViolation| is false, skip to the next |policy|.
     1.  Let |violation| be the result of executing
         [[CSP#create-violation-for-global|Create a violation object for global, policy, and directive]] on |global|, |policy| and
