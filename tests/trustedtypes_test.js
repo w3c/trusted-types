@@ -580,6 +580,13 @@ describe('v2 TrustedTypes', () => {
       expect(() => TrustedTypes.createPolicy('bar', {})).not.toThrow();
       expect(() => TrustedTypes.createPolicy('bar', {})).toThrow();
     });
+
+    it('is always disallowed for a default policy', () => {
+      setAllowedPolicyNames(['*']);
+
+      expect(() => TrustedTypes.createPolicy('default', {})).not.toThrow();
+      expect(() => TrustedTypes.createPolicy('default', {})).toThrow();
+    });
   });
 
   describe('emptyHTML', () => {

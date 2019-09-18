@@ -580,7 +580,10 @@ export const trustedTypesBuilderTestOnly = function() {
       throw new TypeError('Policy ' + pName + ' disallowed.');
     }
 
-    if (!found[1] /* no wildcard */ &&
+    const allowDuplicate = found[1] /* wildcard specified */&&
+      pName !== DEFAULT_POLICY_NAME;
+
+    if (!allowDuplicate &&
         policyNames.indexOf(pName) !== -1 /* policy already created */) {
       throw new TypeError('Policy ' + pName + ' exists.');
     }

@@ -1324,7 +1324,7 @@ strings (|createdPolicyNames|), this algorithm returns `"Blocked"` if the
             :: If |policyName| is not equal to |policyNamePrefix|, [=skip=] to next |expression|.
 
         1.  Set |matchFound| to true.
-        1.  If |endsWithWildcard| is false and |createdPolicyNames| contains |policyName|, set |createViolation| to true.
+        1.  If (|endsWithWildcard| is false or |policyName| is `"default`) and |createdPolicyNames| contains |policyName|, set |createViolation| to true.
         1.  [=Break=] out of the loop.
     1.  If |matchFound| is false, set |createViolation| to true.
     1.  If |createViolation| is false, skip to the next |policy|.
