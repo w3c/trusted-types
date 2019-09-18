@@ -43,14 +43,16 @@ The ES5 / ES6 builds can be loaded directly in the browsers. There are two varia
 
 ### NodeJS
 
-CommonJS polyfill is published as an npm package [trusted-types](https://www.npmjs.com/package/trusted-types):
+Polyfill is published as an npm package [trusted-types](https://www.npmjs.com/package/trusted-types):
 
 ```sh
 $ npm install trusted-types
 ```
 
+The polyfill supports both CommonJS and ES Modules.
+
 ```javascript
-const tt = require('trusted-types');
+const tt = require('trusted-types'); // or import {tt} from 'trusted-types'
 tt.createPolicy(...);
 ```
 
