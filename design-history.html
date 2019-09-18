@@ -405,7 +405,7 @@ response.write(myHTMLTemplate.apply({ userName }));
   <a href="https://nodejs.org/api/vm.html"><code>vm</code> module</a>
   lets JavaScript specify the filename used in stack traces, so we
   can't just build security barriers on top of metadata like V8's
-  <a href="http://google3/third_party/v8/v6_9/src/objects/script.h?l=42&rcl=218695831"><code>source_url</code></a>.
+  <a href="https://chromium.googlesource.com/v8/v8/+/refs/tags/7.9.68/src/objects/script.h#101"><code>source_url</code></a>.
   The amount of spec work to thread reliable source metadata around
   through JavaScript would be large, and would irreparably break
   existing dynamic code loading mechanisms that fetch code and load it
