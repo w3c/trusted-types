@@ -38,7 +38,7 @@ If you would like to propose a spec change, please send a PR that changes
 
 Here's a workflow to get you started:
 
-1.  Fork github.com/WICG/trusted-types
+1.  Fork github.com/WICG/webappsec-trusted-types
 1.  `git clone` your fork and `cd trusted-types`
 1.  `npm install` to get everything set up.
 1.  Run `git checkout -b your-branch-name` to setup a branch to hold your patch.
@@ -53,10 +53,10 @@ Here's a workflow to get you started:
         which shows bikeshed in practice.
     *   The source for the other specifications like
         [CSP3](https://github.com/w3c/webappsec-csp/blob/master/index.src.html)
-1.  Be aware of [issue 112](https://github.com/WICG/trusted-types/issues/112) if you're
+1.  Be aware of [issue 112](https://github.com/WICG/webappsec-trusted-types/issues/112) if you're
     having trouble with the watcher.
 1.  Maybe locally enable
-    [`Complain About: broken-links yes`](https://github.com/WICG/trusted-types/blob/9445a47f720f255d066621ba6975228e558453f5/spec/index.bs#L18)
+    [`Complain About: broken-links yes`](https://github.com/WICG/webappsec-trusted-types/blob/9445a47f720f255d066621ba6975228e558453f5/spec/index.bs#L18)
     and double check that there are no broken links.
     Broken-link checking is slooow during development.
 1.  Commit and push your branch to your fork and send us a PR.
@@ -69,5 +69,5 @@ but if you want a shareable link to your PR, try filling in the blanks:
 > <tt>https\://raw.githack.com/<b>\<YOUR-GITHUB-HANDLE\></b>/trusted-types/<b>\<YOUR-BRANCH-NAME\></b>/dist/spec/index.html</tt>
 
 
-[spec/index.bs]: https://github.com/WICG/trusted-types/blob/master/spec/index.bs
-[dist/spec/index.html]: https://github.com/WICG/trusted-types/blob/master/dist/spec/index.html
+[spec/index.bs]: https://github.com/WICG/webappsec-trusted-types/blob/master/spec/index.bs
+[dist/spec/index.html]: https://github.com/WICG/webappsec-trusted-types/blob/master/dist/spec/index.html

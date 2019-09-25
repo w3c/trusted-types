@@ -97,7 +97,7 @@ first step:
 
 Introducing and requiring typed objects is, sadly, not sufficient: Exposing raw Trusted Types constructors to the web authors presents a significant problem, in that
 it only marginally improves the situation: while it allows certain libraries to produce and use typed
-values in place of strings, it also allows constructing the types at will (see https://github.com/WICG/trusted-types/issues/31), and every
+values in place of strings, it also allows constructing the types at will (see https://github.com/WICG/webappsec-trusted-types/issues/31), and every
 typed value construction in the application is a potential DOM XSS. Consider the following code
 snippet from the previous version of the API:
 
@@ -326,4 +326,4 @@ Please check the [specification draft](https://wicg.github.io/trusted-types/dist
 
 ## Open Questions
 
-Some details have still not been sketched out - see [issues](https://github.com/WICG/trusted-types/issues).
+Some details have still not been sketched out - see [issues](https://github.com/WICG/webappsec-trusted-types/issues).

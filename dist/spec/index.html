@@ -1213,8 +1213,8 @@ Possible extra rowspan handling
 	}
 </style>
   <link href="https://www.w3.org/StyleSheets/TR/2016/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version cb5a17652cb33dffd20b8b6a876bb811c1f749a9" name="generator">
-  <link href="https://wicg.github.io/trusted-types/dist/spec/" rel="canonical">
+  <meta content="Bikeshed version e86d5b1b47a216fa66165c234892adc259212183" name="generator">
+  <link href="https://wicg.github.io/webappsec-trusted-types/dist/spec/" rel="canonical">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -1461,13 +1461,13 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Trusted Types</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-09-15">15 September 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-09-25">25 September 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
-     <dd><a class="u-url" href="https://wicg.github.io/trusted-types/dist/spec/">https://wicg.github.io/trusted-types/dist/spec/</a>
+     <dd><a class="u-url" href="https://wicg.github.io/webappsec-trusted-types/dist/spec/">https://wicg.github.io/webappsec-trusted-types/dist/spec/</a>
      <dt>Issue Tracking:
-     <dd><a href="https://github.com/WICG/trusted-types/issues/">GitHub</a>
+     <dd><a href="https://github.com/WICG/webappsec-trusted-types/issues/">GitHub</a>
      <dd><a href="#issues-index">Inline In Spec</a>
      <dt class="editor">Editors:
      <dd class="editor p-author h-card vcard"><a class="p-name fn u-email email" href="mailto:koto@google.com">Krzysztof Kotowicz</a> (<a class="p-org org" href="https://google.com">Google LLC</a>)
@@ -2455,7 +2455,7 @@ per heycam/webidl#441.</p>
    <p class="issue" id="issue-52d7d8d6"><a class="self-link" href="#issue-52d7d8d6"></a> <a href="https://heycam.github.io/webidl/#TreatNullAs">TreatNullAs=EmptyString</a> is confusing.
 See note "It should not be used in specifications unless ...".
 For some sinks a <code>null</code> value will result in "", and "null" for others.
-This already caused problems in the polyfill. <a href="https://github.com/WICG/trusted-types/issues/2">&lt;https://github.com/WICG/trusted-types/issues/2></a></p>
+This already caused problems in the polyfill. <a href="https://github.com/WICG/webappsec-trusted-types/issues/2">&lt;https://github.com/WICG/webappsec-trusted-types/issues/2></a></p>
    <h3 class="heading settled" data-level="4.1" id="integration-with-html"><span class="secno">4.1. </span><span class="content">Integration with HTML</span><a class="self-link" href="#integration-with-html"></a></h3>
    <p><code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/window-object.html#window" id="ref-for-window①">Window</a></code> objects have a <dfn class="dfn-paneled" data-dfn-for="Window" data-dfn-type="dfn" data-noexport id="window-trusted-type-policy-factory">trusted type policy factory</dfn>,
 which is a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicyfactory" id="ref-for-trustedtypepolicyfactory②">TrustedTypePolicyFactory</a></code> object.</p>
@@ -2905,7 +2905,7 @@ the substring of
    <p class="note" role="note"><span>Note:</span> returning <var>sourceString</var> means that the string that gets
 compiled is that returned by any <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy③">default policy</a> in the course of
 executing <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string⑧">Get Trusted Type compliant string</a>.</p>
-   <p class="issue" id="issue-e28ea232"><a class="self-link" href="#issue-e28ea232"></a> This depends on a solution to <a href="https://github.com/WICG/trusted-types/issues/144">issue #144</a> like <a href="https://github.com/tc39-transfer/dynamic-code-brand-checks#problem-host-callout-does-not-receive-type-information">TC39 HostBeforeCompile</a></p>
+   <p class="issue" id="issue-e28ea232"><a class="self-link" href="#issue-e28ea232"></a> This depends on a solution to <a href="https://github.com/WICG/webappsec-trusted-types/issues/144">issue #144</a> like <a href="https://github.com/tc39-transfer/dynamic-code-brand-checks#problem-host-callout-does-not-receive-type-information">TC39 HostBeforeCompile</a></p>
    <p class="issue" id="issue-649f8da4"><a class="self-link" href="#issue-649f8da4"></a> In some cases, the violation "<code>'report-sample'</code>" contain the result of
 applying the default policy to a string argument which differs.
 Specifically when, there is a <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy④">default policy</a>, <var>isExempt</var> is false,
@@ -2961,8 +2961,8 @@ restrictions:</p>
      <p><a href="https://w3c.github.io/webcomponents/spec/imports/">HTML imports</a></p>
    </ul>
    <h3 class="heading settled" data-level="5.3" id="bypass-vectors"><span class="secno">5.3. </span><span class="content">Bypass vectors</span><a class="self-link" href="#bypass-vectors"></a></h3>
-   <p class="issue" id="issue-1c3973fc"><a class="self-link" href="#issue-1c3973fc"></a> Mention anchor element properties bypass. <a href="https://github.com/WICG/trusted-types/issues/64">&lt;https://github.com/WICG/trusted-types/issues/64></a></p>
-   <p class="issue" id="issue-fb0cfdf0"><a class="self-link" href="#issue-fb0cfdf0"></a> Mention text/attribute node copy bypass vectors. <a href="https://github.com/WICG/trusted-types/issues/47">&lt;https://github.com/WICG/trusted-types/issues/47></a></p>
+   <p class="issue" id="issue-1c3973fc"><a class="self-link" href="#issue-1c3973fc"></a> Mention anchor element properties bypass. <a href="https://github.com/WICG/webappsec-trusted-types/issues/64">&lt;https://github.com/WICG/webappsec-trusted-types/issues/64></a></p>
+   <p class="issue" id="issue-fb0cfdf0"><a class="self-link" href="#issue-fb0cfdf0"></a> Mention text/attribute node copy bypass vectors. <a href="https://github.com/WICG/webappsec-trusted-types/issues/47">&lt;https://github.com/WICG/webappsec-trusted-types/issues/47></a></p>
    <h3 class="heading settled" data-level="5.4" id="best-practices-for-policy-design"><span class="secno">5.4. </span><span class="content">Best practices for policy design</span><a class="self-link" href="#best-practices-for-policy-design"></a></h3>
    <p>Trusted Types limit the scope of the code that can introduce DOM XSS
 vulnerabilities to the implementation of <a href="#policies">policies</a>. In this design,
@@ -3929,18 +3929,18 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <div class="issue"> <a href="https://heycam.github.io/webidl/#TreatNullAs">TreatNullAs=EmptyString</a> is confusing.
 See note "It should not be used in specifications unless ...".
 For some sinks a <code>null</code> value will result in "", and "null" for others.
-This already caused problems in the polyfill. <a href="https://github.com/WICG/trusted-types/issues/2">&lt;https://github.com/WICG/trusted-types/issues/2></a><a href="#issue-52d7d8d6"> ↵ </a></div>
+This already caused problems in the polyfill. <a href="https://github.com/WICG/webappsec-trusted-types/issues/2">&lt;https://github.com/WICG/webappsec-trusted-types/issues/2></a><a href="#issue-52d7d8d6"> ↵ </a></div>
    <div class="issue"> Define for workers.<a href="#issue-a5679137"> ↵ </a></div>
    <div class="issue"> Remove the note when the API in Chrome is shipped.<a href="#issue-3d9ee9e6"> ↵ </a></div>
    <div class="issue"> Add base.href enforcement.<a href="#issue-13577559"> ↵ </a></div>
-   <div class="issue"> This depends on a solution to <a href="https://github.com/WICG/trusted-types/issues/144">issue #144</a> like <a href="https://github.com/tc39-transfer/dynamic-code-brand-checks#problem-host-callout-does-not-receive-type-information">TC39 HostBeforeCompile</a><a href="#issue-e28ea232"> ↵ </a></div>
+   <div class="issue"> This depends on a solution to <a href="https://github.com/WICG/webappsec-trusted-types/issues/144">issue #144</a> like <a href="https://github.com/tc39-transfer/dynamic-code-brand-checks#problem-host-callout-does-not-receive-type-information">TC39 HostBeforeCompile</a><a href="#issue-e28ea232"> ↵ </a></div>
    <div class="issue"> In some cases, the violation "<code>'report-sample'</code>" contain the result of
 applying the default policy to a string argument which differs.
 Specifically when, there is a <a data-link-type="dfn" href="#default-policy">default policy</a>, <var>isExempt</var> is false,
 and <var>source</var> there is a CSP policy for either the <var>callerRealm</var> or <var>callerRealm</var> that disallows "<code>'unsafe-eval'"</code>.
 Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
-   <div class="issue"> Mention anchor element properties bypass. <a href="https://github.com/WICG/trusted-types/issues/64">&lt;https://github.com/WICG/trusted-types/issues/64></a><a href="#issue-1c3973fc"> ↵ </a></div>
-   <div class="issue"> Mention text/attribute node copy bypass vectors. <a href="https://github.com/WICG/trusted-types/issues/47">&lt;https://github.com/WICG/trusted-types/issues/47></a><a href="#issue-fb0cfdf0"> ↵ </a></div>
+   <div class="issue"> Mention anchor element properties bypass. <a href="https://github.com/WICG/webappsec-trusted-types/issues/64">&lt;https://github.com/WICG/webappsec-trusted-types/issues/64></a><a href="#issue-1c3973fc"> ↵ </a></div>
+   <div class="issue"> Mention text/attribute node copy bypass vectors. <a href="https://github.com/WICG/webappsec-trusted-types/issues/47">&lt;https://github.com/WICG/webappsec-trusted-types/issues/47></a><a href="#issue-fb0cfdf0"> ↵ </a></div>
    <div class="issue"> Refer to the external document on secure policy design.<a href="#issue-2eb927d2"> ↵ </a></div>
   </div>
   <aside class="dfn-panel" data-for="injection-sink">

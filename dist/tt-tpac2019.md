@@ -1,6 +1,6 @@
 # Trusted Types @ TPAC 2019
 
-https://github.com/WICG/trusted-types
+https://github.com/WICG/webappsec-trusted-types
 
 * A browser API to address DOM XSS
 * Produce safe values for the DOM XSS injection sinks via policies
@@ -39,7 +39,7 @@ Instrumenting Closure Safe Types to wrap over Trusted Types. This rolled out for
 * Driving wider refactorings to eradicate the badness
 
 ## Library integrations
-We prepared integrations with popular JS libraries. Namely: **React, Angular, Vue, lit-html (Polymer), Karma, Jasmine, DOMPurify**. Details at https://github.com/WICG/trusted-types/wiki/Integrations. We  see emerging *patterns* in the integrations.
+We prepared integrations with popular JS libraries. Namely: **React, Angular, Vue, lit-html (Polymer), Karma, Jasmine, DOMPurify**. Details at https://github.com/WICG/webappsec-trusted-types/wiki/Integrations. We  see emerging *patterns* in the integrations.
 
 ## API changes
 <!--
@@ -157,5 +157,5 @@ trustedTypes.getAttributeType('img', 'alt')      // null
 * Working reference implementation, polyfill
 * Existing integrations demonstrate feasibility
 * Pilots demonstrate value to site operators
-* Intent to migrate: github.com/WICG/trusted-types/issues/215
+* Intent to migrate: github.com/WICG/webappsec-trusted-types/issues/215
 * WICG ⇒ W3C ?
