@@ -47,10 +47,10 @@
 <h1>Trusted Types and CSP integration</h1>
 
 <p>
-<a href="https://github.com/WICG/webappsec-trusted-types">Trusted Types</a> would like to modify CSP's
+<a href="https://github.com/w3c/webappsec-trusted-types">Trusted Types</a> would like to modify CSP's
 <a href="https://www.w3.org/TR/CSP3/#can-compile-strings"><i>EnsureCSPDoesNotBlockStringCompilation</i></a>
 so that <tt>new Function(x)</tt> and <tt>eval(x)</tt> work when <tt>x</tt> is a
-<a href="https://wicg.github.io/trusted-types/dist/spec/#trusted-script"><i>TrustedScript</i></a>.
+<a href="https://w3c.github.io/trusted-types/dist/spec/#trusted-script"><i>TrustedScript</i></a>.
 
 <p>
   I'm trying to draft spec text to explain how that works.
@@ -84,7 +84,7 @@ My first attempt involved writing nested `If ... Then` but I had low confidence 
   <li>Add a new `script-src` <i>source-expression</i> that breaks ties.
     For lack of a better name, <tt>script-src 'trusted-script'</tt>
     means allow `eval(x)` when `x` is (or is
-    <a href="https://wicg.github.io/trusted-types/dist/spec/#default-policy-hdr">convertible to</a>)
+    <a href="https://w3c.github.io/webappsec-trusted-types/dist/spec/#default-policy-hdr">convertible to</a>)
     a <i>TrustedScript</i>.
     This is more permissive than <tt>script-src 'none'</tt> but less permissive than
     <tt>script-src 'unsafe-eval'</tt>.
@@ -115,14 +115,14 @@ The axes are a combination of 4 separable signals:
     </ul>
   <li><i>TT</i>: The effect of <tt>trusted-types</tt> on untrusted values.
     <ul>
-      <li>Enforced means the callee realm's <a href="https://wicg.github.io/trusted-types/dist/spec/#trusted-type-configuration-hdr"><i>TrustedTypeConfiguration</i></a>'s <i>StringAtSinkDisposition</i> is <tt>reject</tt>.
+      <li>Enforced means the callee realm's <a href="https://w3c.github.io/webappsec-trusted-types/dist/spec/#trusted-type-configuration-hdr"><i>TrustedTypeConfiguration</i></a>'s <i>StringAtSinkDisposition</i> is <tt>reject</tt>.
       <li>Report-Only means the <i>StringAtSinkDisposition</i> is <tt>report-only</tt>.
       <li>Off otherwise.
     </ul>
   <li><i>Strength</i>: Whether <tt>trusted-types</tt> bounds policy creation.
     <br>This is only relevant to option 1 above.
     <ul>
-      <li>Stong means <tt>*</tt> is not in the callee realm's <a href="https://wicg.github.io/trusted-types/dist/spec/#trusted-type-configuration-hdr"><i>TrustedTypeConfiguration</i></a>'s <tt>allowedNames</tt> and its <i>UnknownPolicyNameDisposition</i> is <tt>reject</tt>.
+      <li>Stong means <tt>*</tt> is not in the callee realm's <a href="https://w3c.github.io/webappsec-trusted-types/dist/spec/#trusted-type-configuration-hdr"><i>TrustedTypeConfiguration</i></a>'s <tt>allowedNames</tt> and its <i>UnknownPolicyNameDisposition</i> is <tt>reject</tt>.
       <li>Weak otherwise.
     </ul>
   <li><i>Value</i>: The type of the input <i>x</i>.
