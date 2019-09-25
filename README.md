@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/WICG/trusted-types.svg)](https://travis-ci.org/WICG/trusted-types)
 ![npm bundle size](https://img.shields.io/bundlephobia/minzip/trusted-types.svg)
 ![Libraries.io dependency status for latest release](https://img.shields.io/librariesio/release/npm/trusted-types.svg)
-![GitHub issues](https://img.shields.io/github/issues/WICG/trusted-types.svg)
+![GitHub issues](https://img.shields.io/github/issues/WICG/webappsec-trusted-types.svg)
 ![npm](https://img.shields.io/npm/v/trusted-types.svg)
 [![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=eGZQNXU1U09vZjkrZzYzU3YrQ2FsbUpheGczR0VmMTZUSjBydnNjd1pKTT0tLTZPMWVJTnU1UHJvYjFCb0pHQmlsaXc9PQ%3d%3d--295829245abf0dd0cd150f9ca4fe3198da38747b)](https://www.browserstack.com/automate/public-build/eGZQNXU1U09vZjkrZzYzU3YrQ2FsbUpheGczR0VmMTZUSjBydnNjd1pKTT0tLTZPMWVJTnU1UHJvYjFCb0pHQmlsaXc9PQ%3d%3d--295829245abf0dd0cd150f9ca4fe3198da38747b)
 
