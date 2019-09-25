@@ -23,7 +23,7 @@ The ES5 / ES6 builds can be loaded directly in the browsers. There are two varia
 
 ```html
 <!-- API only -->
-<script src="https://wicg.github.io/trusted-types/dist/es5/trustedtypes.api_only.build.js"></script>
+<script src="https://wicg.github.io/webappsec-trusted-types/dist/es5/trustedtypes.api_only.build.js"></script>
 <script>
      const p = trustedTypes.createPolicy('foo', ...)
      document.body.innerHTML = p.createHTML('foo'); // works
@@ -33,7 +33,7 @@ The ES5 / ES6 builds can be loaded directly in the browsers. There are two varia
 
 ```html
 <!-- Full -->
-<script src="https://wicg.github.io/trusted-types/dist/es5/trustedtypes.build.js" data-csp="trusted-types foo bar"></script>
+<script src="https://wicg.github.io/webappsec-trusted-types/dist/es5/trustedtypes.build.js" data-csp="trusted-types foo bar"></script>
 <script>
     trustedTypes.createPolicy('foo', ...);
     trustedTypes.createPolicy('unknown', ...); // throws
@@ -76,14 +76,14 @@ to work in both Trusted-Type-enforcing and a legacy environment.
 To build the polyfill yourself (Java required):
 
 ```sh
-$ git clone https://github.com/mikewest/trusted-types/
+$ git clone https://github.com/WICG/webappsec-trusted-types/
 $ cd trusted-types
 $ npm install
 $ npm run build
 ```
 
 ## Demo
-To see the polyfill in action, visit the [demo page](https://wicg.github.io/trusted-types/demo/).
+To see the polyfill in action, visit the [demo page](https://wicg.github.io/webappsec-trusted-types/demo/).
 
 ## Testing
 It can be tested by running:
@@ -104,5 +104,5 @@ See [CONTRIBUTING](CONTRIBUTING.md).
 
 # Questions?
 
-Our [wiki](https://github.com/WICG/trusted-types/wiki) or the [specification](https://wicg.github.io/trusted-types/dist/spec/) may already contain an answer
-to your question. If not, please [contact us](https://github.com/WICG/trusted-types/wiki/Contact)!
+Our [wiki](https://github.com/WICG/webappsec-trusted-types/wiki) or the [specification](https://wicg.github.io/webappsec-trusted-types/dist/spec/) may already contain an answer
+to your question. If not, please [contact us](https://github.com/WICG/webappsec-trusted-types/wiki/Contact)!
