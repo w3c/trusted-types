@@ -119,28 +119,28 @@ TrustedTypePolicyFactory.prototype.getPropertyType = function(tagName,
 TrustedTypePolicyFactory.prototype.getTypeMapping = function(namespaceUri = ''){};
 
 /**
- * Returns true if the value is TrustedHTML created by Truste Types policy.
+ * Returns true if the value is TrustedHTML created by Trusted Types policy.
  * @param  {*} value A value to be checked.
  * @return {!boolean} true if the value is TrustedHTML.
  */
 TrustedTypePolicyFactory.prototype.isHTML = function(value){};
 
 /**
- * Returns true if the value is TrustedURL created by Truste Types policy.
+ * Returns true if the value is TrustedURL created by Trusted Types policy.
  * @param  {*} value A value to be checked.
  * @return {!boolean} true if the value is TrustedURL.
  */
 TrustedTypePolicyFactory.prototype.isURL = function(value){};
 
 /**
- * Returns true if the value is TrustedScriptURL created by Truste Types policy.
+ * Returns true if the value is TrustedScriptURL created by Trusted Types policy.
  * @param  {*} value A value to be checked.
  * @return {!boolean} true if the value is TrustedScriptURL.
  */
 TrustedTypePolicyFactory.prototype.isScriptURL = function(value){};
 
 /**
- * Returns true if the value is TrustedScript created by Truste Types policy.
+ * Returns true if the value is TrustedScript created by Trusted Types policy.
  * @param  {*} value A value to be checked.
  * @return {!boolean} true if the value is TrustedScript.
  */
