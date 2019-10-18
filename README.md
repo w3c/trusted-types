@@ -1,7 +1,7 @@
-[![Build Status](https://travis-ci.org/WICG/trusted-types.svg)](https://travis-ci.org/WICG/trusted-types)
+[![Build Status](https://travis-ci.org/w3c/webappsec-trusted-types.svg)](https://travis-ci.org/w3c/webappsec-trusted-types)
 ![npm bundle size](https://img.shields.io/bundlephobia/minzip/trusted-types.svg)
 ![Libraries.io dependency status for latest release](https://img.shields.io/librariesio/release/npm/trusted-types.svg)
-![GitHub issues](https://img.shields.io/github/issues/WICG/trusted-types.svg)
+![GitHub issues](https://img.shields.io/github/issues/w3c/webappsec-trusted-types.svg)
 ![npm](https://img.shields.io/npm/v/trusted-types.svg)
 [![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=eGZQNXU1U09vZjkrZzYzU3YrQ2FsbUpheGczR0VmMTZUSjBydnNjd1pKTT0tLTZPMWVJTnU1UHJvYjFCb0pHQmlsaXc9PQ%3d%3d--295829245abf0dd0cd150f9ca4fe3198da38747b)](https://www.browserstack.com/automate/public-build/eGZQNXU1U09vZjkrZzYzU3YrQ2FsbUpheGczR0VmMTZUSjBydnNjd1pKTT0tLTZPMWVJTnU1UHJvYjFCb0pHQmlsaXc9PQ%3d%3d--295829245abf0dd0cd150f9ca4fe3198da38747b)
 
@@ -11,7 +11,7 @@ First time here? This is a repository hosting the Trusted Types specification dr
 
  * [Introduction for web developers](https://developers.google.com/web/updates/2019/02/trusted-types) - API description with examples.
  * [Explainer](explainer.md) - introductory explainer (what problem is the API solving?).
- * [Specification draft](https://wicg.github.io/trusted-types/dist/spec/) - a more comprehensive and formalized description of the Trusted Types API.
+ * [Specification draft](https://w3c.github.io/webappsec-trusted-types/dist/spec/) - a more comprehensive and formalized description of the Trusted Types API.
  * [Origin trial for Trusted Types](https://developers.chrome.com/origintrials/#/view_trial/171136785840078849) - The API is available natively in Chrome via [origin trials](https://github.com/GoogleChrome/OriginTrials/blob/gh-pages/developer-guide.md).
 
 ## Polyfill
@@ -23,7 +23,7 @@ The ES5 / ES6 builds can be loaded directly in the browsers. There are two varia
 
 ```html
 <!-- API only -->
-<script src="https://wicg.github.io/trusted-types/dist/es5/trustedtypes.api_only.build.js"></script>
+<script src="https://w3c.github.io/webappsec-trusted-types/dist/es5/trustedtypes.api_only.build.js"></script>
 <script>
      const p = trustedTypes.createPolicy('foo', ...)
      document.body.innerHTML = p.createHTML('foo'); // works
@@ -33,7 +33,7 @@ The ES5 / ES6 builds can be loaded directly in the browsers. There are two varia
 
 ```html
 <!-- Full -->
-<script src="https://wicg.github.io/trusted-types/dist/es5/trustedtypes.build.js" data-csp="trusted-types foo bar"></script>
+<script src="https://w3c.github.io/webappsec-trusted-types/dist/es5/trustedtypes.build.js" data-csp="trusted-types foo bar"></script>
 <script>
     trustedTypes.createPolicy('foo', ...);
     trustedTypes.createPolicy('unknown', ...); // throws
@@ -43,14 +43,16 @@ The ES5 / ES6 builds can be loaded directly in the browsers. There are two varia
 
 ### NodeJS
 
-CommonJS polyfill is published as an npm package [trusted-types](https://www.npmjs.com/package/trusted-types):
+Polyfill is published as an npm package [trusted-types](https://www.npmjs.com/package/trusted-types):
 
 ```sh
 $ npm install trusted-types
 ```
 
+The polyfill supports both CommonJS and ES Modules.
+
 ```javascript
-const tt = require('trusted-types');
+const tt = require('trusted-types'); // or import {tt} from 'trusted-types'
 tt.createPolicy(...);
 ```
 
@@ -74,14 +76,14 @@ to work in both Trusted-Type-enforcing and a legacy environment.
 To build the polyfill yourself (Java required):
 
 ```sh
-$ git clone https://github.com/mikewest/trusted-types/
+$ git clone https://github.com/w3c/webappsec-trusted-types/
 $ cd trusted-types
 $ npm install
 $ npm run build
 ```
 
 ## Demo
-To see the polyfill in action, visit the [demo page](https://wicg.github.io/trusted-types/demo/).
+To see the polyfill in action, visit the [demo page](https://w3c.github.io/webappsec-trusted-types/demo/).
 
 ## Testing
 It can be tested by running:
@@ -102,5 +104,5 @@ See [CONTRIBUTING](CONTRIBUTING.md).
 
 # Questions?
 
-Our [wiki](https://github.com/WICG/trusted-types/wiki) or the [specification](https://wicg.github.io/trusted-types/dist/spec/) may already contain an answer
-to your question. If not, please [contact us](https://github.com/WICG/trusted-types/wiki/Contact)!
+Our [wiki](https://github.com/w3c/webappsec-trusted-types/wiki) or the [specification](https://w3c.github.io/webappsec-trusted-types/dist/spec/) may already contain an answer
+to your question. If not, please [contact us](https://github.com/w3c/webappsec-trusted-types/wiki/Contact)!

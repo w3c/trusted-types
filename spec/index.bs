@@ -1,18 +1,18 @@
 <!--
 Before editing this document, please see
-https://github.com/WICG/trusted-types/blob/master/README.md#spec-changes
+https://github.com/w3c/webappsec-trusted-types/blob/master/README.md#spec-changes
 -->
 
 <pre class='metadata'>
 Title: Trusted Types
 Shortname: trusted-types
-Group: WICG
+Group: webappsec
 Level: none
 Status: CG-DRAFT
-URL: https://wicg.github.io/trusted-types/dist/spec/
+URL: https://w3c.github.io/webappsec-trusted-types/dist/spec/
 Editor: Krzysztof Kotowicz, Google LLC https://google.com, koto@google.com
 Editor: Mike West, Google LLC https://google.com, mkwst@google.com
-Repository: WICG/trusted-types
+Repository: w3c/webappsec-trusted-types
 Abstract: An API that allows applications to lock down DOM XSS injection sinks to only accept non-spoofable, typed values in place of strings.
 Markup Shorthands: algorithm yes, biblio yes, css no, dfn yes, markdown yes, markup yes
 Ignored Terms: h1, h2, h3, h4, h5, h6, xmp, EmptyString
@@ -186,7 +186,7 @@ authors intend a value to be used as an HTML snippet, an attempt to
 load a script from that value would fail.
 
 Note: All Trusted Types wrap over an immutable string, specified when the
-objects are created. These objects are unforgable in a sense that
+objects are created. These objects are unforgeable in a sense that
 there is no JavaScript-exposed way to replace the inner string value
 of a given object - it's stored in an internal slot with no setter
 exposed.
@@ -959,7 +959,7 @@ Note: {{HTMLStringDefaultsEmpty}} is a non-nullable variant that accepts *null* 
 Having this separate type allows [[webidl#TreatNullAs]] to attach to DOMString
 per heycam/webidl#441.
 
-Issue(WICG/trusted-types#2): [[webidl#TreatNullAs|TreatNullAs=EmptyString]] is confusing.
+Issue(w3c/webappsec-trusted-types#2): [[webidl#TreatNullAs|TreatNullAs=EmptyString]] is confusing.
 See note "It should not be used in specifications unless ...".
 For some sinks a `null` value will result in "", and "null" for others.
 This already caused problems in the polyfill.
@@ -1243,8 +1243,7 @@ Content-Security-Policy: trusted-types one two default
 
 #### `trusted-types` Pre-Navigation check #### {#trusted-types-pre-navigation-check}
 
-Given a [[Fetch#concept-request|request]] (|request|), a string |navigation type|, two [=browsing contexts=]
-(|source| and |target|), and a [[CSP3#content-security-policy-object|policy]] (|policy|), this algorithm returns `"Blocked"`
+Given a [[Fetch#concept-request|request]] (|request|), a string |navigation type| and a [[CSP3#content-security-policy-object|policy]] (|policy|), this algorithm returns `"Blocked"`
 if a navigation violates the {{#trusted-types-directive|trusted-types}} directive's constraints and `"Allowed"`
 otherwise. This constitutes the {{#trusted-types-directive|trusted-types}} directive's [=pre-navigation check=]:
 
@@ -1254,7 +1253,7 @@ Note: This algorithm assures that the code to be executed by a navigation to a `
 1. If |request|'s [=request/url=]'s [=url/scheme=] is not `"javascript"`, return `"Allowed"` and abort further steps.
 1. Let |urlString| be the result of running the [=URL serializer=] on |request|'s [=request/url=].
 1. Let |encodedScriptSource| be the result of removing the leading `"javascript:"` from |urlString|.
-1. Let |defaultPolicy| be the result of executing [$Get default policy$] algorithm on |source|'s {{WindowProxy}}'s [=trusted type policy factory=].
+1. Let |defaultPolicy| be the result of executing [$Get default policy$] algorithm on |request|'s [=request/clients=]'s [=environment settings object/global object=]'s [=trusted type policy factory=].
 1. If |defaultPolicy| is `null`, return `"Blocked"` and abort further steps.
 1. Let |convertedScriptSource| be the result of executing [$Create a Trusted Type$] algorithm, with the following arguments:
 
@@ -1400,11 +1399,12 @@ throws an "`EvalError`" if not:
             Otherwise if |policy| contains a [=directive=] whose [=directive/name=] is
             "`default-src`", then set |source-list| to that directive's [=directive/value=].
 
-        3.  If |source-list| is not `null`, and does not contain a [=source expression=] which is
-            an [=ASCII case-insensitive=] match for the string "<a grammar>`'unsafe-eval'`</a>", <ins>and
-            it is the case that (|isExempt| is not true or |source-list| does not contain a
+        3. <ins>If |isExempt| is true and |source-list| contains a
             [=source expression=] which is an [=ASCII case-insensitive=] match for the
-            string "<a grammar>`'trusted-script'`</a>")</ins> then:
+            string "<a grammar>`'trusted-script'`</a>"), [=continue=].</ins>
+
+        4.  If |source-list| is not `null`, and does not contain a [=source expression=] which is
+            an [=ASCII case-insensitive=] match for the string "<a grammar>`'unsafe-eval'`</a>" then:
 
             1.  Let |violation| be the result of executing [[CSP3#create-violation-for-global]] on
                 |global|, |policy|, and "`script-src`".
@@ -1430,7 +1430,7 @@ compiled is that returned by any [=default policy=] in the course of
 executing [$Get Trusted Type compliant string$].
 
 Issue: This depends on a solution to
-<a href="https://github.com/WICG/trusted-types/issues/144">issue #144</a> like <a
+<a href="https://github.com/w3c/webappsec-trusted-types/issues/144">issue #144</a> like <a
 href="https://github.com/tc39-transfer/dynamic-code-brand-checks#problem-host-callout-does-not-receive-type-information">TC39 HostBeforeCompile</a>
 
 Issue: In some cases, the violation "`'report-sample'`" contain the result of
@@ -1506,9 +1506,9 @@ restrictions:
 
 ## Bypass vectors ## {#bypass-vectors}
 
-Issue(WICG/trusted-types#64): Mention anchor element properties bypass.
+Issue(w3c/webappsec-trusted-types#64): Mention anchor element properties bypass.
 
-Issue(WICG/trusted-types#47): Mention text/attribute node copy bypass vectors.
+Issue(w3c/webappsec-trusted-types#47): Mention text/attribute node copy bypass vectors.
 
 
 ## Best practices for policy design ## {#best-practices-for-policy-design}
