@@ -186,7 +186,7 @@ authors intend a value to be used as an HTML snippet, an attempt to
 load a script from that value would fail.
 
 Note: All Trusted Types wrap over an immutable string, specified when the
-objects are created. These objects are unforgable in a sense that
+objects are created. These objects are unforgeable in a sense that
 there is no JavaScript-exposed way to replace the inner string value
 of a given object - it's stored in an internal slot with no setter
 exposed.
