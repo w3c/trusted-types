@@ -455,6 +455,9 @@ connecting to external sources via <a data-link-type="biblio" href="#biblio-fetc
 control loading resources that can script the current document, but not
 other subresources.</p>
     <li data-md>
+     <p>Prevent <em>cross-origin</em> JavaScript execution (for example, Trusted Types
+don’t guard loading new documents with JavaScript code via <code>data:</code> URLs).</p>
+    <li data-md>
      <p>Prevent malicious authors of the web application’s JavaScript code
 from being able to trigger DOM XSS; attempting to protect against  malicious
 authors would result in an overtly complex and not-practical

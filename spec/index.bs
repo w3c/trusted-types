@@ -87,6 +87,8 @@ which are substantially easier to safeguard, monitor and review.
 *   Control subresource loading. Trusted Types aim to allow the authors to
     control loading resources that can script the current document, but not
     other subresources.
+*   Prevent *cross-origin* JavaScript execution (for example, Trusted Types
+    don't guard loading new documents with JavaScript code via `data:` URLs).
 *   Prevent malicious authors of the web application's JavaScript code
     from being able to trigger DOM XSS; attempting to protect against  malicious
     authors would result in an overtly complex and not-practical
