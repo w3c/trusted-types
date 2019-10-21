@@ -87,6 +87,8 @@ which are substantially easier to safeguard, monitor and review.
 *   Control subresource loading. Trusted Types aim to allow the authors to
     control loading resources that can script the current document, but not
     other subresources.
+*   Prevent *cross-origin* JavaScript execution (for example, Trusted Types
+    don't guard loading new documents with JavaScript code via `data:` URLs).
 *   Prevent malicious authors of the web application's JavaScript code
     from being able to trigger DOM XSS; attempting to protect against  malicious
     authors would result in an overtly complex and not-practical
@@ -680,11 +682,14 @@ as a second argument.
 This allows the application to define a fallback behavior to use instead of
 causing a violation. The intention is to allow the applications to recover from
 an unexpected data flow, and sanitize the
-potentially attacker-controlled string "as a last resort", or throw if a safe value
-cannot be created.
+potentially attacker-controlled string "as a last resort", or reject a value
+if a safe value cannot be created. Errors thrown from within a policy are
+propagated to the application.
 
-If the default policy doesn't exist, of if it throws, it will cause a CSP
-violation, and a TypeError will be thrown.
+If the default policy doesn't exist, or if its appropriate `create*` function
+returns *null* or *undefined*, it will cause a CSP violation. In the
+enforcing mode, an error will be thrown, but in report-only the original value
+passed to the default policy will be used.
 
 Note: This optional behavior allows for introducing Trusted Type [=enforcement=]
 to applications that are still using legacy code that uses injection sinks.
@@ -1100,7 +1105,7 @@ also unconditionally accepts any {{Function}} object.
 ### Enforcement in event handler content attributes ### {#enforcement-in-event-handler-content-attributes}
 
 This document modifies the
-[[HTML5#event-handler-content-attributes|attribute change steps for an event handler content attribute]].
+[=attribute change steps=] for an [[HTML5#event-handler-content-attributes|event handler content attribute]].
 
 At the beginning of step 5, insert the following steps:
 
