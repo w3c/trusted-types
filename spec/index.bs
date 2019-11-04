@@ -791,7 +791,23 @@ When the extended attribute appears on an attribute, the setter for that attribu
     1. If an exception was thrown, rethrow exception and abort further steps.
  1. Run the originally specified steps for this construct, using |value| as a new value to set.
 
-Note: If the IDL attribute [=reflect/reflects=] a content attribute, identical steps should be performed when that content attribute is modified by JavaScript code e.g. via `Element.setAttribute()` function.
+If the IDL attribute annotated with the extended attribute [=reflects=] a content attribute for an {{Element}}, define the following [$attribute validate steps$] for that element and that content attribute:
+
+ 1.  If |element|'s [=relevant global object=] does not have a [=Window/trusted type policy factory=], return stringified |value|.
+ 1. Let |expectedType| be the {{TrustedTypes}} extended attribute identifier.
+ 1. If |value| is of |expectedType|, return stringified |value|.
+
+    Note: This makes sure that `Element.setAttribute(name, trustedValue)` is not routed through a default policy.
+
+ 1. Let |objectName| be the |element|'s [=Element/local name=].
+ 1. Set |sink| to the result of [=concatenating=] the list &laquo; |objectName|, |attribute|'s [=Attr/local name=] &raquo; with `"."` as |separator|.
+ 1. Set |newValue| to the result of running the [$Get Trusted Type compliant string$] algorithm, passing the following arguments:
+     * the new value as |input|,
+     * |expectedType|,
+     * |sink| as |sink|,
+     * |element|'s [=relevant global object=] as |global|.
+ 1.  If an exception was thrown, rethrow exception and abort further steps.
+ 1. Return |newValue|.
 
 When the extended attribute appears on an [=operation=] argument, before its operation is invoked, run the following steps:
 
@@ -1164,9 +1180,11 @@ Add the following step at the beginning of step 7 of [[DOM#concept-node-insert|i
 
 ### Attribute validate steps ### {#dom-attribute-validate-steps}
 
-In the definition of {{Element}}, add [=Element/attribute validate steps=]:
+Note: The purpose of attribute validate steps is to ensure that mutating the DOM by manipulating attribute nodes (e.g. by using `setAttributeNode`) directly will trigger Trusted Type checks.
 
-   > This and [=applicable specifications|other specifications=] may define <dfn abstract-op for="Element">attribute validate steps</dfn> for {{Element|elements}}.
+In the definition of {{Element}}, add [$attribute validate steps$]:
+
+   > This and [=applicable specifications|other specifications=] may define <dfn abstract-op dfn-spec="dom"  for="Element">attribute validate steps</dfn> for {{Element|elements}}.
    > The algorithm is passed |element|, |localName|, |value|, and |namespace| and returns a string (validated value) or throws an error.
 
 Call the [=Element/attribute validate steps=] in the following algorithms:
@@ -1179,7 +1197,7 @@ Note: The optional argument is used in setAttribute algorithm.
 
 <ol>
    <li><ins>If |valueToValidate| was not passed, set |valueToValidate| to |attribute|'s [=Attr/value=].
-   <li><ins>If [=attribute validate steps=] are not defined for the |element|, let |validatedValue| be |attribute|'s [=Attr/value=], stringified. Otherwise, let |validatedValue| be the result of running [=Element/attribute validate steps=] with |element|, |attribute|'s [=Attr/local name=], |valueToValidate| and |attribute|'s [=Attr/namespace=]. If that algorithm threw an error, rethrow the error and abort further steps.</li>
+   <li><ins>If [=attribute validate steps=] are not defined for the |element| and |attribute|, let |validatedValue| be |attribute|'s [=Attr/value=], stringified. Otherwise, let |validatedValue| be the result of running [=Element/attribute validate steps=] with |element|, |attribute|'s [=Attr/local name=], |valueToValidate| and |attribute|'s [=Attr/namespace=]. If that algorithm threw an error, rethrow the error and abort further steps.</li>
    <li><ins>Set |attribute|'s [=Attr/value=] to |validatedValue|.</ins></li>
     <li>
      <p><a data-link-type="dfn" data-spec="dom" href="https://dom.spec.whatwg.org/#queue-an-attribute-mutation-record" id="ref-for-queue-an-attribute-mutation-record①">Queue an attribute mutation record</a> for <var>element</var> with <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-local-name" id="ref-for-concept-attribute-local-name①②">local name</a>, <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-namespace" id="ref-for-concept-attribute-namespace①⓪">namespace</a>, and null. </p>
@@ -1196,7 +1214,7 @@ Note: The optional argument is used in setAttribute algorithm.
 Note: The parameter |value| does not need to be a string.
 
 <ol>
-   <li><ins>If [=attribute validate steps=] are not defined for the |element|, let |validatedValue| be |value|, stringified. Otherwise, let |validatedValue| be the result of running [=Element/attribute validate steps=] with |element|, |attribute|'s [=Attr/local name=], |value| and |attribute|'s [=Attr/namespace=]. If that algorithm threw an error, rethrow the error and abort further steps.</li>
+   <li><ins>If [=attribute validate steps=] are not defined for the |element| and |attribute|, let |validatedValue| be |value|, stringified. Otherwise, let |validatedValue| be the result of running [=Element/attribute validate steps=] with |element|, |attribute|'s [=Attr/local name=], |value| and |attribute|'s [=Attr/namespace=]. If that algorithm threw an error, rethrow the error and abort further steps.</li>
    <li><ins>Set |value| to |validatedValue|.</ins></li>
     <li>
      <p><a data-link-type="dfn" href="https://dom.spec.whatwg.org/#queue-an-attribute-mutation-record" id="ref-for-queue-an-attribute-mutation-record">Queue an attribute mutation record</a> for <var>element</var> with <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-local-name" id="ref-for-concept-attribute-local-name⑨">local name</a>, <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-namespace" id="ref-for-concept-attribute-namespace⑦">namespace</a>, and <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-value" id="ref-for-concept-attribute-value①①">value</a>. </p>
@@ -1210,7 +1228,7 @@ Note: The parameter |value| does not need to be a string.
 <p>To <dfn class="dfn-paneled" data-spec="dom" data-dfn-type="dfn" data-export="" data-lt="replace an attribute" id="concept-element-attributes-replace">replace</dfn> an <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute" id="ref-for-concept-attribute②⑧">attribute</a> <var>oldAttr</var> by an <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute" id="ref-for-concept-attribute②⑨">attribute</a> <var>newAttr</var> in an <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element" id="ref-for-concept-element⑨⑧">element</a> <var>element</var>, run these steps:</p>
 
 <ol>
-   <li><ins>If [=attribute validate steps=] are not defined for the |element|, let |validatedValue| be |newAttr|'s [=Attr/value=], stringified. Otherwise, let |validatedValue| be the result of running [=Element/attribute validate steps=] with |element|, |newAttr|'s [=Attr/local name=], |newAttr|'s [=Attr/value=] and |newAttr|'s [=Attr/namespace=]. If that algorithm threw an error, rethrow the error and abort further steps.</li>
+   <li><ins>If [=attribute validate steps=] are not defined for the |element| and |attribute|, let |validatedValue| be |newAttr|'s [=Attr/value=], stringified. Otherwise, let |validatedValue| be the result of running [=Element/attribute validate steps=] with |element|, |newAttr|'s [=Attr/local name=], |newAttr|'s [=Attr/value=] and |newAttr|'s [=Attr/namespace=]. If that algorithm threw an error, rethrow the error and abort further steps.</li>
    <li><ins>Set |newAttr|'s [=Attr/value=] to |validatedValue|.</ins></li>
     <li>
      <p><a data-link-type="dfn" href="https://dom.spec.whatwg.org/#queue-an-attribute-mutation-record" id="ref-for-queue-an-attribute-mutation-record③">Queue an attribute mutation record</a> for <var>element</var> with <var>oldAttr</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-local-name" id="ref-for-concept-attribute-local-name①⑧">local name</a>, <var>oldAttr</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-namespace" id="ref-for-concept-attribute-namespace①⑥">namespace</a>, and <var>oldAttr</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-value" id="ref-for-concept-attribute-value②⓪">value</a>. </p>
@@ -1244,8 +1262,6 @@ Note: The parameter |value| does not need to be a string.
    </li></ol>
 
 Issue: Patch HTML's create element for token (it calls append) such that it can survive [=attribute validate steps=].
-
-Issue: Define attribute validate steps for TT-sensitive elements as wrappers over [$Get Trusted Type compliant string$].
 
 ## Integration with DOM Parsing ## {#integration-with-dom-parsing}
 
@@ -1596,10 +1612,7 @@ restrictions:
 
 ## Bypass vectors ## {#bypass-vectors}
 
-Issue(w3c/webappsec-trusted-types#64): Mention anchor element properties bypass.
-
-Issue(w3c/webappsec-trusted-types#47): Mention text/attribute node copy bypass vectors.
-
+Issue(w3c/webappsec-trusted-types#47): Mention text node copy bypass vectors.
 
 ## Best practices for policy design ## {#best-practices-for-policy-design}
 
