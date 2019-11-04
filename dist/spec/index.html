@@ -1007,7 +1007,7 @@ This section describes how authors may control this enforcing behavior.</p>
    <p class="note" role="note"><span>Note:</span> Using CSP mechanisms allows the authors to prepare their application for enforcing Trusted Types
 via using the <code class="idl"><a data-link-type="idl">Content-Security-Report-Only</a></code> HTTP Response header.</p>
    <p class="note" role="note"><span>Note:</span> Most of the enforcement rules are defined as modifications of the
-algorithms in other specifiactions, see <a href="#integrations">§ 4 Integrations</a>.</p>
+algorithms in other specifications, see <a href="#integrations">§ 4 Integrations</a>.</p>
    <h4 class="heading settled" data-level="2.4.2" id="!trustedtypes-extended-attribute"><span class="secno">2.4.2. </span><span class="content">TrustedTypes extended attribute</span><a class="self-link" href="#!trustedtypes-extended-attribute"></a></h4>
    <p class="note" role="note"><span>Note:</span> This section describes the implementation details of the Trusted Types mechanism. IDL extended attributes are not exposed to the JavasScript code.</p>
    <p>To annotate the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①①">injection sink</a> functions that require Trusted Types, we introduce <dfn class="dfn-paneled idl-code" data-dfn-type="extended-attribute" data-export data-lt="TrustedTypes" data-x="TrustedTypes" id="extendedattrdef-trustedtypes"><code>[TrustedTypes]</code></dfn> IDL <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-extended-attribute" id="ref-for-dfn-extended-attribute">extended attribute</a>. Its presence indicates that the relevant construct is to be supplemented with additional

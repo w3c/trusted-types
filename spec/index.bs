@@ -747,7 +747,7 @@ Note: Using CSP mechanisms allows the authors to prepare their application for e
 via using the {{CSP#cspro-header|Content-Security-Report-Only}} HTTP Response header.
 
 Note: Most of the enforcement rules are defined as modifications of the
-algorithms in other specifiactions, see [[#integrations]].
+algorithms in other specifications, see [[#integrations]].
 
 ### TrustedTypes extended attribute ### {#!trustedtypes-extended-attribute}
 
