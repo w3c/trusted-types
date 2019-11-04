@@ -5,7 +5,7 @@
   <title>Trusted Types</title>
   <meta content="CG-DRAFT" name="w3c-status">
   <link href="https://www.w3.org/StyleSheets/TR/2016/cg-draft" rel="stylesheet" type="text/css">
-  <meta content="Bikeshed version 98212c11613b78977e54b28cc53499f2ee83d388" name="generator">
+  <meta content="Bikeshed version f5a6d58a6b9207b620f985d7239601eb3a483162" name="generator">
   <link href="https://w3c.github.io/webappsec-trusted-types/dist/spec/" rel="canonical">
 <style>/* style-md-lists */
 
@@ -253,7 +253,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Trusted Types</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-10-21">21 October 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-11-04">4 November 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -790,7 +790,7 @@ trustedTypes<c- p>.</c->isHTML<c- p>(</c-><c- u>"&lt;div>plain string&lt;/div>"<
       <p>Returns true if value is an instance of <code class="idl"><a data-link-type="idl" href="#trustedscripturl" id="ref-for-trustedscripturl">TrustedScriptURL</a></code> and has its <code>[[Data]]</code> internal slot set, false otherwise.</p>
      <dt data-md><dfn class="dfn-paneled idl-code" data-dfn-for="TrustedTypePolicyFactory" data-dfn-type="method" data-export data-lt="getPropertyType(tagName, property, elementNs)|getPropertyType(tagName, property)" id="dom-trustedtypepolicyfactory-getpropertytype"><code>getPropertyType(tagName, property, elementNs)</code></dfn>
      <dd data-md>
-      <p>Allows the authors to check if a Trusted Type is required for a given <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-namednodemap-element" id="ref-for-concept-namednodemap-element">Element</a>'s
+      <p>Allows the authors to check if a Trusted Type is required for a given <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#element" id="ref-for-element②">Element</a></code>'s
 property (IDL attribute).</p>
       <p>This function returns the result of the following algorithm:</p>
       <ol>
@@ -816,7 +816,7 @@ trustedTypes<c- p>.</c->getPropertyType<c- p>(</c-><c- t>'foo'</c-><c- p>,</c-> 
      <dt data-md><dfn class="dfn-paneled idl-code" data-dfn-for="TrustedTypePolicyFactory" data-dfn-type="method" data-export data-lt="getAttributeType(tagName, attribute, elementNs, attrNs)|getAttributeType(tagName, attribute, elementNs)|getAttributeType(tagName, attribute)" id="dom-trustedtypepolicyfactory-getattributetype"><code>getAttributeType(tagName, attribute, elementNs, attrNs)</code></dfn>
      <dd data-md>
       <p>Allows the authors to check if, (and if so, which) Trusted Type is required
-for a given <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-namednodemap-element" id="ref-for-concept-namednodemap-element①">Element</a>'s <a data-link-type="dfn">content attribute</a>, such that later on the call
+for a given <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#element" id="ref-for-element③">Element</a></code>'s <a data-link-type="dfn">content attribute</a>, such that later on the call
 to <code>Element.setAttribute</code> passes the correct argument type.</p>
       <p>This function returns the result of the following algorithm:</p>
       <ol>
@@ -1023,7 +1023,7 @@ Additionally, it must not appear on <a data-link-type="dfn" href="https://heycam
      <p class="issue" id="issue-b92c7a17"><a class="self-link" href="#issue-b92c7a17"></a> Update when workers have TT.</p>
      <ol>
       <li data-md>
-       <p>If the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object③">context object</a> is an <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-namednodemap-element" id="ref-for-concept-namednodemap-element②">Element</a>, let <var>objectName</var> be the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object④">context object</a>'s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-local-name" id="ref-for-concept-element-local-name">local name</a>; Otherwise, let <var>objectName</var> be the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object⑤">context object</a>'s constructor name.</p>
+       <p>If the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object③">context object</a> is an <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#element" id="ref-for-element④">Element</a></code>, let <var>objectName</var> be the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object④">context object</a>'s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-local-name" id="ref-for-concept-element-local-name">local name</a>; Otherwise, let <var>objectName</var> be the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object⑤">context object</a>'s constructor name.</p>
       <li data-md>
        <p>Set <var>sink</var> to the result of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-concatenate" id="ref-for-string-concatenate">concatenating</a> the list « <var>objectName</var>, <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-attribute" id="ref-for-dfn-attribute④">attribute</a> identifier. » with <code>"."</code> as <var>separator</var>.</p>
        <div class="example" id="extended-attribute-attribute-example">
@@ -1063,7 +1063,7 @@ document<c- p>.</c->createElement<c- p>(</c-><c- t>'script'</c-><c- p>).</c->set
      <p class="issue" id="issue-b92c7a17①"><a class="self-link" href="#issue-b92c7a17①"></a> Update when workers have TT.</p>
      <ol>
       <li data-md>
-       <p>If the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object⑧">context object</a> is an <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-namednodemap-element" id="ref-for-concept-namednodemap-element③">Element</a>, let <var>objectName</var> be the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object⑨">context object</a>'s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-local-name" id="ref-for-concept-element-local-name①">local name</a>; Otherwise, let <var>objectName</var> be the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object①⓪">context object</a>'s constructor name.</p>
+       <p>If the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object⑧">context object</a> is an <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#element" id="ref-for-element⑤">Element</a></code>, let <var>objectName</var> be the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object⑨">context object</a>'s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-local-name" id="ref-for-concept-element-local-name①">local name</a>; Otherwise, let <var>objectName</var> be the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object①⓪">context object</a>'s constructor name.</p>
       <li data-md>
        <p>Set <var>sink</var> to the result of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-concatenate" id="ref-for-string-concatenate①">concatenating</a> the list « <var>objectName</var>, <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-operation" id="ref-for-dfn-operation②">operation</a> identifier. » with <code>"."</code> as <var>separator</var>.</p>
        <div class="example" id="extended-attribute-operation-example">
@@ -1420,7 +1420,7 @@ If the algorithm threw an error, rethrow the error.</p>
    <p><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-insert-text-node-validation-steps">insert text node validation steps</dfn> may be defined by other specifications.</p>
    <h3 class="heading settled" data-level="4.4" id="integration-with-dom-parsing"><span class="secno">4.4. </span><span class="content">Integration with DOM Parsing</span><a class="self-link" href="#integration-with-dom-parsing"></a></h3>
    <p>This document modifies the following interfaces defined by <a data-link-type="biblio" href="#biblio-dom-parsing">[DOM-Parsing]</a>:</p>
-<pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#element" id="ref-for-element②"><c- g>Element</c-></a> {
+<pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#element" id="ref-for-element⑥"><c- g>Element</c-></a> {
   [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions①⓪"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①⑨"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml①③"><c- n>TrustedHTML</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-htmlstringdefaultsempty" id="ref-for-typedefdef-htmlstringdefaultsempty①"><c- n>HTMLStringDefaultsEmpty</c-></a> <dfn class="idl-code" data-dfn-for="Element" data-dfn-type="attribute" data-export data-type="HTMLStringDefaultsEmpty" id="dom-element-outerhtml"><code><c- g>outerHTML</c-></code><a class="self-link" href="#dom-element-outerhtml"></a></dfn>;
   [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions①①"><c- g>CEReactions</c-></a>] <c- b>void</c-> <dfn class="idl-code" data-dfn-for="Element" data-dfn-type="method" data-export data-lt="insertAdjacentHTML(position, text)" id="dom-element-insertadjacenthtml"><code><c- g>insertAdjacentHTML</c-></code><a class="self-link" href="#dom-element-insertadjacenthtml"></a></dfn>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②④"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="Element/insertAdjacentHTML(position, text)" data-dfn-type="argument" data-export id="dom-element-insertadjacenthtml-position-text-position"><code><c- g>position</c-></code><a class="self-link" href="#dom-element-insertadjacenthtml-position-text-position"></a></dfn>, [<a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes②⓪"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml①④"><c- n>TrustedHTML</c-></a>] <a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring③"><c- n>HTMLString</c-></a> <dfn class="idl-code" data-dfn-for="Element/insertAdjacentHTML(position, text)" data-dfn-type="argument" data-export id="dom-element-insertadjacenthtml-position-text-text"><code><c- g>text</c-></code><a class="self-link" href="#dom-element-insertadjacenthtml-position-text-text"></a></dfn>);
 };
@@ -1949,6 +1949,113 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <li><a href="#dom-document-writeln">writeln(...text)</a><span>, in §4.1.2</span>
    <li><a href="#dom-document-write">write(...text)</a><span>, in §4.1.2</span>
   </ul>
+  <aside class="dfn-panel" data-for="term-for-grammardef-report-sample">
+   <a href="https://w3c.github.io/webappsec-csp/#grammardef-report-sample">https://w3c.github.io/webappsec-csp/#grammardef-report-sample</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-grammardef-report-sample">4.5.5.1. 'trusted-script' support for eval</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-grammardef-unsafe-eval">
+   <a href="https://w3c.github.io/webappsec-csp/#grammardef-unsafe-eval">https://w3c.github.io/webappsec-csp/#grammardef-unsafe-eval</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-grammardef-unsafe-eval">4.5.5.1. 'trusted-script' support for eval</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-policy-directive-set">
+   <a href="https://w3c.github.io/webappsec-csp/#policy-directive-set">https://w3c.github.io/webappsec-csp/#policy-directive-set</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-policy-directive-set">3.4. Get Trusted Type compliant string</a>
+    <li><a href="#ref-for-policy-directive-set①">4.5.2. Should sink type mismatch violation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-policy-directive-set②">4.5.3. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-policy-directive-set③">4.5.6. IsSourceExempt Algorithm</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-directives">
+   <a href="https://w3c.github.io/webappsec-csp/#directives">https://w3c.github.io/webappsec-csp/#directives</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-directives">4.5.1. trusted-types directive</a>
+    <li><a href="#ref-for-directives①">4.5.2. Should sink type mismatch violation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-directives②">4.5.3. Should Trusted Type policy creation be blocked by Content Security Policy?</a> <a href="#ref-for-directives③">(2)</a>
+    <li><a href="#ref-for-directives④">4.5.5.1. 'trusted-script' support for eval</a> <a href="#ref-for-directives⑤">(2)</a> <a href="#ref-for-directives⑥">(3)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-policy-disposition">
+   <a href="https://w3c.github.io/webappsec-csp/#policy-disposition">https://w3c.github.io/webappsec-csp/#policy-disposition</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-policy-disposition">4.5.2. Should sink type mismatch violation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-policy-disposition①">4.5.3. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-policy-disposition②">4.5.5.1. 'trusted-script' support for eval</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-directive-inline-check">
+   <a href="https://w3c.github.io/webappsec-csp/#directive-inline-check">https://w3c.github.io/webappsec-csp/#directive-inline-check</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-directive-inline-check">4.5.1.1. trusted-types Pre-Navigation check</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-directive-name">
+   <a href="https://w3c.github.io/webappsec-csp/#directive-name">https://w3c.github.io/webappsec-csp/#directive-name</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-directive-name">4.5.1. trusted-types directive</a>
+    <li><a href="#ref-for-directive-name①">4.5.2. Should sink type mismatch violation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-directive-name②">4.5.5.1. 'trusted-script' support for eval</a> <a href="#ref-for-directive-name③">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-violation-policy">
+   <a href="https://w3c.github.io/webappsec-csp/#violation-policy">https://w3c.github.io/webappsec-csp/#violation-policy</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-violation-policy">1.3. Use cases</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-directive-pre-navigation-check">
+   <a href="https://w3c.github.io/webappsec-csp/#directive-pre-navigation-check">https://w3c.github.io/webappsec-csp/#directive-pre-navigation-check</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-directive-pre-navigation-check">4.5.1.1. trusted-types Pre-Navigation check</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-violation-resource">
+   <a href="https://w3c.github.io/webappsec-csp/#violation-resource">https://w3c.github.io/webappsec-csp/#violation-resource</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-violation-resource">4.5.2. Should sink type mismatch violation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-violation-resource①">4.5.3. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-violation-resource②">4.5.4. Violation object changes</a>
+    <li><a href="#ref-for-violation-resource③">4.5.5.1. 'trusted-script' support for eval</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-violation-sample">
+   <a href="https://w3c.github.io/webappsec-csp/#violation-sample">https://w3c.github.io/webappsec-csp/#violation-sample</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-violation-sample">4.5.2. Should sink type mismatch violation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-violation-sample①">4.5.3. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-violation-sample②">4.5.5.1. 'trusted-script' support for eval</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-script-src">
+   <a href="https://w3c.github.io/webappsec-csp/#script-src">https://w3c.github.io/webappsec-csp/#script-src</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-script-src">1.2. Non-goals</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-source-expression">
+   <a href="https://w3c.github.io/webappsec-csp/#source-expression">https://w3c.github.io/webappsec-csp/#source-expression</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-source-expression">4.5.5.1. 'trusted-script' support for eval</a> <a href="#ref-for-source-expression①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-directive-value">
+   <a href="https://w3c.github.io/webappsec-csp/#directive-value">https://w3c.github.io/webappsec-csp/#directive-value</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-directive-value">4.5.1. trusted-types directive</a> <a href="#ref-for-directive-value①">(2)</a>
+    <li><a href="#ref-for-directive-value②">4.5.3. Should Trusted Type policy creation be blocked by Content Security Policy?</a> <a href="#ref-for-directive-value③">(2)</a>
+    <li><a href="#ref-for-directive-value④">4.5.5.1. 'trusted-script' support for eval</a> <a href="#ref-for-directive-value⑤">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-violation">
+   <a href="https://w3c.github.io/webappsec-csp/#violation">https://w3c.github.io/webappsec-csp/#violation</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-violation">4.5.4. Violation object changes</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-document">
    <a href="https://dom.spec.whatwg.org/#document">https://dom.spec.whatwg.org/#document</a><b>Referenced in:</b>
    <ul>
@@ -1967,7 +2074,9 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <a href="https://dom.spec.whatwg.org/#element">https://dom.spec.whatwg.org/#element</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-element">2.1. Injection sinks</a> <a href="#ref-for-element①">(2)</a>
-    <li><a href="#ref-for-element②">4.4. Integration with DOM Parsing</a>
+    <li><a href="#ref-for-element②">2.3.1. TrustedTypePolicyFactory</a> <a href="#ref-for-element③">(2)</a>
+    <li><a href="#ref-for-element④">2.4.2. TrustedTypes extended attribute</a> <a href="#ref-for-element⑤">(2)</a>
+    <li><a href="#ref-for-element⑥">4.4. Integration with DOM Parsing</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-range">
@@ -2001,13 +2110,6 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
     <li><a href="#ref-for-context-object">2.3.1. TrustedTypePolicyFactory</a> <a href="#ref-for-context-object①">(2)</a>
     <li><a href="#ref-for-context-object②">2.4.2. TrustedTypes extended attribute</a> <a href="#ref-for-context-object③">(2)</a> <a href="#ref-for-context-object④">(3)</a> <a href="#ref-for-context-object⑤">(4)</a> <a href="#ref-for-context-object⑥">(5)</a> <a href="#ref-for-context-object⑦">(6)</a> <a href="#ref-for-context-object⑧">(7)</a> <a href="#ref-for-context-object⑨">(8)</a> <a href="#ref-for-context-object①⓪">(9)</a> <a href="#ref-for-context-object①①">(10)</a>
     <li><a href="#ref-for-context-object①②">4.1.5. Enforcement in timer functions</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-namednodemap-element">
-   <a href="https://dom.spec.whatwg.org/#concept-namednodemap-element">https://dom.spec.whatwg.org/#concept-namednodemap-element</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-concept-namednodemap-element">2.3.1. TrustedTypePolicyFactory</a> <a href="#ref-for-concept-namednodemap-element①">(2)</a>
-    <li><a href="#ref-for-concept-namednodemap-element②">2.4.2. TrustedTypes extended attribute</a> <a href="#ref-for-concept-namednodemap-element③">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-element-interface">
@@ -2364,6 +2466,25 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
   <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
   <ul class="index">
    <li>
+    <a data-link-type="biblio">[CSP3]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-grammardef-report-sample" style="color:initial">'report-sample'</span>
+     <li><span class="dfn-paneled" id="term-for-grammardef-unsafe-eval" style="color:initial">'unsafe-eval'</span>
+     <li><span class="dfn-paneled" id="term-for-policy-directive-set" style="color:initial">directive set</span>
+     <li><span class="dfn-paneled" id="term-for-directives" style="color:initial">directives</span>
+     <li><span class="dfn-paneled" id="term-for-policy-disposition" style="color:initial">disposition</span>
+     <li><span class="dfn-paneled" id="term-for-directive-inline-check" style="color:initial">inline check</span>
+     <li><span class="dfn-paneled" id="term-for-directive-name" style="color:initial">name</span>
+     <li><span class="dfn-paneled" id="term-for-violation-policy" style="color:initial">policy</span>
+     <li><span class="dfn-paneled" id="term-for-directive-pre-navigation-check" style="color:initial">pre-navigation check</span>
+     <li><span class="dfn-paneled" id="term-for-violation-resource" style="color:initial">resource</span>
+     <li><span class="dfn-paneled" id="term-for-violation-sample" style="color:initial">sample</span>
+     <li><span class="dfn-paneled" id="term-for-script-src" style="color:initial">script-src</span>
+     <li><span class="dfn-paneled" id="term-for-source-expression" style="color:initial">source expression</span>
+     <li><span class="dfn-paneled" id="term-for-directive-value" style="color:initial">value</span>
+     <li><span class="dfn-paneled" id="term-for-violation" style="color:initial">violation</span>
+    </ul>
+   <li>
     <a data-link-type="biblio">[DOM]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-document" style="color:initial">Document</span>
@@ -2374,7 +2495,6 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
      <li><span class="dfn-paneled" id="term-for-concept-element-attributes-change-ext" style="color:initial">attribute change steps</span>
      <li><span class="dfn-paneled" id="term-for-concept-child-text-content" style="color:initial">child text content</span>
      <li><span class="dfn-paneled" id="term-for-context-object" style="color:initial">context object</span>
-     <li><span class="dfn-paneled" id="term-for-concept-namednodemap-element" style="color:initial">element</span>
      <li><span class="dfn-paneled" id="term-for-concept-element-interface" style="color:initial">element interface</span>
      <li><span class="dfn-paneled" id="term-for-concept-element-local-name" style="color:initial">local name</span>
      <li><span class="dfn-paneled" id="term-for-dom-node-textcontent" style="color:initial">textContent</span>
@@ -2595,7 +2715,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
  [<a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①⑧①"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl⑨①"><c- n>TrustedScriptURL</c-></a>] <c- b>readonly</c-> <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring" id="ref-for-typedefdef-scripturlstring③①"><c- n>ScriptURLString</c-></a> <a data-readonly data-type="ScriptURLString" href="#dom-svgscriptelement-href"><code><c- g>href</c-></code></a>;
 };
 
-<c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#element" id="ref-for-element②①"><c- g>Element</c-></a> {
+<c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#element" id="ref-for-element⑥①"><c- g>Element</c-></a> {
   [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions①⓪①"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①⑨①"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml①③①"><c- n>TrustedHTML</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-htmlstringdefaultsempty" id="ref-for-typedefdef-htmlstringdefaultsempty①①"><c- n>HTMLStringDefaultsEmpty</c-></a> <a data-type="HTMLStringDefaultsEmpty" href="#dom-element-outerhtml"><code><c- g>outerHTML</c-></code></a>;
   [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions①①①"><c- g>CEReactions</c-></a>] <c- b>void</c-> <a href="#dom-element-insertadjacenthtml"><code><c- g>insertAdjacentHTML</c-></code></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②④①"><c- b>DOMString</c-></a> <a href="#dom-element-insertadjacenthtml-position-text-position"><code><c- g>position</c-></code></a>, [<a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes②⓪①"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml①④①"><c- n>TrustedHTML</c-></a>] <a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring③①"><c- n>HTMLString</c-></a> <a href="#dom-element-insertadjacenthtml-position-text-text"><code><c- g>text</c-></code></a>);
 };
