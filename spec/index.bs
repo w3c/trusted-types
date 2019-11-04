@@ -793,7 +793,7 @@ When the extended attribute appears on an attribute, the setter for that attribu
 
 If the IDL attribute annotated with the extended attribute [=reflects=] a content attribute for an {{Element}}, define the following [$attribute validate steps$] for that element and that content attribute:
 
- 1.  If |element|'s [=relevant global object=] does not have a [=Window/trusted type policy factory=], return stringified |value|.
+ 1. If |element|'s [=relevant global object=] does not have a [=Window/trusted type policy factory=], return stringified |value|.
  1. Let |expectedType| be the {{TrustedTypes}} extended attribute identifier.
  1. If |value| is of |expectedType|, return stringified |value|.
 
@@ -1120,21 +1120,23 @@ also unconditionally accepts any {{Function}} object.
 
 ### Enforcement in event handler content attributes ### {#enforcement-in-event-handler-content-attributes}
 
-This document modifies the
-[=attribute change steps=] for an [[HTML5#event-handler-content-attributes|event handler content attribute]].
+This document defines the [$attribute validate steps$] for [[HTML5#event-handler-content-attributes|event handler content attributes]] for all {{Element|Elements}}.
 
-At the beginning of step 5, insert the following steps:
+ 1. If |element|'s [=relevant global object=] does not have a [=Window/trusted type policy factory=], return stringified |value|.
+ 1. Let |expectedType| be {{TrustedScript}}.
+ 1. If |value| is of |expectedType|, return stringified |value|.
+ 1. Let |objectName| be the |element|'s [=Element/local name=].
+ 1. Set |sink| to the result of [=concatenating=] the list &laquo; |objectName|, |localName| with `"."` as |separator|.
 
-1.  Let |value| be the result of executing the
-    [$Get Trusted Type compliant string$] algorithm, with the following arguments:
-    *   |value| as |input|,
-    *   {{TrustedScript}} as |expectedType|,
-    *   |sink| being the result of [=concatenating=] the list &laquo; <var ignore>element</var>'s [=Element/local name=], |localName| &raquo; with `"."` as a |separator|.
+    Note: For example, `document.createElement('div').onclick = value` will result in |sink| being `'div.onclick'`.
 
-        Note: For example, `document.createElement('div').onclick = value` will result in |sink| being `'div.onclick'`.
-
-    *   <var ignore>eventTarget</var>'s [=relevant global object=] as |global|,
-1.  If the algorithm throws an error, abort these steps.
+ 1. Set |newValue| to the result of running the [$Get Trusted Type compliant string$] algorithm, passing the following arguments:
+     * the new value as |input|,
+     * |expectedType|,
+     * |sink| as |sink|,
+     * |element|'s [=relevant global object=] as |global|.
+ 1.  If an exception was thrown, rethrow exception and abort further steps.
+ 1. Return |newValue|.
 
 Note: This also applies to events in [[SVG2#EventAttributes]].
 
