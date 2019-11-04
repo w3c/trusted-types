@@ -1162,6 +1162,91 @@ Add the following step at the beginning of step 7 of [[DOM#concept-node-insert|i
 
 <dfn abstract-op>insert text node validation steps</dfn> may be defined by other specifications.
 
+### Attribute validate steps ### {#dom-attribute-validate-steps}
+
+In the definition of {{Element}}, add [=Element/attribute validate steps=]:
+
+   > This and [=applicable specifications|other specifications=] may define <dfn abstract-op for="Element">attribute validate steps</dfn> for {{Element|elements}}.
+   > The algorithm is passed |element|, |localName|, |value|, and |namespace| and returns a string (validated value) or throws an error.
+
+Call the [=Element/attribute validate steps=] in the following algorithms:
+
+<p>To <dfn data-spec="dom" class="dfn-paneled" data-dfn-type="dfn" data-lt="append an attribute" id="concept-element-attributes-append">append</dfn> an <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute" id="ref-for-concept-attribute②⑥">attribute</a> <var>attribute</var> to
+an <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element" id="ref-for-concept-element⑨⑥">element</a> <var>element</var> <ins>with an optional argument |valueToValidate|</ins>,
+run these steps:</p>
+
+Note: The optional argument is used in setAttribute algorithm.
+
+<ol>
+   <li><ins>If |valueToValidate| was not passed, set |valueToValidate| to |attribute|'s [=Attr/value=].
+   <li><ins>If [=attribute validate steps=] are not defined for the |element|, let |validatedValue| be |attribute|'s [=Attr/value=], stringified. Otherwise, let |validatedValue| be the result of running [=Element/attribute validate steps=] with |element|, |attribute|'s [=Attr/local name=], |valueToValidate| and |attribute|'s [=Attr/namespace=]. If that algorithm threw an error, rethrow the error and abort further steps.</li>
+   <li><ins>Set |attribute|'s [=Attr/value=] to |validatedValue|.</ins></li>
+    <li>
+     <p><a data-link-type="dfn" data-spec="dom" href="https://dom.spec.whatwg.org/#queue-an-attribute-mutation-record" id="ref-for-queue-an-attribute-mutation-record①">Queue an attribute mutation record</a> for <var>element</var> with <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-local-name" id="ref-for-concept-attribute-local-name①②">local name</a>, <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-namespace" id="ref-for-concept-attribute-namespace①⓪">namespace</a>, and null. </p>
+    </li><li>If <var>element</var> is <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-custom" id="ref-for-concept-element-custom⑦">custom</a>, then <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/custom-elements.html#enqueue-a-custom-element-callback-reaction" id="ref-for-enqueue-a-custom-element-callback-reaction⑤">enqueue a custom element callback reaction</a> with <var>element</var>, callback name
+ "<code>attributeChangedCallback</code>", and an argument list containing <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-local-name" id="ref-for-concept-attribute-local-name①③">local name</a>, null, <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-value" id="ref-for-concept-attribute-value①⑤">value</a>, and <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-namespace" id="ref-for-concept-attribute-namespace①①">namespace</a>.
+    </li><li>
+     <p>Run the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-attributes-change-ext" id="ref-for-concept-element-attributes-change-ext③">attribute change steps</a> with <var>element</var>, <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-local-name" id="ref-for-concept-attribute-local-name①④">local name</a>, null, <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-value" id="ref-for-concept-attribute-value①⑥">value</a>, and <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-namespace" id="ref-for-concept-attribute-namespace①②">namespace</a>. </p>
+    </li><li><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append⑨">Append</a> <var>attribute</var> to <var>element</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-attribute" id="ref-for-concept-element-attribute⑨">attribute list</a>.
+    </li><li>Set <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-element" id="ref-for-concept-attribute-element⑥">element</a> to <var>element</var>.
+   </li></ol>
+
+<p>To <dfn class="dfn-paneled" data-spec="dom" data-dfn-type="dfn" data-lt="change an attribute" id="concept-element-attributes-change">change</dfn> an <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute" id="ref-for-concept-attribute②⑤">attribute</a> <var>attribute</var> from an <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element" id="ref-for-concept-element⑨⑤">element</a> <var>element</var> to <var>value</var>, run these steps:</p>
+
+Note: The parameter |value| does not need to be a string.
+
+<ol>
+   <li><ins>If [=attribute validate steps=] are not defined for the |element|, let |validatedValue| be |value|, stringified. Otherwise, let |validatedValue| be the result of running [=Element/attribute validate steps=] with |element|, |attribute|'s [=Attr/local name=], |value| and |attribute|'s [=Attr/namespace=]. If that algorithm threw an error, rethrow the error and abort further steps.</li>
+   <li><ins>Set |value| to |validatedValue|.</ins></li>
+    <li>
+     <p><a data-link-type="dfn" href="https://dom.spec.whatwg.org/#queue-an-attribute-mutation-record" id="ref-for-queue-an-attribute-mutation-record">Queue an attribute mutation record</a> for <var>element</var> with <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-local-name" id="ref-for-concept-attribute-local-name⑨">local name</a>, <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-namespace" id="ref-for-concept-attribute-namespace⑦">namespace</a>, and <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-value" id="ref-for-concept-attribute-value①①">value</a>. </p>
+    </li><li>If <var>element</var> is <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-custom" id="ref-for-concept-element-custom⑥">custom</a>, then <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/custom-elements.html#enqueue-a-custom-element-callback-reaction" id="ref-for-enqueue-a-custom-element-callback-reaction④">enqueue a custom element callback reaction</a> with <var>element</var>, callback name
+ "<code>attributeChangedCallback</code>", and an argument list containing <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-local-name" id="ref-for-concept-attribute-local-name①⓪">local name</a>, <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-value" id="ref-for-concept-attribute-value①②">value</a>, <var>value</var>, and <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-namespace" id="ref-for-concept-attribute-namespace⑧">namespace</a>.
+    </li><li>
+     <p>Run the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-attributes-change-ext" id="ref-for-concept-element-attributes-change-ext②">attribute change steps</a> with <var>element</var>, <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-local-name" id="ref-for-concept-attribute-local-name①①">local name</a>, <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-value" id="ref-for-concept-attribute-value①③">value</a>, <var>value</var>, and <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-namespace" id="ref-for-concept-attribute-namespace⑨">namespace</a>. </p>
+    </li><li>Set <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-value" id="ref-for-concept-attribute-value①④">value</a> to <var>value</var>.
+   </li></ol>
+
+<p>To <dfn class="dfn-paneled" data-spec="dom" data-dfn-type="dfn" data-export="" data-lt="replace an attribute" id="concept-element-attributes-replace">replace</dfn> an <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute" id="ref-for-concept-attribute②⑧">attribute</a> <var>oldAttr</var> by an <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute" id="ref-for-concept-attribute②⑨">attribute</a> <var>newAttr</var> in an <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element" id="ref-for-concept-element⑨⑧">element</a> <var>element</var>, run these steps:</p>
+
+<ol>
+   <li><ins>If [=attribute validate steps=] are not defined for the |element|, let |validatedValue| be |newAttr|'s [=Attr/value=], stringified. Otherwise, let |validatedValue| be the result of running [=Element/attribute validate steps=] with |element|, |newAttr|'s [=Attr/local name=], |newAttr|'s [=Attr/value=] and |newAttr|'s [=Attr/namespace=]. If that algorithm threw an error, rethrow the error and abort further steps.</li>
+   <li><ins>Set |newAttr|'s [=Attr/value=] to |validatedValue|.</ins></li>
+    <li>
+     <p><a data-link-type="dfn" href="https://dom.spec.whatwg.org/#queue-an-attribute-mutation-record" id="ref-for-queue-an-attribute-mutation-record③">Queue an attribute mutation record</a> for <var>element</var> with <var>oldAttr</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-local-name" id="ref-for-concept-attribute-local-name①⑧">local name</a>, <var>oldAttr</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-namespace" id="ref-for-concept-attribute-namespace①⑥">namespace</a>, and <var>oldAttr</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-value" id="ref-for-concept-attribute-value②⓪">value</a>. </p>
+    </li><li>If <var>element</var> is <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-custom" id="ref-for-concept-element-custom⑨">custom</a>, then <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/custom-elements.html#enqueue-a-custom-element-callback-reaction" id="ref-for-enqueue-a-custom-element-callback-reaction⑦">enqueue a custom element callback reaction</a> with <var>element</var>, callback name
+ "<code>attributeChangedCallback</code>", and an argument list containing <var>oldAttr</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-local-name" id="ref-for-concept-attribute-local-name①⑨">local name</a>, <var>oldAttr</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-value" id="ref-for-concept-attribute-value②①">value</a>, <var>newAttr</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-value" id="ref-for-concept-attribute-value②②">value</a>, and <var>oldAttr</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-namespace" id="ref-for-concept-attribute-namespace①⑦">namespace</a>.
+    </li><li>
+     <p>Run the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-attributes-change-ext" id="ref-for-concept-element-attributes-change-ext⑤">attribute change steps</a> with <var>element</var>, <var>oldAttr</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-local-name" id="ref-for-concept-attribute-local-name②⓪">local name</a>, <var>oldAttr</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-value" id="ref-for-concept-attribute-value②③">value</a>, <var>newAttr</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-value" id="ref-for-concept-attribute-value②④">value</a>, and <var>oldAttr</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-namespace" id="ref-for-concept-attribute-namespace①⑧">namespace</a>. </p>
+    </li><li>
+     <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-replace" id="ref-for-list-replace">Replace</a> <var>oldAttr</var> by <var>newAttr</var> in <var>element</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-attribute" id="ref-for-concept-element-attribute①①">attribute list</a>. </p>
+    </li><li>
+     <p>Set <var>oldAttr</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-element" id="ref-for-concept-attribute-element⑧">element</a> to null. </p>
+    </li><li>
+     <p>Set <var>newAttr</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-element" id="ref-for-concept-attribute-element⑨">element</a> to <var>element</var>. </p>
+   </li></ol>
+
+<p>The <dfn class="dfn-paneled idl-code" data-dfn-for="Element" data-dfn-type="method" data-export="" id="dom-element-setattribute"><code>setAttribute(<var>qualifiedName</var>, <var>value</var>)</code></dfn> method, when invoked, must run these steps: </p>
+
+<ol>
+    <li>
+     <p>If <var>qualifiedName</var> does not match the <code><a class="css" data-link-type="type" href="https://www.w3.org/TR/xml/#NT-Name" id="ref-for-NT-Name⑧">Name</a></code> production in
+ XML, then <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-throw" id="ref-for-dfn-throw④⑦">throw</a> an "<code class="idl"><a class="idl-code" data-link-type="exception" href="https://heycam.github.io/webidl/#invalidcharactererror" id="ref-for-invalidcharactererror①①">InvalidCharacterError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException⑤⑦">DOMException</a></code>. </p>
+    </li><li>
+     <p>If the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object①⑤④">context object</a> is in the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#html-namespace" id="ref-for-html-namespace②⑤">HTML namespace</a> and its <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-document" id="ref-for-concept-node-document⑤⓪">node document</a> is an <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#html-document" id="ref-for-html-document①③">HTML document</a>, then set <var>qualifiedName</var> to <var>qualifiedName</var> in <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ascii-lowercase" id="ref-for-ascii-lowercase④">ASCII lowercase</a>. </p>
+    </li><li>
+     <p>Let <var>attribute</var> be the first <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute" id="ref-for-concept-attribute⑤⓪">attribute</a> in <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object①⑤⑤">context object</a>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-attribute" id="ref-for-concept-element-attribute①⑥">attribute list</a> whose <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-qualified-name" id="ref-for-concept-attribute-qualified-name⑨">qualified name</a> is <var>qualifiedName</var>,
+ and null otherwise. </p>
+    </li><li>
+     <p>If <var>attribute</var> is null, create an <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute" id="ref-for-concept-attribute⑤①">attribute</a> whose <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-local-name" id="ref-for-concept-attribute-local-name②⑨">local name</a> is <var>qualifiedName</var>, <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-value" id="ref-for-concept-attribute-value③①">value</a> is <var>value</var>, and <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-document" id="ref-for-concept-node-document⑤①">node document</a> is <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object①⑤⑥">context object</a>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-document" id="ref-for-concept-node-document⑤②">node document</a>, then <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-attributes-append" id="ref-for-concept-element-attributes-append③">append</a> this <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute" id="ref-for-concept-attribute⑤②">attribute</a> to <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object①⑤⑦">context object</a><ins>, passing |value| as |valueToValidate|</ins>, and then return. </p>
+    </li><li>
+     <p><a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-attributes-change" id="ref-for-concept-element-attributes-change①">Change</a> <var>attribute</var> from <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object①⑤⑧">context object</a> to <var>value</var>. </p>
+   </li></ol>
+
+Issue: Patch HTML's create element for token (it calls append) such that it can survive [=attribute validate steps=].
+
+Issue: Define attribute validate steps for TT-sensitive elements as wrappers over [$Get Trusted Type compliant string$].
+
 ## Integration with DOM Parsing ## {#integration-with-dom-parsing}
 
 This document modifies the following interfaces defined by [[DOM-Parsing]]:

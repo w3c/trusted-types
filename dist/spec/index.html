@@ -344,6 +344,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
        <a href="#integration-with-dom"><span class="secno">4.3</span> <span class="content">Integration with DOM</span></a>
        <ol class="toc">
         <li><a href="#dom-text-node-validation"><span class="secno">4.3.1</span> <span class="content">Text node validation steps</span></a>
+        <li><a href="#dom-attribute-validate-steps"><span class="secno">4.3.2</span> <span class="content">Attribute validate steps</span></a>
        </ol>
       <li><a href="#integration-with-dom-parsing"><span class="secno">4.4</span> <span class="content">Integration with DOM Parsing</span></a>
       <li>
@@ -1418,9 +1419,95 @@ If the algorithm threw an error, rethrow the error.</p>
      <p>If <var>node</var> is a <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#text" id="ref-for-text">Text</a></code> node, run <a data-link-type="abstract-op" href="#abstract-opdef-insert-text-node-validation-steps" id="ref-for-abstract-opdef-insert-text-node-validation-steps②">insert text node validation steps</a> for <var>parent</var>, passing <var>node</var> and <var>parent</var> as parameters.</p>
    </ol>
    <p><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-insert-text-node-validation-steps">insert text node validation steps</dfn> may be defined by other specifications.</p>
+   <h4 class="heading settled" data-level="4.3.2" id="dom-attribute-validate-steps"><span class="secno">4.3.2. </span><span class="content">Attribute validate steps</span><a class="self-link" href="#dom-attribute-validate-steps"></a></h4>
+   <p>In the definition of <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#element" id="ref-for-element⑥">Element</a></code>, add <a data-link-type="dfn">attribute validate steps</a>:</p>
+   <blockquote>
+    <p>This and <a data-link-type="dfn">other specifications</a> may define <dfn data-dfn-for="Element" data-dfn-type="abstract-op" data-export id="abstract-opdef-element-attribute-validate-steps">attribute validate steps<a class="self-link" href="#abstract-opdef-element-attribute-validate-steps"></a></dfn> for <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#element" id="ref-for-element⑦">elements</a></code>.
+The algorithm is passed <var>element</var>, <var>localName</var>, <var>value</var>, and <var>namespace</var> and returns a string (validated value) or throws an error.</p>
+   </blockquote>
+   <p>Call the <a data-link-type="dfn">attribute validate steps</a> in the following algorithms:</p>
+   <p>
+    To <dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="append an attribute" data-noexport data-spec="dom" id="concept-element-attributes-append">append<a class="self-link" href="#concept-element-attributes-append"></a></dfn> an <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute" id="ref-for-concept-attribute②⑥">attribute</a> <var>attribute</var> to
+an <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element" id="ref-for-concept-element⑨⑥">element</a> <var>element</var> 
+    <ins>with an optional argument <var>valueToValidate</var></ins>
+    ,
+run these steps:
+   </p>
+   <p class="note" role="note"><span>Note:</span> The optional argument is used in setAttribute algorithm.</p>
+   <ol>
+    <li>
+     <ins>If <var>valueToValidate</var> was not passed, set <var>valueToValidate</var> to <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-value" id="ref-for-concept-attribute-value">value</a>. </ins>
+    <li>
+     <ins>If <a data-link-type="dfn">attribute validate steps</a> are not defined for the <var>element</var>, let <var>validatedValue</var> be <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-value" id="ref-for-concept-attribute-value①">value</a>, stringified. Otherwise, let <var>validatedValue</var> be the result of running <a data-link-type="dfn">attribute validate steps</a> with <var>element</var>, <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-local-name" id="ref-for-concept-attribute-local-name">local name</a>, <var>valueToValidate</var> and <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-namespace" id="ref-for-concept-attribute-namespace">namespace</a>. If that algorithm threw an error, rethrow the error and abort further steps.</ins>
+    <li>
+     <ins>Set <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-value" id="ref-for-concept-attribute-value②">value</a> to <var>validatedValue</var>.</ins>
+    <li>
+     <p><a data-link-type="dfn" data-spec="dom" href="https://dom.spec.whatwg.org/#queue-an-attribute-mutation-record" id="ref-for-queue-an-attribute-mutation-record①">Queue an attribute mutation record</a> for <var>element</var> with <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-local-name" id="ref-for-concept-attribute-local-name①②">local name</a>, <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-namespace" id="ref-for-concept-attribute-namespace①⓪">namespace</a>, and null. </p>
+    <li>If <var>element</var> is <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-custom" id="ref-for-concept-element-custom⑦">custom</a>, then <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/custom-elements.html#enqueue-a-custom-element-callback-reaction" id="ref-for-enqueue-a-custom-element-callback-reaction⑤">enqueue a custom element callback reaction</a> with <var>element</var>, callback name
+ "<code>attributeChangedCallback</code>", and an argument list containing <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-local-name" id="ref-for-concept-attribute-local-name①③">local name</a>, null, <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-value" id="ref-for-concept-attribute-value①⑤">value</a>, and <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-namespace" id="ref-for-concept-attribute-namespace①①">namespace</a>. 
+    <li>
+     <p>Run the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-attributes-change-ext" id="ref-for-concept-element-attributes-change-ext③">attribute change steps</a> with <var>element</var>, <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-local-name" id="ref-for-concept-attribute-local-name①④">local name</a>, null, <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-value" id="ref-for-concept-attribute-value①⑥">value</a>, and <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-namespace" id="ref-for-concept-attribute-namespace①②">namespace</a>. </p>
+    <li><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append⑨">Append</a> <var>attribute</var> to <var>element</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-attribute" id="ref-for-concept-element-attribute⑨">attribute list</a>. 
+    <li>Set <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-element" id="ref-for-concept-attribute-element⑥">element</a> to <var>element</var>. 
+   </ol>
+   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="change an attribute" data-noexport data-spec="dom" id="concept-element-attributes-change">change<a class="self-link" href="#concept-element-attributes-change"></a></dfn> an <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute" id="ref-for-concept-attribute②⑤">attribute</a> <var>attribute</var> from an <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element" id="ref-for-concept-element⑨⑤">element</a> <var>element</var> to <var>value</var>, run these steps:</p>
+   <p class="note" role="note"><span>Note:</span> The parameter <var>value</var> does not need to be a string.</p>
+   <ol>
+    <li>
+     <ins>If <a data-link-type="dfn">attribute validate steps</a> are not defined for the <var>element</var>, let <var>validatedValue</var> be <var>value</var>, stringified. Otherwise, let <var>validatedValue</var> be the result of running <a data-link-type="dfn">attribute validate steps</a> with <var>element</var>, <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-local-name" id="ref-for-concept-attribute-local-name①">local name</a>, <var>value</var> and <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-namespace" id="ref-for-concept-attribute-namespace①">namespace</a>. If that algorithm threw an error, rethrow the error and abort further steps.</ins>
+    <li>
+     <ins>Set <var>value</var> to <var>validatedValue</var>.</ins>
+    <li>
+     <p><a data-link-type="dfn" href="https://dom.spec.whatwg.org/#queue-an-attribute-mutation-record" id="ref-for-queue-an-attribute-mutation-record">Queue an attribute mutation record</a> for <var>element</var> with <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-local-name" id="ref-for-concept-attribute-local-name⑨">local name</a>, <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-namespace" id="ref-for-concept-attribute-namespace⑦">namespace</a>, and <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-value" id="ref-for-concept-attribute-value①①">value</a>. </p>
+    <li>If <var>element</var> is <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-custom" id="ref-for-concept-element-custom⑥">custom</a>, then <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/custom-elements.html#enqueue-a-custom-element-callback-reaction" id="ref-for-enqueue-a-custom-element-callback-reaction④">enqueue a custom element callback reaction</a> with <var>element</var>, callback name
+ "<code>attributeChangedCallback</code>", and an argument list containing <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-local-name" id="ref-for-concept-attribute-local-name①⓪">local name</a>, <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-value" id="ref-for-concept-attribute-value①②">value</a>, <var>value</var>, and <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-namespace" id="ref-for-concept-attribute-namespace⑧">namespace</a>. 
+    <li>
+     <p>Run the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-attributes-change-ext" id="ref-for-concept-element-attributes-change-ext②">attribute change steps</a> with <var>element</var>, <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-local-name" id="ref-for-concept-attribute-local-name①①">local name</a>, <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-value" id="ref-for-concept-attribute-value①③">value</a>, <var>value</var>, and <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-namespace" id="ref-for-concept-attribute-namespace⑨">namespace</a>. </p>
+    <li>Set <var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-value" id="ref-for-concept-attribute-value①④">value</a> to <var>value</var>. 
+   </ol>
+   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-export data-lt="replace an attribute" data-spec="dom" id="concept-element-attributes-replace">replace<a class="self-link" href="#concept-element-attributes-replace"></a></dfn> an <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute" id="ref-for-concept-attribute②⑧">attribute</a> <var>oldAttr</var> by an <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute" id="ref-for-concept-attribute②⑨">attribute</a> <var>newAttr</var> in an <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element" id="ref-for-concept-element⑨⑧">element</a> <var>element</var>, run these steps:</p>
+   <ol>
+    <li>
+     <ins>If <a data-link-type="dfn">attribute validate steps</a> are not defined for the <var>element</var>, let <var>validatedValue</var> be <var>newAttr</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-value" id="ref-for-concept-attribute-value③">value</a>, stringified. Otherwise, let <var>validatedValue</var> be the result of running <a data-link-type="dfn">attribute validate steps</a> with <var>element</var>, <var>newAttr</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-local-name" id="ref-for-concept-attribute-local-name②">local name</a>, <var>newAttr</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-value" id="ref-for-concept-attribute-value④">value</a> and <var>newAttr</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-namespace" id="ref-for-concept-attribute-namespace②">namespace</a>. If that algorithm threw an error, rethrow the error and abort further steps.</ins>
+    <li>
+     <ins>Set <var>newAttr</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-value" id="ref-for-concept-attribute-value⑤">value</a> to <var>validatedValue</var>.</ins>
+    <li>
+     <p><a data-link-type="dfn" href="https://dom.spec.whatwg.org/#queue-an-attribute-mutation-record" id="ref-for-queue-an-attribute-mutation-record③">Queue an attribute mutation record</a> for <var>element</var> with <var>oldAttr</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-local-name" id="ref-for-concept-attribute-local-name①⑧">local name</a>, <var>oldAttr</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-namespace" id="ref-for-concept-attribute-namespace①⑥">namespace</a>, and <var>oldAttr</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-value" id="ref-for-concept-attribute-value②⓪">value</a>. </p>
+    <li>If <var>element</var> is <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-custom" id="ref-for-concept-element-custom⑨">custom</a>, then <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/custom-elements.html#enqueue-a-custom-element-callback-reaction" id="ref-for-enqueue-a-custom-element-callback-reaction⑦">enqueue a custom element callback reaction</a> with <var>element</var>, callback name
+ "<code>attributeChangedCallback</code>", and an argument list containing <var>oldAttr</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-local-name" id="ref-for-concept-attribute-local-name①⑨">local name</a>, <var>oldAttr</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-value" id="ref-for-concept-attribute-value②①">value</a>, <var>newAttr</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-value" id="ref-for-concept-attribute-value②②">value</a>, and <var>oldAttr</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-namespace" id="ref-for-concept-attribute-namespace①⑦">namespace</a>. 
+    <li>
+     <p>Run the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-attributes-change-ext" id="ref-for-concept-element-attributes-change-ext⑤">attribute change steps</a> with <var>element</var>, <var>oldAttr</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-local-name" id="ref-for-concept-attribute-local-name②⓪">local name</a>, <var>oldAttr</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-value" id="ref-for-concept-attribute-value②③">value</a>, <var>newAttr</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-value" id="ref-for-concept-attribute-value②④">value</a>, and <var>oldAttr</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-namespace" id="ref-for-concept-attribute-namespace①⑧">namespace</a>. </p>
+    <li>
+     <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-replace" id="ref-for-list-replace">Replace</a> <var>oldAttr</var> by <var>newAttr</var> in <var>element</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-attribute" id="ref-for-concept-element-attribute①①">attribute list</a>. </p>
+    <li>
+     <p>Set <var>oldAttr</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-element" id="ref-for-concept-attribute-element⑧">element</a> to null. </p>
+    <li>
+     <p>Set <var>newAttr</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-element" id="ref-for-concept-attribute-element⑨">element</a> to <var>element</var>. </p>
+   </ol>
+   <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="Element" data-dfn-type="method" data-export id="dom-element-setattribute"><code>setAttribute(<var>qualifiedName</var>, <var>value</var>)</code><a class="self-link" href="#dom-element-setattribute"></a></dfn> method, when invoked, must run these steps: </p>
+   <ol>
+    <li>
+     <p>If <var>qualifiedName</var> does not match the <code><a class="css" data-link-type="type" href="https://www.w3.org/TR/xml/#NT-Name" id="ref-for-NT-Name⑧">Name</a></code> production in
+ XML, then <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-throw" id="ref-for-dfn-throw④⑦">throw</a> an "<code class="idl"><a class="idl-code" data-link-type="exception" href="https://heycam.github.io/webidl/#invalidcharactererror" id="ref-for-invalidcharactererror①①">InvalidCharacterError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException⑤⑦">DOMException</a></code>. </p>
+    <li>
+     <p>If the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object①⑤④">context object</a> is in the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#html-namespace" id="ref-for-html-namespace②⑤">HTML namespace</a> and its <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-document" id="ref-for-concept-node-document⑤⓪">node document</a> is an <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#html-document" id="ref-for-html-document①③">HTML document</a>, then set <var>qualifiedName</var> to <var>qualifiedName</var> in <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ascii-lowercase" id="ref-for-ascii-lowercase④">ASCII lowercase</a>. </p>
+    <li>
+     <p>Let <var>attribute</var> be the first <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute" id="ref-for-concept-attribute⑤⓪">attribute</a> in <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object①⑤⑤">context object</a>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-attribute" id="ref-for-concept-element-attribute①⑥">attribute list</a> whose <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-qualified-name" id="ref-for-concept-attribute-qualified-name⑨">qualified name</a> is <var>qualifiedName</var>,
+ and null otherwise. </p>
+    <li>
+     <p>
+      If <var>attribute</var> is null, create an <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute" id="ref-for-concept-attribute⑤①">attribute</a> whose <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-local-name" id="ref-for-concept-attribute-local-name②⑨">local name</a> is <var>qualifiedName</var>, <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-value" id="ref-for-concept-attribute-value③①">value</a> is <var>value</var>, and <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-document" id="ref-for-concept-node-document⑤①">node document</a> is <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object①⑤⑥">context object</a>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-document" id="ref-for-concept-node-document⑤②">node document</a>, then <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-attributes-append" id="ref-for-concept-element-attributes-append③">append</a> this <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute" id="ref-for-concept-attribute⑤②">attribute</a> to <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object①⑤⑦">context object</a>
+      <ins>, passing <var>value</var> as <var>valueToValidate</var></ins>
+      , and then return. 
+     </p>
+    <li>
+     <p><a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-attributes-change" id="ref-for-concept-element-attributes-change①">Change</a> <var>attribute</var> from <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object①⑤⑧">context object</a> to <var>value</var>. </p>
+   </ol>
+   <p class="issue" id="issue-b20e8a45"><a class="self-link" href="#issue-b20e8a45"></a> Patch HTML’s create element for token (it calls append) such that it can survive <a data-link-type="dfn">attribute validate steps</a>.</p>
+   <p class="issue" id="issue-6f5fdef0"><a class="self-link" href="#issue-6f5fdef0"></a> Define attribute validate steps for TT-sensitive elements as wrappers over <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string⑦">Get Trusted Type compliant string</a>.</p>
    <h3 class="heading settled" data-level="4.4" id="integration-with-dom-parsing"><span class="secno">4.4. </span><span class="content">Integration with DOM Parsing</span><a class="self-link" href="#integration-with-dom-parsing"></a></h3>
    <p>This document modifies the following interfaces defined by <a data-link-type="biblio" href="#biblio-dom-parsing">[DOM-Parsing]</a>:</p>
-<pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#element" id="ref-for-element⑥"><c- g>Element</c-></a> {
+<pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#element" id="ref-for-element⑧"><c- g>Element</c-></a> {
   [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions①⓪"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①⑨"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml①③"><c- n>TrustedHTML</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-htmlstringdefaultsempty" id="ref-for-typedefdef-htmlstringdefaultsempty①"><c- n>HTMLStringDefaultsEmpty</c-></a> <dfn class="idl-code" data-dfn-for="Element" data-dfn-type="attribute" data-export data-type="HTMLStringDefaultsEmpty" id="dom-element-outerhtml"><code><c- g>outerHTML</c-></code><a class="self-link" href="#dom-element-outerhtml"></a></dfn>;
   [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions①①"><c- g>CEReactions</c-></a>] <c- b>void</c-> <dfn class="idl-code" data-dfn-for="Element" data-dfn-type="method" data-export data-lt="insertAdjacentHTML(position, text)" id="dom-element-insertadjacenthtml"><code><c- g>insertAdjacentHTML</c-></code><a class="self-link" href="#dom-element-insertadjacenthtml"></a></dfn>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②④"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="Element/insertAdjacentHTML(position, text)" data-dfn-type="argument" data-export id="dom-element-insertadjacenthtml-position-text-position"><code><c- g>position</c-></code><a class="self-link" href="#dom-element-insertadjacenthtml-position-text-position"></a></dfn>, [<a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes②⓪"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml①④"><c- n>TrustedHTML</c-></a>] <a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring③"><c- n>HTMLString</c-></a> <dfn class="idl-code" data-dfn-for="Element/insertAdjacentHTML(position, text)" data-dfn-type="argument" data-export id="dom-element-insertadjacenthtml-position-text-text"><code><c- g>text</c-></code><a class="self-link" href="#dom-element-insertadjacenthtml-position-text-text"></a></dfn>);
 };
@@ -1626,7 +1713,7 @@ throws an "<code>EvalError</code>" if not:
    <ol>
     <li data-md>
      <ins>
-      Let <var>sourceString</var> be the result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string⑦">Get Trusted Type compliant string</a> algorithm, with: 
+      Let <var>sourceString</var> be the result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string⑧">Get Trusted Type compliant string</a> algorithm, with: 
       <ul>
        <li data-md>
         <p><var>calleeRealm</var> as <var>global</var>,</p>
@@ -1701,7 +1788,7 @@ the substring of
    </ol>
    <p class="note" role="note"><span>Note:</span> returning <var>sourceString</var> means that the string that gets
 compiled is that returned by any <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy③">default policy</a> in the course of
-executing <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string⑧">Get Trusted Type compliant string</a>.</p>
+executing <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string⑨">Get Trusted Type compliant string</a>.</p>
    <p class="issue" id="issue-e28ea232"><a class="self-link" href="#issue-e28ea232"></a> This depends on a solution to <a href="https://github.com/w3c/webappsec-trusted-types/issues/144">issue #144</a> like <a href="https://github.com/tc39-transfer/dynamic-code-brand-checks#problem-host-callout-does-not-receive-type-information">TC39 HostBeforeCompile</a></p>
    <p class="issue" id="issue-649f8da4"><a class="self-link" href="#issue-649f8da4"></a> In some cases, the violation "<code>'report-sample'</code>" contain the result of
 applying the default policy to a string argument which differs.
@@ -1709,7 +1796,7 @@ Specifically when, there is a <a data-link-type="dfn" href="#default-policy" id=
 and <var>source</var> there is a CSP policy for either the <var>callerRealm</var> or <var>callerRealm</var> that disallows "<code>'unsafe-eval'"</code>.
 Is this a feature or a bug?</p>
    <p class="note" role="note"><span>Note:</span> The previous algorithm reports violations via both report-uris where
-callerRealm != calleeRealm.  If <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string⑨">Get Trusted Type compliant string</a> reports an
+callerRealm != calleeRealm.  If <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string①⓪">Get Trusted Type compliant string</a> reports an
 error, it only reports it via its <var>calleeRealm</var>’s report-uri.</p>
    <h5 class="heading settled" data-level="4.5.5.2" id="csp-trusted-script-javascript-url"><span class="secno">4.5.5.2. </span><span class="content">'trusted-script' support for javascript: URLs</span><a class="self-link" href="#csp-trusted-script-javascript-url"></a></h5>
    <p>This document modifies the <a href="https://www.w3.org/TR/CSP3/#match-element-to-source-list">Does element match source list for type and source?</a> algorithm, for it to recognize the 'trusted-script' keyword for <code>javascript:</code> navigations.</p>
@@ -1729,7 +1816,7 @@ the following steps:</p>
      <p>Return false.</p>
    </ol>
    <p class="note" role="note"><span>Note:</span> This checks whether Trusted Types enforcement would have rejected the
-input, were it problematic in the callout to <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string①⓪">Get Trusted Type compliant string</a>.</p>
+input, were it problematic in the callout to <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string①①">Get Trusted Type compliant string</a>.</p>
    <h2 class="heading settled" data-level="5" id="security-considerations"><span class="secno">5. </span><span class="content">Security Considerations</span><a class="self-link" href="#security-considerations"></a></h2>
    <p>Trusted Types are not intended to defend against XSS in an actively malicious
 execution environment. It’s assumed that the application is written by
@@ -1816,6 +1903,9 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
   <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
   <h3 class="no-num no-ref heading settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
   <ul class="index">
+   <li><a href="#concept-element-attributes-append">append an attribute</a><span>, in §4.3.2</span>
+   <li><a href="#abstract-opdef-element-attribute-validate-steps">attribute validate steps</a><span>, in §4.3.2</span>
+   <li><a href="#concept-element-attributes-change">change an attribute</a><span>, in §4.3.2</span>
    <li><a href="#dom-htmlobjectelement-codebase">codeBase</a><span>, in §4.1.3</span>
    <li><a href="#abstract-opdef-create-a-trusted-type">Create a Trusted Type</a><span>, in §3.3</span>
    <li><a href="#abstract-opdef-create-a-trusted-type-policy">Create a Trusted Type Policy</a><span>, in §3.1</span>
@@ -1871,9 +1961,11 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <li><a href="#dom-element-outerhtml">outerHTML</a><span>, in §4.4</span>
    <li><a href="#dom-domparser-parsefromstring">parseFromString(str, type)</a><span>, in §4.4</span>
    <li><a href="#abstract-opdef-process-value-with-a-default-policy">Process value with a default policy</a><span>, in §3.5</span>
+   <li><a href="#concept-element-attributes-replace">replace an attribute</a><span>, in §4.3.2</span>
    <li><a href="#typedefdef-scriptstring">ScriptString</a><span>, in §4</span>
    <li><a href="#typedefdef-scripturlstring">ScriptURLString</a><span>, in §4</span>
    <li><a href="#serialized-tt-configuration">serialized-tt-configuration</a><span>, in §4.5.1</span>
+   <li><a href="#dom-element-setattribute">setAttribute(qualifiedName, value)</a><span>, in §4.3.2</span>
    <li><a href="#dom-windoworworkerglobalscope-setinterval">setInterval(handler)</a><span>, in §4.1.5</span>
    <li><a href="#dom-windoworworkerglobalscope-setinterval">setInterval(handler, timeout)</a><span>, in §4.1.5</span>
    <li><a href="#dom-windoworworkerglobalscope-setinterval">setInterval(handler, timeout, ...arguments)</a><span>, in §4.1.5</span>
@@ -1904,13 +1996,13 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
      <li><a href="#trustedhtml">(interface)</a><span>, in §2.2.1</span>
      <li><a href="#typedef-trustedhtml">(type)</a><span>, in §2.2.1</span>
     </ul>
+   <li><a href="#grammardef-trusted-script">'trusted-script'</a><span>, in §4.5.5</span>
    <li>
     TrustedScript
     <ul>
      <li><a href="#trustedscript">(interface)</a><span>, in §2.2.2</span>
      <li><a href="#typedef-trustedscript">(type)</a><span>, in §2.2.2</span>
     </ul>
-   <li><a href="#grammardef-trusted-script">'trusted-script'</a><span>, in §4.5.5</span>
    <li>
     TrustedScriptURL
     <ul>
@@ -2076,7 +2168,8 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
     <li><a href="#ref-for-element">2.1. Injection sinks</a> <a href="#ref-for-element①">(2)</a>
     <li><a href="#ref-for-element②">2.3.1. TrustedTypePolicyFactory</a> <a href="#ref-for-element③">(2)</a>
     <li><a href="#ref-for-element④">2.4.2. TrustedTypes extended attribute</a> <a href="#ref-for-element⑤">(2)</a>
-    <li><a href="#ref-for-element⑥">4.4. Integration with DOM Parsing</a>
+    <li><a href="#ref-for-element⑥">4.3.2. Attribute validate steps</a> <a href="#ref-for-element⑦">(2)</a>
+    <li><a href="#ref-for-element⑧">4.4. Integration with DOM Parsing</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-range">
@@ -2095,6 +2188,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <a href="https://dom.spec.whatwg.org/#concept-element-attributes-change-ext">https://dom.spec.whatwg.org/#concept-element-attributes-change-ext</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-element-attributes-change-ext">4.1.6. Enforcement in event handler content attributes</a>
+    <li><a href="#ref-for-concept-element-attributes-change-ext③">4.3.2. Attribute validate steps</a> <a href="#ref-for-concept-element-attributes-change-ext②">(2)</a> <a href="#ref-for-concept-element-attributes-change-ext⑤">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-child-text-content">
@@ -2110,6 +2204,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
     <li><a href="#ref-for-context-object">2.3.1. TrustedTypePolicyFactory</a> <a href="#ref-for-context-object①">(2)</a>
     <li><a href="#ref-for-context-object②">2.4.2. TrustedTypes extended attribute</a> <a href="#ref-for-context-object③">(2)</a> <a href="#ref-for-context-object④">(3)</a> <a href="#ref-for-context-object⑤">(4)</a> <a href="#ref-for-context-object⑥">(5)</a> <a href="#ref-for-context-object⑦">(6)</a> <a href="#ref-for-context-object⑧">(7)</a> <a href="#ref-for-context-object⑨">(8)</a> <a href="#ref-for-context-object①⓪">(9)</a> <a href="#ref-for-context-object①①">(10)</a>
     <li><a href="#ref-for-context-object①②">4.1.5. Enforcement in timer functions</a>
+    <li><a href="#ref-for-context-object①⑤④">4.3.2. Attribute validate steps</a> <a href="#ref-for-context-object①⑤⑤">(2)</a> <a href="#ref-for-context-object①⑤⑥">(3)</a> <a href="#ref-for-context-object①⑤⑦">(4)</a> <a href="#ref-for-context-object①⑤⑧">(5)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-element-interface">
@@ -2125,10 +2220,22 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
     <li><a href="#ref-for-concept-element-local-name②">4.1.6. Enforcement in event handler content attributes</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-attribute-namespace">
+   <a href="https://dom.spec.whatwg.org/#concept-attribute-namespace">https://dom.spec.whatwg.org/#concept-attribute-namespace</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-attribute-namespace">4.3.2. Attribute validate steps</a> <a href="#ref-for-concept-attribute-namespace①⓪">(2)</a> <a href="#ref-for-concept-attribute-namespace①①">(3)</a> <a href="#ref-for-concept-attribute-namespace①②">(4)</a> <a href="#ref-for-concept-attribute-namespace①">(5)</a> <a href="#ref-for-concept-attribute-namespace⑦">(6)</a> <a href="#ref-for-concept-attribute-namespace⑧">(7)</a> <a href="#ref-for-concept-attribute-namespace⑨">(8)</a> <a href="#ref-for-concept-attribute-namespace②">(9)</a> <a href="#ref-for-concept-attribute-namespace①⑥">(10)</a> <a href="#ref-for-concept-attribute-namespace①⑦">(11)</a> <a href="#ref-for-concept-attribute-namespace①⑧">(12)</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-dom-node-textcontent">
    <a href="https://dom.spec.whatwg.org/#dom-node-textcontent">https://dom.spec.whatwg.org/#dom-node-textcontent</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-node-textcontent">4.1.4. Enforcement for script text contents</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-attribute-value">
+   <a href="https://dom.spec.whatwg.org/#concept-attribute-value">https://dom.spec.whatwg.org/#concept-attribute-value</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-attribute-value">4.3.2. Attribute validate steps</a> <a href="#ref-for-concept-attribute-value①">(2)</a> <a href="#ref-for-concept-attribute-value②">(3)</a> <a href="#ref-for-concept-attribute-value①⑤">(4)</a> <a href="#ref-for-concept-attribute-value①⑥">(5)</a> <a href="#ref-for-concept-attribute-value①①">(6)</a> <a href="#ref-for-concept-attribute-value①②">(7)</a> <a href="#ref-for-concept-attribute-value①③">(8)</a> <a href="#ref-for-concept-attribute-value①④">(9)</a> <a href="#ref-for-concept-attribute-value③">(10)</a> <a href="#ref-for-concept-attribute-value④">(11)</a> <a href="#ref-for-concept-attribute-value⑤">(12)</a> <a href="#ref-for-concept-attribute-value②⓪">(13)</a> <a href="#ref-for-concept-attribute-value②①">(14)</a> <a href="#ref-for-concept-attribute-value②②">(15)</a> <a href="#ref-for-concept-attribute-value②③">(16)</a> <a href="#ref-for-concept-attribute-value②④">(17)</a> <a href="#ref-for-concept-attribute-value③①">(18)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-h-the-domparser-interface">
@@ -2273,6 +2380,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <a href="https://infra.spec.whatwg.org/#ascii-lowercase">https://infra.spec.whatwg.org/#ascii-lowercase</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-ascii-lowercase">2.3.1. TrustedTypePolicyFactory</a> <a href="#ref-for-ascii-lowercase①">(2)</a> <a href="#ref-for-ascii-lowercase②">(3)</a>
+    <li><a href="#ref-for-ascii-lowercase④">4.3.2. Attribute validate steps</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-string-concatenate">
@@ -2300,6 +2408,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <a href="https://infra.spec.whatwg.org/#html-namespace">https://infra.spec.whatwg.org/#html-namespace</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-html-namespace">2.3.1. TrustedTypePolicyFactory</a> <a href="#ref-for-html-namespace①">(2)</a>
+    <li><a href="#ref-for-html-namespace②⑤">4.3.2. Attribute validate steps</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-ordered-set">
@@ -2496,8 +2605,10 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
      <li><span class="dfn-paneled" id="term-for-concept-child-text-content" style="color:initial">child text content</span>
      <li><span class="dfn-paneled" id="term-for-context-object" style="color:initial">context object</span>
      <li><span class="dfn-paneled" id="term-for-concept-element-interface" style="color:initial">element interface</span>
-     <li><span class="dfn-paneled" id="term-for-concept-element-local-name" style="color:initial">local name</span>
+     <li><span class="dfn-paneled" id="term-for-concept-element-local-name" style="color:initial">local name <small>(for Element)</small></span>
+     <li><span class="dfn-paneled" id="term-for-concept-attribute-namespace" style="color:initial">namespace</span>
      <li><span class="dfn-paneled" id="term-for-dom-node-textcontent" style="color:initial">textContent</span>
+     <li><span class="dfn-paneled" id="term-for-concept-attribute-value" style="color:initial">value</span>
     </ul>
    <li>
     <a data-link-type="biblio">[DOM-Parsing]</a> defines the following terms:
@@ -2715,7 +2826,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
  [<a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①⑧①"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl⑨①"><c- n>TrustedScriptURL</c-></a>] <c- b>readonly</c-> <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring" id="ref-for-typedefdef-scripturlstring③①"><c- n>ScriptURLString</c-></a> <a data-readonly data-type="ScriptURLString" href="#dom-svgscriptelement-href"><code><c- g>href</c-></code></a>;
 };
 
-<c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#element" id="ref-for-element⑥①"><c- g>Element</c-></a> {
+<c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#element" id="ref-for-element⑧①"><c- g>Element</c-></a> {
   [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions①⓪①"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①⑨①"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml①③①"><c- n>TrustedHTML</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-htmlstringdefaultsempty" id="ref-for-typedefdef-htmlstringdefaultsempty①①"><c- n>HTMLStringDefaultsEmpty</c-></a> <a data-type="HTMLStringDefaultsEmpty" href="#dom-element-outerhtml"><code><c- g>outerHTML</c-></code></a>;
   [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions①①①"><c- g>CEReactions</c-></a>] <c- b>void</c-> <a href="#dom-element-insertadjacenthtml"><code><c- g>insertAdjacentHTML</c-></code></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②④①"><c- b>DOMString</c-></a> <a href="#dom-element-insertadjacenthtml-position-text-position"><code><c- g>position</c-></code></a>, [<a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes②⓪①"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml①④①"><c- n>TrustedHTML</c-></a>] <a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring③①"><c- n>HTMLString</c-></a> <a href="#dom-element-insertadjacenthtml-position-text-text"><code><c- g>text</c-></code></a>);
 };
@@ -2746,6 +2857,8 @@ This already caused problems in the polyfill. <a href="https://github.com/w3c/we
    <div class="issue"> Define for workers.<a href="#issue-a5679137"> ↵ </a></div>
    <div class="issue"> Remove the note when the API in Chrome is shipped.<a href="#issue-3d9ee9e6"> ↵ </a></div>
    <div class="issue"> Add base.href enforcement.<a href="#issue-13577559"> ↵ </a></div>
+   <div class="issue"> Patch HTML’s create element for token (it calls append) such that it can survive <a data-link-type="dfn">attribute validate steps</a>.<a href="#issue-b20e8a45"> ↵ </a></div>
+   <div class="issue"> Define attribute validate steps for TT-sensitive elements as wrappers over <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string">Get Trusted Type compliant string</a>.<a href="#issue-6f5fdef0"> ↵ </a></div>
    <div class="issue"> This depends on a solution to <a href="https://github.com/w3c/webappsec-trusted-types/issues/144">issue #144</a> like <a href="https://github.com/tc39-transfer/dynamic-code-brand-checks#problem-host-callout-does-not-receive-type-information">TC39 HostBeforeCompile</a><a href="#issue-e28ea232"> ↵ </a></div>
    <div class="issue"> In some cases, the violation "<code>'report-sample'</code>" contain the result of
 applying the default policy to a string argument which differs.
@@ -3038,8 +3151,9 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string④">4.1.5. Enforcement in timer functions</a>
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑤">4.1.6. Enforcement in event handler content attributes</a>
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑥">4.2. Integration with SVG</a>
-    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑦">4.5.5.1. 'trusted-script' support for eval</a> <a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑧">(2)</a> <a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑨">(3)</a>
-    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string①⓪">4.5.6. IsSourceExempt Algorithm</a>
+    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑦">4.3.2. Attribute validate steps</a>
+    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑧">4.5.5.1. 'trusted-script' support for eval</a> <a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑨">(2)</a> <a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string①⓪">(3)</a>
+    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string①①">4.5.6. IsSourceExempt Algorithm</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="abstract-opdef-process-value-with-a-default-policy">
