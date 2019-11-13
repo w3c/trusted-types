@@ -44,6 +44,13 @@ describe('v2 TrustedTypes', () => {
       expect(p.createScriptURL instanceof Function).toBe(true);
     });
 
+    ['\'', '"', '^', '!', '?'].forEach(
+        (char) => it(`disallows ${char}in policy name`, () => {
+          expect(() => {
+            TrustedTypes.createPolicy(char, {});
+          }).toThrowError(TypeError);
+        }));
+
     [null, undefined, () => {}].forEach((i) =>
       it('creates empty policies if ' + i + ' is passed', () => {
         const warn = spyOn(console, 'warn');

@@ -571,6 +571,10 @@ export const trustedTypesBuilderTestOnly = function() {
   function createPolicy(name, policy) {
     const pName = '' + name; // Assert it's a string
 
+    if (!pName.match(/^[-#a-zA-Z0-9=_/@.%]+$/g)) {
+      throw new TypeError('Policy ' + pName + ' contains invalid characters.');
+    }
+
     if (enforceNameWhitelist && allowedNames.indexOf(pName) === -1) {
       throw new TypeError('Policy ' + pName + ' disallowed.');
     }
