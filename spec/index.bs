@@ -1333,7 +1333,10 @@ strings (|createdPolicyNames|), this algorithm returns `"Blocked"` if the
 [=violation|Violation=] object [=violation/resource=] also allows `"trusted-types-policy"`
 and `"trusted-types-sink"` as values.
 
-### 'trusted-script' keyword ### {#trusted-script-csp-keyword}
+### Support for eval(TrustedScript) ### {#csp-eval}
+
+This document modifies the [[CSP3#can-compile-strings|EnsureCSPDoesNotBlockStringCompilation]]
+which is reproduced in its entirety below with additions and deletions.
 
 Note: See <a href="https://github.com/tc39/ecma262/issues/938">TC39/ecma262 issue #938</a>
 (adding the value to be compiled to algorithm parameters).
@@ -1355,19 +1358,6 @@ This is subtly different from the CSP directive enforcement portion which reject
 the |calleeRealm| or |callerRealm|'s Content-Security-Policy rejects string compilation.
 </div>
 
-This document modifies the grammar for [[CSP3#keyword-source]]:
-
-<pre dfn-type="grammar" link-type="grammar">
-  <dfn>keyword-source</dfn> = "'self'" / "'unsafe-inline'" / "'unsafe-eval'"
-                       / "'strict-dynamic'" / "'unsafe-hashes'" / "'report-sample'"
-                       / "'unsafe-allow-redirects'" <ins>/ "<dfn>'trusted-script'</dfn>"</ins>
-</pre>
-
-#### 'trusted-script' support for eval #### {#csp-trusted-script-eval}
-
-This document modifies the [[CSP3#can-compile-strings|EnsureCSPDoesNotBlockStringCompilation]]
-which is reproduced in its entirety below with additions and deletions.
-
 Given two [[ECMASCRIPT#realm|realms]] (|callerRealm| and
 |calleeRealm|), and a <del>string</del> <ins>value</ins>
 (|source|), this algorithm returns <del>normally</del>
@@ -1383,13 +1373,10 @@ throws an "`EvalError`" if not:
 
 2.  <ins>If the algorithm throws an error, throw an {{EvalError}}.</ins>
 
-3.  <ins>Let |isExempt| be the result of executing the [$IsSourceExempt$] algorithm with:
-    *   |calleeRealm|’s {{CSP list}} as |cspList|.</ins>
-
-4.  Let |globals| be a list containing |calleeRealm|'s [=Realm/global object=] and |calleeRealm|'s
+3.  Let |globals| be a list containing |calleeRealm|'s [=Realm/global object=] and |calleeRealm|'s
     [=Realm/global object=].
 
-5.  For each |global| in |globals|:
+4.  For each |global| in |globals|:
 
     1.  Let |result| be "`Allowed`".
 
@@ -1403,11 +1390,7 @@ throws an "`EvalError`" if not:
             Otherwise if |policy| contains a [=directive=] whose [=directive/name=] is
             "`default-src`", then set |source-list| to that directive's [=directive/value=].
 
-        3. <ins>If |isExempt| is true and |source-list| contains a
-            [=source expression=] which is an [=ASCII case-insensitive=] match for the
-            string "<a grammar>`'trusted-script'`</a>"), [=continue=].</ins>
-
-        4.  If |source-list| is not `null`, and does not contain a [=source expression=] which is
+        3.  If |source-list| is not `null`, and does not contain a [=source expression=] which is
             an [=ASCII case-insensitive=] match for the string "<a grammar>`'unsafe-eval'`</a>" then:
 
             1.  Let |violation| be the result of executing [[CSP3#create-violation-for-global]] on
@@ -1447,32 +1430,6 @@ Is this a feature or a bug?
 Note: The previous algorithm reports violations via both report-uris where
 callerRealm != calleeRealm.  If [$Get Trusted Type compliant string$] reports an
 error, it only reports it via its |calleeRealm|'s report-uri.
-
-#### 'trusted-script' support for javascript: URLs #### {#csp-trusted-script-javascript-url}
-
-This document modifies the [[CSP3#match-element-to-source-list|Does element match source list for type and source?]]
-algorithm, for it to recognize the 'trusted-script' keyword for `javascript:` navigations.
-
-Add the following step after step 1:
-
-2.  If |type| is `"navigation"`, |list| [=list/contains=] an [=ASCII case-insensitive=]
-    match for the string "<a grammar>`'trusted-script'`</a>" and [$IsSourceExempt$] algorithm executed on [=active document=]'s <a>CSP list</a> returns true,
-    return `"Matches"`.
-
-
-### <dfn abstract-op>IsSourceExempt</dfn> Algorithm ### {#is-source-exempt-algorithm}
-
-The IsSourceExempt algorithm takes a <a>CSP List</a> (|cspList|) and executes
-the following steps:
-
-1.  If |cspList| contains a [[CSP3#content-security-policy-object|policy]] whose
-    <a>directive set</a> contains a [[CSP3#directives|directive]] with a name
-    `"trusted-types"`, return true.
-1.  Return false.
-
-Note: This checks whether Trusted Types enforcement would have rejected the
-input, were it problematic in the callout to [$Get Trusted Type compliant string$].
-
 
 # Security Considerations # {#security-considerations}
 
