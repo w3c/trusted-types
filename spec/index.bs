@@ -1357,7 +1357,7 @@ partial interface mixin HTMLScriptElement : HTMLElement {
 };
 </pre>
 
-On setting, the {{HTMLElement/innerText}}, {{Node/textContent}} and {{HTMLScriptElement/text}} IDL attributes perform the regular steps, and then set [=content object=]'s {{script/[[ScriptText]]}} internal slot value with script's [=child text content=].
+On setting, the {{HTMLElement/innerText}}, {{Node/textContent}} and {{HTMLScriptElement/text}} IDL attributes perform the regular steps, and then set [=content object=]'s {{script/[[ScriptText]]}} internal slot value with the stringified value.
 
 On setting, the {{HTMLScriptElement/src}} IDL attribute performs the usual steps, and then sets [=content object=]'s {{script/[[ScriptURL]]}} internal slot value to its {{script/src}} content attribute value.
 
