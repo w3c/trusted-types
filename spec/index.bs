@@ -1006,16 +1006,320 @@ partial interface mixin Document {
 };
 </pre>
 
+### Enforcement for scripts ### {#enfocement-in-scripts}
+
+This document modifies {{script}} elements. Each script has:
+
+: <dfn dfn-for="script">`[[ScriptURL]]`</dfn> internal slot.
+::  A string, containing the URL to execute the script from
+    that was set through a {{TrustedTypes}} compliant sink. Equivalent to
+    {{HTMLScriptElement/src}} attribute value. Initially null.
+
+: <dfn dfn-for="script">`[[ScriptText]]`</dfn> internal slot.
+::  A string, containing the body of the script to execute that was set
+    through a {{TrustedTypes}} compliant sink. Equivalent to script's
+    [=child text content=]. Initially null.
+
+The [=prepare a script=] algorithm is modified as follows:
+
+<ol><li>
+
+    <p>If the <code id="script-processing-model:the-script-element-18"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element is marked as having <a href="https://html.spec.whatwg.org/#already-started" id="script-processing-model:already-started">"already started"</a>, then
+    return. The script is not executed.</p>
+
+   </li><li>
+
+    <p>If the element has its <a href="https://html.spec.whatwg.org/#parser-inserted" id="script-processing-model:parser-inserted-3">"parser-inserted"</a> flag set, then set <var>was-parser-inserted</var> to true and unset the element's
+    <a href="https://html.spec.whatwg.org/#parser-inserted" id="script-processing-model:parser-inserted-4">"parser-inserted"</a> flag. Otherwise, set <var>was-parser-inserted</var> to
+    false.</p>
+
+    <p class="note">This is done so that if parser-inserted <code id="script-processing-model:the-script-element-19"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> elements fail to run
+    when the parser tries to run them, e.g. because they are empty or specify an unsupported
+    scripting language, another script can later mutate them and cause them to run again.</p>
+
+
+
+   </li><li>
+
+    <p>If <var>was-parser-inserted</var> is true and the element does not have an <code id="script-processing-model:attr-script-async-2"><a href="https://html.spec.whatwg.org/#attr-script-async">async</a></code> attribute, then set the element's
+    <a href="https://html.spec.whatwg.org/#non-blocking" id="script-processing-model:non-blocking-3">"non-blocking"</a> flag to true.</p>
+
+    <p class="note">This is done so that if a parser-inserted <code id="script-processing-model:the-script-element-20"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element fails to
+    run when the parser tries to run it, but it is later executed after a script dynamically updates
+    it, it will execute in a non-blocking fashion even if the <code id="script-processing-model:attr-script-async-3"><a href="https://html.spec.whatwg.org/#attr-script-async">async</a></code>
+    attribute isn't set.</p>
+
+   </li><li><ins>Execute the [$Prepare the script URL and text$] algorithm upon the {{script}} element. If that algorithm threw an error, then return. The script is not executed.
+
+   </li><li><p>Let <var>source text</var> be the element's <del><a id="script-processing-model:child-text-content" href="https://dom.spec.whatwg.org/#concept-child-text-content" data-x-internal="child-text-content">child text content</a></del> <ins>`[[ScriptText]]` internal slot value</ins>.</p>
+
+   </li><li><ins><p>Let <var>src</var> be the element's `[[ScriptURL]]` internal slot value</ins>.</p>
+
+   </li><li id="script-processing-empty">
+
+    <p>If <del>the element has no <code id="script-processing-model:attr-script-src-3"><a href="https://html.spec.whatwg.org/#attr-script-src">src</a></code> attribute</del> <ins>|src| is null</ins>, and <var>source
+    text</var> is the empty string, then return. The script is not executed.</p>
+
+   </li><li><p>If the element is not <a id="script-processing-model:connected-3" href="https://dom.spec.whatwg.org/#connected" data-x-internal="connected">connected</a>, then return. The script is not
+   executed.</p></li><li id="script-processing-prepare">
+
+    <p>If either:</p>
+
+    <ul class="brief"><li>the <code id="script-processing-model:the-script-element-21"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element has a <code id="script-processing-model:attr-script-type-2"><a href="https://html.spec.whatwg.org/#attr-script-type">type</a></code> attribute
+     and its value is the empty string, or</li><li>the <code id="script-processing-model:the-script-element-22"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element has no <code id="script-processing-model:attr-script-type-3"><a href="https://html.spec.whatwg.org/#attr-script-type">type</a></code> attribute
+     but it has a <code id="script-processing-model:attr-script-language"><a href="https://html.spec.whatwg.org/#attr-script-language">language</a></code> attribute and <em>that</em>
+     attribute's value is the empty string, or</li><li>the <code id="script-processing-model:the-script-element-23"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element has neither a <code id="script-processing-model:attr-script-type-4"><a href="https://html.spec.whatwg.org/#attr-script-type">type</a></code>
+     attribute nor a <code id="script-processing-model:attr-script-language-2"><a href="https://html.spec.whatwg.org/#attr-script-language">language</a></code> attribute, then</li></ul>
+
+    <p>...let <var>the script block's type string</var> for this <code id="script-processing-model:the-script-element-24"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element be
+    "<code>text/javascript</code>".</p>
+
+    <p>Otherwise, if the <code id="script-processing-model:the-script-element-25"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element has a <code id="script-processing-model:attr-script-type-5"><a href="https://html.spec.whatwg.org/#attr-script-type">type</a></code> attribute, let <var>the script block's type string</var>
+    for this <code id="script-processing-model:the-script-element-26"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element be the value of that attribute with <a href="https://infra.spec.whatwg.org/#strip-leading-and-trailing-ascii-whitespace" id="script-processing-model:strip-leading-and-trailing-ascii-whitespace" data-x-internal="strip-leading-and-trailing-ascii-whitespace">leading and trailing ASCII whitespace
+    stripped</a>.</p>
+
+    <p>Otherwise, the element has a non-empty <code id="script-processing-model:attr-script-language-3"><a href="https://html.spec.whatwg.org/#attr-script-language">language</a></code>
+    attribute; let <var>the script block's type string</var> for this <code id="script-processing-model:the-script-element-27"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element
+    be the concatenation of the string "<code>text/</code>" followed by the value of the
+    <code id="script-processing-model:attr-script-language-4"><a href="https://html.spec.whatwg.org/#attr-script-language">language</a></code> attribute.</p>
+
+
+    <p class="note">The <code id="script-processing-model:attr-script-language-5"><a href="https://html.spec.whatwg.org/#attr-script-language">language</a></code> attribute is never
+    conforming, and is always ignored if there is a <code id="script-processing-model:attr-script-type-6"><a href="https://html.spec.whatwg.org/#attr-script-type">type</a></code>
+    attribute present.</p>
+
+    <p>Determine <a href="https://html.spec.whatwg.org/#concept-script-type" id="script-processing-model:concept-script-type">the script's type</a> as follows:</p>
+
+    <ul><li>If <var>the script block's type string</var> is a <a id="script-processing-model:javascript-mime-type-essence-match" href="https://mimesniff.spec.whatwg.org/#javascript-mime-type-essence-match" data-x-internal="javascript-mime-type-essence-match">JavaScript MIME type essence
+     match</a>, <a href="https://html.spec.whatwg.org/#concept-script-type" id="script-processing-model:concept-script-type-2">the script's type</a> is "<code>classic</code>".</li><li>If <var>the script block's type string</var> is an <a id="script-processing-model:ascii-case-insensitive" href="https://infra.spec.whatwg.org/#ascii-case-insensitive" data-x-internal="ascii-case-insensitive">ASCII case-insensitive</a>
+     match for the string "<code>module</code>", <a href="https://html.spec.whatwg.org/#concept-script-type" id="script-processing-model:concept-script-type-3">the
+     script's type</a> is "<code>module</code>".</li><li>If neither of the above conditions are true, then return. No script is executed.</li></ul>
+
+   </li><li>
+
+    <p>If <var>was-parser-inserted</var> is true, then flag the element as
+    <a href="https://html.spec.whatwg.org/#parser-inserted" id="script-processing-model:parser-inserted-5">"parser-inserted"</a> again, and set the element's <a href="https://html.spec.whatwg.org/#non-blocking" id="script-processing-model:non-blocking-4">"non-blocking"</a> flag to
+    false.</p>
+
+   </li><li id="script-processing-start">
+
+    <p>Set the element's <a href="https://html.spec.whatwg.org/#already-started" id="script-processing-model:already-started-2">"already started"</a> flag.</p>
+
+   </li><li>
+
+    <p>If the element is flagged as <a href="https://html.spec.whatwg.org/#parser-inserted" id="script-processing-model:parser-inserted-6">"parser-inserted"</a>, but the element's
+    <a id="script-processing-model:node-document-2" href="https://dom.spec.whatwg.org/#concept-node-document" data-x-internal="node-document">node document</a> is not the <code id="script-processing-model:document"><a href="https://html.spec.whatwg.org/#document">Document</a></code> of the parser that created the
+    element, then return.</p>
+
+   </li><li id="script-processing-noscript">
+
+    <p>If <a href="https://html.spec.whatwg.org/#concept-n-noscript" id="script-processing-model:concept-n-noscript">scripting is disabled</a> for the <code id="script-processing-model:the-script-element-28"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code>
+    element, then return. The script is not executed.</p>
+
+    <p class="note">The definition of <a href="https://html.spec.whatwg.org/#concept-n-noscript" id="script-processing-model:concept-n-noscript-2">scripting is disabled</a>
+    means that, amongst others, the following scripts will not execute: scripts in
+    <code id="script-processing-model:xmlhttprequest"><a data-x-internal="xmlhttprequest" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a></code>'s <code id="script-processing-model:dom-xmlhttprequest-responsexml"><a data-x-internal="dom-xmlhttprequest-responsexml" href="https://xhr.spec.whatwg.org/#dom-xmlhttprequest-responsexml">responseXML</a></code>
+    documents, scripts in <code id="script-processing-model:domparser"><a data-x-internal="domparser" href="https://w3c.github.io/DOM-Parsing/#the-domparser-interface">DOMParser</a></code>-created documents, scripts in documents created by
+    <code id="script-processing-model:xsltprocessor"><a href="https://html.spec.whatwg.org/#xsltprocessor">XSLTProcessor</a></code>'s <code id="script-processing-model:dom-xsltprocessor-transformtodocument"><a href="https://html.spec.whatwg.org/#dom-xsltprocessor-transformtodocument">transformToDocument</a></code> feature, and scripts
+    that are first inserted by a script into a <code id="script-processing-model:document-2"><a href="https://html.spec.whatwg.org/#document">Document</a></code> that was created using the
+    <code id="script-processing-model:dom-domimplementation-createdocument"><a data-x-internal="dom-domimplementation-createdocument" href="https://dom.spec.whatwg.org/#dom-domimplementation-createdocument">createDocument()</a></code> API. <a href="https://html.spec.whatwg.org/#refsXHR">\[XHR\]</a>
+    <a href="https://html.spec.whatwg.org/#refsDOMPARSING">\[DOMPARSING\]</a> <a href="https://html.spec.whatwg.org/#refsXSLTP">\[XSLTP\]</a> <a href="https://html.spec.whatwg.org/#refsDOM">\[DOM\]</a></p>
+
+
+   </li><li>
+
+   <p>If the <code id="script-processing-model:the-script-element-29"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element has a <code id="script-processing-model:attr-script-nomodule"><a href="https://html.spec.whatwg.org/#attr-script-nomodule">nomodule</a></code>
+   content attribute and <a href="https://html.spec.whatwg.org/#concept-script-type" id="script-processing-model:concept-script-type-4">the script's type</a> is "<code>classic</code>", then return. The script is not executed.</p>
+
+   <p class="note">This means specifying <code id="script-processing-model:attr-script-nomodule-2"><a href="https://html.spec.whatwg.org/#attr-script-nomodule">nomodule</a></code> on a
+   <a href="https://html.spec.whatwg.org/#module-script" id="script-processing-model:module-script">module script</a> has no effect; the algorithm continues onward.</p>
+
+   </li><li id="script-processing-csp"><p>If <del>the <code id="script-processing-model:the-script-element-30"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element does not have a <code id="script-processing-model:attr-script-src-4"><a href="https://html.spec.whatwg.org/#attr-script-src">src</a></code> content attribute</del><ins>|src| is null</ins>, and the <a id="script-processing-model:should-element's-inline-behavior-be-blocked-by-content-security-policy" href="https://w3c.github.io/webappsec-csp/#should-block-inline" data-x-internal="should-element's-inline-behavior-be-blocked-by-content-security-policy">Should element's inline
+   behavior be blocked by Content Security Policy?</a> algorithm returns "<code>Blocked</code>" when executed upon the <code id="script-processing-model:the-script-element-31"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element, "<code>script</code>", and <var>source text</var>, then return. The script is not executed.
+   <a href="https://html.spec.whatwg.org/#refsCSP">\[CSP\]</a></p></li><li id="script-processing-for">
+
+    <p>If the <code id="script-processing-model:the-script-element-32"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element has an <code id="script-processing-model:attr-script-event"><a href="https://html.spec.whatwg.org/#attr-script-event">event</a></code>
+    attribute and a <code id="script-processing-model:attr-script-for"><a href="https://html.spec.whatwg.org/#attr-script-for">for</a></code> attribute, and <a href="https://html.spec.whatwg.org/#concept-script-type" id="script-processing-model:concept-script-type-5">the script's type</a> is "<code>classic</code>",
+    then:</p>
+
+    <ol><li><p>Let <var>for</var> be the value of the <code id="script-processing-model:attr-script-for-2"><a href="https://html.spec.whatwg.org/#attr-script-for">for</a></code>
+     attribute.</p></li><li><p>Let <var>event</var> be the value of the <code id="script-processing-model:attr-script-event-2"><a href="https://html.spec.whatwg.org/#attr-script-event">event</a></code> attribute.</p></li><li><p><a id="script-processing-model:strip-leading-and-trailing-ascii-whitespace-2" href="https://infra.spec.whatwg.org/#strip-leading-and-trailing-ascii-whitespace" data-x-internal="strip-leading-and-trailing-ascii-whitespace">Strip leading and trailing ASCII whitespace</a> from <var>event</var> and
+     <var>for</var>.</p></li><li><p>If <var>for</var> is not an <a id="script-processing-model:ascii-case-insensitive-2" href="https://infra.spec.whatwg.org/#ascii-case-insensitive" data-x-internal="ascii-case-insensitive">ASCII case-insensitive</a> match for the
+     string "<code>window</code>", then return. The script is not executed.</p></li><li><p>If <var>event</var> is not an <a id="script-processing-model:ascii-case-insensitive-3" href="https://infra.spec.whatwg.org/#ascii-case-insensitive" data-x-internal="ascii-case-insensitive">ASCII case-insensitive</a> match for
+     either the string "<code>onload</code>" or the string "<code>onload()</code>", then return. The script is not executed.</p></li></ol>
+
+   </li><li id="script-processing-encoding">
+
+    <p>If the <code id="script-processing-model:the-script-element-33"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element has a <code id="script-processing-model:attr-script-charset"><a href="https://html.spec.whatwg.org/#attr-script-charset">charset</a></code>
+    attribute, then let <var>encoding</var> be the result of <a id="script-processing-model:getting-an-encoding" href="https://encoding.spec.whatwg.org/#concept-encoding-get" data-x-internal="getting-an-encoding">getting an encoding</a> from
+    the value of the <code id="script-processing-model:attr-script-charset-2"><a href="https://html.spec.whatwg.org/#attr-script-charset">charset</a></code> attribute.</p>
+
+    <p>If the <code id="script-processing-model:the-script-element-34"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element does not have a <code id="script-processing-model:attr-script-charset-3"><a href="https://html.spec.whatwg.org/#attr-script-charset">charset</a></code> attribute, or if <a id="script-processing-model:getting-an-encoding-2" href="https://encoding.spec.whatwg.org/#concept-encoding-get" data-x-internal="getting-an-encoding">getting an encoding</a>
+    failed, let <var>encoding</var> be the same as <a href="https://dom.spec.whatwg.org/#concept-document-encoding" id="script-processing-model:document's-character-encoding" data-x-internal="document's-character-encoding">the
+    encoding</a> of the <code id="script-processing-model:the-script-element-35"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element's <a id="script-processing-model:node-document-3" href="https://dom.spec.whatwg.org/#concept-node-document" data-x-internal="node-document">node document</a>.</p>
+
+    <p class="note">If <a href="https://html.spec.whatwg.org/#concept-script-type" id="script-processing-model:concept-script-type-6">the script's type</a> is "<code>module</code>", this encoding will be ignored.</p>
+
+   </li><li><p>Let <var>classic script CORS setting</var> be the current state of the element's <code id="script-processing-model:attr-script-crossorigin"><a href="https://html.spec.whatwg.org/#attr-script-crossorigin">crossorigin</a></code> content attribute.</p></li><li><p>Let <var>module script credentials mode</var> be the <a href="https://html.spec.whatwg.org/#module-script-credentials-mode" id="script-processing-model:module-script-credentials-mode">module script credentials
+   mode</a> for the element's <code id="script-processing-model:attr-script-crossorigin-2"><a href="https://html.spec.whatwg.org/#attr-script-crossorigin">crossorigin</a></code> content
+   attribute.</p>
+
+   </li><li><p>Let <var>cryptographic nonce</var> be the element's <a href="https://html.spec.whatwg.org/#cryptographicnonce" id="script-processing-model:cryptographicnonce">\[\[CryptographicNonce\]\]</a>
+   internal slot's value.</p></li><li>
+
+    <p>If the <code id="script-processing-model:the-script-element-36"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element has an <code id="script-processing-model:attr-script-integrity"><a href="https://html.spec.whatwg.org/#attr-script-integrity">integrity</a></code> attribute, then let <var>integrity
+    metadata</var> be that attribute's value.</p>
+
+    <p>Otherwise, let <var>integrity metadata</var> be the empty string.</p>
+
+   </li><li><p>Let <var>referrer policy</var> be the current state of the element's <code id="script-processing-model:attr-script-referrerpolicy"><a href="https://html.spec.whatwg.org/#attr-script-referrerpolicy">referrerpolicy</a></code> content attribute.</p></li><li><p>Let <var>parser metadata</var> be "<code>parser-inserted</code>" if the
+   <code id="script-processing-model:the-script-element-37"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element has been flagged as <a href="https://html.spec.whatwg.org/#parser-inserted" id="script-processing-model:parser-inserted-7">"parser-inserted"</a>, and
+   "<code>not-parser-inserted</code>" otherwise.</p></li><li><p>Let <var>options</var> be a <a href="https://html.spec.whatwg.org/#script-fetch-options" id="script-processing-model:script-fetch-options">script fetch options</a> whose <a href="https://html.spec.whatwg.org/#concept-script-fetch-options-nonce" id="script-processing-model:concept-script-fetch-options-nonce">cryptographic nonce</a> is <var>cryptographic
+   nonce</var>, <a href="https://html.spec.whatwg.org/#concept-script-fetch-options-integrity" id="script-processing-model:concept-script-fetch-options-integrity">integrity metadata</a> is
+   <var>integrity metadata</var>, <a href="https://html.spec.whatwg.org/#concept-script-fetch-options-parser" id="script-processing-model:concept-script-fetch-options-parser">parser
+   metadata</a> is <var>parser metadata</var>, <a href="https://html.spec.whatwg.org/#concept-script-fetch-options-credentials" id="script-processing-model:concept-script-fetch-options-credentials">credentials mode</a> is <var>module script
+   credentials mode</var>, and <a href="https://html.spec.whatwg.org/#concept-script-fetch-options-referrer-policy" id="script-processing-model:concept-script-fetch-options-referrer-policy">referrer
+   policy</a> is <var>referrer policy</var>.</p></li><li><p>Let <var>settings object</var> be the element's <a id="script-processing-model:node-document-4" href="https://dom.spec.whatwg.org/#concept-node-document" data-x-internal="node-document">node document</a>'s
+   <a href="https://html.spec.whatwg.org/#relevant-settings-object" id="script-processing-model:relevant-settings-object">relevant settings object</a>.</p></li><li id="script-processing-src-prepare">
+
+    <p>If <del>the element has a <code id="script-processing-model:attr-script-src-5"><a href="https://html.spec.whatwg.org/#attr-script-src">src</a></code> content attribute</del><ins>|src| is not null</ins>, then:</p>
+
+    <ol><li><del><p>Let <var>src</var> be the value of the element's <code id="script-processing-model:attr-script-src-6"><a href="https://html.spec.whatwg.org/#attr-script-src">src</a></code> attribute.</p></del></li><li><p>If <var>src</var> is the empty string, <a href="https://html.spec.whatwg.org/#queue-a-task" id="script-processing-model:queue-a-task">queue a task</a> to <a href="https://dom.spec.whatwg.org/#concept-event-fire" id="script-processing-model:concept-event-fire" data-x-internal="concept-event-fire">fire an event</a> named <code id="script-processing-model:event-error"><a href="https://html.spec.whatwg.org/#event-error">error</a></code>
+     at the element, and return.</p></li><li><p>Set the element's <a href="https://html.spec.whatwg.org/#concept-script-external" id="script-processing-model:concept-script-external">from an external file</a>
+     flag.</p></li><li><p><a href="https://html.spec.whatwg.org/#parse-a-url" id="script-processing-model:parse-a-url">Parse</a> <var>src</var> relative to the element's
+     <a id="script-processing-model:node-document-5" href="https://dom.spec.whatwg.org/#concept-node-document" data-x-internal="node-document">node document</a>.</p></li><li><p>If the previous step failed, <a href="https://html.spec.whatwg.org/#queue-a-task" id="script-processing-model:queue-a-task-2">queue a task</a> to <a href="https://dom.spec.whatwg.org/#concept-event-fire" id="script-processing-model:concept-event-fire-2" data-x-internal="concept-event-fire">fire an event</a> named <code id="script-processing-model:event-error-2"><a href="https://html.spec.whatwg.org/#event-error">error</a></code>
+     at the element, and return. Otherwise, let <var>url</var> be the <a href="https://html.spec.whatwg.org/#resulting-url-record" id="script-processing-model:resulting-url-record">resulting URL
+     record</a>.</p></li><li>
+      <p>Switch on <a href="https://html.spec.whatwg.org/#concept-script-type" id="script-processing-model:concept-script-type-7">the script's type</a>:</p>
+
+      <dl class="switch"><dt>"<code>classic</code>"</dt><dd>
+        <p><a href="https://html.spec.whatwg.org/#fetch-a-classic-script" id="script-processing-model:fetch-a-classic-script">Fetch a classic script</a> given <var>url</var>, <var>settings object</var>,
+        <var>options</var>, <var>classic script CORS setting</var>, and <var>encoding</var>.</p>
+       </dd><dt>"<code>module</code>"</dt><dd>
+        <p><a href="https://html.spec.whatwg.org/#fetch-a-module-script-tree" id="script-processing-model:fetch-a-module-script-tree">Fetch an external module script graph</a> given <var>url</var>, <var>settings
+        object</var>, and <var>options</var>.</p>
+       </dd></dl>
+
+      <p>When the chosen algorithm asynchronously completes, set <a href="https://html.spec.whatwg.org/#concept-script-script" id="script-processing-model:concept-script-script">the script's script</a> to the result. At that time,
+      <a href="https://html.spec.whatwg.org/#the-script-is-ready" id="script-processing-model:the-script-is-ready-2">the script is ready</a>.</p>
+
+      <p>For performance reasons, user agents may start fetching the classic script or module graph
+      (as defined above) as soon as the <code id="script-processing-model:attr-script-src-7"><a href="https://html.spec.whatwg.org/#attr-script-src">src</a></code> attribute is set,
+      instead, in the hope that the element will be inserted into the document (and that the <code id="script-processing-model:attr-script-crossorigin-3"><a href="https://html.spec.whatwg.org/#attr-script-crossorigin">crossorigin</a></code> attribute won't change value in the
+      meantime). Either way, once the element is <a href="https://html.spec.whatwg.org/#insert-an-element-into-a-document" id="script-processing-model:insert-an-element-into-a-document">inserted into the document</a>, the load must have started as described in this
+      step. If the UA performs such prefetching, but the element is never inserted in the document,
+      or the <code id="script-processing-model:attr-script-src-8"><a href="https://html.spec.whatwg.org/#attr-script-src">src</a></code> attribute is dynamically changed, or the <code id="script-processing-model:attr-script-crossorigin-4"><a href="https://html.spec.whatwg.org/#attr-script-crossorigin">crossorigin</a></code> attribute is dynamically changed, then the
+      user agent will not execute the script so obtained, and the fetching process will have been
+      effectively wasted.</p>
+
+     </li></ol>
+
+   </li><li id="establish-script-block-source">
+
+    <p>If <del>the element does not have a <code id="script-processing-model:attr-script-src-9"><a href="https://html.spec.whatwg.org/#attr-script-src">src</a></code> content attribute</del><ins>|src| is null</ins>,
+    run these substeps:</p>
+
+    <ol><li><p>Let <var>base URL</var> be the <code id="script-processing-model:the-script-element-38"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element's <a id="script-processing-model:node-document-6" href="https://dom.spec.whatwg.org/#concept-node-document" data-x-internal="node-document">node
+     document</a>'s <a href="https://html.spec.whatwg.org/#document-base-url" id="script-processing-model:document-base-url">document base URL</a>.</p></li><li>
+      <p>Switch on <a href="https://html.spec.whatwg.org/#concept-script-type" id="script-processing-model:concept-script-type-8">the script's type</a>:</p>
+
+      <dl class="switch"><dt>"<code>classic</code>"</dt><dd>
+        <ol><li><p>Let <var>script</var> be the result of <a href="https://html.spec.whatwg.org/#creating-a-classic-script" id="script-processing-model:creating-a-classic-script">creating a classic script</a> using
+         <var>source text</var>, <var>settings object</var>, <var>base URL</var>, and
+         <var>options</var>.</p></li><li><p>Set <a href="https://html.spec.whatwg.org/#concept-script-script" id="script-processing-model:concept-script-script-2">the script's script</a> to
+         <var>script</var>.</p></li><li><p><a href="https://html.spec.whatwg.org/#the-script-is-ready" id="script-processing-model:the-script-is-ready-3">The script is ready</a>.</p></li></ol>
+       </dd><dt>"<code>module</code>"</dt><dd>
+        <ol><li><p><a href="https://html.spec.whatwg.org/#fetch-an-inline-module-script-graph" id="script-processing-model:fetch-an-inline-module-script-graph">Fetch an inline module script graph</a>, given <var>source text</var>,
+         <var>base URL</var>, <var>settings object</var>, and <var>options</var>. When this
+         asynchronously completes, set <a href="https://html.spec.whatwg.org/#concept-script-script" id="script-processing-model:concept-script-script-3">the script's
+         script</a> to the result. At that time, <a href="https://html.spec.whatwg.org/#the-script-is-ready" id="script-processing-model:the-script-is-ready-4">the script is ready</a>.</p></li></ol>
+       </dd></dl>
+     </li></ol>
+   </li><li>
+
+    <p>Then, follow the first of the following options that describes the situation:</p>
+
+    <dl class="switch"><dt id="script-processing-defer">If <a href="https://html.spec.whatwg.org/#concept-script-type" id="script-processing-model:concept-script-type-9">the script's
+     type</a> is "<code>classic</code>", and the element has a <code id="script-processing-model:attr-script-src-10"><a href="https://html.spec.whatwg.org/#attr-script-src">src</a></code> attribute, and the element has a <code id="script-processing-model:attr-script-defer"><a href="https://html.spec.whatwg.org/#attr-script-defer">defer</a></code> attribute, and the element has been flagged as
+     <a href="https://html.spec.whatwg.org/#parser-inserted" id="script-processing-model:parser-inserted-8">"parser-inserted"</a>, and the element does not have an <code id="script-processing-model:attr-script-async-4"><a href="https://html.spec.whatwg.org/#attr-script-async">async</a></code> attribute</dt><dt id="script-processing-module-noasync-parser-inserted">If <a href="https://html.spec.whatwg.org/#concept-script-type" id="script-processing-model:concept-script-type-10">the script's type</a> is "<code>module</code>", and
+     the element has been flagged as <a href="https://html.spec.whatwg.org/#parser-inserted" id="script-processing-model:parser-inserted-9">"parser-inserted"</a>, and the element does not have
+     an <code id="script-processing-model:attr-script-async-5"><a href="https://html.spec.whatwg.org/#attr-script-async">async</a></code> attribute</dt><dd>
+
+      <p>Add the element to the end of the <dfn id="list-of-scripts-that-will-execute-when-the-document-has-finished-parsing">list of scripts that will execute when the document
+      has finished parsing</dfn> associated with the <code id="script-processing-model:document-3"><a href="https://html.spec.whatwg.org/#document">Document</a></code> of the parser that
+      created the element.</p>
+
+      <p>When <a href="https://html.spec.whatwg.org/#the-script-is-ready" id="script-processing-model:the-script-is-ready-5">the script is ready</a>, set the element's <a href="https://html.spec.whatwg.org/#ready-to-be-parser-executed" id="script-processing-model:ready-to-be-parser-executed">"ready to be
+      parser-executed"</a> flag. The parser will handle executing the script.</p>
+
+     </dd><dt id="script-processing-parser-inserted">If <a href="https://html.spec.whatwg.org/#concept-script-type" id="script-processing-model:concept-script-type-11">the script's
+     type</a> is "<code>classic</code>", and the element has a <code id="script-processing-model:attr-script-src-11"><a href="https://html.spec.whatwg.org/#attr-script-src">src</a></code> attribute, and the element has been flagged as
+     <a href="https://html.spec.whatwg.org/#parser-inserted" id="script-processing-model:parser-inserted-10">"parser-inserted"</a>, and the element does not have an <code id="script-processing-model:attr-script-async-6"><a href="https://html.spec.whatwg.org/#attr-script-async">async</a></code> attribute</dt><dd>
+
+      <p>The element is the <a href="https://html.spec.whatwg.org/#pending-parsing-blocking-script" id="script-processing-model:pending-parsing-blocking-script">pending parsing-blocking script</a> of the
+      <code id="script-processing-model:document-4"><a href="https://html.spec.whatwg.org/#document">Document</a></code> of the parser that created the element. (There can only be one such
+      script per <code id="script-processing-model:document-5"><a href="https://html.spec.whatwg.org/#document">Document</a></code> at a time.)</p>
+
+      <p>When <a href="https://html.spec.whatwg.org/#the-script-is-ready" id="script-processing-model:the-script-is-ready-6">the script is ready</a>, set the element's <a href="https://html.spec.whatwg.org/#ready-to-be-parser-executed" id="script-processing-model:ready-to-be-parser-executed-2">"ready to be
+      parser-executed"</a> flag. The parser will handle executing the script.</p>
+
+     </dd><dt id="script-processing-src-sync">If <a href="https://html.spec.whatwg.org/#concept-script-type" id="script-processing-model:concept-script-type-12">the script's
+     type</a> is "<code>classic</code>", and the element has a <code id="script-processing-model:attr-script-src-12"><a href="https://html.spec.whatwg.org/#attr-script-src">src</a></code> attribute, and the element does not have an <code id="script-processing-model:attr-script-async-7"><a href="https://html.spec.whatwg.org/#attr-script-async">async</a></code> attribute, and the element does not have the
+     <a href="https://html.spec.whatwg.org/#non-blocking" id="script-processing-model:non-blocking-5">"non-blocking"</a> flag set</dt><dt id="script-processing-module-noasync">If <a href="https://html.spec.whatwg.org/#concept-script-type" id="script-processing-model:concept-script-type-13">the script's
+     type</a> is "<code>module</code>", and the element does not have an <code id="script-processing-model:attr-script-async-8"><a href="https://html.spec.whatwg.org/#attr-script-async">async</a></code> attribute, and the element does not have the
+     <a href="https://html.spec.whatwg.org/#non-blocking" id="script-processing-model:non-blocking-6">"non-blocking"</a> flag set</dt><dd>
+
+      <p>Add the element to the end of the <dfn id="list-of-scripts-that-will-execute-in-order-as-soon-as-possible">list of scripts that will execute in order as soon
+      as possible</dfn> associated with the <a id="script-processing-model:node-document-7" href="https://dom.spec.whatwg.org/#concept-node-document" data-x-internal="node-document">node document</a> of the <code id="script-processing-model:the-script-element-39"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code>
+      element at the time the <a href="https://html.spec.whatwg.org/#prepare-a-script" id="script-processing-model:prepare-a-script-5">prepare a script</a> algorithm started.</p>
+
+      <p>When <a href="https://html.spec.whatwg.org/#the-script-is-ready" id="script-processing-model:the-script-is-ready-7">the script is ready</a>, run the following steps:</p>
+
+      <ol><li><p>If the element is not now the first element in the <a href="https://html.spec.whatwg.org/#list-of-scripts-that-will-execute-in-order-as-soon-as-possible" id="script-processing-model:list-of-scripts-that-will-execute-in-order-as-soon-as-possible">list of scripts that will
+       execute in order as soon as possible</a> to which it was added above, then mark the
+       element as ready but return without executing the script yet.</p></li><li><p><i>Execution</i>: <a href="https://html.spec.whatwg.org/#execute-the-script-block" id="script-processing-model:execute-the-script-block">Execute the script block</a> corresponding to the first
+       script element in this <a href="https://html.spec.whatwg.org/#list-of-scripts-that-will-execute-in-order-as-soon-as-possible" id="script-processing-model:list-of-scripts-that-will-execute-in-order-as-soon-as-possible-2">list of scripts that will execute in order as soon as
+       possible</a>.</p></li><li><p>Remove the first element from this <a href="https://html.spec.whatwg.org/#list-of-scripts-that-will-execute-in-order-as-soon-as-possible" id="script-processing-model:list-of-scripts-that-will-execute-in-order-as-soon-as-possible-3">list of scripts that will execute in order as
+       soon as possible</a>.</p></li><li><p>If this <a href="https://html.spec.whatwg.org/#list-of-scripts-that-will-execute-in-order-as-soon-as-possible" id="script-processing-model:list-of-scripts-that-will-execute-in-order-as-soon-as-possible-4">list of scripts that will execute in order as soon as possible</a> is
+       still not empty and the first entry has already been marked as ready, then jump back to the
+       step labeled <i>execution</i>.</p></li></ol>
+
+     </dd><dt id="script-processing-src">If <a href="https://html.spec.whatwg.org/#concept-script-type" id="script-processing-model:concept-script-type-14">the script's type</a>
+     is "<code>classic</code>", and the element has a <code id="script-processing-model:attr-script-src-13"><a href="https://html.spec.whatwg.org/#attr-script-src">src</a></code> attribute</dt><dt id="script-processing-module-async">If <a href="https://html.spec.whatwg.org/#concept-script-type" id="script-processing-model:concept-script-type-15">the script's
+     type</a> is "<code>module</code>"</dt><dd>
+
+      <p>The element must be added to the <dfn id="set-of-scripts-that-will-execute-as-soon-as-possible">set of scripts that will execute as soon as
+      possible</dfn> of the <a id="script-processing-model:node-document-8" href="https://dom.spec.whatwg.org/#concept-node-document" data-x-internal="node-document">node document</a> of the <code id="script-processing-model:the-script-element-40"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element at the
+      time the <a href="https://html.spec.whatwg.org/#prepare-a-script" id="script-processing-model:prepare-a-script-6">prepare a script</a> algorithm started.</p>
+
+      <p>When <a href="https://html.spec.whatwg.org/#the-script-is-ready" id="script-processing-model:the-script-is-ready-8">the script is ready</a>, <a href="https://html.spec.whatwg.org/#execute-the-script-block" id="script-processing-model:execute-the-script-block-2">execute the script block</a> and then
+      remove the element from the <a href="https://html.spec.whatwg.org/#set-of-scripts-that-will-execute-as-soon-as-possible" id="script-processing-model:set-of-scripts-that-will-execute-as-soon-as-possible">set of scripts that will execute as soon as
+      possible</a>.</p>
+
+     </dd><dt id="script-processing-style-delayed">If the element does not have a <code id="script-processing-model:attr-script-src-14"><a href="https://html.spec.whatwg.org/#attr-script-src">src</a></code> attribute, and the element has been flagged as
+     <a href="https://html.spec.whatwg.org/#parser-inserted" id="script-processing-model:parser-inserted-11">"parser-inserted"</a>, and either the parser that created the <code id="script-processing-model:the-script-element-41"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> is
+     an <a href="https://html.spec.whatwg.org/#xml-parser" id="script-processing-model:xml-parser-3">XML parser</a> or it's an <a href="https://html.spec.whatwg.org/#html-parser" id="script-processing-model:html-parser-3">HTML parser</a> whose <a href="https://html.spec.whatwg.org/#script-nesting-level" id="script-processing-model:script-nesting-level">script nesting
+     level</a> is not greater than one, and the <code id="script-processing-model:document-6"><a href="https://html.spec.whatwg.org/#document">Document</a></code> of the <a href="https://html.spec.whatwg.org/#html-parser" id="script-processing-model:html-parser-4">HTML
+     parser</a> or <a href="https://html.spec.whatwg.org/#xml-parser" id="script-processing-model:xml-parser-4">XML parser</a> that created the <code id="script-processing-model:the-script-element-42"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element <a href="https://html.spec.whatwg.org/#has-a-style-sheet-that-is-blocking-scripts" id="script-processing-model:has-a-style-sheet-that-is-blocking-scripts">has
+     a style sheet that is blocking scripts</a></dt><dd>
+
+      <p>The element is the <a href="https://html.spec.whatwg.org/#pending-parsing-blocking-script" id="script-processing-model:pending-parsing-blocking-script-2">pending parsing-blocking script</a> of the
+      <code id="script-processing-model:document-7"><a href="https://html.spec.whatwg.org/#document">Document</a></code> of the parser that created the element. (There can only be one such
+      script per <code id="script-processing-model:document-8"><a href="https://html.spec.whatwg.org/#document">Document</a></code> at a time.)</p>
+
+      <p>Set the element's <a href="https://html.spec.whatwg.org/#ready-to-be-parser-executed" id="script-processing-model:ready-to-be-parser-executed-3">"ready to be parser-executed"</a> flag. The parser will handle
+      executing the script.</p>
+
+     </dd><dt id="script-processing-inline">Otherwise</dt><dd><a href="https://html.spec.whatwg.org/#immediately" id="script-processing-model:immediately-2">Immediately</a> <a href="https://html.spec.whatwg.org/#execute-the-script-block" id="script-processing-model:execute-the-script-block-3">execute the script block</a>, even if other scripts are
+     already executing.</dd></dl>
+
+   </li></ol>
+
 ### Enforcement in element attributes ### {#enforcement-in-sinks}
 
 This document modifies following IDL attributes of various DOM elements:
 
 <pre class="idl">
-partial interface mixin HTMLScriptElement : HTMLElement {
-  [CEReactions, TrustedTypes=TrustedScriptURL] attribute ScriptURLString src;
-  [CEReactions, TrustedTypes=TrustedScript] attribute ScriptString text;
-};
-
 partial interface mixin HTMLIFrameElement : HTMLElement {
   [CEReactions, TrustedTypes=TrustedHTML] attribute HTMLString srcdoc;
 };
@@ -1034,44 +1338,28 @@ partial interface HTMLObjectElement : HTMLElement {
 
 Issue: Add base.href enforcement.
 
-### Enforcement for script text contents ### {#enforcement-in-script-text}
+### Enforcement for scripts ### {#enforcement-in-script-text}
 
 This document modifies how {{HTMLScriptElement}} [=child text content=] can be set to allow applications to control dynamically created scripts. It does so by
 adding the {{HTMLElement/innerText}} and {{Node/textContent}} attributes directly on {{HTMLScriptElement}}. The behavior of the attributes remains the same
 as in their original counterparts, apart from additional behavior triggered by the {{TrustedTypes}} extended attribute presence.
 
+Note: Using these IDL attributes is the recommended way of dynamically setting URL or a text of a script. Manipulating attribute nodes or text nodes directly will call a default policy on the final value when the script is prepared.
+
+Issue: Figure out what to do with script.setAttribute('src'). See [DOM#789](https://github.com/whatwg/dom/issues/789).
+
 <pre class="idl">
 partial interface mixin HTMLScriptElement : HTMLElement {
  [CEReactions, TrustedTypes=TrustedScript] attribute [TreatNullAs=EmptyString] ScriptString innerText;
  [CEReactions, TrustedTypes=TrustedScript] attribute ScriptString? textContent;
+ [CEReactions, TrustedTypes=TrustedScriptURL] attribute ScriptURLString src;
+ [CEReactions, TrustedTypes=TrustedScript] attribute ScriptString text;
 };
 </pre>
 
-Additionally, this document defines [$insert text node validation steps$] for {{HTMLScriptElement}} to ascertain that text nodes inserted under {{HTMLScriptElement}} elements will satisfy Trusted Types restrictions:
+On setting, the {{HTMLElement/innerText}}, {{Node/textContent}} and {{HTMLScriptElement/text}} IDL attributes perform the regular steps, and then set [=content object=]'s {{script/[[ScriptText]]}} internal slot value with the stringified value.
 
-1.  Let |text| be |node|'s [=child text content=].
-1.  Let |convertedText| be the result of running [$Get Trusted Type compliant string$], passing |parent|'s [=relevant global object=] as |global|, {{TrustedScript}} as |expectedType|, |text| as |input| and `"script.text"` as |sink|.
-    If the algorithm threw an error, rethrow the error.
-
-    Note: If Trusted Types are not enforced, this algorithm will return early and return |input| unmodified.
-1.  Set |node|'s data to |convertedText|.
-
-Note: This prevents calling `ChildNode.after(aTrustedScript, ...)`, as the type information is lost before insert is run. To fix that, an additional metadata in Text nodes would be needed. Removed that use case for simplicity.
-
-<div class="example" id="script-node-modification-example">
-  Trusted Types prevent manipulation of text nodes under script elements.
-  <pre highlight=js>
-  // Content-Security-Policy: trusted-types *
-
-  const s = document.createElement('script');
-  const text = document.createTextNode('alert(1)');
-  const p = document.createElement('p');
-
-  s.appendChild(p);
-  s.appendChild(text); // TypeError
-  p.insertAdjacentText('beforebegin', 'alert(2)'); // TypeError
-  </pre>
-</div>
+On setting, the {{HTMLScriptElement/src}} IDL attribute performs the usual steps, and then sets [=content object=]'s {{script/[[ScriptURL]]}} internal slot value to its {{script/src}} content attribute value.
 
 ### Enforcement in timer functions ### {#enforcement-in-timer-functions}
 
@@ -1142,25 +1430,7 @@ partial interface mixin SVGScriptElement : SVGElement {
 };
 </pre>
 
-Additionally, this document defines [$insert text node validation steps$] for {{SVGScriptElement}} to ascertain that text nodes inserted to {{SVGScriptElement}} elements will satisfy Trusted Types restrictions:
-
-1.  Let |text| be |node|'s [=child text content=].
-1.  Let |convertedText| be the result of running [$Get Trusted Type compliant string$], passing |parent|'s [=relevant global object=] as |global|, {{TrustedScript}} as |expectedType|, |text| as |input| and `"script.text"` as |sink|.
-    If the algorithm threw an error, rethrow the error.
-
-    Note: If Trusted Types are not enforced, this algorithm will return early and return |input| unmodified.
-1.  Set |node|'s data to |convertedText|.
-
-
 ## Integration with DOM ## {#integration-with-dom}
-
-### Text node validation steps ### {#dom-text-node-validation}
-
-Add the following step at the beginning of step 7 of [[DOM#concept-node-insert|insert]] algorithm.
-
-1. If |node| is a {{Text}} node, run [$insert text node validation steps$] for |parent|, passing |node| and |parent| as parameters.
-
-<dfn abstract-op>insert text node validation steps</dfn> may be defined by other specifications.
 
 ## Integration with DOM Parsing ## {#integration-with-dom-parsing}
 
@@ -1327,6 +1597,23 @@ strings (|createdPolicyNames|), this algorithm returns `"Blocked"` if the
     1.  If |policy|'s [=policy/disposition=] is `"enforce"`, then set |result| to
         `"Blocked"`.
 1. Return |result|.
+
+### <dfn abstract-op>Prepare the script URL and text</dfn> ### {#prepare-script-url-and-text}
+
+Given a {{script}} (|script|), this algorithm performs the following steps:
+
+1.  If |script| does not have a {{script/src}} content attribute, set its {{script/[[ScriptURL]]}} internal slot value to `null`.
+
+1.  Otherwise, if |script|'s {{script/[[ScriptURL]]}} internal slot value is not equal to its {{script/src}} attribute value,
+    set |script|'s {{script/[[ScriptURL]]}} to the result of executing [$Get Trusted Type compliant string$],
+    passing {{TrustedScriptURL}} as |expectedType|, |script|'s {{Document}}'s {{global object}} as |global|, |script|'s {{script/src}} attribute value
+    as |input| and `script.src` as |sink|. If the algorithm threw an error, rethrow the error and abort further steps.
+
+1.  If |script|'s {{script/[[ScriptText]]}} internal slot value is not equal to its [=child text content=],
+    set |script|'s {{script/[[ScriptText]]}} to the result of executing [$Get Trusted Type compliant string$],
+    passing {{TrustedScriptURL}} as |expectedType|, |script|'s {{Document}}'s {{global object}} as |global|, |script|'s [=child text content=] attribute value
+    and `script.text` as |sink|. If the algorithm threw an error, rethrow the error.
+
 
 ### Violation object changes ### {#csp-violation-object-hdr}
 
