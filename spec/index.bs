@@ -538,7 +538,7 @@ initially empty.
     1. Set |localName| to |tagName| in [=ASCII lowercase=].
     1. Set |attribute| to |attribute| in [=ASCII lowercase=].
     1. If |elementNs| is an empty string, set |elementNs| to [=HTML namespace=].
-    1. If |attrNs| is an empty string, set |attrNs| to |elementNs|'s value.
+    1. If |attrNs| is an empty string, set |attrNs| to null.
     1. Let |interface| be the [=element interface=] for |localName| and |elementNs|.
     1. If |interface| does not have an IDL [=attribute=] that [=reflects=] a content attribute with
         |localName| [=attribute/local name=] and |attrNs| [=attribute/namespace=],
