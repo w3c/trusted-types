@@ -1008,6 +1008,8 @@ partial interface mixin Document {
 
 ### Enforcement for scripts ### {#enfocement-in-scripts}
 
+#### Slots with trusted values
+
 This document modifies {{script}} elements. Each script has:
 
 : <dfn dfn-for="script">`[[ScriptURL]]`</dfn> internal slot.
@@ -1019,6 +1021,31 @@ This document modifies {{script}} elements. Each script has:
 ::  A string, containing the body of the script to execute that was set
     through a {{TrustedTypes}} compliant sink. Equivalent to script's
     [=child text content=]. Initially null.
+
+#### Setting slot values
+
+This document modifies how {{HTMLScriptElement}} [=child text content=] can be set to allow applications to control dynamically created scripts. It does so by
+adding the {{HTMLElement/innerText}} and {{Node/textContent}} attributes directly on {{HTMLScriptElement}}. The behavior of the attributes remains the same
+as in their original counterparts, apart from additional behavior triggered by the {{TrustedTypes}} extended attribute presence.
+
+Note: Using these IDL attributes is the recommended way of dynamically setting URL or a text of a script. Manipulating attribute nodes or text nodes directly will call a default policy on the final value when the script is prepared.
+
+Issue: Figure out what to do with script.setAttribute('src'). See [DOM#789](https://github.com/whatwg/dom/issues/789).
+
+<pre class="idl">
+partial interface mixin HTMLScriptElement : HTMLElement {
+ [CEReactions, TrustedTypes=TrustedScript] attribute [TreatNullAs=EmptyString] ScriptString innerText;
+ [CEReactions, TrustedTypes=TrustedScript] attribute ScriptString? textContent;
+ [CEReactions, TrustedTypes=TrustedScriptURL] attribute ScriptURLString src;
+ [CEReactions, TrustedTypes=TrustedScript] attribute ScriptString text;
+};
+</pre>
+
+On setting, the {{HTMLElement/innerText}}, {{Node/textContent}} and {{HTMLScriptElement/text}} IDL attributes perform the regular steps, and then set [=content object=]'s {{script/[[ScriptText]]}} internal slot value with the stringified value.
+
+On setting, the {{HTMLScriptElement/src}} IDL attribute performs the usual steps, and then sets [=content object=]'s {{script/[[ScriptURL]]}} internal slot value to its {{script/src}} content attribute value.
+
+#### Slot value verification
 
 The [=prepare a script=] algorithm is modified as follows:
 
@@ -1338,29 +1365,6 @@ partial interface HTMLObjectElement : HTMLElement {
 
 Issue: Add base.href enforcement.
 
-### Enforcement for scripts ### {#enforcement-in-script-text}
-
-This document modifies how {{HTMLScriptElement}} [=child text content=] can be set to allow applications to control dynamically created scripts. It does so by
-adding the {{HTMLElement/innerText}} and {{Node/textContent}} attributes directly on {{HTMLScriptElement}}. The behavior of the attributes remains the same
-as in their original counterparts, apart from additional behavior triggered by the {{TrustedTypes}} extended attribute presence.
-
-Note: Using these IDL attributes is the recommended way of dynamically setting URL or a text of a script. Manipulating attribute nodes or text nodes directly will call a default policy on the final value when the script is prepared.
-
-Issue: Figure out what to do with script.setAttribute('src'). See [DOM#789](https://github.com/whatwg/dom/issues/789).
-
-<pre class="idl">
-partial interface mixin HTMLScriptElement : HTMLElement {
- [CEReactions, TrustedTypes=TrustedScript] attribute [TreatNullAs=EmptyString] ScriptString innerText;
- [CEReactions, TrustedTypes=TrustedScript] attribute ScriptString? textContent;
- [CEReactions, TrustedTypes=TrustedScriptURL] attribute ScriptURLString src;
- [CEReactions, TrustedTypes=TrustedScript] attribute ScriptString text;
-};
-</pre>
-
-On setting, the {{HTMLElement/innerText}}, {{Node/textContent}} and {{HTMLScriptElement/text}} IDL attributes perform the regular steps, and then set [=content object=]'s {{script/[[ScriptText]]}} internal slot value with the stringified value.
-
-On setting, the {{HTMLScriptElement/src}} IDL attribute performs the usual steps, and then sets [=content object=]'s {{script/[[ScriptURL]]}} internal slot value to its {{script/src}} content attribute value.
-
 ### Enforcement in timer functions ### {#enforcement-in-timer-functions}
 
 This document modifies the {{WindowOrWorkerGlobalScope}} interface mixin:
@@ -1606,12 +1610,12 @@ Given a {{script}} (|script|), this algorithm performs the following steps:
 
 1.  Otherwise, if |script|'s {{script/[[ScriptURL]]}} internal slot value is not equal to its {{script/src}} attribute value,
     set |script|'s {{script/[[ScriptURL]]}} to the result of executing [$Get Trusted Type compliant string$],
-    passing {{TrustedScriptURL}} as |expectedType|, |script|'s {{Document}}'s {{global object}} as |global|, |script|'s {{script/src}} attribute value
+    passing {{TrustedScriptURL}} as |expectedType|, |script|'s {{Document}}'s [=relevant global object=] as |global|, |script|'s {{script/src}} attribute value
     as |input| and `script.src` as |sink|. If the algorithm threw an error, rethrow the error and abort further steps.
 
 1.  If |script|'s {{script/[[ScriptText]]}} internal slot value is not equal to its [=child text content=],
     set |script|'s {{script/[[ScriptText]]}} to the result of executing [$Get Trusted Type compliant string$],
-    passing {{TrustedScriptURL}} as |expectedType|, |script|'s {{Document}}'s {{global object}} as |global|, |script|'s [=child text content=] attribute value
+    passing {{TrustedScriptURL}} as |expectedType|, |script|'s {{Document}}'s [=relevant global object=] as |global|, |script|'s [=child text content=] attribute value
     and `script.text` as |sink|. If the algorithm threw an error, rethrow the error.
 
 

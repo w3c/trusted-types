@@ -334,11 +334,16 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
        <ol class="toc">
         <li><a href="#extensions-to-the-window-interface"><span class="secno">4.1.1</span> <span class="content">Extensions to the Window interface</span></a>
         <li><a href="#extensions-to-the-document-interface"><span class="secno">4.1.2</span> <span class="content">Extensions to the Document interface</span></a>
-        <li><a href="#enfocement-in-scripts"><span class="secno">4.1.3</span> <span class="content">Enforcement for scripts</span></a>
+        <li>
+         <a href="#enfocement-in-scripts"><span class="secno">4.1.3</span> <span class="content">Enforcement for scripts</span></a>
+         <ol class="toc">
+          <li><a href="#slots-with-trusted-values"><span class="secno">4.1.3.1</span> <span class="content">Slots with trusted values</span></a>
+          <li><a href="#setting-slot-values"><span class="secno">4.1.3.2</span> <span class="content">Setting slot values</span></a>
+          <li><a href="#slot-value-verification"><span class="secno">4.1.3.3</span> <span class="content">Slot value verification</span></a>
+         </ol>
         <li><a href="#enforcement-in-sinks"><span class="secno">4.1.4</span> <span class="content">Enforcement in element attributes</span></a>
-        <li><a href="#enforcement-in-script-text"><span class="secno">4.1.5</span> <span class="content">Enforcement for scripts</span></a>
-        <li><a href="#enforcement-in-timer-functions"><span class="secno">4.1.6</span> <span class="content">Enforcement in timer functions</span></a>
-        <li><a href="#enforcement-in-event-handler-content-attributes"><span class="secno">4.1.7</span> <span class="content">Enforcement in event handler content attributes</span></a>
+        <li><a href="#enforcement-in-timer-functions"><span class="secno">4.1.5</span> <span class="content">Enforcement in timer functions</span></a>
+        <li><a href="#enforcement-in-event-handler-content-attributes"><span class="secno">4.1.6</span> <span class="content">Enforcement in event handler content attributes</span></a>
        </ol>
       <li><a href="#integration-with-svg"><span class="secno">4.2</span> <span class="content">Integration with SVG</span></a>
       <li><a href="#integration-with-dom"><span class="secno">4.3</span> <span class="content">Integration with DOM</span></a>
@@ -1269,6 +1274,7 @@ type policy factory</a> of the current <code class="idl"><a data-link-type="idl"
 };
 </pre>
    <h4 class="heading settled" data-level="4.1.3" id="enfocement-in-scripts"><span class="secno">4.1.3. </span><span class="content">Enforcement for scripts</span><a class="self-link" href="#enfocement-in-scripts"></a></h4>
+   <h5 class="heading settled" data-level="4.1.3.1" id="slots-with-trusted-values"><span class="secno">4.1.3.1. </span><span class="content">Slots with trusted values</span><a class="self-link" href="#slots-with-trusted-values"></a></h5>
    <p>This document modifies <code class="idl"><a data-link-type="idl" href="https://fetch.spec.whatwg.org/#dom-requestdestination-script" id="ref-for-dom-requestdestination-script">script</a></code> elements. Each script has:</p>
    <dl>
     <dt data-md><dfn data-dfn-for="script" data-dfn-type="dfn" data-noexport id="script-scripturl"><code>[[ScriptURL]]</code><a class="self-link" href="#script-scripturl"></a></dfn> internal slot.
@@ -1280,6 +1286,22 @@ that was set through a <code class="idl"><a data-link-type="idl" href="#extended
      <p>A string, containing the body of the script to execute that was set
 through a <code class="idl"><a data-link-type="idl" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①⓪">TrustedTypes</a></code> compliant sink. Equivalent to script’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-child-text-content" id="ref-for-concept-child-text-content">child text content</a>. Initially null.</p>
    </dl>
+   <h5 class="heading settled" data-level="4.1.3.2" id="setting-slot-values"><span class="secno">4.1.3.2. </span><span class="content">Setting slot values</span><a class="self-link" href="#setting-slot-values"></a></h5>
+   <p>This document modifies how <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement" id="ref-for-htmlscriptelement">HTMLScriptElement</a></code> <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-child-text-content" id="ref-for-concept-child-text-content①">child text content</a> can be set to allow applications to control dynamically created scripts. It does so by
+adding the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/dom.html#dom-innertext" id="ref-for-dom-innertext">innerText</a></code> and <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#dom-node-textcontent" id="ref-for-dom-node-textcontent">textContent</a></code> attributes directly on <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement" id="ref-for-htmlscriptelement①">HTMLScriptElement</a></code>. The behavior of the attributes remains the same
+as in their original counterparts, apart from additional behavior triggered by the <code class="idl"><a data-link-type="idl" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①①">TrustedTypes</a></code> extended attribute presence.</p>
+   <p class="note" role="note"><span>Note:</span> Using these IDL attributes is the recommended way of dynamically setting URL or a text of a script. Manipulating attribute nodes or text nodes directly will call a default policy on the final value when the script is prepared.</p>
+   <p class="issue" id="issue-62c0f2c6"><a class="self-link" href="#issue-62c0f2c6"></a> Figure out what to do with script.setAttribute('src'). See <a href="https://github.com/whatwg/dom/issues/789">DOM#789</a>.</p>
+<pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement" id="ref-for-htmlscriptelement②"><c- g>HTMLScriptElement</c-></a> : <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement" id="ref-for-htmlelement"><c- n>HTMLElement</c-></a> {
+ [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions②"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①②"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript⑤"><c- n>TrustedScript</c-></a>] <c- b>attribute</c-> [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#TreatNullAs" id="ref-for-TreatNullAs①"><c- g>TreatNullAs</c-></a>=<a class="n" data-link-type="idl-name"><c- n>EmptyString</c-></a>] <a class="n" data-link-type="idl-name" href="#typedefdef-scriptstring" id="ref-for-typedefdef-scriptstring"><c- n>ScriptString</c-></a> <dfn class="idl-code" data-dfn-for="HTMLScriptElement" data-dfn-type="attribute" data-export data-type="[TreatNullAs=EmptyString] ScriptString" id="dom-htmlscriptelement-innertext"><code><c- g>innerText</c-></code><a class="self-link" href="#dom-htmlscriptelement-innertext"></a></dfn>;
+ [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions③"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①③"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript⑥"><c- n>TrustedScript</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scriptstring" id="ref-for-typedefdef-scriptstring①"><c- n>ScriptString</c-></a>? <dfn class="idl-code" data-dfn-for="HTMLScriptElement" data-dfn-type="attribute" data-export data-type="ScriptString?" id="dom-htmlscriptelement-textcontent"><code><c- g>textContent</c-></code><a class="self-link" href="#dom-htmlscriptelement-textcontent"></a></dfn>;
+ [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions④"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①④"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl⑤"><c- n>TrustedScriptURL</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring" id="ref-for-typedefdef-scripturlstring"><c- n>ScriptURLString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="HTMLScriptElement" data-dfn-type="attribute" data-export data-type="ScriptURLString" id="dom-htmlscriptelement-src"><code><c- g>src</c-></code></dfn>;
+ [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions⑤"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①⑤"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript⑦"><c- n>TrustedScript</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scriptstring" id="ref-for-typedefdef-scriptstring②"><c- n>ScriptString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="HTMLScriptElement" data-dfn-type="attribute" data-export data-type="ScriptString" id="dom-htmlscriptelement-text"><code><c- g>text</c-></code></dfn>;
+};
+</pre>
+   <p>On setting, the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/dom.html#dom-innertext" id="ref-for-dom-innertext①">innerText</a></code>, <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#dom-node-textcontent" id="ref-for-dom-node-textcontent①">textContent</a></code> and <code class="idl"><a data-link-type="idl" href="#dom-htmlscriptelement-text" id="ref-for-dom-htmlscriptelement-text①">text</a></code> IDL attributes perform the regular steps, and then set <a data-link-type="dfn">content object</a>'s <code class="idl"><a data-link-type="idl">[[ScriptText]]</a></code> internal slot value with the stringified value.</p>
+   <p>On setting, the <code class="idl"><a data-link-type="idl" href="#dom-htmlscriptelement-src" id="ref-for-dom-htmlscriptelement-src②">src</a></code> IDL attribute performs the usual steps, and then sets <a data-link-type="dfn">content object</a>'s <code class="idl"><a data-link-type="idl">[[ScriptURL]]</a></code> internal slot value to its <code class="idl"><a data-link-type="idl">src</a></code> content attribute value.</p>
+   <h5 class="heading settled" data-level="4.1.3.3" id="slot-value-verification"><span class="secno">4.1.3.3. </span><span class="content">Slot value verification</span><a class="self-link" href="#slot-value-verification"></a></h5>
    <p>The <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/scripting.html#prepare-a-script" id="ref-for-prepare-a-script">prepare a script</a> algorithm is modified as follows:</p>
    <ol>
     <li>
@@ -1575,38 +1597,23 @@ through a <code class="idl"><a data-link-type="idl" href="#extendedattrdef-trust
    </ol>
    <h4 class="heading settled" data-level="4.1.4" id="enforcement-in-sinks"><span class="secno">4.1.4. </span><span class="content">Enforcement in element attributes</span><a class="self-link" href="#enforcement-in-sinks"></a></h4>
    <p>This document modifies following IDL attributes of various DOM elements:</p>
-<pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#htmliframeelement" id="ref-for-htmliframeelement"><c- g>HTMLIFrameElement</c-></a> : <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement" id="ref-for-htmlelement"><c- n>HTMLElement</c-></a> {
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions②"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①①"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml①②"><c- n>TrustedHTML</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring②"><c- n>HTMLString</c-></a> <dfn class="idl-code" data-dfn-for="HTMLIFrameElement" data-dfn-type="attribute" data-export data-type="HTMLString" id="dom-htmliframeelement-srcdoc"><code><c- g>srcdoc</c-></code><a class="self-link" href="#dom-htmliframeelement-srcdoc"></a></dfn>;
+<pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#htmliframeelement" id="ref-for-htmliframeelement"><c- g>HTMLIFrameElement</c-></a> : <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement" id="ref-for-htmlelement①"><c- n>HTMLElement</c-></a> {
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions⑥"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①⑥"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml①②"><c- n>TrustedHTML</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring②"><c- n>HTMLString</c-></a> <dfn class="idl-code" data-dfn-for="HTMLIFrameElement" data-dfn-type="attribute" data-export data-type="HTMLString" id="dom-htmliframeelement-srcdoc"><code><c- g>srcdoc</c-></code><a class="self-link" href="#dom-htmliframeelement-srcdoc"></a></dfn>;
 };
 
-<c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#htmlembedelement" id="ref-for-htmlembedelement"><c- g>HTMLEmbedElement</c-></a> : <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement" id="ref-for-htmlelement①"><c- n>HTMLElement</c-></a> {
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions③"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①②"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl⑤"><c- n>TrustedScriptURL</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring" id="ref-for-typedefdef-scripturlstring"><c- n>ScriptURLString</c-></a> <dfn class="idl-code" data-dfn-for="HTMLEmbedElement" data-dfn-type="attribute" data-export data-type="ScriptURLString" id="dom-htmlembedelement-src"><code><c- g>src</c-></code><a class="self-link" href="#dom-htmlembedelement-src"></a></dfn>;
+<c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#htmlembedelement" id="ref-for-htmlembedelement"><c- g>HTMLEmbedElement</c-></a> : <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement" id="ref-for-htmlelement②"><c- n>HTMLElement</c-></a> {
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions⑦"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①⑦"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl⑥"><c- n>TrustedScriptURL</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring" id="ref-for-typedefdef-scripturlstring①"><c- n>ScriptURLString</c-></a> <dfn class="idl-code" data-dfn-for="HTMLEmbedElement" data-dfn-type="attribute" data-export data-type="ScriptURLString" id="dom-htmlembedelement-src"><code><c- g>src</c-></code><a class="self-link" href="#dom-htmlembedelement-src"></a></dfn>;
 };
 
-<c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#htmlobjectelement" id="ref-for-htmlobjectelement"><c- g>HTMLObjectElement</c-></a> : <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement" id="ref-for-htmlelement②"><c- n>HTMLElement</c-></a> {
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions④"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①③"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl⑥"><c- n>TrustedScriptURL</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring" id="ref-for-typedefdef-scripturlstring①"><c- n>ScriptURLString</c-></a> <dfn class="idl-code" data-dfn-for="HTMLObjectElement" data-dfn-type="attribute" data-export data-type="ScriptURLString" id="dom-htmlobjectelement-data"><code><c- g>data</c-></code><a class="self-link" href="#dom-htmlobjectelement-data"></a></dfn>;
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions⑤"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①④"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl⑦"><c- n>TrustedScriptURL</c-></a>] <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②③"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="HTMLObjectElement" data-dfn-type="attribute" data-export data-type="DOMString" id="dom-htmlobjectelement-codebase"><code><c- g>codeBase</c-></code><a class="self-link" href="#dom-htmlobjectelement-codebase"></a></dfn>; // obsolete
+<c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#htmlobjectelement" id="ref-for-htmlobjectelement"><c- g>HTMLObjectElement</c-></a> : <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement" id="ref-for-htmlelement③"><c- n>HTMLElement</c-></a> {
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions⑧"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①⑧"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl⑦"><c- n>TrustedScriptURL</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring" id="ref-for-typedefdef-scripturlstring②"><c- n>ScriptURLString</c-></a> <dfn class="idl-code" data-dfn-for="HTMLObjectElement" data-dfn-type="attribute" data-export data-type="ScriptURLString" id="dom-htmlobjectelement-data"><code><c- g>data</c-></code><a class="self-link" href="#dom-htmlobjectelement-data"></a></dfn>;
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions⑨"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①⑨"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl⑧"><c- n>TrustedScriptURL</c-></a>] <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②③"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="HTMLObjectElement" data-dfn-type="attribute" data-export data-type="DOMString" id="dom-htmlobjectelement-codebase"><code><c- g>codeBase</c-></code><a class="self-link" href="#dom-htmlobjectelement-codebase"></a></dfn>; // obsolete
 };
 
 // TODO: Add HTMLPortalElement.src from https://github.com/WICG/portals once it’s specced.
 </pre>
    <p class="issue" id="issue-13577559"><a class="self-link" href="#issue-13577559"></a> Add base.href enforcement.</p>
-   <h4 class="heading settled" data-level="4.1.5" id="enforcement-in-script-text"><span class="secno">4.1.5. </span><span class="content">Enforcement for scripts</span><a class="self-link" href="#enforcement-in-script-text"></a></h4>
-   <p>This document modifies how <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement" id="ref-for-htmlscriptelement">HTMLScriptElement</a></code> <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-child-text-content" id="ref-for-concept-child-text-content①">child text content</a> can be set to allow applications to control dynamically created scripts. It does so by
-adding the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/dom.html#dom-innertext" id="ref-for-dom-innertext">innerText</a></code> and <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#dom-node-textcontent" id="ref-for-dom-node-textcontent">textContent</a></code> attributes directly on <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement" id="ref-for-htmlscriptelement①">HTMLScriptElement</a></code>. The behavior of the attributes remains the same
-as in their original counterparts, apart from additional behavior triggered by the <code class="idl"><a data-link-type="idl" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①⑤">TrustedTypes</a></code> extended attribute presence.</p>
-   <p class="note" role="note"><span>Note:</span> Using these IDL attributes is the recommended way of dynamically setting URL or a text of a script. Manipulating attribute nodes or text nodes directly will call a default policy on the final value when the script is prepared.</p>
-   <p class="issue" id="issue-62c0f2c6"><a class="self-link" href="#issue-62c0f2c6"></a> Figure out what to do with script.setAttribute('src'). See <a href="https://github.com/whatwg/dom/issues/789">DOM#789</a>.</p>
-<pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement" id="ref-for-htmlscriptelement②"><c- g>HTMLScriptElement</c-></a> : <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement" id="ref-for-htmlelement③"><c- n>HTMLElement</c-></a> {
- [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions⑥"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①⑥"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript⑤"><c- n>TrustedScript</c-></a>] <c- b>attribute</c-> [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#TreatNullAs" id="ref-for-TreatNullAs①"><c- g>TreatNullAs</c-></a>=<a class="n" data-link-type="idl-name"><c- n>EmptyString</c-></a>] <a class="n" data-link-type="idl-name" href="#typedefdef-scriptstring" id="ref-for-typedefdef-scriptstring"><c- n>ScriptString</c-></a> <dfn class="idl-code" data-dfn-for="HTMLScriptElement" data-dfn-type="attribute" data-export data-type="[TreatNullAs=EmptyString] ScriptString" id="dom-htmlscriptelement-innertext"><code><c- g>innerText</c-></code><a class="self-link" href="#dom-htmlscriptelement-innertext"></a></dfn>;
- [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions⑦"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①⑦"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript⑥"><c- n>TrustedScript</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scriptstring" id="ref-for-typedefdef-scriptstring①"><c- n>ScriptString</c-></a>? <dfn class="idl-code" data-dfn-for="HTMLScriptElement" data-dfn-type="attribute" data-export data-type="ScriptString?" id="dom-htmlscriptelement-textcontent"><code><c- g>textContent</c-></code><a class="self-link" href="#dom-htmlscriptelement-textcontent"></a></dfn>;
- [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions⑧"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①⑧"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl⑧"><c- n>TrustedScriptURL</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring" id="ref-for-typedefdef-scripturlstring②"><c- n>ScriptURLString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="HTMLScriptElement" data-dfn-type="attribute" data-export data-type="ScriptURLString" id="dom-htmlscriptelement-src"><code><c- g>src</c-></code></dfn>;
- [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions⑨"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①⑨"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript⑦"><c- n>TrustedScript</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scriptstring" id="ref-for-typedefdef-scriptstring②"><c- n>ScriptString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="HTMLScriptElement" data-dfn-type="attribute" data-export data-type="ScriptString" id="dom-htmlscriptelement-text"><code><c- g>text</c-></code></dfn>;
-};
-</pre>
-   <p>On setting, the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/dom.html#dom-innertext" id="ref-for-dom-innertext①">innerText</a></code>, <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#dom-node-textcontent" id="ref-for-dom-node-textcontent①">textContent</a></code> and <code class="idl"><a data-link-type="idl" href="#dom-htmlscriptelement-text" id="ref-for-dom-htmlscriptelement-text①">text</a></code> IDL attributes perform the regular steps, and then set <a data-link-type="dfn">content object</a>'s <code class="idl"><a data-link-type="idl">[[ScriptText]]</a></code> internal slot value with the stringified value.</p>
-   <p>On setting, the <code class="idl"><a data-link-type="idl" href="#dom-htmlscriptelement-src" id="ref-for-dom-htmlscriptelement-src②">src</a></code> IDL attribute performs the usual steps, and then sets <a data-link-type="dfn">content object</a>'s <code class="idl"><a data-link-type="idl">[[ScriptURL]]</a></code> internal slot value to its <code class="idl"><a data-link-type="idl">src</a></code> content attribute value.</p>
-   <h4 class="heading settled" data-level="4.1.6" id="enforcement-in-timer-functions"><span class="secno">4.1.6. </span><span class="content">Enforcement in timer functions</span><a class="self-link" href="#enforcement-in-timer-functions"></a></h4>
+   <h4 class="heading settled" data-level="4.1.5" id="enforcement-in-timer-functions"><span class="secno">4.1.5. </span><span class="content">Enforcement in timer functions</span><a class="self-link" href="#enforcement-in-timer-functions"></a></h4>
    <p>This document modifies the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/webappapis.html#windoworworkerglobalscope" id="ref-for-windoworworkerglobalscope">WindowOrWorkerGlobalScope</a></code> interface mixin:</p>
 <pre class="idl highlight def"><c- b>typedef</c-> (<a class="n" data-link-type="idl-name" href="#typedefdef-scriptstring" id="ref-for-typedefdef-scriptstring③"><c- n>ScriptString</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="https://heycam.github.io/webidl/#Function" id="ref-for-Function"><c- n>Function</c-></a>) <dfn class="dfn-paneled idl-code" data-dfn-type="typedef" data-export id="typedefdef-trustedtimerhandler"><code><c- g>TrustedTimerHandler</c-></code></dfn>;
 
@@ -1636,7 +1643,7 @@ the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compl
    <p class="note" role="note"><span>Note:</span> This makes sure that a <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript⑨">TrustedScript</a></code> is passed to timer
 functions in place of a string when Trusted Types are enforced, but
 also unconditionally accepts any <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#Function" id="ref-for-Function②">Function</a></code> object.</p>
-   <h4 class="heading settled" data-level="4.1.7" id="enforcement-in-event-handler-content-attributes"><span class="secno">4.1.7. </span><span class="content">Enforcement in event handler content attributes</span><a class="self-link" href="#enforcement-in-event-handler-content-attributes"></a></h4>
+   <h4 class="heading settled" data-level="4.1.6" id="enforcement-in-event-handler-content-attributes"><span class="secno">4.1.6. </span><span class="content">Enforcement in event handler content attributes</span><a class="self-link" href="#enforcement-in-event-handler-content-attributes"></a></h4>
    <p>This document modifies the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-attributes-change-ext" id="ref-for-concept-element-attributes-change-ext">attribute change steps</a> for an <a href="https://www.w3.org/TR/html5/#event-handler-content-attributes">event handler content attribute</a>.</p>
    <p>At the beginning of step 5, insert the following steps:</p>
    <ol>
@@ -1849,12 +1856,12 @@ which value is <var>policyName</var>, set <var>createViolation</var> to true.</p
     <li data-md>
      <p>Otherwise, if <var>script</var>’s <code class="idl"><a data-link-type="idl">[[ScriptURL]]</a></code> internal slot value is not equal to its <code class="idl"><a data-link-type="idl">src</a></code> attribute value,
 set <var>script</var>’s <code class="idl"><a data-link-type="idl">[[ScriptURL]]</a></code> to the result of executing <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string⑤">Get Trusted Type compliant string</a>,
-passing <code class="idl"><a data-link-type="idl" href="#trustedscripturl" id="ref-for-trustedscripturl①⓪">TrustedScriptURL</a></code> as <var>expectedType</var>, <var>script</var>’s <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document④">Document</a></code>'s <code class="idl"><a data-link-type="idl">global object</a></code> as <var>global</var>, <var>script</var>’s <code class="idl"><a data-link-type="idl">src</a></code> attribute value
+passing <code class="idl"><a data-link-type="idl" href="#trustedscripturl" id="ref-for-trustedscripturl①⓪">TrustedScriptURL</a></code> as <var>expectedType</var>, <var>script</var>’s <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document④">Document</a></code>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global⑦">relevant global object</a> as <var>global</var>, <var>script</var>’s <code class="idl"><a data-link-type="idl">src</a></code> attribute value
 as <var>input</var> and <code>script.src</code> as <var>sink</var>. If the algorithm threw an error, rethrow the error and abort further steps.</p>
     <li data-md>
      <p>If <var>script</var>’s <code class="idl"><a data-link-type="idl">[[ScriptText]]</a></code> internal slot value is not equal to its <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-child-text-content" id="ref-for-concept-child-text-content②">child text content</a>,
 set <var>script</var>’s <code class="idl"><a data-link-type="idl">[[ScriptText]]</a></code> to the result of executing <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string⑥">Get Trusted Type compliant string</a>,
-passing <code class="idl"><a data-link-type="idl" href="#trustedscripturl" id="ref-for-trustedscripturl①①">TrustedScriptURL</a></code> as <var>expectedType</var>, <var>script</var>’s <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document⑤">Document</a></code>'s <code class="idl"><a data-link-type="idl">global object</a></code> as <var>global</var>, <var>script</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-child-text-content" id="ref-for-concept-child-text-content③">child text content</a> attribute value
+passing <code class="idl"><a data-link-type="idl" href="#trustedscripturl" id="ref-for-trustedscripturl①①">TrustedScriptURL</a></code> as <var>expectedType</var>, <var>script</var>’s <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document⑤">Document</a></code>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global⑧">relevant global object</a> as <var>global</var>, <var>script</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-child-text-content" id="ref-for-concept-child-text-content③">child text content</a> attribute value
 and <code>script.text</code> as <var>sink</var>. If the algorithm threw an error, rethrow the error.</p>
    </ol>
    <h4 class="heading settled" data-level="4.5.5" id="csp-violation-object-hdr"><span class="secno">4.5.5. </span><span class="content">Violation object changes</span><a class="self-link" href="#csp-violation-object-hdr"></a></h4>
@@ -2088,13 +2095,13 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <li><a href="#typedefdef-htmlstringdefaultsempty">HTMLStringDefaultsEmpty</a><span>, in §4</span>
    <li><a href="#injection-sink">injection sink</a><span>, in §2.1</span>
    <li><a href="#dom-innerhtml-innerhtml">innerHTML</a><span>, in §4.4</span>
-   <li><a href="#dom-htmlscriptelement-innertext">innerText</a><span>, in §4.1.5</span>
+   <li><a href="#dom-htmlscriptelement-innertext">innerText</a><span>, in §4.1.3.2</span>
    <li><a href="#dom-element-insertadjacenthtml">insertAdjacentHTML(position, text)</a><span>, in §4.4</span>
    <li><a href="#dom-trustedtypepolicyfactory-ishtml">isHTML(value)</a><span>, in §2.3.1</span>
    <li><a href="#dom-trustedtypepolicyfactory-isscripturl">isScriptURL(value)</a><span>, in §2.3.1</span>
    <li><a href="#dom-trustedtypepolicyfactory-isscript">isScript(value)</a><span>, in §2.3.1</span>
-   <li><a href="#list-of-scripts-that-will-execute-in-order-as-soon-as-possible">list of scripts that will execute in order as soon as possible</a><span>, in §4.1.3</span>
-   <li><a href="#list-of-scripts-that-will-execute-when-the-document-has-finished-parsing">list of scripts that will execute when the document has finished parsing</a><span>, in §4.1.3</span>
+   <li><a href="#list-of-scripts-that-will-execute-in-order-as-soon-as-possible">list of scripts that will execute in order as soon as possible</a><span>, in §4.1.3.3</span>
+   <li><a href="#list-of-scripts-that-will-execute-when-the-document-has-finished-parsing">list of scripts that will execute when the document has finished parsing</a><span>, in §4.1.3.3</span>
    <li>
     name
     <ul>
@@ -2106,24 +2113,24 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <li><a href="#abstract-opdef-prepare-the-script-url-and-text">Prepare the script URL and text</a><span>, in §4.5.4</span>
    <li><a href="#abstract-opdef-process-value-with-a-default-policy">Process value with a default policy</a><span>, in §3.5</span>
    <li><a href="#typedefdef-scriptstring">ScriptString</a><span>, in §4</span>
-   <li><a href="#script-scripttext">[[ScriptText]]</a><span>, in §4.1.3</span>
-   <li><a href="#script-scripturl">[[ScriptURL]]</a><span>, in §4.1.3</span>
+   <li><a href="#script-scripttext">[[ScriptText]]</a><span>, in §4.1.3.1</span>
+   <li><a href="#script-scripturl">[[ScriptURL]]</a><span>, in §4.1.3.1</span>
    <li><a href="#typedefdef-scripturlstring">ScriptURLString</a><span>, in §4</span>
    <li><a href="#serialized-tt-configuration">serialized-tt-configuration</a><span>, in §4.5.1</span>
-   <li><a href="#dom-windoworworkerglobalscope-setinterval">setInterval(handler)</a><span>, in §4.1.6</span>
-   <li><a href="#dom-windoworworkerglobalscope-setinterval">setInterval(handler, timeout)</a><span>, in §4.1.6</span>
-   <li><a href="#dom-windoworworkerglobalscope-setinterval">setInterval(handler, timeout, ...arguments)</a><span>, in §4.1.6</span>
-   <li><a href="#set-of-scripts-that-will-execute-as-soon-as-possible">set of scripts that will execute as soon as possible</a><span>, in §4.1.3</span>
-   <li><a href="#dom-windoworworkerglobalscope-settimeout">setTimeout(handler)</a><span>, in §4.1.6</span>
-   <li><a href="#dom-windoworworkerglobalscope-settimeout">setTimeout(handler, timeout)</a><span>, in §4.1.6</span>
-   <li><a href="#dom-windoworworkerglobalscope-settimeout">setTimeout(handler, timeout, ...arguments)</a><span>, in §4.1.6</span>
+   <li><a href="#dom-windoworworkerglobalscope-setinterval">setInterval(handler)</a><span>, in §4.1.5</span>
+   <li><a href="#dom-windoworworkerglobalscope-setinterval">setInterval(handler, timeout)</a><span>, in §4.1.5</span>
+   <li><a href="#dom-windoworworkerglobalscope-setinterval">setInterval(handler, timeout, ...arguments)</a><span>, in §4.1.5</span>
+   <li><a href="#set-of-scripts-that-will-execute-as-soon-as-possible">set of scripts that will execute as soon as possible</a><span>, in §4.1.3.3</span>
+   <li><a href="#dom-windoworworkerglobalscope-settimeout">setTimeout(handler)</a><span>, in §4.1.5</span>
+   <li><a href="#dom-windoworworkerglobalscope-settimeout">setTimeout(handler, timeout)</a><span>, in §4.1.5</span>
+   <li><a href="#dom-windoworworkerglobalscope-settimeout">setTimeout(handler, timeout, ...arguments)</a><span>, in §4.1.5</span>
    <li><a href="#abstract-opdef-should-sink-type-mismatch-violation-be-blocked-by-content-security-policy">Should sink type mismatch violation be blocked by Content Security Policy?</a><span>, in §4.5.2</span>
    <li><a href="#abstract-opdef-should-trusted-type-policy-creation-be-blocked-by-content-security-policy">Should Trusted Type policy creation be blocked by Content Security Policy?</a><span>, in §4.5.3</span>
    <li>
     src
     <ul>
      <li><a href="#dom-htmlembedelement-src">attribute for HTMLEmbedElement</a><span>, in §4.1.4</span>
-     <li><a href="#dom-htmlscriptelement-src">attribute for HTMLScriptElement</a><span>, in §4.1.5</span>
+     <li><a href="#dom-htmlscriptelement-src">attribute for HTMLScriptElement</a><span>, in §4.1.3.2</span>
     </ul>
    <li><a href="#dom-htmliframeelement-srcdoc">srcdoc</a><span>, in §4.1.4</span>
    <li>
@@ -2133,8 +2140,8 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
      <li><a href="#TrustedScript-stringification-behavior">dfn for TrustedScript</a><span>, in §2.2.2</span>
      <li><a href="#TrustedScriptURL-stringification-behavior">dfn for TrustedScriptURL</a><span>, in §2.2.3</span>
     </ul>
-   <li><a href="#dom-htmlscriptelement-text">text</a><span>, in §4.1.5</span>
-   <li><a href="#dom-htmlscriptelement-textcontent">textContent</a><span>, in §4.1.5</span>
+   <li><a href="#dom-htmlscriptelement-text">text</a><span>, in §4.1.3.2</span>
+   <li><a href="#dom-htmlscriptelement-textcontent">textContent</a><span>, in §4.1.3.2</span>
    <li>
     TrustedHTML
     <ul>
@@ -2153,7 +2160,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
      <li><a href="#trustedscripturl">(interface)</a><span>, in §2.2.3</span>
      <li><a href="#typedef-trustedscripturl">(type)</a><span>, in §2.2.3</span>
     </ul>
-   <li><a href="#typedefdef-trustedtimerhandler">TrustedTimerHandler</a><span>, in §4.1.6</span>
+   <li><a href="#typedefdef-trustedtimerhandler">TrustedTimerHandler</a><span>, in §4.1.5</span>
    <li><a href="#typedefdef-trustedtype">TrustedType</a><span>, in §4</span>
    <li><a href="#trusted-type">Trusted Type</a><span>, in §2.2</span>
    <li>
@@ -2324,14 +2331,15 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
   <aside class="dfn-panel" data-for="term-for-concept-element-attributes-change-ext">
    <a href="https://dom.spec.whatwg.org/#concept-element-attributes-change-ext">https://dom.spec.whatwg.org/#concept-element-attributes-change-ext</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-element-attributes-change-ext">4.1.7. Enforcement in event handler content attributes</a>
+    <li><a href="#ref-for-concept-element-attributes-change-ext">4.1.6. Enforcement in event handler content attributes</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-child-text-content">
    <a href="https://dom.spec.whatwg.org/#concept-child-text-content">https://dom.spec.whatwg.org/#concept-child-text-content</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-child-text-content">4.1.3. Enforcement for scripts</a> <a href="#script-processing-model:child-text-content">(2)</a>
-    <li><a href="#ref-for-concept-child-text-content①">4.1.5. Enforcement for scripts</a>
+    <li><a href="#ref-for-concept-child-text-content">4.1.3.1. Slots with trusted values</a>
+    <li><a href="#ref-for-concept-child-text-content①">4.1.3.2. Setting slot values</a>
+    <li><a href="#script-processing-model:child-text-content">4.1.3.3. Slot value verification</a>
     <li><a href="#ref-for-concept-child-text-content②">4.5.4. Prepare the script URL and text</a> <a href="#ref-for-concept-child-text-content③">(2)</a>
    </ul>
   </aside>
@@ -2340,7 +2348,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <ul>
     <li><a href="#ref-for-context-object">2.3.1. TrustedTypePolicyFactory</a> <a href="#ref-for-context-object①">(2)</a>
     <li><a href="#ref-for-context-object②">2.4.2. TrustedTypes extended attribute</a> <a href="#ref-for-context-object③">(2)</a> <a href="#ref-for-context-object④">(3)</a> <a href="#ref-for-context-object⑤">(4)</a> <a href="#ref-for-context-object⑥">(5)</a> <a href="#ref-for-context-object⑦">(6)</a> <a href="#ref-for-context-object⑧">(7)</a> <a href="#ref-for-context-object⑨">(8)</a> <a href="#ref-for-context-object①⓪">(9)</a> <a href="#ref-for-context-object①①">(10)</a>
-    <li><a href="#ref-for-context-object①②">4.1.6. Enforcement in timer functions</a>
+    <li><a href="#ref-for-context-object①②">4.1.5. Enforcement in timer functions</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-element-interface">
@@ -2353,13 +2361,13 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <a href="https://dom.spec.whatwg.org/#concept-element-local-name">https://dom.spec.whatwg.org/#concept-element-local-name</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-element-local-name">2.4.2. TrustedTypes extended attribute</a> <a href="#ref-for-concept-element-local-name①">(2)</a>
-    <li><a href="#ref-for-concept-element-local-name②">4.1.7. Enforcement in event handler content attributes</a>
+    <li><a href="#ref-for-concept-element-local-name②">4.1.6. Enforcement in event handler content attributes</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-node-textcontent">
    <a href="https://dom.spec.whatwg.org/#dom-node-textcontent">https://dom.spec.whatwg.org/#dom-node-textcontent</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-node-textcontent">4.1.5. Enforcement for scripts</a> <a href="#ref-for-dom-node-textcontent①">(2)</a>
+    <li><a href="#ref-for-dom-node-textcontent">4.1.3.2. Setting slot values</a> <a href="#ref-for-dom-node-textcontent①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-h-the-domparser-interface">
@@ -2371,7 +2379,8 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
   <aside class="dfn-panel" data-for="term-for-dom-requestdestination-script">
    <a href="https://fetch.spec.whatwg.org/#dom-requestdestination-script">https://fetch.spec.whatwg.org/#dom-requestdestination-script</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-requestdestination-script">4.1.3. Enforcement for scripts</a> <a href="#ref-for-dom-requestdestination-script①">(2)</a>
+    <li><a href="#ref-for-dom-requestdestination-script">4.1.3.1. Slots with trusted values</a>
+    <li><a href="#ref-for-dom-requestdestination-script①">4.1.3.3. Slot value verification</a>
     <li><a href="#ref-for-dom-requestdestination-script②">4.5.4. Prepare the script URL and text</a>
    </ul>
   </aside>
@@ -2397,16 +2406,16 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <a href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions">https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-cereactions">4.1.2. Extensions to the Document interface</a> <a href="#ref-for-cereactions①">(2)</a>
-    <li><a href="#ref-for-cereactions②">4.1.4. Enforcement in element attributes</a> <a href="#ref-for-cereactions③">(2)</a> <a href="#ref-for-cereactions④">(3)</a> <a href="#ref-for-cereactions⑤">(4)</a>
-    <li><a href="#ref-for-cereactions⑥">4.1.5. Enforcement for scripts</a> <a href="#ref-for-cereactions⑦">(2)</a> <a href="#ref-for-cereactions⑧">(3)</a> <a href="#ref-for-cereactions⑨">(4)</a>
+    <li><a href="#ref-for-cereactions②">4.1.3.2. Setting slot values</a> <a href="#ref-for-cereactions③">(2)</a> <a href="#ref-for-cereactions④">(3)</a> <a href="#ref-for-cereactions⑤">(4)</a>
+    <li><a href="#ref-for-cereactions⑥">4.1.4. Enforcement in element attributes</a> <a href="#ref-for-cereactions⑦">(2)</a> <a href="#ref-for-cereactions⑧">(3)</a> <a href="#ref-for-cereactions⑨">(4)</a>
     <li><a href="#ref-for-cereactions①⓪">4.4. Integration with DOM Parsing</a> <a href="#ref-for-cereactions①①">(2)</a> <a href="#ref-for-cereactions①②">(3)</a> <a href="#ref-for-cereactions①③">(4)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-htmlelement">
    <a href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement">https://html.spec.whatwg.org/multipage/dom.html#htmlelement</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-htmlelement">4.1.4. Enforcement in element attributes</a> <a href="#ref-for-htmlelement①">(2)</a> <a href="#ref-for-htmlelement②">(3)</a>
-    <li><a href="#ref-for-htmlelement③">4.1.5. Enforcement for scripts</a>
+    <li><a href="#ref-for-htmlelement">4.1.3.2. Setting slot values</a>
+    <li><a href="#ref-for-htmlelement①">4.1.4. Enforcement in element attributes</a> <a href="#ref-for-htmlelement②">(2)</a> <a href="#ref-for-htmlelement③">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-htmlembedelement">
@@ -2430,7 +2439,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
   <aside class="dfn-panel" data-for="term-for-htmlscriptelement">
    <a href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement">https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-htmlscriptelement">4.1.5. Enforcement for scripts</a> <a href="#ref-for-htmlscriptelement①">(2)</a> <a href="#ref-for-htmlscriptelement②">(3)</a>
+    <li><a href="#ref-for-htmlscriptelement">4.1.3.2. Setting slot values</a> <a href="#ref-for-htmlscriptelement①">(2)</a> <a href="#ref-for-htmlscriptelement②">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-window">
@@ -2444,7 +2453,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
   <aside class="dfn-panel" data-for="term-for-windoworworkerglobalscope">
    <a href="https://html.spec.whatwg.org/multipage/webappapis.html#windoworworkerglobalscope">https://html.spec.whatwg.org/multipage/webappapis.html#windoworworkerglobalscope</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-windoworworkerglobalscope">4.1.6. Enforcement in timer functions</a> <a href="#ref-for-windoworworkerglobalscope①">(2)</a>
+    <li><a href="#ref-for-windoworworkerglobalscope">4.1.5. Enforcement in timer functions</a> <a href="#ref-for-windoworworkerglobalscope①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-document-csp-list">
@@ -2464,13 +2473,13 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
   <aside class="dfn-panel" data-for="term-for-dom-innertext">
    <a href="https://html.spec.whatwg.org/multipage/dom.html#dom-innertext">https://html.spec.whatwg.org/multipage/dom.html#dom-innertext</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-innertext">4.1.5. Enforcement for scripts</a> <a href="#ref-for-dom-innertext①">(2)</a>
+    <li><a href="#ref-for-dom-innertext">4.1.3.2. Setting slot values</a> <a href="#ref-for-dom-innertext①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-prepare-a-script">
    <a href="https://html.spec.whatwg.org/multipage/scripting.html#prepare-a-script">https://html.spec.whatwg.org/multipage/scripting.html#prepare-a-script</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-prepare-a-script">4.1.3. Enforcement for scripts</a>
+    <li><a href="#ref-for-prepare-a-script">4.1.3.3. Slot value verification</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-global-object-realm">
@@ -2491,14 +2500,15 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <ul>
     <li><a href="#ref-for-concept-relevant-global">2.3.1. TrustedTypePolicyFactory</a>
     <li><a href="#ref-for-concept-relevant-global①">2.4.2. TrustedTypes extended attribute</a> <a href="#ref-for-concept-relevant-global②">(2)</a> <a href="#ref-for-concept-relevant-global③">(3)</a> <a href="#ref-for-concept-relevant-global④">(4)</a>
-    <li><a href="#ref-for-concept-relevant-global⑤">4.1.6. Enforcement in timer functions</a>
-    <li><a href="#ref-for-concept-relevant-global⑥">4.1.7. Enforcement in event handler content attributes</a>
+    <li><a href="#ref-for-concept-relevant-global⑤">4.1.5. Enforcement in timer functions</a>
+    <li><a href="#ref-for-concept-relevant-global⑥">4.1.6. Enforcement in event handler content attributes</a>
+    <li><a href="#ref-for-concept-relevant-global⑦">4.5.4. Prepare the script URL and text</a> <a href="#ref-for-concept-relevant-global⑧">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-ascii-case-insensitive">
    <a href="https://infra.spec.whatwg.org/#ascii-case-insensitive">https://infra.spec.whatwg.org/#ascii-case-insensitive</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#script-processing-model:ascii-case-insensitive">4.1.3. Enforcement for scripts</a> <a href="#script-processing-model:ascii-case-insensitive-2">(2)</a> <a href="#script-processing-model:ascii-case-insensitive-3">(3)</a>
+    <li><a href="#script-processing-model:ascii-case-insensitive">4.1.3.3. Slot value verification</a> <a href="#script-processing-model:ascii-case-insensitive-2">(2)</a> <a href="#script-processing-model:ascii-case-insensitive-3">(3)</a>
     <li><a href="#ref-for-ascii-case-insensitive">4.5.6. Support for eval(TrustedScript)</a>
    </ul>
   </aside>
@@ -2512,7 +2522,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <a href="https://infra.spec.whatwg.org/#string-concatenate">https://infra.spec.whatwg.org/#string-concatenate</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-string-concatenate">2.4.2. TrustedTypes extended attribute</a> <a href="#ref-for-string-concatenate①">(2)</a>
-    <li><a href="#ref-for-string-concatenate②">4.1.7. Enforcement in event handler content attributes</a>
+    <li><a href="#ref-for-string-concatenate②">4.1.6. Enforcement in event handler content attributes</a>
     <li><a href="#ref-for-string-concatenate③">4.5.2. Should sink type mismatch violation be blocked by Content Security Policy?</a>
    </ul>
   </aside>
@@ -2595,7 +2605,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
   <aside class="dfn-panel" data-for="term-for-Function">
    <a href="https://heycam.github.io/webidl/#Function">https://heycam.github.io/webidl/#Function</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-Function">4.1.6. Enforcement in timer functions</a> <a href="#ref-for-Function①">(2)</a> <a href="#ref-for-Function②">(3)</a>
+    <li><a href="#ref-for-Function">4.1.5. Enforcement in timer functions</a> <a href="#ref-for-Function①">(2)</a> <a href="#ref-for-Function②">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-NewObject">
@@ -2608,7 +2618,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <a href="https://heycam.github.io/webidl/#TreatNullAs">https://heycam.github.io/webidl/#TreatNullAs</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-TreatNullAs">4. Integrations</a>
-    <li><a href="#ref-for-TreatNullAs①">4.1.5. Enforcement for scripts</a>
+    <li><a href="#ref-for-TreatNullAs①">4.1.3.2. Setting slot values</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-exceptiondef-typeerror">
@@ -2668,7 +2678,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
   <aside class="dfn-panel" data-for="term-for-idl-long">
    <a href="https://heycam.github.io/webidl/#idl-long">https://heycam.github.io/webidl/#idl-long</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-idl-long">4.1.6. Enforcement in timer functions</a> <a href="#ref-for-idl-long①">(2)</a> <a href="#ref-for-idl-long②">(3)</a> <a href="#ref-for-idl-long③">(4)</a>
+    <li><a href="#ref-for-idl-long">4.1.5. Enforcement in timer functions</a> <a href="#ref-for-idl-long①">(2)</a> <a href="#ref-for-idl-long②">(3)</a> <a href="#ref-for-idl-long③">(4)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dfn-operation">
@@ -2903,27 +2913,27 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
   [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions①⑤"><c- g>CEReactions</c-></a>] <c- b>void</c-> <a href="#dom-document-writeln"><code><c- g>writeln</c-></code></a>([<a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes⑧①"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml①①①"><c- n>TrustedHTML</c-></a>] <a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring①①"><c- n>HTMLString</c-></a>... <a href="#dom-document-writeln-text-text"><code><c- g>text</c-></code></a>);
 };
 
-<c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#htmliframeelement" id="ref-for-htmliframeelement①"><c- g>HTMLIFrameElement</c-></a> : <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement" id="ref-for-htmlelement④"><c- n>HTMLElement</c-></a> {
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions②①"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①①①"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml①②①"><c- n>TrustedHTML</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring②①"><c- n>HTMLString</c-></a> <a data-type="HTMLString" href="#dom-htmliframeelement-srcdoc"><code><c- g>srcdoc</c-></code></a>;
+<c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement" id="ref-for-htmlscriptelement②①"><c- g>HTMLScriptElement</c-></a> : <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement" id="ref-for-htmlelement④"><c- n>HTMLElement</c-></a> {
+ [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions②①"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①②①"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript⑤①"><c- n>TrustedScript</c-></a>] <c- b>attribute</c-> [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#TreatNullAs" id="ref-for-TreatNullAs①①"><c- g>TreatNullAs</c-></a>=<a class="n" data-link-type="idl-name"><c- n>EmptyString</c-></a>] <a class="n" data-link-type="idl-name" href="#typedefdef-scriptstring" id="ref-for-typedefdef-scriptstring④"><c- n>ScriptString</c-></a> <a data-type="[TreatNullAs=EmptyString] ScriptString" href="#dom-htmlscriptelement-innertext"><code><c- g>innerText</c-></code></a>;
+ [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions③①"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①③①"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript⑥①"><c- n>TrustedScript</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scriptstring" id="ref-for-typedefdef-scriptstring①①"><c- n>ScriptString</c-></a>? <a data-type="ScriptString?" href="#dom-htmlscriptelement-textcontent"><code><c- g>textContent</c-></code></a>;
+ [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions④①"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①④①"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl⑤①"><c- n>TrustedScriptURL</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring" id="ref-for-typedefdef-scripturlstring④"><c- n>ScriptURLString</c-></a> <a data-type="ScriptURLString" href="#dom-htmlscriptelement-src"><code><c- g>src</c-></code></a>;
+ [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions⑤①"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①⑤①"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript⑦①"><c- n>TrustedScript</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scriptstring" id="ref-for-typedefdef-scriptstring②①"><c- n>ScriptString</c-></a> <a data-type="ScriptString" href="#dom-htmlscriptelement-text"><code><c- g>text</c-></code></a>;
 };
 
-<c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#htmlembedelement" id="ref-for-htmlembedelement①"><c- g>HTMLEmbedElement</c-></a> : <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement" id="ref-for-htmlelement①①"><c- n>HTMLElement</c-></a> {
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions③①"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①②①"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl⑤①"><c- n>TrustedScriptURL</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring" id="ref-for-typedefdef-scripturlstring④"><c- n>ScriptURLString</c-></a> <a data-type="ScriptURLString" href="#dom-htmlembedelement-src"><code><c- g>src</c-></code></a>;
+<c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#htmliframeelement" id="ref-for-htmliframeelement①"><c- g>HTMLIFrameElement</c-></a> : <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement" id="ref-for-htmlelement①①"><c- n>HTMLElement</c-></a> {
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions⑥①"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①⑥①"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml①②①"><c- n>TrustedHTML</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring②①"><c- n>HTMLString</c-></a> <a data-type="HTMLString" href="#dom-htmliframeelement-srcdoc"><code><c- g>srcdoc</c-></code></a>;
 };
 
-<c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#htmlobjectelement" id="ref-for-htmlobjectelement①"><c- g>HTMLObjectElement</c-></a> : <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement" id="ref-for-htmlelement②①"><c- n>HTMLElement</c-></a> {
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions④①"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①③①"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl⑥①"><c- n>TrustedScriptURL</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring" id="ref-for-typedefdef-scripturlstring①①"><c- n>ScriptURLString</c-></a> <a data-type="ScriptURLString" href="#dom-htmlobjectelement-data"><code><c- g>data</c-></code></a>;
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions⑤①"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①④①"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl⑦①"><c- n>TrustedScriptURL</c-></a>] <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②③①"><c- b>DOMString</c-></a> <a data-type="DOMString" href="#dom-htmlobjectelement-codebase"><code><c- g>codeBase</c-></code></a>; // obsolete
+<c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#htmlembedelement" id="ref-for-htmlembedelement①"><c- g>HTMLEmbedElement</c-></a> : <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement" id="ref-for-htmlelement②①"><c- n>HTMLElement</c-></a> {
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions⑦①"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①⑦①"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl⑥①"><c- n>TrustedScriptURL</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring" id="ref-for-typedefdef-scripturlstring①①"><c- n>ScriptURLString</c-></a> <a data-type="ScriptURLString" href="#dom-htmlembedelement-src"><code><c- g>src</c-></code></a>;
+};
+
+<c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#htmlobjectelement" id="ref-for-htmlobjectelement①"><c- g>HTMLObjectElement</c-></a> : <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement" id="ref-for-htmlelement③①"><c- n>HTMLElement</c-></a> {
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions⑧①"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①⑧①"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl⑦①"><c- n>TrustedScriptURL</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring" id="ref-for-typedefdef-scripturlstring②①"><c- n>ScriptURLString</c-></a> <a data-type="ScriptURLString" href="#dom-htmlobjectelement-data"><code><c- g>data</c-></code></a>;
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions⑨①"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①⑨①"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl⑧①"><c- n>TrustedScriptURL</c-></a>] <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②③①"><c- b>DOMString</c-></a> <a data-type="DOMString" href="#dom-htmlobjectelement-codebase"><code><c- g>codeBase</c-></code></a>; // obsolete
 };
 
 // TODO: Add HTMLPortalElement.src from https://github.com/WICG/portals once it’s specced.
-
-<c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement" id="ref-for-htmlscriptelement②①"><c- g>HTMLScriptElement</c-></a> : <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement" id="ref-for-htmlelement③①"><c- n>HTMLElement</c-></a> {
- [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions⑥①"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①⑥①"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript⑤①"><c- n>TrustedScript</c-></a>] <c- b>attribute</c-> [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#TreatNullAs" id="ref-for-TreatNullAs①①"><c- g>TreatNullAs</c-></a>=<a class="n" data-link-type="idl-name"><c- n>EmptyString</c-></a>] <a class="n" data-link-type="idl-name" href="#typedefdef-scriptstring" id="ref-for-typedefdef-scriptstring④"><c- n>ScriptString</c-></a> <a data-type="[TreatNullAs=EmptyString] ScriptString" href="#dom-htmlscriptelement-innertext"><code><c- g>innerText</c-></code></a>;
- [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions⑦①"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①⑦①"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript⑥①"><c- n>TrustedScript</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scriptstring" id="ref-for-typedefdef-scriptstring①①"><c- n>ScriptString</c-></a>? <a data-type="ScriptString?" href="#dom-htmlscriptelement-textcontent"><code><c- g>textContent</c-></code></a>;
- [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions⑧①"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①⑧①"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl⑧①"><c- n>TrustedScriptURL</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring" id="ref-for-typedefdef-scripturlstring②①"><c- n>ScriptURLString</c-></a> <a data-type="ScriptURLString" href="#dom-htmlscriptelement-src"><code><c- g>src</c-></code></a>;
- [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions⑨①"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes①⑨①"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript⑦①"><c- n>TrustedScript</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scriptstring" id="ref-for-typedefdef-scriptstring②①"><c- n>ScriptString</c-></a> <a data-type="ScriptString" href="#dom-htmlscriptelement-text"><code><c- g>text</c-></code></a>;
-};
 
 <c- b>typedef</c-> (<a class="n" data-link-type="idl-name" href="#typedefdef-scriptstring" id="ref-for-typedefdef-scriptstring③①"><c- n>ScriptString</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="https://heycam.github.io/webidl/#Function" id="ref-for-Function③"><c- n>Function</c-></a>) <a href="#typedefdef-trustedtimerhandler"><code><c- g>TrustedTimerHandler</c-></code></a>;
 
@@ -2967,8 +2977,8 @@ For some sinks a <code>null</code> value will result in "", and "null" for other
 This already caused problems in the polyfill. <a href="https://github.com/w3c/webappsec-trusted-types/issues/2">&lt;https://github.com/w3c/webappsec-trusted-types/issues/2></a><a href="#issue-52d7d8d6"> ↵ </a></div>
    <div class="issue"> Define for workers.<a href="#issue-a5679137"> ↵ </a></div>
    <div class="issue"> Remove the note when the API in Chrome is shipped.<a href="#issue-3d9ee9e6"> ↵ </a></div>
-   <div class="issue"> Add base.href enforcement.<a href="#issue-13577559"> ↵ </a></div>
    <div class="issue"> Figure out what to do with script.setAttribute('src'). See <a href="https://github.com/whatwg/dom/issues/789">DOM#789</a>.<a href="#issue-62c0f2c6"> ↵ </a></div>
+   <div class="issue"> Add base.href enforcement.<a href="#issue-13577559"> ↵ </a></div>
    <div class="issue"> This depends on a solution to <a href="https://github.com/w3c/webappsec-trusted-types/issues/144">issue #144</a> like <a href="https://github.com/tc39-transfer/dynamic-code-brand-checks#problem-host-callout-does-not-receive-type-information">TC39 HostBeforeCompile</a><a href="#issue-e28ea232"> ↵ </a></div>
    <div class="issue"> In some cases, the violation "<code>'report-sample'</code>" contain the result of
 applying the default policy to a string argument which differs.
@@ -3030,9 +3040,9 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
     <li><a href="#ref-for-trustedscript①">2.3.2. TrustedTypePolicy</a>
     <li><a href="#ref-for-trustedscript②">2.4.2. TrustedTypes extended attribute</a>
     <li><a href="#ref-for-trustedscript③">4. Integrations</a> <a href="#ref-for-trustedscript④">(2)</a>
-    <li><a href="#ref-for-trustedscript⑤">4.1.5. Enforcement for scripts</a> <a href="#ref-for-trustedscript⑥">(2)</a> <a href="#ref-for-trustedscript⑦">(3)</a>
-    <li><a href="#ref-for-trustedscript⑧">4.1.6. Enforcement in timer functions</a> <a href="#ref-for-trustedscript⑨">(2)</a>
-    <li><a href="#ref-for-trustedscript①⓪">4.1.7. Enforcement in event handler content attributes</a>
+    <li><a href="#ref-for-trustedscript⑤">4.1.3.2. Setting slot values</a> <a href="#ref-for-trustedscript⑥">(2)</a> <a href="#ref-for-trustedscript⑦">(3)</a>
+    <li><a href="#ref-for-trustedscript⑧">4.1.5. Enforcement in timer functions</a> <a href="#ref-for-trustedscript⑨">(2)</a>
+    <li><a href="#ref-for-trustedscript①⓪">4.1.6. Enforcement in event handler content attributes</a>
     <li><a href="#ref-for-trustedscript①①">4.5.1.1. trusted-types Pre-Navigation check</a>
     <li><a href="#ref-for-trustedscript①②">4.5.6. Support for eval(TrustedScript)</a>
    </ul>
@@ -3044,8 +3054,8 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
     <li><a href="#ref-for-trustedscripturl①">2.3.2. TrustedTypePolicy</a>
     <li><a href="#ref-for-trustedscripturl②">2.4.2. TrustedTypes extended attribute</a>
     <li><a href="#ref-for-trustedscripturl③">4. Integrations</a> <a href="#ref-for-trustedscripturl④">(2)</a>
-    <li><a href="#ref-for-trustedscripturl⑤">4.1.4. Enforcement in element attributes</a> <a href="#ref-for-trustedscripturl⑥">(2)</a> <a href="#ref-for-trustedscripturl⑦">(3)</a>
-    <li><a href="#ref-for-trustedscripturl⑧">4.1.5. Enforcement for scripts</a>
+    <li><a href="#ref-for-trustedscripturl⑤">4.1.3.2. Setting slot values</a>
+    <li><a href="#ref-for-trustedscripturl⑥">4.1.4. Enforcement in element attributes</a> <a href="#ref-for-trustedscripturl⑦">(2)</a> <a href="#ref-for-trustedscripturl⑧">(3)</a>
     <li><a href="#ref-for-trustedscripturl⑨">4.2. Integration with SVG</a>
     <li><a href="#ref-for-trustedscripturl①⓪">4.5.4. Prepare the script URL and text</a> <a href="#ref-for-trustedscripturl①①">(2)</a>
    </ul>
@@ -3225,9 +3235,9 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
     <li><a href="#ref-for-extendedattrdef-trustedtypes">2.3.1. TrustedTypePolicyFactory</a> <a href="#ref-for-extendedattrdef-trustedtypes①">(2)</a> <a href="#ref-for-extendedattrdef-trustedtypes②">(3)</a> <a href="#ref-for-extendedattrdef-trustedtypes③">(4)</a>
     <li><a href="#ref-for-extendedattrdef-trustedtypes④">2.4.2. TrustedTypes extended attribute</a> <a href="#ref-for-extendedattrdef-trustedtypes⑤">(2)</a> <a href="#ref-for-extendedattrdef-trustedtypes⑥">(3)</a>
     <li><a href="#ref-for-extendedattrdef-trustedtypes⑦">4.1.2. Extensions to the Document interface</a> <a href="#ref-for-extendedattrdef-trustedtypes⑧">(2)</a>
-    <li><a href="#ref-for-extendedattrdef-trustedtypes⑨">4.1.3. Enforcement for scripts</a> <a href="#ref-for-extendedattrdef-trustedtypes①⓪">(2)</a>
-    <li><a href="#ref-for-extendedattrdef-trustedtypes①①">4.1.4. Enforcement in element attributes</a> <a href="#ref-for-extendedattrdef-trustedtypes①②">(2)</a> <a href="#ref-for-extendedattrdef-trustedtypes①③">(3)</a> <a href="#ref-for-extendedattrdef-trustedtypes①④">(4)</a>
-    <li><a href="#ref-for-extendedattrdef-trustedtypes①⑤">4.1.5. Enforcement for scripts</a> <a href="#ref-for-extendedattrdef-trustedtypes①⑥">(2)</a> <a href="#ref-for-extendedattrdef-trustedtypes①⑦">(3)</a> <a href="#ref-for-extendedattrdef-trustedtypes①⑧">(4)</a> <a href="#ref-for-extendedattrdef-trustedtypes①⑨">(5)</a>
+    <li><a href="#ref-for-extendedattrdef-trustedtypes⑨">4.1.3.1. Slots with trusted values</a> <a href="#ref-for-extendedattrdef-trustedtypes①⓪">(2)</a>
+    <li><a href="#ref-for-extendedattrdef-trustedtypes①①">4.1.3.2. Setting slot values</a> <a href="#ref-for-extendedattrdef-trustedtypes①②">(2)</a> <a href="#ref-for-extendedattrdef-trustedtypes①③">(3)</a> <a href="#ref-for-extendedattrdef-trustedtypes①④">(4)</a> <a href="#ref-for-extendedattrdef-trustedtypes①⑤">(5)</a>
+    <li><a href="#ref-for-extendedattrdef-trustedtypes①⑥">4.1.4. Enforcement in element attributes</a> <a href="#ref-for-extendedattrdef-trustedtypes①⑦">(2)</a> <a href="#ref-for-extendedattrdef-trustedtypes①⑧">(3)</a> <a href="#ref-for-extendedattrdef-trustedtypes①⑨">(4)</a>
     <li><a href="#ref-for-extendedattrdef-trustedtypes②⓪">4.2. Integration with SVG</a>
     <li><a href="#ref-for-extendedattrdef-trustedtypes②①">4.4. Integration with DOM Parsing</a> <a href="#ref-for-extendedattrdef-trustedtypes②②">(2)</a> <a href="#ref-for-extendedattrdef-trustedtypes②③">(3)</a> <a href="#ref-for-extendedattrdef-trustedtypes②④">(4)</a> <a href="#ref-for-extendedattrdef-trustedtypes②⑤">(5)</a>
    </ul>
@@ -3258,8 +3268,8 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
    <ul>
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string">2.4.2. TrustedTypes extended attribute</a> <a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string①">(2)</a>
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string②">3.3. Create a Trusted Type</a>
-    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string③">4.1.6. Enforcement in timer functions</a>
-    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string④">4.1.7. Enforcement in event handler content attributes</a>
+    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string③">4.1.5. Enforcement in timer functions</a>
+    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string④">4.1.6. Enforcement in event handler content attributes</a>
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑤">4.5.4. Prepare the script URL and text</a> <a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑥">(2)</a>
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑦">4.5.6. Support for eval(TrustedScript)</a> <a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑧">(2)</a> <a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑨">(3)</a>
    </ul>
@@ -3281,15 +3291,15 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
   <aside class="dfn-panel" data-for="typedefdef-scriptstring">
    <b><a href="#typedefdef-scriptstring">#typedefdef-scriptstring</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-typedefdef-scriptstring">4.1.5. Enforcement for scripts</a> <a href="#ref-for-typedefdef-scriptstring①">(2)</a> <a href="#ref-for-typedefdef-scriptstring②">(3)</a>
-    <li><a href="#ref-for-typedefdef-scriptstring③">4.1.6. Enforcement in timer functions</a>
+    <li><a href="#ref-for-typedefdef-scriptstring">4.1.3.2. Setting slot values</a> <a href="#ref-for-typedefdef-scriptstring①">(2)</a> <a href="#ref-for-typedefdef-scriptstring②">(3)</a>
+    <li><a href="#ref-for-typedefdef-scriptstring③">4.1.5. Enforcement in timer functions</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="typedefdef-scripturlstring">
    <b><a href="#typedefdef-scripturlstring">#typedefdef-scripturlstring</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-typedefdef-scripturlstring">4.1.4. Enforcement in element attributes</a> <a href="#ref-for-typedefdef-scripturlstring①">(2)</a>
-    <li><a href="#ref-for-typedefdef-scripturlstring②">4.1.5. Enforcement for scripts</a>
+    <li><a href="#ref-for-typedefdef-scripturlstring">4.1.3.2. Setting slot values</a>
+    <li><a href="#ref-for-typedefdef-scripturlstring①">4.1.4. Enforcement in element attributes</a> <a href="#ref-for-typedefdef-scripturlstring②">(2)</a>
     <li><a href="#ref-for-typedefdef-scripturlstring③">4.2. Integration with SVG</a>
    </ul>
   </aside>
@@ -3298,7 +3308,7 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
    <ul>
     <li><a href="#ref-for-typedefdef-trustedtype">3.4. Get Trusted Type compliant string</a> <a href="#ref-for-typedefdef-trustedtype①">(2)</a>
     <li><a href="#ref-for-typedefdef-trustedtype②">3.5. Process value with a default policy</a> <a href="#ref-for-typedefdef-trustedtype③">(2)</a>
-    <li><a href="#ref-for-typedefdef-trustedtype④">4.1.6. Enforcement in timer functions</a>
+    <li><a href="#ref-for-typedefdef-trustedtype④">4.1.5. Enforcement in timer functions</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="typedefdef-htmlstringdefaultsempty">
@@ -3327,21 +3337,21 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
    <b><a href="#dom-htmlscriptelement-src">#dom-htmlscriptelement-src</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-htmlscriptelement-src">2.1. Injection sinks</a>
-    <li><a href="#ref-for-dom-htmlscriptelement-src①">4.1.3. Enforcement for scripts</a>
-    <li><a href="#ref-for-dom-htmlscriptelement-src②">4.1.5. Enforcement for scripts</a>
+    <li><a href="#ref-for-dom-htmlscriptelement-src①">4.1.3.1. Slots with trusted values</a>
+    <li><a href="#ref-for-dom-htmlscriptelement-src②">4.1.3.2. Setting slot values</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-htmlscriptelement-text">
    <b><a href="#dom-htmlscriptelement-text">#dom-htmlscriptelement-text</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-htmlscriptelement-text">2.1. Injection sinks</a>
-    <li><a href="#ref-for-dom-htmlscriptelement-text①">4.1.5. Enforcement for scripts</a>
+    <li><a href="#ref-for-dom-htmlscriptelement-text①">4.1.3.2. Setting slot values</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="typedefdef-trustedtimerhandler">
    <b><a href="#typedefdef-trustedtimerhandler">#typedefdef-trustedtimerhandler</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-typedefdef-trustedtimerhandler">4.1.6. Enforcement in timer functions</a> <a href="#ref-for-typedefdef-trustedtimerhandler①">(2)</a>
+    <li><a href="#ref-for-typedefdef-trustedtimerhandler">4.1.5. Enforcement in timer functions</a> <a href="#ref-for-typedefdef-trustedtimerhandler①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-domparser-parsefromstring">
@@ -3392,7 +3402,7 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
   <aside class="dfn-panel" data-for="abstract-opdef-prepare-the-script-url-and-text">
    <b><a href="#abstract-opdef-prepare-the-script-url-and-text">#abstract-opdef-prepare-the-script-url-and-text</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-abstract-opdef-prepare-the-script-url-and-text">4.1.3. Enforcement for scripts</a>
+    <li><a href="#ref-for-abstract-opdef-prepare-the-script-url-and-text">4.1.3.3. Slot value verification</a>
    </ul>
   </aside>
 <script>/* script-dfn-panel */
