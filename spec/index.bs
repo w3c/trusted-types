@@ -1346,7 +1346,7 @@ as in their original counterparts, apart from additional behavior triggered by t
 
 Note: Using these IDL attributes is the recommended way of dynamically setting URL or a text of a script. Manipulating attribute nodes or text nodes directly will call a default policy on the final value when the script is prepared.
 
-Issue: Figure out what to do with script.setAttribute('src')
+Issue: Figure out what to do with script.setAttribute('src'). See [DOM#789](https://github.com/whatwg/dom/issues/789).
 
 <pre class="idl">
 partial interface mixin HTMLScriptElement : HTMLElement {
