@@ -11,7 +11,9 @@
  * CSP Directive name controlling Trusted Types behavior.
  * @type {string}
  */
-export const DIRECTIVE_NAME = 'trusted-types';
+export const ENFORCEMENT_DIRECTIVE_NAME = 'require-trusted-types-for';
+
+export const POLICIES_DIRECTIVE_NAME = 'trusted-types';
 
 /**
  * A configuration object for trusted type enforcement.
@@ -82,12 +84,13 @@ export class TrustedTypeConfig {
   static fromCSP(cspString) {
     const isLoggingEnabled = true;
     const policy = TrustedTypeConfig.parseCSP(cspString);
-    const enforce = DIRECTIVE_NAME in policy;
+    const enforce = ENFORCEMENT_DIRECTIVE_NAME in policy &&
+        policy[ENFORCEMENT_DIRECTIVE_NAME].includes('\'script\'');
     let policies = ['*'];
-    if (enforce) {
-      policies = policy[DIRECTIVE_NAME].filter((p) => p.charAt(0) !== '\'');
+    if (POLICIES_DIRECTIVE_NAME in policy) {
+      policies = policy[POLICIES_DIRECTIVE_NAME].filter(
+          (p) => p.charAt(0) !== '\'');
     }
-
     return new TrustedTypeConfig(
         isLoggingEnabled,
         enforce, /* isEnforcementEnabled */

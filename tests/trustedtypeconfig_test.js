@@ -62,11 +62,21 @@ describe('TrustedTypeConfig', () => {
           .toBe(true);
     });
 
-    it('enforces iif trusted-types directive is present', () => {
-      expect(TrustedTypeConfig.fromCSP('').isEnforcementEnabled).toBe(false);
-      expect(TrustedTypeConfig.fromCSP('trusted-types').isEnforcementEnabled)
-          .toBe(true);
-    });
+    [
+      'require-trusted-types-for \'script\'',
+      'require-trusted-types-for \'foo\' \'script\'',
+    ].forEach((csp) => it('enforces for valid CSP string', () => {
+      expect(TrustedTypeConfig.fromCSP(csp).isEnforcementEnabled).toBe(true);
+    }));
+
+    [
+      '',
+      'require-trusted-types-for',
+      'require-trusted-types-for \'foo\'',
+      'require-trusted-types-for \'SCRIPT\'',
+    ].forEach((csp) => it('does not enforce for invalid CSP string', () => {
+      expect(TrustedTypeConfig.fromCSP(csp).isEnforcementEnabled).toBe(false);
+    }));
 
     it('uses whitelisted directive names from the directive', () => {
       expect(TrustedTypeConfig.fromCSP('trusted-types foo bar *')

@@ -383,8 +383,12 @@ describe('TrustedTypesEnforcer', function() {
 
         expect(caughtEvent.originalPolicy).toEqual('script-src https:');
         expect(caughtEvent.type).toEqual('securitypolicyviolation');
-        expect(caughtEvent.effectiveDirective).toEqual('trusted-types');
-        expect(caughtEvent.violatedDirective).toEqual('trusted-types');
+        expect(caughtEvent.effectiveDirective).toEqual(
+            'require-trusted-types-for');
+
+        expect(caughtEvent.violatedDirective).toEqual(
+            'require-trusted-types-for');
+
         expect(caughtEvent.documentURI).toEqual(document.location.href);
         expect(caughtEvent.blockedURI).toEqual('');
       });
@@ -559,8 +563,12 @@ describe('TrustedTypesEnforcer', function() {
             'script-src https:; trusted-types *');
 
         expect(caughtEvent.type).toEqual('securitypolicyviolation');
-        expect(caughtEvent.effectiveDirective).toEqual('trusted-types');
-        expect(caughtEvent.violatedDirective).toEqual('trusted-types');
+        expect(caughtEvent.effectiveDirective).toEqual(
+            'require-trusted-types-for');
+
+        expect(caughtEvent.violatedDirective).toEqual(
+            'require-trusted-types-for');
+
         expect(caughtEvent.documentURI).toEqual(document.location.href);
         expect(caughtEvent.blockedURI).toEqual('');
       });
