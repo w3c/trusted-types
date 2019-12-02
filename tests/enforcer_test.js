@@ -29,20 +29,23 @@ describe('TrustedTypesEnforcer', function() {
   const ENFORCING_CONFIG = new TrustedTypeConfig(
       /* isLoggingEnabled */ false,
       /* isEnforcementEnabled */ true,
-      /* allowedPolicyNames */ ['*'],
+      /* allowedPolicyNames */ ['default', 'named'],
+      /* allowDuplicates */ false,
       /* cspString */ 'script-src https:; trusted-types *'
   );
 
   const NOOP_CONFIG = new TrustedTypeConfig(
       /* isLoggingEnabled */ false,
       /* isEnforcementEnabled */ false,
-      /* allowedPolicyNames */ ['*']
+      /* allowedPolicyNames */ ['default', 'named'],
+      /* allowDuplicates */ false
   );
 
   const LOGGING_CONFIG = new TrustedTypeConfig(
       /* isLoggingEnabled */ true,
       /* isEnforcementEnabled */ false,
-      /* allowedPolicyNames */ ['*'],
+      /* allowedPolicyNames */ ['default', 'named'],
+      /* allowDuplicates */ false,
       /* cspString */ 'script-src https:'
   );
 
@@ -210,7 +213,7 @@ describe('TrustedTypesEnforcer', function() {
 
     beforeEach(function() {
       enforcer = new TrustedTypesEnforcer(LOGGING_CONFIG);
-      policy = TrustedTypes.createPolicy(Math.random(), noopPolicy);
+      policy = TrustedTypes.createPolicy('named', noopPolicy);
       enforcer.install();
       el = document.createElement('div');
       spyOn(console, 'warn');
@@ -610,7 +613,7 @@ describe('TrustedTypesEnforcer', function() {
       });
 
       it('is not dispatched on typed assignments', () => {
-        const policy = TrustedTypes.createPolicy(Math.random(), noopPolicy);
+        const policy = TrustedTypes.createPolicy('named', noopPolicy);
 
         expect(function() {
           el.innerHTML = policy.createHTML(TEST_HTML);
@@ -1296,7 +1299,7 @@ describe('TrustedTypesEnforcer', function() {
     beforeEach(function() {
       enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
       enforcer.install();
-      policy = TrustedTypes.createPolicy(Math.random(), noopPolicy);
+      policy = TrustedTypes.createPolicy('named', noopPolicy);
     });
 
     afterEach(function() {
@@ -1572,9 +1575,11 @@ describe('TrustedTypesEnforcer', function() {
 
     it('is respected on createPolicy', function() {
       enforcer = new TrustedTypesEnforcer(new TrustedTypeConfig(
-      /* isLoggingEnabled */ false,
+          /* isLoggingEnabled */ false,
           /* isEnforcementEnabled */ true,
-          ['foo']));
+          /* allowedPolicyNames*/ ['foo'],
+          /* allowDuplicates */ false
+      ));
       enforcer.install();
 
       expect(() => TrustedTypes.createPolicy('foo', {
@@ -1594,7 +1599,9 @@ describe('TrustedTypesEnforcer', function() {
       enforcer = new TrustedTypesEnforcer(new TrustedTypeConfig(
           /* isLoggingEnabled */ false,
           /* isEnforcementEnabled */ true,
-          ['*']));
+          /* allowedPolicyNames */ ['default', 'named'],
+          /* allowDuplicates */ true
+      ));
       enforcer.install();
     });
 
@@ -1647,7 +1654,7 @@ describe('TrustedTypesEnforcer', function() {
           return 'fallback:' + s;
         },
       });
-      const policy = TrustedTypes.createPolicy(Math.random(), noopPolicy);
+      const policy = TrustedTypes.createPolicy('named', noopPolicy);
       const el = document.createElement('div');
       el.innerHTML = policy.createHTML(TEST_HTML);
 
@@ -1715,7 +1722,7 @@ describe('TrustedTypesEnforcer', function() {
     beforeEach(function() {
       enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
       enforcer.install();
-      policy = TrustedTypes.createPolicy(Math.random(), noopPolicy);
+      policy = TrustedTypes.createPolicy('named', noopPolicy);
     });
 
     afterEach(function() {

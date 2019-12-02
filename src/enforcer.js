@@ -13,7 +13,8 @@ import {ENFORCEMENT_DIRECTIVE_NAME, TrustedTypeConfig}
   from './data/trustedtypeconfig.js';
 import {
   trustedTypes as TrustedTypes,
-  setAllowedPolicyNames,
+  setPolicyNameRestrictions,
+  clearPolicyNameRestrictions,
   resetDefaultPolicy,
   HTML_NS,
 } from
@@ -174,7 +175,8 @@ export class TrustedTypesEnforcer {
    *
    */
   install() {
-    setAllowedPolicyNames(this.config_.allowedPolicyNames);
+    setPolicyNameRestrictions(this.config_.allowedPolicyNames,
+        this.config_.allowDuplicates);
 
     if (!this.config_.isEnforcementEnabled && !this.config_.isLoggingEnabled) {
       return;
@@ -233,7 +235,7 @@ export class TrustedTypesEnforcer {
    * Removes the original setters.
    */
   uninstall() {
-    setAllowedPolicyNames(['*']);
+    clearPolicyNameRestrictions();
 
     if (!this.config_.isEnforcementEnabled && !this.config_.isLoggingEnabled) {
       return;

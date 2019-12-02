@@ -126,10 +126,18 @@ export const trustedTypesBuilderTestOnly = function() {
   const policyNames = selfContained([]);
 
   /**
-   * Allowed policy namess for policy names.
+   * Allowed policy names.
+   * Applied only if enforceNameRestrictions is true.
    * @type {Array<string>}
    */
   const allowedNames = selfContained([]);
+
+  /**
+   * Should duplicate prolicy names be allowed.
+   * Applied only if enforceNameRestrictions is true.
+   * @type {boolean}
+   */
+  let allowDuplicateNames = true;
 
   /**
    * A reference to a default policy, if created.
@@ -141,7 +149,7 @@ export const trustedTypesBuilderTestOnly = function() {
    * Whether to enforce allowedNames in createPolicy().
    * @type {boolean}
    */
-  let enforceNameWhitelist = false;
+  let enforceNameRestrictions = false;
 
 
   /**
@@ -575,11 +583,12 @@ export const trustedTypesBuilderTestOnly = function() {
       throw new TypeError('Policy ' + pName + ' contains invalid characters.');
     }
 
-    if (enforceNameWhitelist && allowedNames.indexOf(pName) === -1) {
+    if (enforceNameRestrictions && allowedNames.indexOf(pName) === -1) {
       throw new TypeError('Policy ' + pName + ' disallowed.');
     }
 
-    if (enforceNameWhitelist && policyNames.indexOf(pName) !== -1) {
+    if (enforceNameRestrictions && !allowDuplicateNames &&
+        policyNames.indexOf(pName) !== -1) {
       throw new TypeError('Policy ' + pName + ' exists.');
     }
     // Register the name early so that if policy getters unwisely calls
@@ -613,19 +622,25 @@ export const trustedTypesBuilderTestOnly = function() {
   }
 
   /**
-   * Applies the policy name whitelist.
+   * Applies the policy name restrictions.
    * @param {!Array<string>} allowedPolicyNames
+   * @param {boolean} allowDuplicates
    */
-  function setAllowedPolicyNames(allowedPolicyNames) {
-    if (allowedPolicyNames.indexOf('*') !== -1) { // Any policy name is allowed.
-      enforceNameWhitelist = false;
-    } else {
-      enforceNameWhitelist = true;
-      allowedNames.length = 0;
-      forEach.call(allowedPolicyNames, (el) => {
-        push.call(allowedNames, '' + el);
-      });
-    }
+  function setPolicyNameRestrictions(allowedPolicyNames, allowDuplicates) {
+    enforceNameRestrictions = true;
+    allowedNames.length = 0;
+    forEach.call(allowedPolicyNames, (el) => {
+      push.call(allowedNames, '' + el);
+    });
+    allowDuplicateNames = allowDuplicates;
+    policyNames.length = 0; // Clear already used policy names list.
+  }
+
+  /**
+   * Clears the policy name restrictions.
+   */
+  function clearPolicyNameRestrictions() {
+    enforceNameRestrictions = false;
   }
 
   /**
@@ -677,7 +692,8 @@ export const trustedTypesBuilderTestOnly = function() {
 
   return {
     trustedTypes: freeze(api),
-    setAllowedPolicyNames,
+    setPolicyNameRestrictions,
+    clearPolicyNameRestrictions,
     getDefaultPolicy,
     resetDefaultPolicy,
   };
@@ -686,7 +702,8 @@ export const trustedTypesBuilderTestOnly = function() {
 
 export const {
   trustedTypes,
-  setAllowedPolicyNames,
+  setPolicyNameRestrictions,
+  clearPolicyNameRestrictions,
   getDefaultPolicy,
   resetDefaultPolicy,
 } = trustedTypesBuilderTestOnly();
