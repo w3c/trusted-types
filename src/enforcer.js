@@ -9,7 +9,8 @@
 
 // TrustedTypeConfig is used only as jsdoc type
 // eslint-disable-next-line
-import {DIRECTIVE_NAME, TrustedTypeConfig} from './data/trustedtypeconfig.js';
+import {ENFORCEMENT_DIRECTIVE_NAME, TrustedTypeConfig}
+  from './data/trustedtypeconfig.js';
 import {
   trustedTypes as TrustedTypes,
   setAllowedPolicyNames,
@@ -869,10 +870,10 @@ export class TrustedTypesEnforcer {
             'disposition': this.config_.isEnforcementEnabled ?
               'enforce' : 'report',
             'documentURI': document.location.href,
-            'effectiveDirective': DIRECTIVE_NAME,
+            'effectiveDirective': ENFORCEMENT_DIRECTIVE_NAME,
             'originalPolicy': this.config_.cspString,
             'statusCode': 0,
-            'violatedDirective': DIRECTIVE_NAME,
+            'violatedDirective': ENFORCEMENT_DIRECTIVE_NAME,
             'sample': `${contextName}.${propertyName} ${valueSlice}`,
           });
       if (context instanceof Node && context.isConnected) {
