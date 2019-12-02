@@ -8,7 +8,7 @@ Title: Trusted Types
 Shortname: trusted-types
 Group: webappsec
 Level: none
-Status: CG-DRAFT
+Status: ED
 URL: https://w3c.github.io/webappsec-trusted-types/dist/spec/
 Editor: Krzysztof Kotowicz, Google LLC https://google.com, koto@google.com
 Editor: Mike West, Google LLC https://google.com, mkwst@google.com
@@ -707,7 +707,7 @@ the default policy is applied.
 
 <div class="example" id="default-policy-example">
 <xmp highlight="js">
-// Content-Security-Policy: trusted-types default
+// Content-Security-Policy: trusted-types default; require-trusted-types-for 'script'
 
 trustedTypes.createPolicy('default', {
   createScriptURL: (s, sink) => {
@@ -740,8 +740,7 @@ This section describes how authors may control this enforcing behavior.
 
 ### Content Security Policy ### {#content-security-policy-hdr}
 
-Applications may control Trusted Type enforcement via [[CSP#policy-delivery|configuring a Content Security Policy]]. This document defines a new [=trusted-types-directive|trusted-types=]
-Content Security Policy directive that corresponds to Trusted Types rules.
+Applications may control Trusted Type enforcement via [[CSP#policy-delivery|configuring a Content Security Policy]]. This document defines new directives that correspond to Trusted Types rules.
 
 Note: Using CSP mechanisms allows the authors to prepare their application for enforcing Trusted Types
 via using the {{CSP#cspro-header|Content-Security-Report-Only}} HTTP Response header.
@@ -787,7 +786,11 @@ When the extended attribute appears on an attribute, the setter for that attribu
         * the new value as |input|,
         * {{TrustedTypes}} extended attribute identifier as |expectedType|,
         * |sink| as |sink|,
+        * `'script'` as |sinkType|,
         * [=context object=]'s [=relevant global object=] as |global|.
+
+        Issue: Remove hardcoding 'script' when new sink types are specified.
+
     1. If an exception was thrown, rethrow exception and abort further steps.
  1. Run the originally specified steps for this construct, using |value| as a new value to set.
 
@@ -816,7 +819,11 @@ When the extended attribute appears on an [=operation=] argument, before its ope
         * the argument value as |input|,
         * {{TrustedTypes}} extended attribute identifier as |expectedType|,
         * |sink| as |sink|,
+        * `'script'` as |sinkType|,
         * [=context object=]'s [=relevant global object=] as |global|.
+
+        Issue: Remove hardcoding 'script' when new sink types are specified.
+
     1. If an exception was thrown, rethrow exception and abort further steps.
  1. Invoke the originally specified steps for the operation.
 
@@ -907,14 +914,15 @@ This algorithm will return a string that can be assigned to a DOM
 It will ensure that the Trusted Type [=enforcement=] rules were respected.
 
 Given a {{TrustedType}} type (|expectedType|), a [=Realm/global object=] (|global|),
-{{TrustedType}} or a string (|input|), and a string (|sink|), run these steps:
+{{TrustedType}} or a string (|input|), a string (|sink|) and a string (|sinkType|), run these steps:
 
 1.  Assert: |global| is a {{Window}}.
 
     Issue: Synchronize when TT are added to workers (perhaps use "has a CSP list"?)
 1.  Let |cspList| be the |global|'s <a>CSP list</a>.
 1.  If |cspList| does not contain a [[CSP3#content-security-policy-object|policy]]
-    which <a>directive set</a> containing a [[CSP3#directives|directive]] with a name `"trusted-types"`,
+    which <a>directive set</a> containing a [[CSP3#directives|directive]] with a name `"require-trusted-types-for"`,
+    or that directive does not contain a <a>require-tt-for-keyword</a> which is a match for a value |sinkType|,
     return stringified |input| and abort these steps.
 1.  If |input| has type |expectedType|, return stringified
     |input| and abort these steps.
@@ -922,7 +930,7 @@ Given a {{TrustedType}} type (|expectedType|), a [=Realm/global object=] (|globa
 1.  If the algorithm threw an error, rethrow the error and abort the following steps.
 1.  If |convertedInput| is `null` or `undefined`, execute the following steps:
     1.  Let |disposition| be the result of executing [$Should sink type mismatch violation be blocked by Content Security Policy?$] algorithm,
-        passing |global|, |input| as |source|, and |sink|.
+        passing |global|, |input| as |source|, |sinkType| and |sink|.
     1.  If |disposition| is `“Allowed”`, return stringified |input| and abort futher steps.
 
         Note: This step assures that the default policy rejection will be reported, but ignored in a report-only mode.
@@ -1386,7 +1394,8 @@ add this step between 7.1 and 7.2:
     *   |global| set to the [=context object=]'s [=relevant global object=].
     *   |input| set to the first method argument, and
     *   |expectedType| set to {{TrustedScript}}.
-    *   |sink| set to `"Window.setInterval"` if <var ignore>repeat</var> is true, `"Window.setTimeout"` otherwise.
+    *   |sink| set to `Window.setInterval` if <var ignore>repeat</var> is true, `Window.setTimeout` otherwise.
+    *   |sinkType| set to `'script'`.
 
         Note: This matches the logic that the extended attribute would apply.
 
@@ -1405,18 +1414,20 @@ At the beginning of step 5, insert the following steps:
     [$Get Trusted Type compliant string$] algorithm, with the following arguments:
     *   |value| as |input|,
     *   {{TrustedScript}} as |expectedType|,
+    *   `'script'` as |sinkType|
     *   |sink| being the result of [=concatenating=] the list &laquo; <var ignore>element</var>'s [=Element/local name=], |localName| &raquo; with `"."` as a |separator|.
 
         Note: For example, `document.createElement('div').onclick = value` will result in |sink| being `'div.onclick'`.
 
     *   <var ignore>eventTarget</var>'s [=relevant global object=] as |global|,
+
 1.  If the algorithm throws an error, abort these steps.
 
 Note: This also applies to events in [[SVG2#EventAttributes]].
 
 <div class="example" id="event-handlers-example">
   <pre highlight=js>
-  // Content-Security-Policy: trusted-types *
+  // Content-Security-Policy: require-trusted-types-for 'script'
 
   const img = document.createElement('img');
   img.setAttribute('onerror', 'alert(1)'); // TypeError
@@ -1462,68 +1473,39 @@ interface DOMParser {
 
 ## Integration with Content Security Policy ## {#integration-with-content-security-policy}
 
-### <dfn lt="trusted-types-directive">trusted-types</dfn> directive ### {#trusted-types-csp-directive}
+### <dfn lt="require-trusted-types-for-directive">require-trusted-types-for</dfn> directive ### {#require-trusted-types-for-csp-directive}
 
-This document defines *trusted-types* - a new [[CSP3#directives|Content Security Policy directive]].
+This document defines *require-trusted-types-for* - a new [[CSP3#directives|Content Security Policy directive]].
 
-{{#trusted-types-directive|trusted-types}} directive configures the Trusted
+{{#require-trusted-types-for-directive|require-trusted-types-for}} directive configures the Trusted
 Types framework for all the [=injection sinks=] in a current [=Realm|realm=]. Specifically, it
-defines which policies (identified by name) can be created, and what should
-be the behavior when a string value is passed to an [=injection sink=]
-(i.e. should the type-based enforcement be enabled).
+defines what should be the behavior when a string value is passed to an [=injection sink=]
+of a given type (i.e. should the type-based enforcement be enabled).
+
+Note: Currently, only the enforcement for DOM XSS injection sinks is specified.
 
 The syntax for the directive's [=directive/name=] and [=directive/value=] is described by the following
 ABNF:
 
 <pre>
-directive-name = "trusted-types"
-directive-value = <a>serialized-tt-configuration</a>
-<dfn>serialized-tt-configuration</dfn> = ( <a>tt-expression</a> *( <a href="https://w3c.github.io/webappsec-csp/#grammardef-required-ascii-whitespace">required-ascii-whitespace</a> <a>tt-expression</a> ) )
-<dfn>tt-expression</dfn> = "*" / <a>tt-policy-name</a> ; In the future, add keywords
-<dfn>tt-policy-name</dfn> = 1*( <a href="https://tools.ietf.org/html/rfc5234#appendix-B.1">ALPHA</a> / <a href="https://tools.ietf.org/html/rfc5234#appendix-B.1">DIGIT</a> / "-" / "#" / "=" / "_" / "/" / "@" / "." / "%")
+directive-name = "require-trusted-types-for"
+directive-value = <a>require-tt-for-keyword</a> *( href="https://w3c.github.io/webappsec-csp/#grammardef-required-ascii-whitespace">required-ascii-whitespace</a> <a>require-tt-for-keyword</a>)
+<dfn>require-tt-for-keyword</dfn> = "'script'"
 </pre>
 
-<div class="example" id="whitelist-of-policy-names-in-header">
-Types are enforced at sinks, and only two policies may be created: “one” and “two”.
+<div class="example" id="require-tt-for-script-header">
+Enforce Trusted Types at the DOM XSS injection sinks.
 
 <pre class="http">
-Content-Security-Policy: trusted-types one two
+Content-Security-Policy: require-trusted-types-for 'script'
 </pre>
 </div>
 
-<div class="example" id="header-that-allows-no-policy-names">
-An empty [=directive=] [=directive/value=] indicates policies may not be created,
-and sinks expect Trusted Type values, i.e. no [=injection sinks=] can be used
-at all.
-
-<pre class="http">
-Content-Security-Policy: trusted-types
-</pre>
-</div>
-
-A value `"*"` allows for creating policies with any name, including policies with a name that was already used.
-
-<div class="example" id="wildcard-policy-name-in-header">
-<pre class="http">
-Content-Security-Policy: trusted-types *
-</pre>
-</div>
-
-If the policy named `default` is present in the list, it refers to the
-[=default policy=]. All strings passed to [=injection sinks=] will be passed through it instead
-of being rejected outright.
-
-<div class="example" id="default-in-header">
-<pre class="http">
-Content-Security-Policy: trusted-types one two default
-</pre>
-</div>
-
-#### `trusted-types` Pre-Navigation check #### {#trusted-types-pre-navigation-check}
+#### `require-trusted-types-for` Pre-Navigation check #### {#require-trusted-types-for-pre-navigation-check}
 
 Given a [[Fetch#concept-request|request]] (|request|), a string |navigation type| and a [[CSP3#content-security-policy-object|policy]] (|policy|), this algorithm returns `"Blocked"`
-if a navigation violates the {{#trusted-types-directive|trusted-types}} directive's constraints and `"Allowed"`
-otherwise. This constitutes the {{#trusted-types-directive|trusted-types}} directive's [=pre-navigation check=]:
+if a navigation violates the {{#require-trusted-types-for-directive|require-trusted-types-for}} directive's constraints and `"Allowed"`
+otherwise. This constitutes the {{#require-trusted-types-for-directive|require-trusted-types-for}} directive's [=pre-navigation check=]:
 
 Note: This algorithm assures that the code to be executed by a navigation to a `javascript:` URL will have to pass through a
 <a>default policy</a>'s `createScript` function, in addition to all other restrictions imposed by other CSP directives.
@@ -1549,19 +1531,75 @@ Note: This algorithm assures that the code to be executed by a navigation to a `
 1. Return `"Allowed"`.
 
 
+### <dfn lt="trusted-types-directive">trusted-types</dfn> directive ### {#trusted-types-csp-directive}
+
+This document defines *trusted-types* - a new [[CSP3#directives|Content Security Policy directive]]. The {{#trusted-types-directive|trusted-types}} directive controls the creation of Trusted Type {{#policies}}.
+
+The syntax for the directive's [=directive/name=] and [=directive/value=] is described by the following
+ABNF:
+
+<pre>
+directive-name = "trusted-types"
+directive-value = <a>serialized-tt-configuration</a>
+<dfn>serialized-tt-configuration</dfn> = ( <a>tt-expression</a> *( <a href="https://w3c.github.io/webappsec-csp/#grammardef-required-ascii-whitespace">required-ascii-whitespace</a> <a>tt-expression</a> ) )
+<dfn>tt-expression</dfn> = "*" / <a>tt-policy-name</a> ; In the future, add keywords
+<dfn>tt-policy-name</dfn> = 1*( <a href="https://tools.ietf.org/html/rfc5234#appendix-B.1">ALPHA</a> / <a href="https://tools.ietf.org/html/rfc5234#appendix-B.1">DIGIT</a> / "-" / "#" / "=" / "_" / "/" / "@" / "." / "%")
+</pre>
+
+<div class="example" id="whitelist-of-policy-names-in-header">
+Types are enforced at sinks, and only two policies may be created: “one” and “two”.
+
+<pre class="http">
+Content-Security-Policy: require-trusted-types-for 'script'; trusted-types one two
+</pre>
+</div>
+
+<div class="example" id="header-that-allows-no-policy-names">
+An empty [=directive=] [=directive/value=] indicates policies may not be created,
+and sinks expect Trusted Type values, i.e. no DOM XSS [=injection sinks=] can be used
+at all.
+
+<pre class="http">
+Content-Security-Policy: trusted-types; require-trusted-types-for 'script'
+</pre>
+</div>
+
+A value `"*"` allows for creating policies with any name, including policies with a name that was already used.
+
+<div class="example" id="wildcard-policy-name-in-header">
+<pre class="http">
+Content-Security-Policy: trusted-types *
+</pre>
+</div>
+
+If the policy named `default` is present in the list, it refers to the
+[=default policy=]. All strings passed to [=injection sinks=] will be passed through it instead
+of being rejected outright.
+
+<div class="example" id="default-in-header">
+<pre class="http">
+Content-Security-Policy: trusted-types one two default
+</pre>
+</div>
+
+
 ### <dfn abstract-op>Should sink type mismatch violation be blocked by Content Security Policy?</dfn> ### {#should-block-sink-type-mismatch}
 
-Given a [=Realm/global object=] (|global|), a string (|sink|) and a string (|source|) this algorithm
+Given a [=Realm/global object=] (|global|), a string (|sink|), a string (|sinkType|) and a string (|source|) this algorithm
 returns `"Blocked"` if the [=injection sink=] requires a [=Trusted Type=], and
 `"Allowed"` otherwise.
 
 1.  Let |result| be `"Allowed"`.
 1.  For each |policy| in |global|'s <a>CSP list</a>:
     1.  If |policy|'s <a>directive set</a> does not contain a <a>directive</a>
-        which [=directive/name=] is `"trusted-types"`, skip to the next |policy|.
+        which [=directive/name=] is `"require-trusted-types-for"`, skip to the next |policy|.
+    1.  Let |directive| be the |policy|'s |directive set|'s [=directive=] which name
+        is `"require-trusted-types-for"`
+    1.  If |directive|'s [=directive/value=] does not contain a <a>require-tt-for-keyword</a> which is a match
+        for a value |sinkType|, skip to the next |policy|.
     1.  Let |violation| be the result of executing
         [[CSP#create-violation-for-global|Create a violation object for global, policy, and directive]]
-        on |global|, |policy| and `"trusted-types"`
+        on |global|, |policy| and `"require-trusted-types-for"`
     1. Set |violation|'s [=violation/resource=] to `"trusted-types-sink"`.
     1. Let |trimmedSource| be the substring of |source|, containing its first 40 characters.
     1. Set |violation|'s [=violation/sample=] to be the result of [=concatenating=] the list &laquo; |sink|, |trimmedSource| &laquo; using space (`"\x20"`) as a |separator|.
@@ -1609,15 +1647,24 @@ Given a {{script}} (|script|), this algorithm performs the following steps:
 1.  If |script| does not have a {{script/src}} content attribute, set its {{script/[[ScriptURL]]}} internal slot value to `null`.
 
 1.  Otherwise, if |script|'s {{script/[[ScriptURL]]}} internal slot value is not equal to its {{script/src}} attribute value,
-    set |script|'s {{script/[[ScriptURL]]}} to the result of executing [$Get Trusted Type compliant string$],
-    passing {{TrustedScriptURL}} as |expectedType|, |script|'s {{Document}}'s [=relevant global object=] as |global|, |script|'s {{script/src}} attribute value
-    as |input| and `script.src` as |sink|. If the algorithm threw an error, rethrow the error and abort further steps.
+    set |script|'s {{script/[[ScriptURL]]}} to the result of executing [$Get Trusted Type compliant string$], with the following arguments:
+      * {{TrustedScriptURL}} as |expectedType|,
+      * |script|'s {{Document}}'s [=relevant global object=] as |global|,
+      * |script|'s {{script/src}} attribute value as |input|,
+      * `script.src` as |sink|,
+      * `'script'` as |sinkType|.
+
+    If the algorithm threw an error, rethrow the error and abort further steps.
 
 1.  If |script|'s {{script/[[ScriptText]]}} internal slot value is not equal to its [=child text content=],
-    set |script|'s {{script/[[ScriptText]]}} to the result of executing [$Get Trusted Type compliant string$],
-    passing {{TrustedScriptURL}} as |expectedType|, |script|'s {{Document}}'s [=relevant global object=] as |global|, |script|'s [=child text content=] attribute value
-    and `script.text` as |sink|. If the algorithm threw an error, rethrow the error.
+    set |script|'s {{script/[[ScriptText]]}} to the result of executing [$Get Trusted Type compliant string$], with the following arguments:
+      * {{TrustedScriptURL}} as |expectedType|,
+      * |script|'s {{Document}}'s [=relevant global object=] as |global|,
+      * |script|'s [=child text content=] attribute value,
+      * `script.text` as |sink|,
+      * `'script'` as |sinkType|.
 
+    If the algorithm threw an error, rethrow the error.
 
 ### Violation object changes ### {#csp-violation-object-hdr}
 
@@ -1659,7 +1706,8 @@ throws an "`EvalError`" if not:
     [$Get Trusted Type compliant string$] algorithm, with:
     *   |calleeRealm| as |global|,
     *   |source| as |input|,
-    *   `"eval"` as |sink|,
+    *   `eval` as |sink|,
+    *   `'script'` as |sinkType|,
     *   {{TrustedScript}} as |expectedType|.</ins>
 
 2.  <ins>If the algorithm throws an error, throw an {{EvalError}}.</ins>
