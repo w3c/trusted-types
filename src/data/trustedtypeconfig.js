@@ -25,11 +25,13 @@ export class TrustedTypeConfig {
    * @param {boolean} isEnforcementEnabled If true enforcement is enabled at
    *   runtime.
    * @param {Array<string>} allowedPolicyNames Whitelisted policy names.
+   * @param {boolean} allowDuplicates Should duplicate names be allowed.
    * @param {?string} cspString String with the CSP policy.
    */
   constructor(isLoggingEnabled,
       isEnforcementEnabled,
       allowedPolicyNames,
+      allowDuplicates,
       cspString = null) {
     /**
       * True if logging is enabled.
@@ -48,6 +50,12 @@ export class TrustedTypeConfig {
      * @type {Array<string>}
      */
     this.allowedPolicyNames = allowedPolicyNames;
+
+    /**
+     * Should duplicate names be accepted.
+     * @type {boolean}
+     */
+    this.allowDuplicates = allowDuplicates;
 
     /**
      * CSP string that defined the policy.
@@ -87,14 +95,18 @@ export class TrustedTypeConfig {
     const enforce = ENFORCEMENT_DIRECTIVE_NAME in policy &&
         policy[ENFORCEMENT_DIRECTIVE_NAME].includes('\'script\'');
     let policies = ['*'];
+    let allowDuplicates = true;
     if (POLICIES_DIRECTIVE_NAME in policy) {
       policies = policy[POLICIES_DIRECTIVE_NAME].filter(
           (p) => p.charAt(0) !== '\'');
+      allowDuplicates = policy[POLICIES_DIRECTIVE_NAME].includes(
+          '\'allow-duplicates\'');
     }
     return new TrustedTypeConfig(
         isLoggingEnabled,
         enforce, /* isEnforcementEnabled */
         policies, /* allowedPolicyNames */
+        allowDuplicates, /* allowDuplicates */
         cspString
     );
   }

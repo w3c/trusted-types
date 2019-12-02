@@ -9,9 +9,10 @@
 import '@babel/polyfill';
 import {trustedTypesBuilderTestOnly} from '../src/trustedtypes.js';
 
-describe('v2 TrustedTypes', () => {
+describe('TrustedTypes', () => {
   let TrustedTypes;
-  let setAllowedPolicyNames;
+  let setPolicyNameRestrictions;
+  let clearPolicyNameRestrictions;
   let getDefaultPolicy;
   let resetDefaultPolicy;
 
@@ -19,7 +20,8 @@ describe('v2 TrustedTypes', () => {
     // We need separate instances.
     ({
       trustedTypes: TrustedTypes,
-      setAllowedPolicyNames,
+      setPolicyNameRestrictions,
+      clearPolicyNameRestrictions,
       getDefaultPolicy,
       resetDefaultPolicy} = trustedTypesBuilderTestOnly());
   });
@@ -474,23 +476,36 @@ describe('v2 TrustedTypes', () => {
     });
   });
 
-  describe('setAllowedPolicyNames', () => {
-    it('is not applied by default', () => {
+  describe('setPolicyNameRestrictions', () => {
+    it('is not applied unless called', () => {
       expect(() => TrustedTypes.createPolicy('foo', {})).not.toThrow();
     });
 
     it('is applied by createPolicy', () => {
-      setAllowedPolicyNames(['bar']);
+      setPolicyNameRestrictions(['bar'], false);
 
       expect(() => TrustedTypes.createPolicy('foo', {})).toThrow();
       expect(() => TrustedTypes.createPolicy('bar', {})).not.toThrow();
     });
 
-    it('supports wildcard', () => {
-      setAllowedPolicyNames(['*']);
+    it('checks for duplicate policy names', () => {
+      setPolicyNameRestrictions(['foo'], true);
 
       expect(() => TrustedTypes.createPolicy('foo', {})).not.toThrow();
-      expect(() => TrustedTypes.createPolicy('bar', {})).not.toThrow();
+      expect(() => TrustedTypes.createPolicy('foo', {})).not.toThrow();
+      expect(() => TrustedTypes.createPolicy('bar', {})).toThrow();
+    });
+  });
+
+  describe('clearPolicyNameRestrictions', () => {
+    it('removes all restrictions', () => {
+      setPolicyNameRestrictions(['bar'], false);
+
+      expect(() => TrustedTypes.createPolicy('foo', {})).toThrow();
+      clearPolicyNameRestrictions();
+
+      expect(() => TrustedTypes.createPolicy('foo', {})).not.toThrow();
+      expect(() => TrustedTypes.createPolicy('foo', {})).not.toThrow();
     });
   });
 
@@ -562,14 +577,14 @@ describe('v2 TrustedTypes', () => {
   });
 
   describe('policy name collision', () => {
-    it('allowed policies include *', () => {
+    it('is allowed by default', () => {
       TrustedTypes.createPolicy('foo', {});
 
       expect(() => TrustedTypes.createPolicy('foo', {})).not.toThrow();
     });
 
-    it('allowed policies doesn\'t include *', () => {
-      setAllowedPolicyNames(['foo']);
+    it('can be controlled', () => {
+      setPolicyNameRestrictions(['foo'], false);
       TrustedTypes.createPolicy('foo', {});
 
       expect(() => TrustedTypes.createPolicy('foo', {})).toThrow();

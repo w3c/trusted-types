@@ -1934,7 +1934,7 @@ passed in the <code class="idl"><a data-link-type="idl" href="#dictdef-trustedty
 The allowed policy names may be restricted by <a href="#content-security-policy-hdr">Content Security Policy</a>.
 If the policy name is not on the whitelist defined in the <a data-link-type="dfn" href="#trusted-types-directive" id="ref-for-trusted-types-directive">trusted-types</a> CSP directive,
 the policy creation fails with a <a href="https://www.w3.org/TR/2016/REC-WebIDL-1-20161215/#idl-Error">TypeError</a>.
-Also, if unique policy names are enforced (i.e. <code>trusted-types *</code> is not used),
+Also, if unique policy names are enforced (i.e. <code>'allow-duplicates'</code> is not used),
 and <code>createPolicy</code> is called more than once with any given <code>policyName</code>,
 policy creation fails with a TypeError.</p>
       <div class="example" id="create-policy-example">
@@ -3001,8 +3001,9 @@ ABNF:</p>
 <pre>directive-name = "trusted-types"
 directive-value = <a data-link-type="dfn" href="#serialized-tt-configuration" id="ref-for-serialized-tt-configuration">serialized-tt-configuration</a>
 <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="serialized-tt-configuration">serialized-tt-configuration</dfn> = ( <a data-link-type="dfn" href="#tt-expression" id="ref-for-tt-expression">tt-expression</a> *( <a href="https://w3c.github.io/webappsec-csp/#grammardef-required-ascii-whitespace">required-ascii-whitespace</a> <a data-link-type="dfn" href="#tt-expression" id="ref-for-tt-expression①">tt-expression</a> ) )
-<dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="tt-expression">tt-expression</dfn> = "*" / <a data-link-type="dfn" href="#tt-policy-name" id="ref-for-tt-policy-name">tt-policy-name</a> ; In the future, add keywords
+<dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="tt-expression">tt-expression</dfn> = <a data-link-type="dfn" href="#tt-policy-name" id="ref-for-tt-policy-name">tt-policy-name</a>  / <a data-link-type="dfn" href="#tt-keyword" id="ref-for-tt-keyword">tt-keyword</a>
 <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="tt-policy-name">tt-policy-name</dfn> = 1*( <a href="https://tools.ietf.org/html/rfc5234#appendix-B.1">ALPHA</a> / <a href="https://tools.ietf.org/html/rfc5234#appendix-B.1">DIGIT</a> / "-" / "#" / "=" / "_" / "/" / "@" / "." / "%")
+<dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="tt-keyword">tt-keyword</dfn> = "'allow-duplicates'"
 </pre>
    <div class="example" id="whitelist-of-policy-names-in-header">
     <a class="self-link" href="#whitelist-of-policy-names-in-header"></a> Types are enforced at sinks, and only two policies may be created: “one” and “two”. 
@@ -3016,10 +3017,10 @@ at all.
 <pre class="http">Content-Security-Policy: trusted-types; require-trusted-types-for 'script'
 </pre>
    </div>
-   <p>A value <code>"*"</code> allows for creating policies with any name, including policies with a name that was already used.</p>
-   <div class="example" id="wildcard-policy-name-in-header">
-    <a class="self-link" href="#wildcard-policy-name-in-header"></a> 
-<pre class="http">Content-Security-Policy: trusted-types *
+   <p>Keyword <code>'allow-duplicates'</code> allows for creating policies with a name that was already used.</p>
+   <div class="example" id="allow-duplicates-in-header">
+    <a class="self-link" href="#allow-duplicates-in-header"></a> 
+<pre class="http">Content-Security-Policy: trusted-types foo bar 'allow-duplicates'
 </pre>
    </div>
    <p>If the policy named <code>default</code> is present in the list, it refers to the <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy②">default policy</a>. All strings passed to <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⑦">injection sinks</a> will be passed through it instead
@@ -3079,12 +3080,10 @@ strings (<var>createdPolicyNames</var>), this algorithm returns <code>"Blocked"<
        <p>Let <var>directive</var> be the <var>policy</var>’s <var>directive set</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives④">directive</a> which name
 is <code>"trusted-types"</code></p>
       <li data-md>
-       <p>If <var>directive</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-value" id="ref-for-directive-value④">value</a> contains a <a data-link-type="dfn" href="#tt-expression" id="ref-for-tt-expression②">tt-expression</a> which is a match
-for a value <code>*</code>, skip to the next <var>policy</var>.</p>
-       <p class="note" role="note"><span>Note:</span> <code>trusted-types *</code> allows authors to create policies with
+       <p>If <var>createdPolicyNames</var> contains <var>policyName</var> and <var>directive</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-value" id="ref-for-directive-value④">value</a> does not contain a <a data-link-type="dfn" href="#tt-keyword" id="ref-for-tt-keyword①">tt-keyword</a> which is a match
+for a value <code>'allow-duplicates'</code>, set <var>createViolation</var> to true.</p>
+       <p class="note" role="note"><span>Note:</span> <code>trusted-types policyA policyB 'allow-duplicates'</code> allows authors to create policies with
 duplicated names.</p>
-      <li data-md>
-       <p>If <var>createdPolicyNames</var> contains <var>policyName</var>, set <var>createViolation</var> to true.</p>
       <li data-md>
        <p>If <var>directive</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-value" id="ref-for-directive-value⑤">value</a> does not contain a <a data-link-type="dfn" href="#tt-policy-name" id="ref-for-tt-policy-name①">tt-policy-name</a>,
 which value is <var>policyName</var>, set <var>createViolation</var> to true.</p>
@@ -3468,6 +3467,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <li><a href="#dom-window-trustedtypes">trustedTypes</a><span>, in §4.1.1</span>
    <li><a href="#trusted-types-directive">trusted-types-directive</a><span>, in §4.5.2</span>
    <li><a href="#tt-expression">tt-expression</a><span>, in §4.5.2</span>
+   <li><a href="#tt-keyword">tt-keyword</a><span>, in §4.5.2</span>
    <li><a href="#tt-policy-name">tt-policy-name</a><span>, in §4.5.2</span>
    <li><a href="#dom-document-write">write()</a><span>, in §4.1.2</span>
    <li><a href="#dom-document-writeln">writeln()</a><span>, in §4.1.2</span>
@@ -4672,7 +4672,6 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
    <b><a href="#tt-expression">#tt-expression</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-tt-expression">4.5.2. trusted-types directive</a> <a href="#ref-for-tt-expression①">(2)</a>
-    <li><a href="#ref-for-tt-expression②">4.5.4. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="tt-policy-name">
@@ -4680,6 +4679,13 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
    <ul>
     <li><a href="#ref-for-tt-policy-name">4.5.2. trusted-types directive</a>
     <li><a href="#ref-for-tt-policy-name①">4.5.4. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="tt-keyword">
+   <b><a href="#tt-keyword">#tt-keyword</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-tt-keyword">4.5.2. trusted-types directive</a>
+    <li><a href="#ref-for-tt-keyword①">4.5.4. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="abstract-opdef-should-sink-type-mismatch-violation-be-blocked-by-content-security-policy">

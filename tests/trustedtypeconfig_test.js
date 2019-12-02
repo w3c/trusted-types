@@ -83,6 +83,19 @@ describe('TrustedTypeConfig', () => {
           .allowedPolicyNames).toEqual(['*', 'bar', 'foo']);
     });
 
+    it('defaults to disallowing duplicates', () => {
+      expect(TrustedTypeConfig.fromCSP('trusted-types *')
+          .allowDuplicates).toEqual(false);
+    });
+
+    it('supports \'allow-duplicates\' keyword', () => {
+      const config = TrustedTypeConfig.fromCSP(
+          'trusted-types a b \'allow-duplicates\' c');
+
+      expect(config.allowDuplicates).toEqual(true);
+      expect(config.allowedPolicyNames).toEqual(['a', 'b', 'c']);
+    });
+
     it('ignores quoted keywords when extracting policy names', () => {
       expect(TrustedTypeConfig.fromCSP('trusted-types foo bar \'keyword\'')
           .allowedPolicyNames).toEqual(['bar', 'foo']);
