@@ -175,8 +175,12 @@ export class TrustedTypesEnforcer {
    *
    */
   install() {
-    setPolicyNameRestrictions(this.config_.allowedPolicyNames,
-        this.config_.allowDuplicates);
+    if (this.config_.allowedPolicyNames.includes('*')) {
+      clearPolicyNameRestrictions();
+    } else {
+      setPolicyNameRestrictions(this.config_.allowedPolicyNames,
+          this.config_.allowDuplicates);
+    }
 
     if (!this.config_.isEnforcementEnabled && !this.config_.isLoggingEnabled) {
       return;
