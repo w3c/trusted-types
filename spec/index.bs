@@ -1527,6 +1527,43 @@ partial interface mixin SVGScriptElement : SVGElement {
 
 ## Integration with DOM ## {#integration-with-dom}
 
+This document modifies the {{Element}} interface, adding <a>attribute validation steps</a>:
+
+<p><ins>This and <a lt="other applicable specifications">other specifications</a> may define
+<dfn export id=concept-element-attributes-validation-ext>attribute validation steps</dfn> for
+<a for=/>elements</a>. The algorithm is passed <var>element</var>, <var>localName</var>,
+<var>value</var>, and <var>namespace</var>.</ins>
+
+This document changes the  <a>handle attribute changes</a> algorithm, adding the following step at the beginning:
+<ol>
+ <li><ins><p>Run the <a>attribute validation steps</a> with <var>element</var>,
+ <var>attribute</var>'s <a for=Attr>local name</a>, <var>newValue</var> and
+ <var>attribute</var>'s <a for=Attr>namespace</a>. If this throws an exception, then
+ rethrow the exception and abort further steps.</ins>
+</ol>
+
+Additionally, this document changes the <a spec=dom>append</a> an attribute algorithm:
+
+<p>To <dfn export id=concept-element-attributes-append lt="append an attribute">append</dfn> an
+<a>attribute</a> <var>attribute</var> to an <a for="/">element</a> <var>element</var>
+<ins>with a <var>value</var></ins>, run these steps:
+
+<ol>
+ <li><p><a>Handle attribute changes</a> for <var>attribute</var> with <var>element</var>, null, and
+ <del><var>attribute</var>'s <a for=Attr>value</a></del><ins><var>value</var></ins>.
+
+ <li><ins><p>Set <var>attribute</var>'s <a for=Attr>value</a> to <var>value</var>.</ins>
+
+ <li><p><a for=list>Append</a> <var>attribute</var> to <var>element</var>'s
+ <a for=Element>attribute list</a>.
+ <li><p>Set <var>attribute</var>'s <a for=Attr>element</a> to <var>element</var>.
+</ol>
+
+Callers of this algorithm are changed accordingly.
+
+Issue: Remove when <a href="https://github.com/whatwg/dom/pull/809">DOM #809</a> is merged.
+
+
 ## Integration with DOM Parsing ## {#integration-with-dom-parsing}
 
 This document modifies the following interfaces defined by [[DOM-Parsing]]:
