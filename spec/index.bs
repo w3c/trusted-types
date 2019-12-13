@@ -857,6 +857,8 @@ a string (|policyName|), {{TrustedTypePolicyOptions}} dictionary (|options|), an
     creation be blocked by Content Security Policy?$] algorithm with |global|,
     |policyName| and |factory|'s `[[CreatedPolicyNames]]` slot value.
 1.  If |allowedByCSP| is `"Blocked"`, throw a {{TypeError}} and abort further steps.
+1.  If |policyName| is `default` and the |factory|'s `[[DefaultPolicy]]` slot
+    value is not empty, throw a {{TypeError}} and abort further steps.
 1.  Let |policy| be a new {{TrustedTypePolicy}} object.
 1.  Set |policy|'s `name` property value to |policyName|.
 1.  Let |policyOptions| be a new {{TrustedTypePolicyOptions}} object.

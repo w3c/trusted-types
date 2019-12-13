@@ -1214,7 +1214,7 @@ Possible extra rowspan handling
 </style>
   <meta content="Bikeshed version 0dd2bba6dfda6c3168490a3a3044dd1d0b1ef8e0" name="generator">
   <link href="https://w3c.github.io/webappsec-trusted-types/dist/spec/" rel="canonical">
-  <meta content="59ce043cf237a8efa16bc9d991692ba679cdb11a" name="document-revision">
+  <meta content="3a9de45677cb0879b0bc2385f8de2a3da3682203" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -2352,6 +2352,9 @@ creation be blocked by Content Security Policy?</a> algorithm with <var>global</
     <li data-md>
      <p>If <var>allowedByCSP</var> is <code>"Blocked"</code>, throw a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror">TypeError</a></code> and abort further steps.</p>
     <li data-md>
+     <p>If <var>policyName</var> is <code>default</code> and the <var>factory</var>’s <code>[[DefaultPolicy]]</code> slot
+value is not empty, throw a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror①">TypeError</a></code> and abort further steps.</p>
+    <li data-md>
      <p>Let <var>policy</var> be a new <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy①⓪">TrustedTypePolicy</a></code> object.</p>
     <li data-md>
      <p>Set <var>policy</var>’s <code>name</code> property value to <var>policyName</var>.</p>
@@ -2399,7 +2402,7 @@ based on the following table:</p>
     <li data-md>
      <p>Let <var>function</var> be the value of the property in <var>options</var> named <var>functionName</var>.</p>
     <li data-md>
-     <p>If <var>function</var> is <code>null</code>, throw a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror①">TypeError</a></code>.</p>
+     <p>If <var>function</var> is <code>null</code>, throw a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror②">TypeError</a></code>.</p>
     <li data-md>
      <p>Let <var>policyValue</var> be the result of invoking <var>function</var> with <var>value</var> as a first argument, items of <var>arguments</var> as subsequent arguments,
 and <a href="https://tc39.es/ecma262/#sec-method">callback **this** value</a> set to <code>null</code>.</p>
@@ -2448,7 +2451,7 @@ passing <var>global</var>, <var>input</var> as <var>source</var>, <var>sinkType<
        <p>If <var>disposition</var> is <code>“Allowed”</code>, return stringified <var>input</var> and abort futher steps.</p>
        <p class="note" role="note"><span>Note:</span> This step assures that the default policy rejection will be reported, but ignored in a report-only mode.</p>
       <li data-md>
-       <p>Throw a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror②">TypeError</a></code> and abort further steps.</p>
+       <p>Throw a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror③">TypeError</a></code> and abort further steps.</p>
      </ol>
     <li data-md>
      <p class="assertion">Assert: <var>convertedInput</var> has type <var>expectedType</var>.</p>
@@ -3911,9 +3914,9 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
   <aside class="dfn-panel" data-for="term-for-exceptiondef-typeerror">
    <a href="https://heycam.github.io/webidl/#exceptiondef-typeerror">https://heycam.github.io/webidl/#exceptiondef-typeerror</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-exceptiondef-typeerror">3.1. Create a Trusted Type Policy</a>
-    <li><a href="#ref-for-exceptiondef-typeerror①">3.2. Create a Trusted Type</a>
-    <li><a href="#ref-for-exceptiondef-typeerror②">3.3. Get Trusted Type compliant string</a>
+    <li><a href="#ref-for-exceptiondef-typeerror">3.1. Create a Trusted Type Policy</a> <a href="#ref-for-exceptiondef-typeerror①">(2)</a>
+    <li><a href="#ref-for-exceptiondef-typeerror②">3.2. Create a Trusted Type</a>
+    <li><a href="#ref-for-exceptiondef-typeerror③">3.3. Get Trusted Type compliant string</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idl-USVString">
