@@ -384,6 +384,7 @@ reference - see [[#extensions-to-the-window-interface]].
     [Unforgeable] boolean isScript(any value);
     [Unforgeable] boolean isScriptURL(any value);
     [Unforgeable] readonly attribute TrustedHTML emptyHTML;
+    [Unforgeable] readonly attribute TrustedScript emptyScript;
     DOMString? getAttributeType(
         DOMString tagName,
         DOMString attribute,
@@ -564,6 +565,23 @@ initially empty.
 <div class="example" id="empty-html-example">
 <xmp highlight="js">
 anElement.innerHTML = trustedTypes.emptyHTML; // no need to create a policy
+</xmp>
+</div>
+
+: <dfn>emptyScript</dfn>
+:: is a {{TrustedScript}} object with its `[[Data]]` internal slot value set to an empty string.
+
+Note: This object can be used to detect if the runtime environment has [[#csp-eval]]. While native Trusted Types implementation can
+support `eval(TrustedScript)`, it is impossible for a polyfill to  emulate that, as
+eval(TrustedScript) will return its input without unwrapping and evaluating the code.
+
+<div class="example" id="empty-script-example">
+<xmp highlight="js">
+// With native Trusted Types support eval(trustedTypes.emptyScript) will execute and return falsy undefined.
+// Without it, eval(trustedTypes.emptyScript) will return a truthy Object.
+const supportsTS = !eval(trustedTypes.emptyScript);
+
+eval(supportsTs ? myTrustedScriptObj : myTrustedScriptObj.toString());
 </xmp>
 </div>
 
