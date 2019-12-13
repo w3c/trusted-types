@@ -1385,8 +1385,6 @@ partial interface HTMLObjectElement : HTMLElement {
   [CEReactions, TrustedTypes=TrustedScriptURL] attribute ScriptURLString data;
   [CEReactions, TrustedTypes=TrustedScriptURL] attribute DOMString codeBase; // obsolete
 };
-
-// TODO: Add HTMLPortalElement.src from https://github.com/WICG/portals once it's specced.
 </pre>
 
 Issue: Add base.href enforcement.
