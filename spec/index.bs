@@ -861,7 +861,7 @@ a string (|policyName|), {{TrustedTypePolicyOptions}} dictionary (|options|), an
 1.  Set |policy|'s `name` property value to |policyName|.
 1.  Let |policyOptions| be a new {{TrustedTypePolicyOptions}} object.
 1.  Set |policyOptions|
-    {{TrustedTypePolicy/createHTML|createHTML}} property to |option|'s
+    {{TrustedTypePolicy/createHTML()|createHTML}} property to |option|'s
     {{TrustedTypePolicyOptions/createHTML|createHTML}} property value.
 1.  Set |policyOptions| {{TrustedTypePolicy/createScript()|createScript}}
     property to |option|'s
