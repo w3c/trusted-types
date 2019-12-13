@@ -1214,7 +1214,7 @@ Possible extra rowspan handling
 </style>
   <meta content="Bikeshed version 0dd2bba6dfda6c3168490a3a3044dd1d0b1ef8e0" name="generator">
   <link href="https://w3c.github.io/webappsec-trusted-types/dist/spec/" rel="canonical">
-  <meta content="7a3e772902cab86d8da8fb29348528cad5a1c475" name="document-revision">
+  <meta content="d2dd64979af090119aebf5bc48b77e7ee90fb3e1" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -2097,7 +2097,7 @@ eval(TrustedScript) will return its input without unwrapping and evaluating the 
 <c- c1>// Without it, eval(trustedTypes.emptyScript) will return a truthy Object.</c->
 <c- kr>const</c-> supportsTS <c- o>=</c-> <c- o>!</c->eval<c- p>(</c->trustedTypes<c- p>.</c->emptyScript<c- p>);</c->
 
-eval<c- p>(</c->supportsTs <c- o>?</c-> myTrustedScriptObj <c- o>:</c-> myTrustedScriptObj<c- p>.</c->toString<c- p>());</c->
+eval<c- p>(</c->supportsTS <c- o>?</c-> myTrustedScriptObj <c- o>:</c-> myTrustedScriptObj<c- p>.</c->toString<c- p>());</c->
 </pre>
     </div>
     <dl>

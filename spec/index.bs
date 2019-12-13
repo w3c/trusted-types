@@ -581,7 +581,7 @@ eval(TrustedScript) will return its input without unwrapping and evaluating the 
 // Without it, eval(trustedTypes.emptyScript) will return a truthy Object.
 const supportsTS = !eval(trustedTypes.emptyScript);
 
-eval(supportsTs ? myTrustedScriptObj : myTrustedScriptObj.toString());
+eval(supportsTS ? myTrustedScriptObj : myTrustedScriptObj.toString());
 </xmp>
 </div>
 
