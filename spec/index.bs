@@ -1507,7 +1507,7 @@ ABNF:
 
 <pre>
 directive-name = "require-trusted-types-for"
-directive-value = <a>require-tt-for-keyword</a> *( href="https://w3c.github.io/webappsec-csp/#grammardef-required-ascii-whitespace">required-ascii-whitespace</a> <a>require-tt-for-keyword</a>)
+directive-value = <a>require-tt-for-keyword</a> *( <a href="https://w3c.github.io/webappsec-csp/#grammardef-required-ascii-whitespace">required-ascii-whitespace</a> <a>require-tt-for-keyword</a>)
 <dfn>require-tt-for-keyword</dfn> = "'script'"
 </pre>
 
