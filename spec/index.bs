@@ -35,43 +35,56 @@ Complain About: broken-links yes
 
 *This section is not normative.*
 
-DOM-Based Cross-Site Scripting (DOM XSS) occurs when a web application
-takes a string value from an attacker-controlled source (e.g. the
-document URL parameter, or postMessage channel) and passes that value
-to one of the [[#injection-sinks|injection sinks]], that eventually causes execution of the
-script payload controlled by the attacker.
+Certain classes of vulnerabilities occur when a web application
+takes a value from an attacker-controlled source (e.g. the
+document URL parameter, or postMessage channel) and passes that value,
+without appropriate sanitization to one of the
+[[#injection-sinks|injection sinks]] - various Web API functions with
+powerful capabilities.
 
-This vulnerability type is prevalent in the web applications for two
-reasons. For one, it's easy to introduce - there are over 60 different
+These types of issues are traditionally difficult to prevent.
+Applications commonly call those injection sinks with attacker-controlled
+values without authors realizing it, since it's not clear if the
+input was attacker-controlled when invoking the injection sink.
+Due to the dynamic nature of JavaScript it's also difficult to ascertain
+that such pattern is not present in a given program. It is often missed
+during manual code reviews, and automated code analysis. As an example,
+if `aString` contains untrusted data, `foo[bar] = aString` is a statement
+that potentially can trigger a vulnerability, depending on a value
+of `foo` and `bar`.
+
+This document focuses on prevening DOM-Based Cross-Site Scripting
+that occurs when attacker-controlled data reaches
+[[#dom-xss-injection-sinks]], as that eventually causes execution of the
+script payload controlled by the attacker. DOM XSS is prevalent in the
+web applications as there are over 60 different
 injection sinks (e.g. `Element.innerHTML`, or `Location.href` setters).
-A lot of those sinks are widely used, and are often passed an attacker-controlled
-value without the developer realizing it. Secondly, DOM XSS is
-difficult to prevent. Due to the dynamic nature of JavaScript it's
-difficult to ascertain that this vulnerability is not present in a
-given program - as such, DOM XSS is often missed during manual code
-reviews, and automated code analysis. As an example,
-`foo[bar] = aString` is a statement that potentially introduces DOM XSS.
 
 This document defines [[#trusted-types|Trusted Types]] - an API that allows applications
-to lock down DOM XSS injection sinks to only accept non-spoofable, typed values
+to lock down [=injection sinks=] to only accept non-spoofable, typed values
 in place of strings. These values can in turn only be created from
-application-defined [[#policies|policies]], allowing the authors to define rules
-guarding writing values to the DOM, and reducing the DOM XSS attack
-surface to small, isolated parts of the web application codebase,
-which are substantially easier to safeguard, monitor and review.
+application-defined [=policies=], allowing the authors to define rules
+guarding dangerous APIs, reducing the attack surface to small, isolated parts
+of the web application codebase, which are substantially easier to safeguard,
+monitor and review.
+
+
+
 
 
 ## Goals ## {#goals}
 
-*   Minimize the likelihood of DOM XSS vulnerabilities.
+*   Minimize the likelihood of client-side vulnerabilities that occur when
+    calling powerful Web APIs with untrusted data - for example,
+    minimize the likelihood of DOM XSS.
 
-*   Encourage a design in which XSS-related security decisions are
+*   Encourage a design in which security decisions are
     encapsulated within a small part of the application.
 
-*   Reduce DOM XSS security review surface for complex web application
+*   Reduce security review surface for complex web application
     codebases.
 
-*   Allow the detection of DOM XSS vulnerabilities similar to how regular
+*   Allow the detection of vulnerabilities similar to how regular
     programming errors are detected and surfaced to the developers, with the
     assist of dynamic and static analysis tools.
 
@@ -90,10 +103,9 @@ which are substantially easier to safeguard, monitor and review.
 *   Prevent *cross-origin* JavaScript execution (for example, Trusted Types
     don't guard loading new documents with JavaScript code via `data:` URLs).
 *   Prevent malicious authors of the web application's JavaScript code
-    from being able to trigger DOM XSS; attempting to protect against  malicious
-    authors would result in an overtly complex and not-practical
-    design; such authors already *have* code execution capabilities, creating
-    DOM XSS flaws from this starting position is not a privilege escalation.
+    from being able to bypass the restrictions; attempting to protect against
+    malicious authors would result in an overtly complex and not-practical
+    design.
 
 ## Use cases ## {#use-cases}
 
@@ -103,11 +115,11 @@ which are substantially easier to safeguard, monitor and review.
     libraries that perform auxiliary tasks (e.g. analytics, performance
     monitoring). To ensure that none of these components introduce DOM
     XSS vulnerabilities, author defines a Trusted Type policy in the
-    templating policy and enables the enforcement for the DOM sinks.
+    templating library and enables the enforcement for the [=DOM XSS injection sinks=].
 
 *   An existing web application interacts with the DOM mostly using XSS-safe
-    patterns (i.e. withour using [=injection sinks=]). In a few places, however,
-    it resorts to using risky patterns like loading additional script using
+    patterns (i.e. withour using [=DOM XSS injection sinks=]). In a few places,
+    however, it resorts to using risky patterns like loading additional script using
     JSONP, calling into `innerHTML` or `eval`.
 
     Review finds that those places do not cause XSS (e.g. because
@@ -142,37 +154,65 @@ which are substantially easier to safeguard, monitor and review.
 
 *This section is not normative.*
 
-A DOM XSS <dfn>injection sink</dfn> is a function that evaluates an input
-string value in a way that could result in XSS if that value is untrusted.
+An <dfn>injection sink</dfn> is a powerful Web API function that should only
+be called with trusted, validated or appropriately sanitized input.
+Calling the injection sink with attacker-controlled (i.e. injected) inputs
+has undesired consequences and is considered a security vulnerability.
 
-Examples of injection sinks include:
+Note: The exact list of injection sinks covered by this document is defined in
+[[#integrations]].
+
+It's difficult to determine if a given application contains such a
+vulnerability (e.g. if it is vulnerable to DOM XSS) only by analyzing
+the invocations of [=injection sinks=], as their inputs (usually strings)
+do not carry the information about their provenance. For example, while
+the application might intentionally call `eval()` with dynamically created
+inputs (e.g. for code obfuscation purposes), calling `eval()` on strings
+supplied by the attacker is definitely a security vulnerability - but
+it's not easy to distinguish one from the other.
+
+This document organizes the injection sinks into groups, based on the
+capabilities that sinks in a given group have. [=Enforcement=] for groups is controlled via <a>trusted-types-sink-group</a> values.
+
+### HTML injection sinks ### {#html-injection-sinks}
+
+*This section is not normative.*
+
+HTML <a>injection sinks</a> parse input strings into a DOM tree. Since HTML parsers
+can create arbitrary elements, including scripts, and set arbitrary attributes,
+enabling the [=enforcement=] of any <a>trusted-types-sink-group</a> also implies
+enforcing types for HTML injection sinks.
+
+Examples of HTML injection sinks include:
 
   * Functions that parse & insert HTML strings into the document like
-    [[DOM-Parsing#widl-Element-innerHTML|Element.innerHTML]] setter,
+    [[DOM-Parsing#widl-Element-innerHTML|Element.innerHTML]],
+    [[DOM-Parsing#widl-Element-outerHTML|Element.outerHTML]] setter, or {{Document/write|Document.write}}.
+  * Functions that create a new same-origin {{Document}} with caller-controlled
+    markup like {{DOMParser/parseFromString()}},
+
+### DOM XSS injection sinks ### {#dom-xss-injection-sinks}
+
+*This section is not normative.*
+
+DOM XSS <a>injection sinks</a>  evaluate an input string value in a way that could
+result in DOM XSS if that value is untrusted.
+
+Examples of include:
+
   * Setters for {{Element}} attributes that accept a URL of the code to load
     like {{HTMLScriptElement/src!!attribute|HTMLScriptElement.src}},
   * Setters for {{Element}} attributes that accept a code to execute like
     {{HTMLScriptElement/text!!attribute|HTMLScriptElement.text}},
   * Functions that execute code directly like `eval`,
-  * Functions that create a new same-origin {{Document}} with caller-controlled
-    markup like {{DOMParser/parseFromString()}},
   * Navigation to 'javascript:' URLs.
 
-An application is vulnerable to DOM XSS if it permits a flow of data from an
-attacker-controlled source and permits that data to reach an injection sink
-without appropriate validation, sanitization or escaping.
-
-It's difficult to determine if DOM XSS is present by analyzing the invocations
-of [=injection sinks=], as the strings do not carry the information about the
-provenance of their value. To allow the authors to control values reaching
-sensitive DOM and JavaScript functions, we introduce Trusted Types.
-
-Note: The exact list of injection sinks covered by this document is defined in
-[[#integrations]].
+Guarding DOM XSS injection sinks is controlled by the <a>trusted-types-sink-group</a> named 'script'.
 
 ## Trusted Types ## {#trusted-types}
 
-We introduce the following list of
+To allow the authors to control values reaching injection sinks,
+we introduce [[#trusted-types]]. The following list of
 <dfn>Trusted Type</dfn>s indicating that a given value is
 trusted by the authors to be used with an [=injection sink=] in a certain context.
 
@@ -270,7 +310,7 @@ To stringify a TrustedScriptURL object, return the USVString from its
 `[[Data]]` internal slot.
 
 
-## Policies ## {#policies}
+## <dfn>Policies</dfn> ## {#policies-hdr}
 
 Trusted Types can only be created via user-defined
 and immutable policies that define rules for converting a string into
@@ -297,10 +337,10 @@ myDiv.innerHTML = sanitizingPolicy.createHTML(untrustedValue);
 
 Note: [=Trusted Type=] objects wrap values that are explicitly trusted by
 the author. As such, creating a Trusted Type object instance becomes a de
-facto DOM XSS [=injection sink=], and hence code that creates Trusted Type
+facto [=injection sink=], and hence code that creates a Trusted Type
 instances is security-critical. To allow for strict control over Trusted Type
 object creation we don't expose the constructors of those
-directly, but require policy usage.
+directly, but require authors to create them via [=policies=].
 
 Multiple policies can be created in a given [=Realm=], allowing the
 applications to define different rules for different parts of the
@@ -325,14 +365,15 @@ myLibrary.init({policy: cdnScriptsPolicy});
 </xmp>
 </div>
 
-Note: As Trusted Type objects can only be created via policies, if
-[=enforcement=] is enabled, only the policy code can introduce a DOM
-XSS, and hence call-sites of the policies' `create*` functions are the
-*only* security-sensitive code in the entire program. Only this
-typically small subset of the entire code base needs to be
-security-reviewed for DOM XSS - there's no need to monitor or review
+Note: Trusted Type objects can only be created via policies. If
+[=enforcement=] is enabled, only the policy code can trigger an action
+of an [=injection sink=] and hence call-sites of the policies' `create*`
+functions are the *only* security-sensitive code in the entire program
+with regards to the actions of the [=injection sinks=].
+Only this typically small subset of the entire code base needs to be
+security-reviewed - there's no need to monitor or review
 the [=injection sinks=] themselves, as User Agents [=enforcement|enforce=] that
-those sinks will only accept Trusted Type objects, and these in turn
+those sinks will only accept matching Trusted Type objects, and these in turn
 can only be created via policies.
 
 The {{TrustedTypePolicyFactory/createPolicy()|createPolicy}} function returns a policy object which `create*` functions
@@ -712,10 +753,10 @@ passed to the default policy will be used.
 Note: This optional behavior allows for introducing Trusted Type [=enforcement=]
 to applications that are still using legacy code that uses injection sinks.
 Needless to say, this policy should
-necessarily be defined with very strict rules not to introduce a DOM
-XSS vulnerability in unknown parts of the application. In an extreme
-case, a lax, no-op default policy could bring the application DOM XSS
-security posture back to the pre-Trusted Types level. If possible,
+necessarily be defined with very strict rules not to bypass the security
+restrictions in unknown parts of the application. In an extreme
+case, a lax, no-op default policy defeats all the benefits of using Trusted Types
+to protect access to [=injection sinks=]. If possible,
 authors should resort to a default policy in a transitional period
 only, use it to detect and rewrite their dependencies that use injection
 sinks unsafely and eventually phase out the usage of the default policy entirely.
@@ -752,13 +793,17 @@ available (via {{Window/trustedTypes}}). Since [=injection sinks=] stringify the
 arguments, and [=Trusted Type=] objects stringify to their inner string values, this allows the authors
 to use Trusted Types in place of strings.
 
-To prevent DOM XSS, on top of the JavaScript code using the Trusted Types, the user agent needs to enforce them i.e.
-assert that the injection sinks are *never*  called with string values, and Trusted Type values are used instead.
-This section describes how authors may control this enforcing behavior.
+To secure the access to [=injection sinks=], on top of the JavaScript code using the Trusted Types,
+the user agent needs to enforce them i.e. assert that the injection sinks from a given group are *never*
+called with string values, and Trusted Type values are used instead. This section describes how authors
+may control this enforcing behavior.
+
+Authors may also control their [=policies=] by specifying rules around policy creation.
 
 ### Content Security Policy ### {#content-security-policy-hdr}
 
 Applications may control Trusted Type enforcement via [[CSP#policy-delivery|configuring a Content Security Policy]]. This document defines new directives that correspond to Trusted Types rules.
+The [[#require-trusted-types-for-csp-directive|require-trusted-types-for]] directive specifies the [=injection sinks=] groups, for which the types should be required. The [[#trusted-types-csp-directive|trusted-types]] directive controls how [=policies=] can be created.
 
 Note: Using CSP mechanisms allows the authors to prepare their application for enforcing Trusted Types
 via using the {{CSP#cspro-header|Content-Security-Report-Only}} HTTP Response header.
@@ -804,10 +849,10 @@ When the extended attribute appears on an attribute, the setter for that attribu
         * the new value as |input|,
         * {{TrustedTypes}} extended attribute identifier as |expectedType|,
         * |sink| as |sink|,
-        * `'script'` as |sinkType|,
+        * `'script'` as |sinkGroup|,
         * [=context object=]'s [=relevant global object=] as |global|.
 
-        Issue: Remove hardcoding 'script' when new sink types are specified.
+        Issue: Remove hardcoding 'script' when new sink groups are specified.
 
     1. If an exception was thrown, rethrow exception and abort further steps.
  1. Run the originally specified steps for this construct, using |value| as a new value to set.
@@ -837,7 +882,7 @@ When the extended attribute appears on an [=operation=] argument, before its ope
         * the argument value as |input|,
         * {{TrustedTypes}} extended attribute identifier as |expectedType|,
         * |sink| as |sink|,
-        * `'script'` as |sinkType|,
+        * `'script'` as |sinkGroup|,
         * [=context object=]'s [=relevant global object=] as |global|.
 
         Issue: Remove hardcoding 'script' when new sink types are specified.
@@ -923,12 +968,12 @@ a string |value| and a list |arguments|, execute the following steps:
 
 ## <dfn abstract-op>Get Trusted Type compliant string</dfn> ## {#get-trusted-type-compliant-string-algorithm}
 
-This algorithm will return a string that can be assigned to a DOM
+This algorithm will return a string that can be used with an
 [=injection sink=], optionally unwrapping it from a matching [=Trusted Type=].
 It will ensure that the Trusted Type [=enforcement=] rules were respected.
 
 Given a {{TrustedType}} type (|expectedType|), a [=Realm/global object=] (|global|),
-{{TrustedType}} or a string (|input|), a string (|sink|) and a string (|sinkType|), run these steps:
+{{TrustedType}} or a string (|input|), a string (|sink|) and a string (|sinkGroup|), run these steps:
 
 1.  Assert: |global| is a {{Window}}.
 
@@ -936,7 +981,7 @@ Given a {{TrustedType}} type (|expectedType|), a [=Realm/global object=] (|globa
 1.  Let |cspList| be the |global|'s <a>CSP list</a>.
 1.  If |cspList| does not contain a [[CSP3#content-security-policy-object|policy]]
     which <a>directive set</a> containing a [[CSP3#directives|directive]] with a name `"require-trusted-types-for"`,
-    or that directive does not contain a <a>require-tt-for-keyword</a> which is a match for a value |sinkType|,
+    or that directive does not contain a <a>trusted-types-sink-group</a> which is a match for a value |sinkGroup|,
     return stringified |input| and abort these steps.
 1.  If |input| has type |expectedType|, return stringified
     |input| and abort these steps.
@@ -944,7 +989,7 @@ Given a {{TrustedType}} type (|expectedType|), a [=Realm/global object=] (|globa
 1.  If the algorithm threw an error, rethrow the error and abort the following steps.
 1.  If |convertedInput| is `null` or `undefined`, execute the following steps:
     1.  Let |disposition| be the result of executing [$Should sink type mismatch violation be blocked by Content Security Policy?$] algorithm,
-        passing |global|, |input| as |source|, |sinkType| and |sink|.
+        passing |global|, |input| as |source|, |sinkGroup| and |sink|.
     1.  If |disposition| is `“Allowed”`, return stringified |input| and abort futher steps.
 
         Note: This step assures that the default policy rejection will be reported, but ignored in a report-only mode.
@@ -980,7 +1025,7 @@ Given a {{script}} (|script|), this algorithm performs the following steps:
       * |script|'s {{Document}}'s [=relevant global object=] as |global|,
       * |script|'s {{script/src}} attribute value as |input|,
       * `script.src` as |sink|,
-      * `'script'` as |sinkType|.
+      * `'script'` as |sinkGroup|.
 
     If the algorithm threw an error, rethrow the error and abort further steps.
 
@@ -990,7 +1035,7 @@ Given a {{script}} (|script|), this algorithm performs the following steps:
       * |script|'s {{Document}}'s [=relevant global object=] as |global|,
       * |script|'s [=child text content=] attribute value,
       * `script.text` as |sink|,
-      * `'script'` as |sinkType|.
+      * `'script'` as |sinkGroup|.
 
     If the algorithm threw an error, rethrow the error.
 
@@ -1430,7 +1475,7 @@ add this step between 7.1 and 7.2:
     *   |input| set to the first method argument, and
     *   |expectedType| set to {{TrustedScript}}.
     *   |sink| set to `Window.setInterval` if <var ignore>repeat</var> is true, `Window.setTimeout` otherwise.
-    *   |sinkType| set to `'script'`.
+    *   |sinkGroup| set to `'script'`.
 
         Note: This matches the logic that the extended attribute would apply.
 
@@ -1449,7 +1494,7 @@ At the beginning of step 5, insert the following steps:
     [$Get Trusted Type compliant string$] algorithm, with the following arguments:
     *   |value| as |input|,
     *   {{TrustedScript}} as |expectedType|,
-    *   `'script'` as |sinkType|
+    *   `'script'` as |sinkGroup|
     *   |sink| being the result of [=concatenating=] the list &laquo; <var ignore>element</var>'s [=Element/local name=], |localName| &raquo; with `"."` as a |separator|.
 
         Note: For example, `document.createElement('div').onclick = value` will result in |sink| being `'div.onclick'`.
@@ -1513,19 +1558,19 @@ interface DOMParser {
 This document defines *require-trusted-types-for* - a new [[CSP3#directives|Content Security Policy directive]].
 
 {{#require-trusted-types-for-directive|require-trusted-types-for}} directive configures the Trusted
-Types framework for all the [=injection sinks=] in a current [=Realm|realm=]. Specifically, it
-defines what should be the behavior when a string value is passed to an [=injection sink=]
-of a given type (i.e. should the type-based enforcement be enabled).
+Types framework for all the [=injection sinks=] of certain groups in a current [=Realm|realm=].
+Specifically, it defines what should be the behavior when a string value is passed to an [=injection sink=]
+of a given group (i.e. should the type-based enforcement be enabled for such sinks).
 
-Note: Currently, only the enforcement for DOM XSS injection sinks is specified.
+Note: Currently, only the enforcement for [[#dom-xss-injection-sinks]] is specified.
 
 The syntax for the directive's [=directive/name=] and [=directive/value=] is described by the following
 ABNF:
 
 <pre>
 directive-name = "require-trusted-types-for"
-directive-value = <a>require-tt-for-keyword</a> *( <a href="https://w3c.github.io/webappsec-csp/#grammardef-required-ascii-whitespace">required-ascii-whitespace</a> <a>require-tt-for-keyword</a>)
-<dfn>require-tt-for-keyword</dfn> = "'script'"
+directive-value = <a>trusted-types-sink-group</a> *( <a href="https://w3c.github.io/webappsec-csp/#grammardef-required-ascii-whitespace">required-ascii-whitespace</a> <a>trusted-types-sink-group</a>)
+<dfn>trusted-types-sink-group</dfn> = "'script'"
 </pre>
 
 <div class="example" id="require-tt-for-script-header">
@@ -1567,7 +1612,7 @@ Note: This algorithm assures that the code to be executed by a navigation to a `
 
 ### <dfn lt="trusted-types-directive">trusted-types</dfn> directive ### {#trusted-types-csp-directive}
 
-This document defines *trusted-types* - a new [[CSP3#directives|Content Security Policy directive]]. The {{#trusted-types-directive|trusted-types}} directive controls the creation of Trusted Type {{#policies}}.
+This document defines *trusted-types* - a new [[CSP3#directives|Content Security Policy directive]]. The {{#trusted-types-directive|trusted-types}} directive controls the creation of Trusted Type [=policies=].
 
 The syntax for the directive's [=directive/name=] and [=directive/value=] is described by the following
 ABNF:
@@ -1620,7 +1665,7 @@ Content-Security-Policy: trusted-types one two default
 
 ### <dfn abstract-op>Should sink type mismatch violation be blocked by Content Security Policy?</dfn> ### {#should-block-sink-type-mismatch}
 
-Given a [=Realm/global object=] (|global|), a string (|sink|), a string (|sinkType|) and a string (|source|) this algorithm
+Given a [=Realm/global object=] (|global|), a string (|sink|), a string (|sinkGroup|) and a string (|source|) this algorithm
 returns `"Blocked"` if the [=injection sink=] requires a [=Trusted Type=], and
 `"Allowed"` otherwise.
 
@@ -1630,8 +1675,8 @@ returns `"Blocked"` if the [=injection sink=] requires a [=Trusted Type=], and
         which [=directive/name=] is `"require-trusted-types-for"`, skip to the next |policy|.
     1.  Let |directive| be the |policy|'s |directive set|'s [=directive=] which name
         is `"require-trusted-types-for"`
-    1.  If |directive|'s [=directive/value=] does not contain a <a>require-tt-for-keyword</a> which is a match
-        for a value |sinkType|, skip to the next |policy|.
+    1.  If |directive|'s [=directive/value=] does not contain a <a>trusted-types-sink-group</a> which is a match
+        for a value |sinkGroup|, skip to the next |policy|.
     1.  Let |violation| be the result of executing
         [[CSP#create-violation-for-global|Create a violation object for global, policy, and directive]]
         on |global|, |policy| and `"require-trusted-types-for"`
@@ -1715,7 +1760,7 @@ throws an "`EvalError`" if not:
     *   |calleeRealm| as |global|,
     *   |source| as |input|,
     *   `eval` as |sink|,
-    *   `'script'` as |sinkType|,
+    *   `'script'` as |sinkGroup|,
     *   {{TrustedScript}} as |expectedType|.</ins>
 
 2.  <ins>If the algorithm throws an error, throw an {{EvalError}}.</ins>
@@ -1780,12 +1825,12 @@ error, it only reports it via its |calleeRealm|'s report-uri.
 
 # Security Considerations # {#security-considerations}
 
-Trusted Types are not intended to defend against XSS in an actively malicious
-execution environment. It's assumed that the application is written by
-non-malicious authors; the intent is to prevent developer mistakes that could
-result in security bugs, and not to defend against first-party malicious code
-actively trying to bypass policy restrictions. Below we enumerate already
-identified vectors that remain risky even in environments with enforced
+Trusted Types are not intended to protect access to [=injection sinks=] in an
+actively malicious execution environment. It's assumed that the application is
+written by non-malicious authors; the intent is to prevent developer mistakes
+that could result in security bugs, and not to defend against first-party
+malicious code actively trying to bypass policy restrictions. Below we enumerate
+already identified vectors that remain risky even in environments with enforced
 Trusted Types.
 
 ## Cross-document vectors ## {#cross-document-vectors}
@@ -1814,12 +1859,12 @@ restrictions:
 
 ## Best practices for policy design ## {#best-practices-for-policy-design}
 
-Trusted Types limit the scope of the code that can introduce DOM XSS
-vulnerabilities to the implementation of [[#policies|policies]]. In this design,
-insecure policies can still enable XSS. Special emphasis needs to be taken by
-use policies that are either secure for all possible inputs, or limit the access
-to insecure policies, such that they are only called with non-attacker
-controlled inputs.
+Trusted Types limit the scope of the code that can introduce
+vulnerabilities via [=injection sinks=] to the implementation of [=policies=].
+In this design, insecure policies can still expose [=injection sinks=] to untrusted data.
+Special emphasis needs to be taken by use policies that are either secure for all
+possible inputs, or limit the access to insecure policies, such that they are only
+called with non-attacker controlled inputs.
 
 As policies are custom JavaScript code, they may be written in a way that heavily
 depends on a global state. We advise against this. The policies should
@@ -1838,5 +1883,5 @@ NOT interfere with the operation of user-agent features like addons,
 extensions, or bookmarklets. These kinds of features generally advance
 the user’s priority over page authors, as espoused in
 [[html-design-principles]]. Specifically, extensions SHOULD be able to pass strings
-to the DOM XSS [=injection sinks=] without triggering [=default policy=]
+to the [=injection sinks=] without triggering [=default policy=]
 execution, violation generation, or the rejection of the value.
