@@ -874,12 +874,6 @@ a string (|policyName|), {{TrustedTypePolicyOptions}} dictionary (|options|), an
 1.  Append |policyName| to |factory|'s `[[CreatedPolicyNames]]`.
 1.  Return |policy|.
 
-## <dfn abstract-op>Get default policy</dfn> ## {#get-default-policy-algorithm}
-To get the [=default policy=] for a {{TrustedTypePolicyFactory}} (|factory|), execute the following steps:
-
-1.  Return the value of |factory|'s `[[DefaultPolicy]]` slot
-    (null if the slot is empty).
-
 ## <dfn abstract-op>Create a Trusted Type</dfn> ## {#create-a-trusted-type-algorithm}
 
 Given a {{TrustedTypePolicy}} |policy|, a type name |trustedTypeName|,
@@ -963,9 +957,7 @@ This algorithm routes a value to be assigned to an [=injection sink=]  through a
 Given a {{TrustedType}} type (|expectedType|), a [=Realm/global object=] (|global|),
 {{TrustedType}} or a string (|input|), and a string (|sink|), run these steps:
 
-1.  Let |defaultPolicy| be the result of executing
-    [$Get default policy$] algorithm on |global|'s [=Window/trusted type policy factory=].
-1.  If |defaultPolicy| is `null`, return `null`.
+1.  Let |defaultPolicy| be the value of |global|'s [=Window/trusted type policy factory=]'s `[[DefaultPolicy]]` slot. If the slot is empty, return `null`.
 1.  Let |convertedInput| be the result of executing [$Create a
     Trusted Type$] algorithm, with the following arguments:
     *  |defaultPolicy| as |policy|

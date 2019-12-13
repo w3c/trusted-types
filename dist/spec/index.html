@@ -1214,7 +1214,7 @@ Possible extra rowspan handling
 </style>
   <meta content="Bikeshed version 0dd2bba6dfda6c3168490a3a3044dd1d0b1ef8e0" name="generator">
   <link href="https://w3c.github.io/webappsec-trusted-types/dist/spec/" rel="canonical">
-  <meta content="b5d84acf158958f8ba418fc4e844f93028dd20df" name="document-revision">
+  <meta content="59ce043cf237a8efa16bc9d991692ba679cdb11a" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -1547,11 +1547,10 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
      <a href="#algorithms"><span class="secno">3</span> <span class="content">Algorithms</span></a>
      <ol class="toc">
       <li><a href="#create-trusted-type-policy-algorithm"><span class="secno">3.1</span> <span class="content"><span>Create a Trusted Type Policy</span></span></a>
-      <li><a href="#get-default-policy-algorithm"><span class="secno">3.2</span> <span class="content"><span>Get default policy</span></span></a>
-      <li><a href="#create-a-trusted-type-algorithm"><span class="secno">3.3</span> <span class="content"><span>Create a Trusted Type</span></span></a>
-      <li><a href="#get-trusted-type-compliant-string-algorithm"><span class="secno">3.4</span> <span class="content"><span>Get Trusted Type compliant string</span></span></a>
-      <li><a href="#process-value-with-a-default-policy-algorithm"><span class="secno">3.5</span> <span class="content"><span>Process value with a default policy</span></span></a>
-      <li><a href="#prepare-script-url-and-text"><span class="secno">3.6</span> <span class="content"><span>Prepare the script URL and text</span></span></a>
+      <li><a href="#create-a-trusted-type-algorithm"><span class="secno">3.2</span> <span class="content"><span>Create a Trusted Type</span></span></a>
+      <li><a href="#get-trusted-type-compliant-string-algorithm"><span class="secno">3.3</span> <span class="content"><span>Get Trusted Type compliant string</span></span></a>
+      <li><a href="#process-value-with-a-default-policy-algorithm"><span class="secno">3.4</span> <span class="content"><span>Process value with a default policy</span></span></a>
+      <li><a href="#prepare-script-url-and-text"><span class="secno">3.5</span> <span class="content"><span>Prepare the script URL and text</span></span></a>
      </ol>
     <li>
      <a href="#integrations"><span class="secno">4</span> <span class="content">Integrations</span></a>
@@ -2215,7 +2214,7 @@ security posture back to the pre-Trusted Types level. If possible,
 authors should resort to a default policy in a transitional period
 only, use it to detect and rewrite their dependencies that use injection
 sinks unsafely and eventually phase out the usage of the default policy entirely.</p>
-   <p class="note" role="note"><span>Note:</span> See <a href="#get-trusted-type-compliant-string-algorithm">§ 3.4 Get Trusted Type compliant string</a> for details on how
+   <p class="note" role="note"><span>Note:</span> See <a href="#get-trusted-type-compliant-string-algorithm">§ 3.3 Get Trusted Type compliant string</a> for details on how
 the default policy is applied.</p>
    <div class="example" id="default-policy-example">
     <a class="self-link" href="#default-policy-example"></a> 
@@ -2373,14 +2372,7 @@ creation be blocked by Content Security Policy?</a> algorithm with <var>global</
     <li data-md>
      <p>Return <var>policy</var>.</p>
    </ol>
-   <h3 class="heading settled" data-level="3.2" id="get-default-policy-algorithm"><span class="secno">3.2. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-get-default-policy">Get default policy</dfn></span><a class="self-link" href="#get-default-policy-algorithm"></a></h3>
-    To get the <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy">default policy</a> for a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicyfactory" id="ref-for-trustedtypepolicyfactory①">TrustedTypePolicyFactory</a></code> (<var>factory</var>), execute the following steps: 
-   <ol>
-    <li data-md>
-     <p>Return the value of <var>factory</var>’s <code>[[DefaultPolicy]]</code> slot
-(null if the slot is empty).</p>
-   </ol>
-   <h3 class="heading settled" data-level="3.3" id="create-a-trusted-type-algorithm"><span class="secno">3.3. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-create-a-trusted-type">Create a Trusted Type</dfn></span><a class="self-link" href="#create-a-trusted-type-algorithm"></a></h3>
+   <h3 class="heading settled" data-level="3.2" id="create-a-trusted-type-algorithm"><span class="secno">3.2. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-create-a-trusted-type">Create a Trusted Type</dfn></span><a class="self-link" href="#create-a-trusted-type-algorithm"></a></h3>
    <p>Given a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy①①">TrustedTypePolicy</a></code> <var>policy</var>, a type name <var>trustedTypeName</var>,
 a string <var>value</var> and a list <var>arguments</var>, execute the following steps:</p>
    <ol>
@@ -2426,7 +2418,7 @@ set to <var>dataString</var>.</p>
     <li data-md>
      <p>Return <var>trustedObject</var>.</p>
    </ol>
-   <h3 class="heading settled" data-level="3.4" id="get-trusted-type-compliant-string-algorithm"><span class="secno">3.4. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-get-trusted-type-compliant-string">Get Trusted Type compliant string</dfn></span><a class="self-link" href="#get-trusted-type-compliant-string-algorithm"></a></h3>
+   <h3 class="heading settled" data-level="3.3" id="get-trusted-type-compliant-string-algorithm"><span class="secno">3.3. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-get-trusted-type-compliant-string">Get Trusted Type compliant string</dfn></span><a class="self-link" href="#get-trusted-type-compliant-string-algorithm"></a></h3>
    <p>This algorithm will return a string that can be assigned to a DOM <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①②">injection sink</a>, optionally unwrapping it from a matching <a data-link-type="dfn" href="#trusted-type" id="ref-for-trusted-type④">Trusted Type</a>.
 It will ensure that the Trusted Type <a data-link-type="dfn" href="#enforcement" id="ref-for-enforcement④">enforcement</a> rules were respected.</p>
    <p>Given a <code class="idl"><a data-link-type="idl" href="#typedefdef-trustedtype" id="ref-for-typedefdef-trustedtype">TrustedType</a></code> type (<var>expectedType</var>), a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global①">global object</a> (<var>global</var>), <code class="idl"><a data-link-type="idl" href="#typedefdef-trustedtype" id="ref-for-typedefdef-trustedtype①">TrustedType</a></code> or a string (<var>input</var>), a string (<var>sink</var>) and a string (<var>sinkType</var>), run these steps:</p>
@@ -2463,14 +2455,12 @@ passing <var>global</var>, <var>input</var> as <var>source</var>, <var>sinkType<
     <li data-md>
      <p>Return stringified <var>convertedInput</var>.</p>
    </ol>
-   <h3 class="heading settled" data-level="3.5" id="process-value-with-a-default-policy-algorithm"><span class="secno">3.5. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-process-value-with-a-default-policy">Process value with a default policy</dfn></span><a class="self-link" href="#process-value-with-a-default-policy-algorithm"></a></h3>
+   <h3 class="heading settled" data-level="3.4" id="process-value-with-a-default-policy-algorithm"><span class="secno">3.4. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-process-value-with-a-default-policy">Process value with a default policy</dfn></span><a class="self-link" href="#process-value-with-a-default-policy-algorithm"></a></h3>
    <p>This algorithm routes a value to be assigned to an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①③">injection sink</a> through a default policy, should one exist.</p>
    <p>Given a <code class="idl"><a data-link-type="idl" href="#typedefdef-trustedtype" id="ref-for-typedefdef-trustedtype②">TrustedType</a></code> type (<var>expectedType</var>), a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global②">global object</a> (<var>global</var>), <code class="idl"><a data-link-type="idl" href="#typedefdef-trustedtype" id="ref-for-typedefdef-trustedtype③">TrustedType</a></code> or a string (<var>input</var>), and a string (<var>sink</var>), run these steps:</p>
    <ol>
     <li data-md>
-     <p>Let <var>defaultPolicy</var> be the result of executing <a data-link-type="abstract-op" href="#abstract-opdef-get-default-policy" id="ref-for-abstract-opdef-get-default-policy">Get default policy</a> algorithm on <var>global</var>’s <a data-link-type="dfn" href="#window-trusted-type-policy-factory" id="ref-for-window-trusted-type-policy-factory②">trusted type policy factory</a>.</p>
-    <li data-md>
-     <p>If <var>defaultPolicy</var> is <code>null</code>, return <code>null</code>.</p>
+     <p>Let <var>defaultPolicy</var> be the value of <var>global</var>’s <a data-link-type="dfn" href="#window-trusted-type-policy-factory" id="ref-for-window-trusted-type-policy-factory②">trusted type policy factory</a>'s <code>[[DefaultPolicy]]</code> slot. If the slot is empty, return <code>null</code>.</p>
     <li data-md>
      <p>Let <var>convertedInput</var> be the result of executing <a data-link-type="abstract-op" href="#abstract-opdef-create-a-trusted-type" id="ref-for-abstract-opdef-create-a-trusted-type③">Create a
 Trusted Type</a> algorithm, with the following arguments:</p>
@@ -2487,7 +2477,7 @@ Trusted Type</a> algorithm, with the following arguments:</p>
     <li data-md>
      <p>If the algorithm threw an error, rethrow it. Otherwise, return <var>convertedInput</var>.</p>
    </ol>
-   <h3 class="heading settled" data-level="3.6" id="prepare-script-url-and-text"><span class="secno">3.6. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-prepare-the-script-url-and-text">Prepare the script URL and text</dfn></span><a class="self-link" href="#prepare-script-url-and-text"></a></h3>
+   <h3 class="heading settled" data-level="3.5" id="prepare-script-url-and-text"><span class="secno">3.5. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-prepare-the-script-url-and-text">Prepare the script URL and text</dfn></span><a class="self-link" href="#prepare-script-url-and-text"></a></h3>
    <p>Given a <code class="idl"><a data-link-type="idl" href="https://fetch.spec.whatwg.org/#dom-requestdestination-script" id="ref-for-dom-requestdestination-script">script</a></code> (<var>script</var>), this algorithm performs the following steps:</p>
    <ol>
     <li data-md>
@@ -2542,13 +2532,13 @@ For some sinks a <code>null</code> value will result in "", and "null" for other
 This already caused problems in the polyfill. <a href="https://github.com/w3c/webappsec-trusted-types/issues/2">&lt;https://github.com/w3c/webappsec-trusted-types/issues/2></a></p>
    <h3 class="heading settled" data-level="4.1" id="integration-with-html"><span class="secno">4.1. </span><span class="content">Integration with HTML</span><a class="self-link" href="#integration-with-html"></a></h3>
    <p><code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/window-object.html#window" id="ref-for-window①">Window</a></code> objects have a <dfn class="dfn-paneled" data-dfn-for="Window" data-dfn-type="dfn" data-noexport id="window-trusted-type-policy-factory">trusted type policy factory</dfn>,
-which is a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicyfactory" id="ref-for-trustedtypepolicyfactory②">TrustedTypePolicyFactory</a></code> object.</p>
+which is a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicyfactory" id="ref-for-trustedtypepolicyfactory①">TrustedTypePolicyFactory</a></code> object.</p>
    <p class="issue" id="issue-a5679137"><a class="self-link" href="#issue-a5679137"></a> Define for workers.</p>
    <h4 class="heading settled" data-level="4.1.1" id="extensions-to-the-window-interface"><span class="secno">4.1.1. </span><span class="content">Extensions to the Window interface</span><a class="self-link" href="#extensions-to-the-window-interface"></a></h4>
    <p>This document extends the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/window-object.html#window" id="ref-for-window②">Window</a></code> interface defined by <a data-link-type="biblio" href="#biblio-html5">HTML</a>:</p>
 <pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/window-object.html#window" id="ref-for-window③"><c- g>Window</c-></a> {
   [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable①①"><c- g>Unforgeable</c-></a>] <c- b>readonly</c-> <c- b>attribute</c->
-      <a class="n" data-link-type="idl-name" href="#trustedtypepolicyfactory" id="ref-for-trustedtypepolicyfactory③"><c- n>TrustedTypePolicyFactory</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="Window" data-dfn-type="attribute" data-export data-readonly data-type="TrustedTypePolicyFactory" id="dom-window-trustedtypes"><code><c- g>trustedTypes</c-></code></dfn>;
+      <a class="n" data-link-type="idl-name" href="#trustedtypepolicyfactory" id="ref-for-trustedtypepolicyfactory②"><c- n>TrustedTypePolicyFactory</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="Window" data-dfn-type="attribute" data-export data-readonly data-type="TrustedTypePolicyFactory" id="dom-window-trustedtypes"><code><c- g>trustedTypes</c-></code></dfn>;
 };
 </pre>
    <p><code class="idl"><a data-link-type="idl" href="#dom-window-trustedtypes" id="ref-for-dom-window-trustedtypes①">trustedTypes</a></code> returns the <a href="#integration-with-html">trusted
@@ -3012,7 +3002,7 @@ directive-value = <a data-link-type="dfn" href="#require-tt-for-keyword" id="ref
    </div>
    <h5 class="heading settled" data-level="4.5.1.1" id="require-trusted-types-for-pre-navigation-check"><span class="secno">4.5.1.1. </span><span class="content"><code>require-trusted-types-for</code> Pre-Navigation check</span><a class="self-link" href="#require-trusted-types-for-pre-navigation-check"></a></h5>
    <p>Given a <a href="https://fetch.spec.whatwg.org/#concept-request">request</a> (<var>request</var>), a string <var>navigation type</var> and a <a href="https://www.w3.org/TR/CSP3/#content-security-policy-object">policy</a> (<var>policy</var>), this algorithm returns <code>"Blocked"</code> if a navigation violates the <code class="idl"><a data-link-type="idl">require-trusted-types-for</a></code> directive’s constraints and <code>"Allowed"</code> otherwise. This constitutes the <code class="idl"><a data-link-type="idl">require-trusted-types-for</a></code> directive’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-pre-navigation-check" id="ref-for-directive-pre-navigation-check">pre-navigation check</a>:</p>
-   <p class="note" role="note"><span>Note:</span> This algorithm assures that the code to be executed by a navigation to a <code>javascript:</code> URL will have to pass through a <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy①">default policy</a>’s <code>createScript</code> function, in addition to all other restrictions imposed by other CSP directives.</p>
+   <p class="note" role="note"><span>Note:</span> This algorithm assures that the code to be executed by a navigation to a <code>javascript:</code> URL will have to pass through a <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy">default policy</a>’s <code>createScript</code> function, in addition to all other restrictions imposed by other CSP directives.</p>
    <ol>
     <li data-md>
      <p>If <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-url" id="ref-for-concept-request-url">url</a>'s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-scheme" id="ref-for-concept-url-scheme">scheme</a> is not <code>"javascript"</code>, return <code>"Allowed"</code> and abort further steps.</p>
@@ -3073,7 +3063,7 @@ at all.
 <pre class="http">Content-Security-Policy: trusted-types foo bar 'allow-duplicates'
 </pre>
    </div>
-   <p>If the policy named <code>default</code> is present in the list, it refers to the <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy②">default policy</a>. All strings passed to <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⑦">injection sinks</a> will be passed through it instead
+   <p>If the policy named <code>default</code> is present in the list, it refers to the <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy①">default policy</a>. All strings passed to <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⑦">injection sinks</a> will be passed through it instead
 of being rejected outright.</p>
    <div class="example" id="default-in-header">
     <a class="self-link" href="#default-in-header"></a> 
@@ -3251,12 +3241,12 @@ the substring of
      <ins>Return <var>sourceString</var>.</ins>
    </ol>
    <p class="note" role="note"><span>Note:</span> returning <var>sourceString</var> means that the string that gets
-compiled is that returned by any <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy③">default policy</a> in the course of
+compiled is that returned by any <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy②">default policy</a> in the course of
 executing <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string⑧">Get Trusted Type compliant string</a>.</p>
    <p class="issue" id="issue-e28ea232"><a class="self-link" href="#issue-e28ea232"></a> This depends on a solution to <a href="https://github.com/w3c/webappsec-trusted-types/issues/144">issue #144</a> like <a href="https://github.com/tc39-transfer/dynamic-code-brand-checks#problem-host-callout-does-not-receive-type-information">TC39 HostBeforeCompile</a></p>
    <p class="issue" id="issue-649f8da4"><a class="self-link" href="#issue-649f8da4"></a> In some cases, the violation "<code>'report-sample'</code>" contain the result of
 applying the default policy to a string argument which differs.
-Specifically when, there is a <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy④">default policy</a>, <var>isExempt</var> is false,
+Specifically when, there is a <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy③">default policy</a>, <var>isExempt</var> is false,
 and <var>source</var> there is a CSP policy for either the <var>callerRealm</var> or <var>callerRealm</var> that disallows "<code>'unsafe-eval'"</code>.
 Is this a feature or a bug?</p>
    <p class="note" role="note"><span>Note:</span> The previous algorithm reports violations via both report-uris where
@@ -3311,7 +3301,7 @@ together.</p>
 NOT interfere with the operation of user-agent features like addons,
 extensions, or bookmarklets. These kinds of features generally advance
 the user’s priority over page authors, as espoused in <a data-link-type="biblio" href="#biblio-html-design-principles">[html-design-principles]</a>. Specifically, extensions SHOULD be able to pass strings
-to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⑨">injection sinks</a> without triggering <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy⑤">default policy</a> execution, violation generation, or the rejection of the value.</p>
+to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⑨">injection sinks</a> without triggering <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy④">default policy</a> execution, violation generation, or the rejection of the value.</p>
   </main>
   <h2 class="no-ref no-num heading settled" id="conformance"><span class="content">Conformance</span><a class="self-link" href="#conformance"></a></h2>
   <h3 class="no-ref no-num heading settled" id="conventions"><span class="content">Document conventions</span><a class="self-link" href="#conventions"></a></h3>
@@ -3349,7 +3339,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
   <h3 class="no-num no-ref heading settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
   <ul class="index">
    <li><a href="#dom-htmlobjectelement-codebase">codeBase</a><span>, in §4.1.4</span>
-   <li><a href="#abstract-opdef-create-a-trusted-type">Create a Trusted Type</a><span>, in §3.3</span>
+   <li><a href="#abstract-opdef-create-a-trusted-type">Create a Trusted Type</a><span>, in §3.2</span>
    <li><a href="#abstract-opdef-create-a-trusted-type-policy">Create a Trusted Type Policy</a><span>, in §3.1</span>
    <li><a href="#dom-range-createcontextualfragment">createContextualFragment(fragment)</a><span>, in §4.4</span>
    <li><a href="#dom-trustedtypepolicyoptions-createhtml">createHTML</a><span>, in §2.3.3</span>
@@ -3377,11 +3367,10 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <li><a href="#dom-trustedtypepolicyfactory-getattributetype">getAttributeType(tagName, attribute)</a><span>, in §2.3.1</span>
    <li><a href="#dom-trustedtypepolicyfactory-getattributetype">getAttributeType(tagName, attribute, elementNs)</a><span>, in §2.3.1</span>
    <li><a href="#dom-trustedtypepolicyfactory-getattributetype">getAttributeType(tagName, attribute, elementNs, attrNs)</a><span>, in §2.3.1</span>
-   <li><a href="#abstract-opdef-get-default-policy">Get default policy</a><span>, in §3.2</span>
    <li><a href="#dom-trustedtypepolicyfactory-getpolicynames">getPolicyNames()</a><span>, in §2.3.1</span>
    <li><a href="#dom-trustedtypepolicyfactory-getpropertytype">getPropertyType(tagName, property)</a><span>, in §2.3.1</span>
    <li><a href="#dom-trustedtypepolicyfactory-getpropertytype">getPropertyType(tagName, property, elementNs)</a><span>, in §2.3.1</span>
-   <li><a href="#abstract-opdef-get-trusted-type-compliant-string">Get Trusted Type compliant string</a><span>, in §3.4</span>
+   <li><a href="#abstract-opdef-get-trusted-type-compliant-string">Get Trusted Type compliant string</a><span>, in §3.3</span>
    <li><a href="#dom-svgscriptelement-href">href</a><span>, in §4.2</span>
    <li><a href="#typedefdef-htmlstring">HTMLString</a><span>, in §4</span>
    <li><a href="#typedefdef-htmlstringdefaultsempty">HTMLStringDefaultsEmpty</a><span>, in §4</span>
@@ -3402,8 +3391,8 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
     </ul>
    <li><a href="#dom-element-outerhtml">outerHTML</a><span>, in §4.4</span>
    <li><a href="#dom-domparser-parsefromstring">parseFromString(str, type)</a><span>, in §4.4</span>
-   <li><a href="#abstract-opdef-prepare-the-script-url-and-text">Prepare the script URL and text</a><span>, in §3.6</span>
-   <li><a href="#abstract-opdef-process-value-with-a-default-policy">Process value with a default policy</a><span>, in §3.5</span>
+   <li><a href="#abstract-opdef-prepare-the-script-url-and-text">Prepare the script URL and text</a><span>, in §3.5</span>
+   <li><a href="#abstract-opdef-process-value-with-a-default-policy">Process value with a default policy</a><span>, in §3.4</span>
    <li><a href="#require-trusted-types-for-directive">require-trusted-types-for-directive</a><span>, in §4.5.1</span>
    <li><a href="#require-tt-for-keyword">require-tt-for-keyword</a><span>, in §4.5.1</span>
    <li><a href="#typedefdef-scriptstring">ScriptString</a><span>, in §4</span>
@@ -3502,7 +3491,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
   <aside class="dfn-panel" data-for="term-for-policy-directive-set">
    <a href="https://w3c.github.io/webappsec-csp/#policy-directive-set">https://w3c.github.io/webappsec-csp/#policy-directive-set</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-policy-directive-set">3.4. Get Trusted Type compliant string</a>
+    <li><a href="#ref-for-policy-directive-set">3.3. Get Trusted Type compliant string</a>
     <li><a href="#ref-for-policy-directive-set①">4.5.3. Should sink type mismatch violation be blocked by Content Security Policy?</a>
     <li><a href="#ref-for-policy-directive-set②">4.5.4. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
    </ul>
@@ -3600,7 +3589,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <a href="https://dom.spec.whatwg.org/#document">https://dom.spec.whatwg.org/#document</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-document">2.1. Injection sinks</a>
-    <li><a href="#ref-for-document①">3.6. Prepare the script URL and text</a> <a href="#ref-for-document②">(2)</a>
+    <li><a href="#ref-for-document①">3.5. Prepare the script URL and text</a> <a href="#ref-for-document②">(2)</a>
     <li><a href="#ref-for-document③">4.1.2. Extensions to the Document interface</a> <a href="#ref-for-document④">(2)</a>
     <li><a href="#ref-for-document⑤">4.4. Integration with DOM Parsing</a>
    </ul>
@@ -3635,7 +3624,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
   <aside class="dfn-panel" data-for="term-for-concept-child-text-content">
    <a href="https://dom.spec.whatwg.org/#concept-child-text-content">https://dom.spec.whatwg.org/#concept-child-text-content</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-child-text-content">3.6. Prepare the script URL and text</a> <a href="#ref-for-concept-child-text-content①">(2)</a>
+    <li><a href="#ref-for-concept-child-text-content">3.5. Prepare the script URL and text</a> <a href="#ref-for-concept-child-text-content①">(2)</a>
     <li><a href="#ref-for-concept-child-text-content②">4.1.3.1. Slots with trusted values</a>
     <li><a href="#ref-for-concept-child-text-content③">4.1.3.2. Setting slot values</a>
     <li><a href="#script-processing-model:child-text-content">4.1.3.3. Slot value verification</a>
@@ -3677,7 +3666,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
   <aside class="dfn-panel" data-for="term-for-dom-requestdestination-script">
    <a href="https://fetch.spec.whatwg.org/#dom-requestdestination-script">https://fetch.spec.whatwg.org/#dom-requestdestination-script</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-requestdestination-script">3.6. Prepare the script URL and text</a>
+    <li><a href="#ref-for-dom-requestdestination-script">3.5. Prepare the script URL and text</a>
     <li><a href="#ref-for-dom-requestdestination-script①">4.1.3.1. Slots with trusted values</a>
     <li><a href="#ref-for-dom-requestdestination-script②">4.1.3.3. Slot value verification</a>
    </ul>
@@ -3743,7 +3732,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
   <aside class="dfn-panel" data-for="term-for-window">
    <a href="https://html.spec.whatwg.org/multipage/window-object.html#window">https://html.spec.whatwg.org/multipage/window-object.html#window</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-window">3.4. Get Trusted Type compliant string</a>
+    <li><a href="#ref-for-window">3.3. Get Trusted Type compliant string</a>
     <li><a href="#ref-for-window①">4.1. Integration with HTML</a>
     <li><a href="#ref-for-window②">4.1.1. Extensions to the Window interface</a> <a href="#ref-for-window③">(2)</a> <a href="#ref-for-window④">(3)</a>
    </ul>
@@ -3757,7 +3746,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
   <aside class="dfn-panel" data-for="term-for-concept-document-csp-list">
    <a href="https://html.spec.whatwg.org/multipage/dom.html#concept-document-csp-list">https://html.spec.whatwg.org/multipage/dom.html#concept-document-csp-list</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-document-csp-list">3.4. Get Trusted Type compliant string</a>
+    <li><a href="#ref-for-concept-document-csp-list">3.3. Get Trusted Type compliant string</a>
     <li><a href="#ref-for-concept-document-csp-list①">4.5.3. Should sink type mismatch violation be blocked by Content Security Policy?</a>
     <li><a href="#ref-for-concept-document-csp-list②">4.5.4. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
    </ul>
@@ -3798,7 +3787,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <ul>
     <li><a href="#ref-for-concept-relevant-global">2.3.1. TrustedTypePolicyFactory</a>
     <li><a href="#ref-for-concept-relevant-global①">2.4.2. TrustedTypes extended attribute</a> <a href="#ref-for-concept-relevant-global②">(2)</a> <a href="#ref-for-concept-relevant-global③">(3)</a> <a href="#ref-for-concept-relevant-global④">(4)</a>
-    <li><a href="#ref-for-concept-relevant-global⑤">3.6. Prepare the script URL and text</a> <a href="#ref-for-concept-relevant-global⑥">(2)</a>
+    <li><a href="#ref-for-concept-relevant-global⑤">3.5. Prepare the script URL and text</a> <a href="#ref-for-concept-relevant-global⑥">(2)</a>
     <li><a href="#ref-for-concept-relevant-global⑦">4.1.5. Enforcement in timer functions</a>
     <li><a href="#ref-for-concept-relevant-global⑧">4.1.6. Enforcement in event handler content attributes</a>
    </ul>
@@ -3923,8 +3912,8 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
    <a href="https://heycam.github.io/webidl/#exceptiondef-typeerror">https://heycam.github.io/webidl/#exceptiondef-typeerror</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-exceptiondef-typeerror">3.1. Create a Trusted Type Policy</a>
-    <li><a href="#ref-for-exceptiondef-typeerror①">3.3. Create a Trusted Type</a>
-    <li><a href="#ref-for-exceptiondef-typeerror②">3.4. Get Trusted Type compliant string</a>
+    <li><a href="#ref-for-exceptiondef-typeerror①">3.2. Create a Trusted Type</a>
+    <li><a href="#ref-for-exceptiondef-typeerror②">3.3. Get Trusted Type compliant string</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idl-USVString">
@@ -4204,7 +4193,7 @@ to the DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-inject
 
 <c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/window-object.html#window" id="ref-for-window③①"><c- g>Window</c-></a> {
   [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Unforgeable" id="ref-for-Unforgeable①①①"><c- g>Unforgeable</c-></a>] <c- b>readonly</c-> <c- b>attribute</c->
-      <a class="n" data-link-type="idl-name" href="#trustedtypepolicyfactory" id="ref-for-trustedtypepolicyfactory③①"><c- n>TrustedTypePolicyFactory</c-></a> <a data-readonly data-type="TrustedTypePolicyFactory" href="#dom-window-trustedtypes"><code><c- g>trustedTypes</c-></code></a>;
+      <a class="n" data-link-type="idl-name" href="#trustedtypepolicyfactory" id="ref-for-trustedtypepolicyfactory②①"><c- n>TrustedTypePolicyFactory</c-></a> <a data-readonly data-type="TrustedTypePolicyFactory" href="#dom-window-trustedtypes"><code><c- g>trustedTypes</c-></code></a>;
 };
 
 <c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#document" id="ref-for-document④①"><c- g>Document</c-></a> {
@@ -4301,8 +4290,8 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
     <li><a href="#ref-for-injection-sink⑧">2.3.4. Default policy</a>
     <li><a href="#ref-for-injection-sink⑨">2.4. Enforcement</a> <a href="#ref-for-injection-sink①⓪">(2)</a>
     <li><a href="#ref-for-injection-sink①①">2.4.2. TrustedTypes extended attribute</a>
-    <li><a href="#ref-for-injection-sink①②">3.4. Get Trusted Type compliant string</a>
-    <li><a href="#ref-for-injection-sink①③">3.5. Process value with a default policy</a>
+    <li><a href="#ref-for-injection-sink①②">3.3. Get Trusted Type compliant string</a>
+    <li><a href="#ref-for-injection-sink①③">3.4. Process value with a default policy</a>
     <li><a href="#ref-for-injection-sink①④">4.5.1. require-trusted-types-for directive</a> <a href="#ref-for-injection-sink①⑤">(2)</a>
     <li><a href="#ref-for-injection-sink①⑥">4.5.2. trusted-types directive</a> <a href="#ref-for-injection-sink①⑦">(2)</a>
     <li><a href="#ref-for-injection-sink①⑧">4.5.3. Should sink type mismatch violation be blocked by Content Security Policy?</a>
@@ -4316,7 +4305,7 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
     <li><a href="#ref-for-trusted-type①">2.3.1. TrustedTypePolicyFactory</a>
     <li><a href="#ref-for-trusted-type②">2.3.3. TrustedTypePolicyOptions</a>
     <li><a href="#ref-for-trusted-type③">2.4. Enforcement</a>
-    <li><a href="#ref-for-trusted-type④">3.4. Get Trusted Type compliant string</a>
+    <li><a href="#ref-for-trusted-type④">3.3. Get Trusted Type compliant string</a>
     <li><a href="#ref-for-trusted-type⑤">4.5.3. Should sink type mismatch violation be blocked by Content Security Policy?</a>
    </ul>
   </aside>
@@ -4353,7 +4342,7 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
     <li><a href="#ref-for-trustedscripturl">2.3.1. TrustedTypePolicyFactory</a>
     <li><a href="#ref-for-trustedscripturl①">2.3.2. TrustedTypePolicy</a>
     <li><a href="#ref-for-trustedscripturl②">2.4.2. TrustedTypes extended attribute</a>
-    <li><a href="#ref-for-trustedscripturl③">3.6. Prepare the script URL and text</a> <a href="#ref-for-trustedscripturl④">(2)</a>
+    <li><a href="#ref-for-trustedscripturl③">3.5. Prepare the script URL and text</a> <a href="#ref-for-trustedscripturl④">(2)</a>
     <li><a href="#ref-for-trustedscripturl⑤">4. Integrations</a> <a href="#ref-for-trustedscripturl⑥">(2)</a>
     <li><a href="#ref-for-trustedscripturl⑦">4.1.3.2. Setting slot values</a>
     <li><a href="#ref-for-trustedscripturl⑧">4.1.4. Enforcement in element attributes</a> <a href="#ref-for-trustedscripturl⑨">(2)</a> <a href="#ref-for-trustedscripturl①⓪">(3)</a>
@@ -4364,9 +4353,8 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
    <b><a href="#trustedtypepolicyfactory">#trustedtypepolicyfactory</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-trustedtypepolicyfactory">3.1. Create a Trusted Type Policy</a>
-    <li><a href="#ref-for-trustedtypepolicyfactory①">3.2. Get default policy</a>
-    <li><a href="#ref-for-trustedtypepolicyfactory②">4.1. Integration with HTML</a>
-    <li><a href="#ref-for-trustedtypepolicyfactory③">4.1.1. Extensions to the Window interface</a>
+    <li><a href="#ref-for-trustedtypepolicyfactory①">4.1. Integration with HTML</a>
+    <li><a href="#ref-for-trustedtypepolicyfactory②">4.1.1. Extensions to the Window interface</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-trustedtypepolicyfactory-createpolicy">
@@ -4439,14 +4427,14 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
     <li><a href="#ref-for-trustedtypepolicy③">2.3.1. TrustedTypePolicyFactory</a> <a href="#ref-for-trustedtypepolicy④">(2)</a> <a href="#ref-for-trustedtypepolicy⑤">(3)</a> <a href="#ref-for-trustedtypepolicy⑥">(4)</a> <a href="#ref-for-trustedtypepolicy⑦">(5)</a>
     <li><a href="#ref-for-trustedtypepolicy⑧">2.3.3. TrustedTypePolicyOptions</a>
     <li><a href="#ref-for-trustedtypepolicy⑨">3.1. Create a Trusted Type Policy</a> <a href="#ref-for-trustedtypepolicy①⓪">(2)</a>
-    <li><a href="#ref-for-trustedtypepolicy①①">3.3. Create a Trusted Type</a>
+    <li><a href="#ref-for-trustedtypepolicy①①">3.2. Create a Trusted Type</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="trustedtypepolicy-name">
    <b><a href="#trustedtypepolicy-name">#trustedtypepolicy-name</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-trustedtypepolicy-name">2.3.4. Default policy</a>
-    <li><a href="#ref-for-trustedtypepolicy-name①">3.3. Create a Trusted Type</a>
+    <li><a href="#ref-for-trustedtypepolicy-name①">3.2. Create a Trusted Type</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-trustedtypepolicy-createhtml">
@@ -4520,11 +4508,10 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
   <aside class="dfn-panel" data-for="default-policy">
    <b><a href="#default-policy">#default-policy</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-default-policy">3.2. Get default policy</a>
-    <li><a href="#ref-for-default-policy①">4.5.1.1. require-trusted-types-for Pre-Navigation check</a>
-    <li><a href="#ref-for-default-policy②">4.5.2. trusted-types directive</a>
-    <li><a href="#ref-for-default-policy③">4.5.6. Support for eval(TrustedScript)</a> <a href="#ref-for-default-policy④">(2)</a>
-    <li><a href="#ref-for-default-policy⑤">6.1. Vendor-specific Extensions and Addons</a>
+    <li><a href="#ref-for-default-policy">4.5.1.1. require-trusted-types-for Pre-Navigation check</a>
+    <li><a href="#ref-for-default-policy①">4.5.2. trusted-types directive</a>
+    <li><a href="#ref-for-default-policy②">4.5.6. Support for eval(TrustedScript)</a> <a href="#ref-for-default-policy③">(2)</a>
+    <li><a href="#ref-for-default-policy④">6.1. Vendor-specific Extensions and Addons</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="enforcement">
@@ -4533,7 +4520,7 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
     <li><a href="#ref-for-enforcement">1.3. Use cases</a>
     <li><a href="#ref-for-enforcement①">2.3. Policies</a> <a href="#ref-for-enforcement②">(2)</a>
     <li><a href="#ref-for-enforcement③">2.3.4. Default policy</a>
-    <li><a href="#ref-for-enforcement④">3.4. Get Trusted Type compliant string</a>
+    <li><a href="#ref-for-enforcement④">3.3. Get Trusted Type compliant string</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="extendedattrdef-trustedtypes">
@@ -4555,25 +4542,19 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
     <li><a href="#ref-for-abstract-opdef-create-a-trusted-type-policy">2.3.1. TrustedTypePolicyFactory</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="abstract-opdef-get-default-policy">
-   <b><a href="#abstract-opdef-get-default-policy">#abstract-opdef-get-default-policy</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-abstract-opdef-get-default-policy">3.5. Process value with a default policy</a>
-   </ul>
-  </aside>
   <aside class="dfn-panel" data-for="abstract-opdef-create-a-trusted-type">
    <b><a href="#abstract-opdef-create-a-trusted-type">#abstract-opdef-create-a-trusted-type</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-abstract-opdef-create-a-trusted-type">2.3.2. TrustedTypePolicy</a> <a href="#ref-for-abstract-opdef-create-a-trusted-type①">(2)</a> <a href="#ref-for-abstract-opdef-create-a-trusted-type②">(3)</a>
-    <li><a href="#ref-for-abstract-opdef-create-a-trusted-type③">3.5. Process value with a default policy</a>
+    <li><a href="#ref-for-abstract-opdef-create-a-trusted-type③">3.4. Process value with a default policy</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="abstract-opdef-get-trusted-type-compliant-string">
    <b><a href="#abstract-opdef-get-trusted-type-compliant-string">#abstract-opdef-get-trusted-type-compliant-string</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string">2.4.2. TrustedTypes extended attribute</a> <a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string①">(2)</a>
-    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string②">3.3. Create a Trusted Type</a>
-    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string③">3.6. Prepare the script URL and text</a> <a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string④">(2)</a>
+    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string②">3.2. Create a Trusted Type</a>
+    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string③">3.5. Prepare the script URL and text</a> <a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string④">(2)</a>
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑤">4.1.5. Enforcement in timer functions</a>
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑥">4.1.6. Enforcement in event handler content attributes</a>
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑦">4.5.6. Support for eval(TrustedScript)</a> <a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑧">(2)</a> <a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑨">(3)</a>
@@ -4582,7 +4563,7 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
   <aside class="dfn-panel" data-for="abstract-opdef-process-value-with-a-default-policy">
    <b><a href="#abstract-opdef-process-value-with-a-default-policy">#abstract-opdef-process-value-with-a-default-policy</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-abstract-opdef-process-value-with-a-default-policy">3.4. Get Trusted Type compliant string</a>
+    <li><a href="#ref-for-abstract-opdef-process-value-with-a-default-policy">3.3. Get Trusted Type compliant string</a>
     <li><a href="#ref-for-abstract-opdef-process-value-with-a-default-policy①">4.5.1.1. require-trusted-types-for Pre-Navigation check</a>
    </ul>
   </aside>
@@ -4618,8 +4599,8 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
   <aside class="dfn-panel" data-for="typedefdef-trustedtype">
    <b><a href="#typedefdef-trustedtype">#typedefdef-trustedtype</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-typedefdef-trustedtype">3.4. Get Trusted Type compliant string</a> <a href="#ref-for-typedefdef-trustedtype①">(2)</a>
-    <li><a href="#ref-for-typedefdef-trustedtype②">3.5. Process value with a default policy</a> <a href="#ref-for-typedefdef-trustedtype③">(2)</a>
+    <li><a href="#ref-for-typedefdef-trustedtype">3.3. Get Trusted Type compliant string</a> <a href="#ref-for-typedefdef-trustedtype①">(2)</a>
+    <li><a href="#ref-for-typedefdef-trustedtype②">3.4. Process value with a default policy</a> <a href="#ref-for-typedefdef-trustedtype③">(2)</a>
     <li><a href="#ref-for-typedefdef-trustedtype④">4.1.5. Enforcement in timer functions</a>
    </ul>
   </aside>
@@ -4634,7 +4615,7 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
    <b><a href="#window-trusted-type-policy-factory">#window-trusted-type-policy-factory</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-window-trusted-type-policy-factory">2.4.2. TrustedTypes extended attribute</a> <a href="#ref-for-window-trusted-type-policy-factory①">(2)</a>
-    <li><a href="#ref-for-window-trusted-type-policy-factory②">3.5. Process value with a default policy</a>
+    <li><a href="#ref-for-window-trusted-type-policy-factory②">3.4. Process value with a default policy</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-window-trustedtypes">
@@ -4674,7 +4655,7 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
   <aside class="dfn-panel" data-for="require-tt-for-keyword">
    <b><a href="#require-tt-for-keyword">#require-tt-for-keyword</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-require-tt-for-keyword">3.4. Get Trusted Type compliant string</a>
+    <li><a href="#ref-for-require-tt-for-keyword">3.3. Get Trusted Type compliant string</a>
     <li><a href="#ref-for-require-tt-for-keyword①">4.5.1. require-trusted-types-for directive</a> <a href="#ref-for-require-tt-for-keyword②">(2)</a>
     <li><a href="#ref-for-require-tt-for-keyword③">4.5.3. Should sink type mismatch violation be blocked by Content Security Policy?</a>
    </ul>
@@ -4714,7 +4695,7 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
   <aside class="dfn-panel" data-for="abstract-opdef-should-sink-type-mismatch-violation-be-blocked-by-content-security-policy">
    <b><a href="#abstract-opdef-should-sink-type-mismatch-violation-be-blocked-by-content-security-policy">#abstract-opdef-should-sink-type-mismatch-violation-be-blocked-by-content-security-policy</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-abstract-opdef-should-sink-type-mismatch-violation-be-blocked-by-content-security-policy">3.4. Get Trusted Type compliant string</a>
+    <li><a href="#ref-for-abstract-opdef-should-sink-type-mismatch-violation-be-blocked-by-content-security-policy">3.3. Get Trusted Type compliant string</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="abstract-opdef-should-trusted-type-policy-creation-be-blocked-by-content-security-policy">
