@@ -589,6 +589,9 @@ export const trustedTypesBuilderTestOnly = function() {
       throw new TypeError('Policy ' + pName + ' disallowed.');
     }
 
+    if (pName === DEFAULT_POLICY_NAME && defaultPolicy) {
+      throw new TypeError('Policy ' + pName + ' already exists.');
+    }
     if (enforceNameRestrictions && !allowDuplicateNames &&
         policyNames.indexOf(pName) !== -1) {
       throw new TypeError('Policy ' + pName + ' exists.');

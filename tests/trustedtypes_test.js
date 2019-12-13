@@ -63,6 +63,13 @@ describe('TrustedTypes', () => {
         expect(() => p.createHTML('foo')).toThrow();
       }));
 
+    it('disallows multiple default policies', () => {
+      TrustedTypes.createPolicy('default', {});
+
+      expect(() => TrustedTypes.createPolicy('default'))
+          .toThrowError(TypeError);
+    });
+
     it('returns a policy object with a name', () => {
       const p = TrustedTypes.createPolicy('policy_has_name', {});
 
