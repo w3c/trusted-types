@@ -974,6 +974,31 @@ Given a {{TrustedType}} type (|expectedType|), a [=Realm/global object=] (|globa
     *  &laquo; |sink| &raquo; as |arguments|
 1. If the algorithm threw an error, rethrow it. Otherwise, return |convertedInput|.
 
+## <dfn abstract-op>Prepare the script URL and text</dfn> ## {#prepare-script-url-and-text}
+
+Given a {{script}} (|script|), this algorithm performs the following steps:
+
+1.  If |script| does not have a {{script/src}} content attribute, set its {{script/[[ScriptURL]]}} internal slot value to `null`.
+
+1.  Otherwise, if |script|'s {{script/[[ScriptURL]]}} internal slot value is not equal to its {{script/src}} attribute value,
+    set |script|'s {{script/[[ScriptURL]]}} to the result of executing [$Get Trusted Type compliant string$], with the following arguments:
+      * {{TrustedScriptURL}} as |expectedType|,
+      * |script|'s {{Document}}'s [=relevant global object=] as |global|,
+      * |script|'s {{script/src}} attribute value as |input|,
+      * `script.src` as |sink|,
+      * `'script'` as |sinkType|.
+
+    If the algorithm threw an error, rethrow the error and abort further steps.
+
+1.  If |script|'s {{script/[[ScriptText]]}} internal slot value is not equal to its [=child text content=],
+    set |script|'s {{script/[[ScriptText]]}} to the result of executing [$Get Trusted Type compliant string$], with the following arguments:
+      * {{TrustedScriptURL}} as |expectedType|,
+      * |script|'s {{Document}}'s [=relevant global object=] as |global|,
+      * |script|'s [=child text content=] attribute value,
+      * `script.text` as |sink|,
+      * `'script'` as |sinkType|.
+
+    If the algorithm threw an error, rethrow the error.
 
 # Integrations # {#integrations}
 
@@ -1654,32 +1679,6 @@ strings (|createdPolicyNames|), this algorithm returns `"Blocked"` if the
     1.  If |policy|'s [=policy/disposition=] is `"enforce"`, then set |result| to
         `"Blocked"`.
 1. Return |result|.
-
-### <dfn abstract-op>Prepare the script URL and text</dfn> ### {#prepare-script-url-and-text}
-
-Given a {{script}} (|script|), this algorithm performs the following steps:
-
-1.  If |script| does not have a {{script/src}} content attribute, set its {{script/[[ScriptURL]]}} internal slot value to `null`.
-
-1.  Otherwise, if |script|'s {{script/[[ScriptURL]]}} internal slot value is not equal to its {{script/src}} attribute value,
-    set |script|'s {{script/[[ScriptURL]]}} to the result of executing [$Get Trusted Type compliant string$], with the following arguments:
-      * {{TrustedScriptURL}} as |expectedType|,
-      * |script|'s {{Document}}'s [=relevant global object=] as |global|,
-      * |script|'s {{script/src}} attribute value as |input|,
-      * `script.src` as |sink|,
-      * `'script'` as |sinkType|.
-
-    If the algorithm threw an error, rethrow the error and abort further steps.
-
-1.  If |script|'s {{script/[[ScriptText]]}} internal slot value is not equal to its [=child text content=],
-    set |script|'s {{script/[[ScriptText]]}} to the result of executing [$Get Trusted Type compliant string$], with the following arguments:
-      * {{TrustedScriptURL}} as |expectedType|,
-      * |script|'s {{Document}}'s [=relevant global object=] as |global|,
-      * |script|'s [=child text content=] attribute value,
-      * `script.text` as |sink|,
-      * `'script'` as |sinkType|.
-
-    If the algorithm threw an error, rethrow the error.
 
 ### Violation object changes ### {#csp-violation-object-hdr}
 
