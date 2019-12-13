@@ -241,6 +241,8 @@ export const trustedTypesBuilderTestOnly = function() {
   // Common constants.
   const emptyHTML = freeze(create(new TrustedHTML(creatorSymbol, '')));
   privates(emptyHTML)['v'] = '';
+  const emptyScript = freeze(create(new TrustedScript(creatorSymbol, '')));
+  privates(emptyScript)['v'] = '';
 
   /**
    * A map of attribute / property names to allowed types
@@ -677,6 +679,7 @@ export const trustedTypesBuilderTestOnly = function() {
     getPropertyType,
     getTypeMapping,
     emptyHTML,
+    emptyScript,
     defaultPolicy, // Just to make the compiler happy, this is overridden below.
 
     TrustedHTML: TrustedHTML,

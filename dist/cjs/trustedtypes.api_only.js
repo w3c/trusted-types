@@ -214,6 +214,9 @@ const trustedTypesBuilderTestOnly = function() {
   // Common constants.
   const emptyHTML = freeze(create(new TrustedHTML(creatorSymbol, '')));
   privates(emptyHTML)['v'] = '';
+  const emptyScript = freeze(create(new TrustedScript(creatorSymbol, '')));
+  privates(emptyScript)['v'] = '';
+
 
   /**
    * A map of attribute / property names to allowed types
@@ -640,6 +643,7 @@ const trustedTypesBuilderTestOnly = function() {
     getPropertyType,
     getTypeMapping,
     emptyHTML,
+    emptyScript,
     defaultPolicy, // Just to make the compiler happy, this is overridden below.
 
     TrustedHTML: TrustedHTML,
@@ -712,6 +716,7 @@ function setupPolyfill() {
     'getPropertyType': tt.getPropertyType,
     'getTypeMapping': tt.getTypeMapping,
     'emptyHTML': tt.emptyHTML,
+    'emptyScript': tt.emptyScript,
     '_isPolyfill_': true,
   });
   Object.defineProperty(

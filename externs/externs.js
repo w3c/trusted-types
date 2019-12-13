@@ -153,6 +153,12 @@ TrustedTypePolicyFactory.prototype.isScript = function(value){};
 TrustedTypePolicyFactory.prototype.emptyHTML;
 
 /**
+ * Returns empty TrustedScript.
+ * @type {!TrustedScript}
+ */
+TrustedTypePolicyFactory.prototype.emptyScript;
+
+/**
  * Object that represents a Trusted HTML code, safe to be inserted into DOM into
  * HTML context.
  * @constructor

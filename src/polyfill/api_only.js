@@ -50,6 +50,7 @@ function setupPolyfill() {
     'getPropertyType': tt.getPropertyType,
     'getTypeMapping': tt.getTypeMapping,
     'emptyHTML': tt.emptyHTML,
+    'emptyScript': tt.emptyScript,
     '_isPolyfill_': true,
   });
   Object.defineProperty(

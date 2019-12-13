@@ -605,4 +605,24 @@ describe('TrustedTypes', () => {
       expect(html).toBe(html2);
     });
   });
+
+  describe('emptyScript', () => {
+    it('returns an empty-string wrapping object', () => {
+      const script = TrustedTypes.emptyScript;
+
+      expect(TrustedTypes.isScript(script)).toBe(true);
+      expect(script.toString()).toEqual('');
+    });
+
+    it('returns the same object instance', () => {
+      const [s, s2] = [TrustedTypes.emptyScript, TrustedTypes.emptyScript];
+
+      expect(s).toBe(s2);
+    });
+
+    it('is truthy for eval', () => {
+      // This is polyfilled, it should be returned by eval without executing.
+      expect(eval(TrustedTypes.emptyScript)).toBeTruthy();
+    });
+  });
 });
