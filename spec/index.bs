@@ -1812,13 +1812,6 @@ restrictions:
 
 * <a href="https://w3c.github.io/webcomponents/spec/imports/">HTML imports</a>
 
-## Bypass vectors ## {#bypass-vectors}
-
-Issue(w3c/webappsec-trusted-types#64): Mention anchor element properties bypass.
-
-Issue(w3c/webappsec-trusted-types#47): Mention text/attribute node copy bypass vectors.
-
-
 ## Best practices for policy design ## {#best-practices-for-policy-design}
 
 Trusted Types limit the scope of the code that can introduce DOM XSS

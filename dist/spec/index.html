@@ -1214,7 +1214,7 @@ Possible extra rowspan handling
 </style>
   <meta content="Bikeshed version 0dd2bba6dfda6c3168490a3a3044dd1d0b1ef8e0" name="generator">
   <link href="https://w3c.github.io/webappsec-trusted-types/dist/spec/" rel="canonical">
-  <meta content="54cdd77d2a0f07adc944de3ed907680a6709fe0c" name="document-revision">
+  <meta content="204a9c5a428338515a7653c097c3414873928b27" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -1594,8 +1594,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
      <ol class="toc">
       <li><a href="#cross-document-vectors"><span class="secno">5.1</span> <span class="content">Cross-document vectors</span></a>
       <li><a href="#deprecated-features"><span class="secno">5.2</span> <span class="content">Deprecated features</span></a>
-      <li><a href="#bypass-vectors"><span class="secno">5.3</span> <span class="content">Bypass vectors</span></a>
-      <li><a href="#best-practices-for-policy-design"><span class="secno">5.4</span> <span class="content">Best practices for policy design</span></a>
+      <li><a href="#best-practices-for-policy-design"><span class="secno">5.3</span> <span class="content">Best practices for policy design</span></a>
      </ol>
     <li>
      <a href="#implementation-considerations"><span class="secno">6</span> <span class="content">Implementation Considerations</span></a>
@@ -3282,10 +3281,7 @@ restrictions:</p>
     <li data-md>
      <p><a href="https://w3c.github.io/webcomponents/spec/imports/">HTML imports</a></p>
    </ul>
-   <h3 class="heading settled" data-level="5.3" id="bypass-vectors"><span class="secno">5.3. </span><span class="content">Bypass vectors</span><a class="self-link" href="#bypass-vectors"></a></h3>
-   <p class="issue" id="issue-1c3973fc"><a class="self-link" href="#issue-1c3973fc"></a> Mention anchor element properties bypass. <a href="https://github.com/w3c/webappsec-trusted-types/issues/64">&lt;https://github.com/w3c/webappsec-trusted-types/issues/64></a></p>
-   <p class="issue" id="issue-fb0cfdf0"><a class="self-link" href="#issue-fb0cfdf0"></a> Mention text/attribute node copy bypass vectors. <a href="https://github.com/w3c/webappsec-trusted-types/issues/47">&lt;https://github.com/w3c/webappsec-trusted-types/issues/47></a></p>
-   <h3 class="heading settled" data-level="5.4" id="best-practices-for-policy-design"><span class="secno">5.4. </span><span class="content">Best practices for policy design</span><a class="self-link" href="#best-practices-for-policy-design"></a></h3>
+   <h3 class="heading settled" data-level="5.3" id="best-practices-for-policy-design"><span class="secno">5.3. </span><span class="content">Best practices for policy design</span><a class="self-link" href="#best-practices-for-policy-design"></a></h3>
    <p>Trusted Types limit the scope of the code that can introduce DOM XSS
 vulnerabilities to the implementation of <a href="#policies">policies</a>. In this design,
 insecure policies can still enable XSS. Special emphasis needs to be taken by
@@ -4276,8 +4272,6 @@ applying the default policy to a string argument which differs.
 Specifically when, there is a <a data-link-type="dfn" href="#default-policy">default policy</a>, <var>isExempt</var> is false,
 and <var>source</var> there is a CSP policy for either the <var>callerRealm</var> or <var>callerRealm</var> that disallows "<code>'unsafe-eval'"</code>.
 Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
-   <div class="issue"> Mention anchor element properties bypass. <a href="https://github.com/w3c/webappsec-trusted-types/issues/64">&lt;https://github.com/w3c/webappsec-trusted-types/issues/64></a><a href="#issue-1c3973fc"> ↵ </a></div>
-   <div class="issue"> Mention text/attribute node copy bypass vectors. <a href="https://github.com/w3c/webappsec-trusted-types/issues/47">&lt;https://github.com/w3c/webappsec-trusted-types/issues/47></a><a href="#issue-fb0cfdf0"> ↵ </a></div>
    <div class="issue"> Refer to the external document on secure policy design.<a href="#issue-2eb927d2"> ↵ </a></div>
   </div>
   <aside class="dfn-panel" data-for="injection-sink">
