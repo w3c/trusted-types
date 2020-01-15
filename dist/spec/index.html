@@ -1167,6 +1167,18 @@ Possible extra rowspan handling
 		margin-left: auto;
 		margin-right: auto;
 	}
+	.overlarge {
+		/* Magic to create good table positioning:
+		   "content column" is 50ems wide at max; less on smaller screens.
+		   Extra space (after ToC + content) is empty on the right.
+
+		   1. When table < content column, centers table in column.
+		   2. When content < table < available, left-aligns.
+		   3. When table > available, fills available + scroll bar.
+		*/ 
+		display: grid;
+		grid-template-columns: minmax(0, 50em);
+	}
 	.overlarge > table {
 		/* limit preferred width of table */
 		max-width: 50em;
@@ -1176,7 +1188,6 @@ Possible extra rowspan handling
 
 	@media (min-width: 55em) {
 		.overlarge {
-			margin-left: calc(13px + 26.5rem - 50vw);
 			margin-right: calc(13px + 26.5rem - 50vw);
 			max-width: none;
 		}
@@ -1184,14 +1195,12 @@ Possible extra rowspan handling
 	@media screen and (min-width: 78em) {
 		body:not(.toc-inline) .overlarge {
 			/* 30.5em body padding 50em content area */
-			margin-left: calc(40em - 50vw) !important;
 			margin-right: calc(40em - 50vw) !important;
 		}
 	}
 	@media screen and (min-width: 90em) {
 		body:not(.toc-inline) .overlarge {
 			/* 4em html margin 30.5em body padding 50em content area */
-			margin-left: 0 !important;
 			margin-right: calc(84.5em - 100vw) !important;
 		}
 	}
@@ -1212,9 +1221,8 @@ Possible extra rowspan handling
 		}
 	}
 </style>
-  <meta content="Bikeshed version 0dd2bba6dfda6c3168490a3a3044dd1d0b1ef8e0" name="generator">
+  <meta content="Bikeshed version 1c30f364edf130f99c9528d3fcb3db571f91958f" name="generator">
   <link href="https://w3c.github.io/webappsec-trusted-types/dist/spec/" rel="canonical">
-  <meta content="ff75bb717f871683ee62cfc01e7d42cd7104f802" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -1461,7 +1469,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Trusted Types</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2019-12-13">13 December 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2020-01-15">15 January 2020</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1477,7 +1485,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
     </dl>
    </div>
    <div data-fill-with="warning"></div>
-   <p class="copyright" data-fill-with="copyright"><a href="https://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> © 2019 <a href="https://www.w3.org/"><abbr title="World Wide Web Consortium">W3C</abbr></a><sup>®</sup> (<a href="https://www.csail.mit.edu/"><abbr title="Massachusetts Institute of Technology">MIT</abbr></a>, <a href="https://www.ercim.eu/"><abbr title="European Research Consortium for Informatics and Mathematics">ERCIM</abbr></a>, <a href="https://www.keio.ac.jp/">Keio</a>, <a href="https://ev.buaa.edu.cn/">Beihang</a>). W3C <a href="https://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="https://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a> and <a href="https://www.w3.org/Consortium/Legal/copyright-documents">document use</a> rules apply. </p>
+   <p class="copyright" data-fill-with="copyright"><a href="https://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> © 2020 <a href="https://www.w3.org/"><abbr title="World Wide Web Consortium">W3C</abbr></a><sup>®</sup> (<a href="https://www.csail.mit.edu/"><abbr title="Massachusetts Institute of Technology">MIT</abbr></a>, <a href="https://www.ercim.eu/"><abbr title="European Research Consortium for Informatics and Mathematics">ERCIM</abbr></a>, <a href="https://www.keio.ac.jp/">Keio</a>, <a href="https://ev.buaa.edu.cn/">Beihang</a>). W3C <a href="https://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="https://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a> and <a href="https://www.w3.org/Consortium/Legal/copyright-documents">document use</a> rules apply. </p>
    <hr title="Separator for header">
   </div>
   <div class="p-summary" data-fill-with="abstract">
@@ -2168,7 +2176,7 @@ result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-cr
 following arguments:</p>
       <dl>
        <dt>policy
-       <dd><a href="https://dom.spec.whatwg.org/#context-object">context object</a> 
+       <dd><a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object②">context object</a> 
        <dt>trustedTypeName
        <dd><code>"TrustedHTML"</code>
        <dt>value
@@ -2183,7 +2191,7 @@ result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-cr
 following arguments:</p>
       <dl>
        <dt>policy
-       <dd><a href="https://dom.spec.whatwg.org/#context-object">context object</a> 
+       <dd><a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object③">context object</a> 
        <dt>trustedTypeName
        <dd><code>"TrustedScript"</code>
        <dt>value
@@ -2198,7 +2206,7 @@ result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-cr
 following arguments:</p>
       <dl>
        <dt>policy
-       <dd><a href="https://dom.spec.whatwg.org/#context-object">context object</a> 
+       <dd><a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object④">context object</a> 
        <dt>trustedTypeName
        <dd><code>"TrustedScriptURL"</code>
        <dt>value
@@ -2294,11 +2302,11 @@ Additionally, it must not appear on <a data-link-type="dfn" href="https://heycam
    <p>When the extended attribute appears on an attribute, the setter for that attribute must run the following steps in place of the ones specified in its description:</p>
    <ol>
     <li data-md>
-     <p>If <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object②">context object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①">relevant global object</a> has a <a data-link-type="dfn" href="#window-trusted-type-policy-factory" id="ref-for-window-trusted-type-policy-factory">trusted type policy factory</a>:</p>
+     <p>If <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object⑤">context object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①">relevant global object</a> has a <a data-link-type="dfn" href="#window-trusted-type-policy-factory" id="ref-for-window-trusted-type-policy-factory">trusted type policy factory</a>:</p>
      <p class="issue" id="issue-b92c7a17"><a class="self-link" href="#issue-b92c7a17"></a> Update when workers have TT.</p>
      <ol>
       <li data-md>
-       <p>If the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object③">context object</a> is an <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#element" id="ref-for-element④">Element</a></code>, let <var>objectName</var> be the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object④">context object</a>'s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-local-name" id="ref-for-concept-element-local-name">local name</a>; Otherwise, let <var>objectName</var> be the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object⑤">context object</a>'s constructor name.</p>
+       <p>If the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object⑥">context object</a> is an <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#element" id="ref-for-element④">Element</a></code>, let <var>objectName</var> be the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object⑦">context object</a>'s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-local-name" id="ref-for-concept-element-local-name">local name</a>; Otherwise, let <var>objectName</var> be the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object⑧">context object</a>'s constructor name.</p>
       <li data-md>
        <p>Set <var>sink</var> to the result of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-concatenate" id="ref-for-string-concatenate">concatenating</a> the list « <var>objectName</var>, <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-attribute" id="ref-for-dfn-attribute④">attribute</a> identifier. » with <code>"."</code> as <var>separator</var>.</p>
        <div class="example" id="extended-attribute-attribute-example">
@@ -2324,7 +2332,7 @@ document<c- p>.</c->createElement<c- p>(</c-><c- t>'script'</c-><c- p>).</c->set
         <li data-md>
          <p><code>'script'</code> as <var>sinkGroup</var>,</p>
         <li data-md>
-         <p><a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object⑥">context object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global②">relevant global object</a> as <var>global</var>.</p>
+         <p><a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object⑨">context object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global②">relevant global object</a> as <var>global</var>.</p>
        </ul>
        <p class="issue" id="issue-adaa63a4"><a class="self-link" href="#issue-adaa63a4"></a> Remove hardcoding 'script' when new sink groups are specified.</p>
       <li data-md>
@@ -2337,11 +2345,11 @@ document<c- p>.</c->createElement<c- p>(</c-><c- t>'script'</c-><c- p>).</c->set
    <p>When the extended attribute appears on an <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-operation" id="ref-for-dfn-operation①">operation</a> argument, before its operation is invoked, run the following steps:</p>
    <ol>
     <li data-md>
-     <p>If <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object⑦">context object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global③">relevant global object</a> has a <a data-link-type="dfn" href="#window-trusted-type-policy-factory" id="ref-for-window-trusted-type-policy-factory①">trusted type policy factory</a>:</p>
+     <p>If <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object①⓪">context object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global③">relevant global object</a> has a <a data-link-type="dfn" href="#window-trusted-type-policy-factory" id="ref-for-window-trusted-type-policy-factory①">trusted type policy factory</a>:</p>
      <p class="issue" id="issue-b92c7a17①"><a class="self-link" href="#issue-b92c7a17①"></a> Update when workers have TT.</p>
      <ol>
       <li data-md>
-       <p>If the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object⑧">context object</a> is an <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#element" id="ref-for-element⑤">Element</a></code>, let <var>objectName</var> be the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object⑨">context object</a>'s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-local-name" id="ref-for-concept-element-local-name①">local name</a>; Otherwise, let <var>objectName</var> be the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object①⓪">context object</a>'s constructor name.</p>
+       <p>If the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object①①">context object</a> is an <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#element" id="ref-for-element⑤">Element</a></code>, let <var>objectName</var> be the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object①②">context object</a>'s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-local-name" id="ref-for-concept-element-local-name①">local name</a>; Otherwise, let <var>objectName</var> be the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object①③">context object</a>'s constructor name.</p>
       <li data-md>
        <p>Set <var>sink</var> to the result of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-concatenate" id="ref-for-string-concatenate①">concatenating</a> the list « <var>objectName</var>, <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-operation" id="ref-for-dfn-operation②">operation</a> identifier. » with <code>"."</code> as <var>separator</var>.</p>
        <div class="example" id="extended-attribute-operation-example">
@@ -2366,7 +2374,7 @@ document<c- p>.</c->createElement<c- p>(</c-><c- t>'script'</c-><c- p>).</c->set
         <li data-md>
          <p><code>'script'</code> as <var>sinkGroup</var>,</p>
         <li data-md>
-         <p><a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object①①">context object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global④">relevant global object</a> as <var>global</var>.</p>
+         <p><a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object①④">context object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global④">relevant global object</a> as <var>global</var>.</p>
        </ul>
        <p class="issue" id="issue-672bcf0f"><a class="self-link" href="#issue-672bcf0f"></a> Remove hardcoding 'script' when new sink types are specified.</p>
       <li data-md>
@@ -2466,7 +2474,7 @@ It will ensure that the Trusted Type <a data-link-type="dfn" href="#enforcement"
     <li data-md>
      <p>Let <var>cspList</var> be the <var>global</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#concept-document-csp-list" id="ref-for-concept-document-csp-list">CSP list</a>.</p>
     <li data-md>
-     <p>If <var>cspList</var> does not contain a <a href="https://www.w3.org/TR/CSP3/#content-security-policy-object">policy</a> which <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#policy-directive-set" id="ref-for-policy-directive-set">directive set</a> containing a <a href="https://www.w3.org/TR/CSP3/#directives">directive</a> with a name <code>"require-trusted-types-for"</code>,
+     <p>If <var>cspList</var> does not contain a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#content-security-policy-object" id="ref-for-content-security-policy-object">policy</a> which <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#policy-directive-set" id="ref-for-policy-directive-set">directive set</a> containing a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives">directive</a> with a name <code>"require-trusted-types-for"</code>,
 or that directive does not contain a <a data-link-type="dfn" href="#trusted-types-sink-group" id="ref-for-trusted-types-sink-group③">trusted-types-sink-group</a> which is a match for a value <var>sinkGroup</var>,
 return stringified <var>input</var> and abort these steps.</p>
     <li data-md>
@@ -2945,7 +2953,7 @@ add this step between 7.1 and 7.2:</p>
 the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string⑤">Get Trusted Type compliant string</a> algorithm, with</p>
      <ul>
       <li data-md>
-       <p><var>global</var> set to the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object①②">context object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global⑦">relevant global object</a>.</p>
+       <p><var>global</var> set to the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object①⑤">context object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global⑦">relevant global object</a>.</p>
       <li data-md>
        <p><var>input</var> set to the first method argument, and</p>
       <li data-md>
@@ -2982,7 +2990,7 @@ also unconditionally accepts any <code class="idl"><a data-link-type="idl" href=
     <li data-md>
      <p>If the algorithm throws an error, abort these steps.</p>
    </ol>
-   <p class="note" role="note"><span>Note:</span> This also applies to events in <a href="https://www.w3.org/TR/SVG2/#EventAttributes">Scalable Vector Graphics (SVG) 2 §EventAttributes</a>.</p>
+   <p class="note" role="note"><span>Note:</span> This also applies to events in <a href="https://www.w3.org/TR/svg2/interact.html#EventAttributes">SVG 2 §15.9 Event attributes</a>.</p>
    <div class="example" id="event-handlers-example">
     <a class="self-link" href="#event-handlers-example"></a> 
 <pre class="highlight"><c- c1>// Content-Security-Policy: require-trusted-types-for 'script'</c->
@@ -3058,7 +3066,7 @@ img<c- p>.</c->setAttribute<c- p>(</c-><c- t>'onerror'</c-><c- p>,</c-> <c- t>'a
 </pre>
    <h3 class="heading settled" data-level="4.5" id="integration-with-content-security-policy"><span class="secno">4.5. </span><span class="content">Integration with Content Security Policy</span><a class="self-link" href="#integration-with-content-security-policy"></a></h3>
    <h4 class="heading settled" data-level="4.5.1" id="require-trusted-types-for-csp-directive"><span class="secno">4.5.1. </span><span class="content"><dfn data-dfn-type="dfn" data-lt="require-trusted-types-for-directive" data-noexport id="require-trusted-types-for-directive">require-trusted-types-for<a class="self-link" href="#require-trusted-types-for-directive"></a></dfn> directive</span><a class="self-link" href="#require-trusted-types-for-csp-directive"></a></h4>
-   <p>This document defines <em>require-trusted-types-for</em> - a new <a href="https://www.w3.org/TR/CSP3/#directives">Content Security Policy directive</a>.</p>
+   <p>This document defines <em>require-trusted-types-for</em> - a new <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives①">Content Security Policy directive</a>.</p>
    <p><code class="idl"><a data-link-type="idl">require-trusted-types-for</a></code> directive configures the Trusted
 Types framework for all the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②①">injection sinks</a> of certain groups in a current <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-global-object-realm" id="ref-for-concept-global-object-realm①">realm</a>.
 Specifically, it defines what should be the behavior when a string value is passed to an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②②">injection sink</a> of a given group (i.e. should the type-based enforcement be enabled for such sinks).</p>
@@ -3075,7 +3083,7 @@ directive-value = <a data-link-type="dfn" href="#trusted-types-sink-group" id="r
 </pre>
    </div>
    <h5 class="heading settled" data-level="4.5.1.1" id="require-trusted-types-for-pre-navigation-check"><span class="secno">4.5.1.1. </span><span class="content"><code>require-trusted-types-for</code> Pre-Navigation check</span><a class="self-link" href="#require-trusted-types-for-pre-navigation-check"></a></h5>
-   <p>Given a <a href="https://fetch.spec.whatwg.org/#concept-request">request</a> (<var>request</var>), a string <var>navigation type</var> and a <a href="https://www.w3.org/TR/CSP3/#content-security-policy-object">policy</a> (<var>policy</var>), this algorithm returns <code>"Blocked"</code> if a navigation violates the <code class="idl"><a data-link-type="idl">require-trusted-types-for</a></code> directive’s constraints and <code>"Allowed"</code> otherwise. This constitutes the <code class="idl"><a data-link-type="idl">require-trusted-types-for</a></code> directive’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-pre-navigation-check" id="ref-for-directive-pre-navigation-check">pre-navigation check</a>:</p>
+   <p>Given a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request" id="ref-for-concept-request">request</a> (<var>request</var>), a string <var>navigation type</var> and a <a data-link-type="dfn">policy</a> (<var>policy</var>), this algorithm returns <code>"Blocked"</code> if a navigation violates the <code class="idl"><a data-link-type="idl">require-trusted-types-for</a></code> directive’s constraints and <code>"Allowed"</code> otherwise. This constitutes the <code class="idl"><a data-link-type="idl">require-trusted-types-for</a></code> directive’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-pre-navigation-check" id="ref-for-directive-pre-navigation-check">pre-navigation check</a>:</p>
    <p class="note" role="note"><span>Note:</span> This algorithm assures that the code to be executed by a navigation to a <code>javascript:</code> URL will have to pass through a <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy">default policy</a>’s <code>createScript</code> function, in addition to all other restrictions imposed by other CSP directives.</p>
    <ol>
     <li data-md>
@@ -3109,7 +3117,7 @@ directive-value = <a data-link-type="dfn" href="#trusted-types-sink-group" id="r
      <p>Return <code>"Allowed"</code>.</p>
    </ol>
    <h4 class="heading settled" data-level="4.5.2" id="trusted-types-csp-directive"><span class="secno">4.5.2. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="trusted-types-directive" data-noexport id="trusted-types-directive">trusted-types</dfn> directive</span><a class="self-link" href="#trusted-types-csp-directive"></a></h4>
-   <p>This document defines <em>trusted-types</em> - a new <a href="https://www.w3.org/TR/CSP3/#directives">Content Security Policy directive</a>. The <code class="idl"><a data-link-type="idl">trusted-types</a></code> directive controls the creation of Trusted Type <a data-link-type="dfn" href="#policies" id="ref-for-policies⑤">policies</a>.</p>
+   <p>This document defines <em>trusted-types</em> - a new <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives②">Content Security Policy directive</a>. The <code class="idl"><a data-link-type="idl">trusted-types</a></code> directive controls the creation of Trusted Type <a data-link-type="dfn" href="#policies" id="ref-for-policies⑤">policies</a>.</p>
    <p>The syntax for the directive’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-name" id="ref-for-directive-name①">name</a> and <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-value" id="ref-for-directive-value①">value</a> is described by the following
 ABNF:</p>
 <pre>directive-name = "trusted-types"
@@ -3125,7 +3133,7 @@ directive-value = <a data-link-type="dfn" href="#serialized-tt-configuration" id
 </pre>
    </div>
    <div class="example" id="header-that-allows-no-policy-names">
-    <a class="self-link" href="#header-that-allows-no-policy-names"></a> An empty <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives">directive</a> <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-value" id="ref-for-directive-value②">value</a> indicates policies may not be created,
+    <a class="self-link" href="#header-that-allows-no-policy-names"></a> An empty <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives③">directive</a> <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-value" id="ref-for-directive-value②">value</a> indicates policies may not be created,
 and sinks expect Trusted Type values, i.e. no DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②③">injection sinks</a> can be used
 at all. 
 <pre class="http">Content-Security-Policy: trusted-types; require-trusted-types-for 'script'
@@ -3154,9 +3162,9 @@ returns <code>"Blocked"</code> if the <a data-link-type="dfn" href="#injection-s
      <p>For each <var>policy</var> in <var>global</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#concept-document-csp-list" id="ref-for-concept-document-csp-list①">CSP list</a>:</p>
      <ol>
       <li data-md>
-       <p>If <var>policy</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#policy-directive-set" id="ref-for-policy-directive-set①">directive set</a> does not contain a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives①">directive</a> which <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-name" id="ref-for-directive-name②">name</a> is <code>"require-trusted-types-for"</code>, skip to the next <var>policy</var>.</p>
+       <p>If <var>policy</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#policy-directive-set" id="ref-for-policy-directive-set①">directive set</a> does not contain a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives④">directive</a> which <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-name" id="ref-for-directive-name②">name</a> is <code>"require-trusted-types-for"</code>, skip to the next <var>policy</var>.</p>
       <li data-md>
-       <p>Let <var>directive</var> be the <var>policy</var>’s <var>directive set</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives②">directive</a> which name
+       <p>Let <var>directive</var> be the <var>policy</var>’s <var>directive set</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives⑤">directive</a> which name
 is <code>"require-trusted-types-for"</code></p>
       <li data-md>
        <p>If <var>directive</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-value" id="ref-for-directive-value③">value</a> does not contain a <a data-link-type="dfn" href="#trusted-types-sink-group" id="ref-for-trusted-types-sink-group⑥">trusted-types-sink-group</a> which is a match
@@ -3189,9 +3197,9 @@ strings (<var>createdPolicyNames</var>), this algorithm returns <code>"Blocked"<
       <li data-md>
        <p>Let <var>createViolation</var> be false.</p>
       <li data-md>
-       <p>If <var>policy</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#policy-directive-set" id="ref-for-policy-directive-set②">directive set</a> does not contain a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives③">directive</a> which name is <code>"trusted-types"</code>, skip to the next <var>policy</var>.</p>
+       <p>If <var>policy</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#policy-directive-set" id="ref-for-policy-directive-set②">directive set</a> does not contain a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives⑥">directive</a> which name is <code>"trusted-types"</code>, skip to the next <var>policy</var>.</p>
       <li data-md>
-       <p>Let <var>directive</var> be the <var>policy</var>’s <var>directive set</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives④">directive</a> which name
+       <p>Let <var>directive</var> be the <var>policy</var>’s <var>directive set</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives⑦">directive</a> which name
 is <code>"trusted-types"</code></p>
       <li data-md>
        <p>If <var>createdPolicyNames</var> contains <var>policyName</var> and <var>directive</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-value" id="ref-for-directive-value④">value</a> does not contain a <a data-link-type="dfn" href="#tt-keyword" id="ref-for-tt-keyword①">tt-keyword</a> which is a match
@@ -3274,21 +3282,21 @@ throws an "<code>EvalError</code>" if not:
       <li data-md>
        <p>Let <var>result</var> be "<code>Allowed</code>".</p>
       <li data-md>
-       <p>For each <var>policy</var> in <var>global</var>’s <a href="https://www.w3.org/TR/CSP3/#global-object-csp-list">CSP list</a>:</p>
+       <p>For each <var>policy</var> in <var>global</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#global-object-csp-list" id="ref-for-global-object-csp-list">CSP list</a>:</p>
        <ol>
         <li data-md>
          <p>Let <var>source-list</var> be <code>null</code>.</p>
         <li data-md>
-         <p>If <var>policy</var> contains a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives⑤">directive</a> whose <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-name" id="ref-for-directive-name③">name</a> is "<code>script-src</code>", then
-set <var>source-list</var> to that <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives⑥">directive</a>'s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-value" id="ref-for-directive-value⑥">value</a>.</p>
-         <p>Otherwise if <var>policy</var> contains a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives⑦">directive</a> whose <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-name" id="ref-for-directive-name④">name</a> is
+         <p>If <var>policy</var> contains a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives⑧">directive</a> whose <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-name" id="ref-for-directive-name③">name</a> is "<code>script-src</code>", then
+set <var>source-list</var> to that <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives⑨">directive</a>'s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-value" id="ref-for-directive-value⑥">value</a>.</p>
+         <p>Otherwise if <var>policy</var> contains a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives①⓪">directive</a> whose <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-name" id="ref-for-directive-name④">name</a> is
 "<code>default-src</code>", then set <var>source-list</var> to that directive’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-value" id="ref-for-directive-value⑦">value</a>.</p>
         <li data-md>
          <p>If <var>source-list</var> is not <code>null</code>, and does not contain a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#source-expression" id="ref-for-source-expression">source expression</a> which is
 an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ascii-case-insensitive" id="ref-for-ascii-case-insensitive">ASCII case-insensitive</a> match for the string "<a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-unsafe-eval" id="ref-for-grammardef-unsafe-eval"><code>'unsafe-eval'</code></a>" then:</p>
          <ol>
           <li data-md>
-           <p>Let <var>violation</var> be the result of executing <a href="https://www.w3.org/TR/CSP3/#create-violation-for-global">Content Security Policy Level 3 §create-violation-for-global</a> on <var>global</var>, <var>policy</var>, and "<code>script-src</code>".</p>
+           <p>Let <var>violation</var> be the result of executing <a href="https://www.w3.org/TR/CSP3/#create-violation-for-global">Content Security Policy §2.4.1 Create a violation object for global, policy, and directive</a> on <var>global</var>, <var>policy</var>, and "<code>script-src</code>".</p>
           <li data-md>
            <p>Set <var>violation</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation-resource" id="ref-for-violation-resource③">resource</a> to "<code>inline</code>".</p>
           <li data-md>
@@ -3302,7 +3310,7 @@ the substring of
 40 characters.
            </p>
           <li data-md>
-           <p>Execute <a href="https://www.w3.org/TR/CSP3/#report-violation">Content Security Policy Level 3 §report-violation</a> on <var>violation</var>.</p>
+           <p>Execute <a href="https://www.w3.org/TR/CSP3/#report-violation">Content Security Policy §5.3 Report a violation</a> on <var>violation</var>.</p>
           <li data-md>
            <p>If <var>policy</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#policy-disposition" id="ref-for-policy-disposition②">disposition</a> is "<code>enforce</code>", then set <var>result</var> to
 "<code>Blocked</code>".</p>
@@ -3341,7 +3349,7 @@ possible that such nodes can be imported or adopted from documents in other
 windows, that don’t have the same set of restrictions. In essence - it is
 possible to bypass Trusted Types if a malicious author creates a setup in which
 a restricted document colludes with an unrestricted one.</p>
-   <p>CSP propagation rules (see <a href="https://www.w3.org/TR/CSP3/#initialize-document-csp">Content Security Policy Level 3 §initialize-document-csp</a> partially address this
+   <p>CSP propagation rules (see <a href="https://www.w3.org/TR/CSP3/#initialize-document-csp">Content Security Policy §4.2.1 Initialize a Document's CSP list</a> partially address this
 issue, as new <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#local-scheme" id="ref-for-local-scheme">local scheme</a> documents will inherit the same set of restrictions.
 To address this issue comprehensively, other mechanisms like <a href="https://wicg.github.io/origin-policy/">Origin Policy</a> should be used to ensure that baseline security rules are applied for the whole
 origin.</p>
@@ -3562,6 +3570,18 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
     <li><a href="#ref-for-grammardef-unsafe-eval">4.5.6. Support for eval(TrustedScript)</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-content-security-policy-object">
+   <a href="https://w3c.github.io/webappsec-csp/#content-security-policy-object">https://w3c.github.io/webappsec-csp/#content-security-policy-object</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-content-security-policy-object">3.3. Get Trusted Type compliant string</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-global-object-csp-list">
+   <a href="https://w3c.github.io/webappsec-csp/#global-object-csp-list">https://w3c.github.io/webappsec-csp/#global-object-csp-list</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-global-object-csp-list">4.5.6. Support for eval(TrustedScript)</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-policy-directive-set">
    <a href="https://w3c.github.io/webappsec-csp/#policy-directive-set">https://w3c.github.io/webappsec-csp/#policy-directive-set</a><b>Referenced in:</b>
    <ul>
@@ -3573,10 +3593,12 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
   <aside class="dfn-panel" data-for="term-for-directives">
    <a href="https://w3c.github.io/webappsec-csp/#directives">https://w3c.github.io/webappsec-csp/#directives</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-directives">4.5.2. trusted-types directive</a>
-    <li><a href="#ref-for-directives①">4.5.3. Should sink type mismatch violation be blocked by Content Security Policy?</a> <a href="#ref-for-directives②">(2)</a>
-    <li><a href="#ref-for-directives③">4.5.4. Should Trusted Type policy creation be blocked by Content Security Policy?</a> <a href="#ref-for-directives④">(2)</a>
-    <li><a href="#ref-for-directives⑤">4.5.6. Support for eval(TrustedScript)</a> <a href="#ref-for-directives⑥">(2)</a> <a href="#ref-for-directives⑦">(3)</a>
+    <li><a href="#ref-for-directives">3.3. Get Trusted Type compliant string</a>
+    <li><a href="#ref-for-directives①">4.5.1. require-trusted-types-for directive</a>
+    <li><a href="#ref-for-directives②">4.5.2. trusted-types directive</a> <a href="#ref-for-directives③">(2)</a>
+    <li><a href="#ref-for-directives④">4.5.3. Should sink type mismatch violation be blocked by Content Security Policy?</a> <a href="#ref-for-directives⑤">(2)</a>
+    <li><a href="#ref-for-directives⑥">4.5.4. Should Trusted Type policy creation be blocked by Content Security Policy?</a> <a href="#ref-for-directives⑦">(2)</a>
+    <li><a href="#ref-for-directives⑧">4.5.6. Support for eval(TrustedScript)</a> <a href="#ref-for-directives⑨">(2)</a> <a href="#ref-for-directives①⓪">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-policy-disposition">
@@ -3715,8 +3737,9 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <a href="https://dom.spec.whatwg.org/#context-object">https://dom.spec.whatwg.org/#context-object</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-context-object">2.3.1. TrustedTypePolicyFactory</a> <a href="#ref-for-context-object①">(2)</a>
-    <li><a href="#ref-for-context-object②">2.4.2. TrustedTypes extended attribute</a> <a href="#ref-for-context-object③">(2)</a> <a href="#ref-for-context-object④">(3)</a> <a href="#ref-for-context-object⑤">(4)</a> <a href="#ref-for-context-object⑥">(5)</a> <a href="#ref-for-context-object⑦">(6)</a> <a href="#ref-for-context-object⑧">(7)</a> <a href="#ref-for-context-object⑨">(8)</a> <a href="#ref-for-context-object①⓪">(9)</a> <a href="#ref-for-context-object①①">(10)</a>
-    <li><a href="#ref-for-context-object①②">4.1.5. Enforcement in timer functions</a>
+    <li><a href="#ref-for-context-object②">2.3.2. TrustedTypePolicy</a> <a href="#ref-for-context-object③">(2)</a> <a href="#ref-for-context-object④">(3)</a>
+    <li><a href="#ref-for-context-object⑤">2.4.2. TrustedTypes extended attribute</a> <a href="#ref-for-context-object⑥">(2)</a> <a href="#ref-for-context-object⑦">(3)</a> <a href="#ref-for-context-object⑧">(4)</a> <a href="#ref-for-context-object⑨">(5)</a> <a href="#ref-for-context-object①⓪">(6)</a> <a href="#ref-for-context-object①①">(7)</a> <a href="#ref-for-context-object①②">(8)</a> <a href="#ref-for-context-object①③">(9)</a> <a href="#ref-for-context-object①④">(10)</a>
+    <li><a href="#ref-for-context-object①⑤">4.1.5. Enforcement in timer functions</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-attribute-element">
@@ -3786,6 +3809,12 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <a href="https://fetch.spec.whatwg.org/#local-scheme">https://fetch.spec.whatwg.org/#local-scheme</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-local-scheme">5.1. Cross-document vectors</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-request">
+   <a href="https://fetch.spec.whatwg.org/#concept-request">https://fetch.spec.whatwg.org/#concept-request</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-request">4.5.1.1. require-trusted-types-for Pre-Navigation check</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-request-url">
@@ -4105,6 +4134,8 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
     <ul>
      <li><span class="dfn-paneled" id="term-for-grammardef-report-sample" style="color:initial">'report-sample'</span>
      <li><span class="dfn-paneled" id="term-for-grammardef-unsafe-eval" style="color:initial">'unsafe-eval'</span>
+     <li><span class="dfn-paneled" id="term-for-content-security-policy-object" style="color:initial">content security policy object</span>
+     <li><span class="dfn-paneled" id="term-for-global-object-csp-list" style="color:initial">csp list</span>
      <li><span class="dfn-paneled" id="term-for-policy-directive-set" style="color:initial">directive set</span>
      <li><span class="dfn-paneled" id="term-for-directives" style="color:initial">directives</span>
      <li><span class="dfn-paneled" id="term-for-policy-disposition" style="color:initial">disposition</span>
@@ -4149,6 +4180,7 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
      <li><span class="dfn-paneled" id="term-for-dom-requestdestination-script" style="color:initial">"script"</span>
      <li><span class="dfn-paneled" id="term-for-concept-request-client" style="color:initial">client</span>
      <li><span class="dfn-paneled" id="term-for-local-scheme" style="color:initial">local scheme</span>
+     <li><span class="dfn-paneled" id="term-for-concept-request" style="color:initial">request</span>
      <li><span class="dfn-paneled" id="term-for-concept-request-url" style="color:initial">url</span>
     </ul>
    <li>

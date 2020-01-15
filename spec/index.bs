@@ -27,6 +27,11 @@ url: https://www.w3.org/TR/DOM-Parsing/#h-the-domparser-interface; type: enum; s
     text: SupportedType
 </pre>
 
+<pre class="link-defaults">
+spec:fetch; type:dfn; for:/; text:request
+spec:DOM Parsing; type:idl; for:Element; text:innerHTML
+</pre>
+
 <!-- TODO
 Complain About: broken-links yes
 -->
@@ -668,7 +673,7 @@ Each TrustedTypePolicy object has an `[[options]]` internal slot, holding the {{
     following arguments:
     <dl>
       <dt>policy</dt>
-      <dd>[[DOM#context-object|context object]]</dt>
+      <dd>[=context object=]</dt>
       <dt>trustedTypeName</dt>
       <dd>`"TrustedHTML"`</dd>
       <dt>value</dt>
@@ -683,7 +688,7 @@ Each TrustedTypePolicy object has an `[[options]]` internal slot, holding the {{
     following arguments:
     <dl>
       <dt>policy</dt>
-      <dd>[[DOM#context-object|context object]]</dt>
+      <dd>[=context object=]</dt>
       <dt>trustedTypeName</dt>
       <dd>`"TrustedScript"`</dd>
       <dt>value</dt>
@@ -699,7 +704,7 @@ Each TrustedTypePolicy object has an `[[options]]` internal slot, holding the {{
     following arguments:
     <dl>
       <dt>policy</dt>
-      <dd>[[DOM#context-object|context object]]</dt>
+      <dd>[=context object=]</dt>
       <dt>trustedTypeName</dt>
       <dd>`"TrustedScriptURL"`</dd>
       <dt>value</dt>
@@ -979,8 +984,8 @@ Given a {{TrustedType}} type (|expectedType|), a [=Realm/global object=] (|globa
 
     Issue: Synchronize when TT are added to workers (perhaps use "has a CSP list"?)
 1.  Let |cspList| be the |global|'s <a>CSP list</a>.
-1.  If |cspList| does not contain a [[CSP3#content-security-policy-object|policy]]
-    which <a>directive set</a> containing a [[CSP3#directives|directive]] with a name `"require-trusted-types-for"`,
+1.  If |cspList| does not contain a [=content security policy object|policy=]
+    which [=directive set=] containing a [=directive=] with a name `"require-trusted-types-for"`,
     or that directive does not contain a <a>trusted-types-sink-group</a> which is a match for a value |sinkGroup|,
     return stringified |input| and abort these steps.
 1.  If |input| has type |expectedType|, return stringified
@@ -1592,7 +1597,7 @@ interface DOMParser {
 
 ### <dfn lt="require-trusted-types-for-directive">require-trusted-types-for</dfn> directive ### {#require-trusted-types-for-csp-directive}
 
-This document defines *require-trusted-types-for* - a new [[CSP3#directives|Content Security Policy directive]].
+This document defines *require-trusted-types-for* - a new [=directive|Content Security Policy directive=].
 
 {{#require-trusted-types-for-directive|require-trusted-types-for}} directive configures the Trusted
 Types framework for all the [=injection sinks=] of certain groups in a current [=Realm|realm=].
@@ -1620,7 +1625,7 @@ Content-Security-Policy: require-trusted-types-for 'script'
 
 #### `require-trusted-types-for` Pre-Navigation check #### {#require-trusted-types-for-pre-navigation-check}
 
-Given a [[Fetch#concept-request|request]] (|request|), a string |navigation type| and a [[CSP3#content-security-policy-object|policy]] (|policy|), this algorithm returns `"Blocked"`
+Given a [=request=] (|request|), a string |navigation type| and a [=CSP3#content-security-policy-object|policy=] (|policy|), this algorithm returns `"Blocked"`
 if a navigation violates the {{#require-trusted-types-for-directive|require-trusted-types-for}} directive's constraints and `"Allowed"`
 otherwise. This constitutes the {{#require-trusted-types-for-directive|require-trusted-types-for}} directive's [=pre-navigation check=]:
 
@@ -1649,7 +1654,7 @@ Note: This algorithm assures that the code to be executed by a navigation to a `
 
 ### <dfn lt="trusted-types-directive">trusted-types</dfn> directive ### {#trusted-types-csp-directive}
 
-This document defines *trusted-types* - a new [[CSP3#directives|Content Security Policy directive]]. The {{#trusted-types-directive|trusted-types}} directive controls the creation of Trusted Type [=policies=].
+This document defines *trusted-types* - a new [=directive|Content Security Policy directive=]. The {{#trusted-types-directive|trusted-types}} directive controls the creation of Trusted Type [=policies=].
 
 The syntax for the directive's [=directive/name=] and [=directive/value=] is described by the following
 ABNF:
@@ -1809,7 +1814,7 @@ throws an "`EvalError`" if not:
 
     1.  Let |result| be "`Allowed`".
 
-    2.  For each |policy| in |global|'s [[CSP#global-object-csp-list|CSP list]]:
+    2.  For each |policy| in |global|'s <a for="global object" spec="CSP3">CSP list</a>:
 
         1.  Let |source-list| be `null`.
 
