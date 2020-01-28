@@ -189,7 +189,7 @@ The intention is to allow for a gradual migration of the code from strings towar
 Please check the [specification draft](https://w3c.github.io/webappsec-trusted-types/dist/spec/#default-policy-hdr) for details.
 
 
-#### javascript: URLs
+### javascript: URLs
 
 Using `javascript:` URLs as a payload for DOM XSS exploitation is quite common. At the same time, 
 there are many sinks in the platform that accept URLs, and it would be prohibitive for the authors to have to r
@@ -288,3 +288,20 @@ controls in their application even if it occasionally uses `javascript:` URLs fo
         attribute DOMString textContent;
     };
     ```
+    
+## Adopting Trusted Types
+
+With the API described as above, the application may protect itself against DOM XSS using the following approach:
+
+1. Identify the places where the injection sinks are being used (e.g. with `Content-Security-Policy-Report-Only: require-trusted-types-for 'script'; report-uri /csp`). Apart from `innerHTML`, these are usually places responsible for dynamic script loading, JSONP, or HTML sanitization and templating. 
+
+2. Rewrite those places to use Trusted Types instead, via dedicated policies. Where appropriate, move the sanitization and 
+   filtering logic to the policies. Where possible, enable the use of policies in your dependencies and rewrite legacy code 
+   not to use the sinks when unneccessary.
+
+3. (Optional) Create a default policy to address direct sink usage in 3rd party dependencies. 
+
+4. Enforce Trusted Types at DOM XSS sinks, changing the report-only CSP to an enforcing one. From now on 
+   only the trusted types policies can introduce DOM XSS. 
+
+5. (Optional) Guard policy creation by using `trusted-types` directive. 
