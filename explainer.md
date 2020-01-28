@@ -32,7 +32,8 @@ to start small until we know how existing templating systems and sanitizers will
 primitives we introduce into their existing systems. The following approach seems compelling as a
 first step:
 
-1.  Introduce a number of types that correspond to the XSS sinks we wish to protect. For example,
+1.  Introduce a number of types that correspond to the sinks we wish to protect. For example, 
+    to cover DOM XSS vulnerabilities
     we could define a `TrustedHTML` object that marks it as suitable for using via `innerHTML`
     (instead of a string). Or a `TrustedScriptURL` object that's suitable to be assigned to a
     `ScriptElement.src` attribute.
@@ -40,36 +41,33 @@ first step:
     These types should be pretty minimal in nature, making them polyfillable in browsers that don't
     support them natively.
 
-2.  Enumerate all the XSS sinks we wish to protect, and overload each of them with a variant that
-    accepts the matching type. For example, `Element.innerHTML`'s setter could accept `(DOMString or TrustedHTML)`,
+2.  Enumerate all the sinks we wish to protect, and overload each of them with a variant that
+    accepts the matching type. For example, `Element.innerHTML`'s setter could accept `TrustedHTML`,
     and we could overload `document.write(DOMString)` with `document.write(TrustedHTML)`.
 
     As above, this mechanism should be polyfillable; the polyfilled types define stringifiers which
     would enable them to be automatically cast into strings when called on existing setters.
 
 3.  Introduce a mechanism for disabling the raw string version of each of the sinks identified
-    above. For example, `Content-Security-Policy: trusted-types`
-    header could cause the `innerHTML` setter to throw a `TypeError` if a raw string was passed in.
+    above. For example, to signify that the application opts into DOM XSS sink protection 
+    `Content-Security-Policy: require-trusted-types-for 'script'`
+    header could be used: This causes the `innerHTML` setter to throw a `TypeError` if a raw string was passed in.
 
     This is possible to polyfill for many setters and
-    methods, apart from the ones that aren't marked as [`[Unforgeable]`](https://heycam.github.io/webidl/#Unforgeable).
+    methods, apart from the ones that are marked as [`[Unforgeable]`](https://heycam.github.io/webidl/#Unforgeable). 
+  
+    This approach could later be extended to cover other types of risky and easy to misuse APIs (e.g. to cover 
+    CSS-based data exfiltration attacks).
 
 ### Trusted Types
+
+We identified three types that match the different contexts relevant for DOM XSS:
 
 *   **TrustedHTML**: This type would be used to represent a trusted snippet that could be passed
     into an HTML context.
 
     ```webidl
     interface TrustedHTML {
-      stringifier;
-    }
-    ```
-
-*   **TrustedURL**: This type would be used to represent a trusted URL that could be used to load
-    non-scripting resources or navigate a frame.
-
-    ```webidl
-    interface TrustedURL {
       stringifier;
     }
     ```
@@ -135,7 +133,6 @@ As valid trusted type objects must originate from a policy, those policies alone
 ```webidl
 interface TrustedTypePolicyFactory {
     TrustedTypePolicy createPolicy(DOMString policyName, TrustedTypeInnerPolicy policy);
-    Array<DOMString> getPolicyNames();
 }
 ```
 We propose to provide a `TrustedTypePolicyFactory` implementation under `window.trustedTypes`. The most important function available in a `TrustedTypePolicyFactory` is `createPolicy`.
@@ -145,21 +142,18 @@ The policy rules for creating individual types are configured via the properties
 ```webidl
 interface TrustedTypeInnerPolicy {
     string createHTML(string);
-    string createURL(string);
     string createScriptURL(string);
     string createScript(string);
 }
 ```
-
 Policy (with a unique name) can be created like this:
 
 ```javascript
-const myPolicy = trustedTypes.createPolicy('https://example.com#mypolicy', {
+const myPolicy = trustedTypes.createPolicy('mypolicy', {
     createHTML: (s) => { return customSanitize(s) },
-    createURL: (s) => { /* parse and validate the url. throw if non-conformant */ },
+    createScriptURL: (s) => { /* parse and validate the url. throw if non-conformant */ },
 })
 ```
-
 The policy object is returned, and can be used as a capability to create typed objects i.e. code parts without a reference to the policy object cannot use it.
 
 The policy object can be used directly to create typed values that conform to its rules:
@@ -175,22 +169,49 @@ the polyfill code.
 
 #### Limiting policies
 
-We propose to allow for whitelisting policy names in a CSP, e.g. in a following fashion:
+Applications may want to further limit how policies are created; We propose to allow for 
+allow-listing policy names in a CSP, e.g. in a following fashion:
 ```http
 Content-Security-Policy: trusted-types foo bar
 ```
 
 That will assure that no additional policies are created at runtime. Creating a policy with a name
 that was already created, or was not specified in the CSP throws, so introduction of non-reviewed
-policies breaks the application functionally.
+policies breaks the application functionally. There's also an espace hatch - `'allow-duplicate'` 
+CSP keyword that allows the applications to create a given policy multiple times (that's useful 
+if a dependency is used twice in an application). 
 
 #### Default policy
 
-There is an experimental support for a default policy that allows applications
-to use strings with the injection sinks. These strings would be passed to a single
-user-defined policy that sanitizes the value or rejects it. The intention is to
-allow for a gradual migration of the code from strings towards Trusted Types.
-Please check the [specification draft](https://w3c.github.io/trusted-types/dist/spec/#default-policy-hdr) for details.
+One of the policies the application may create is special, in that it allows to use strings with the injection sinks. 
+These strings would be passed to a single user-defined policy that sanitizes the value or rejects it.
+The intention is to allow for a gradual migration of the code from strings towards Trusted Types.
+Please check the [specification draft](https://w3c.github.io/webappsec-trusted-types/dist/spec/#default-policy-hdr) for details.
+
+
+#### javascript: URLs
+
+Using `javascript:` URLs as a payload for DOM XSS exploitation is quite common. At the same time, 
+there are many sinks in the platform that accept URLs, and it would be prohibitive for the authors to have to r
+rewrite all of their `HTMLAnchorElement.href` assignments only because a `javascript:` URL could be used. 
+   
+Instead of that we propose a simple workaround - with Trusted Types enforcement (`require-trusted-types-for 'script'`) 
+navigation to `javascript:` URLs will be guarded via a default policy mechanism. Commonly, they will simply stop working.
+To reenable them, the application needs to create a default policy that allows it to control the code before it 
+executes like so:
+
+```javascript
+trustedTypes.createPolicy('default', {
+  createScript: payload => {
+    if (payload === 'void(0)') { // javascript:void(0) navigation or, e.g. eval('void(0)')
+      return 'void(0)';
+    } // returning undefined rejects a value and stops navigation.
+  }
+});
+```
+
+This mechanism compliments CSP's `'unsafe-inline'`, allowing the authors to enable strong security 
+controls in their application even if it occasionally uses `javascript:` URLs for legitimate purposes. 
 
 ### DOM Sinks
 
@@ -229,63 +250,7 @@ Please check the [specification draft](https://w3c.github.io/trusted-types/dist/
          DOMString srcdoc;
     };
     ```
-
-*   **URL Contexts**: Given something like `typedef (USVString or TrustedURL) URLString`, we'd poke
-    at a number of methods and attribute setters to accept the new type:
-
-    ```webidl
-    partial interface Location {
-        stringifier attribute URLString href;
-        void assign(URLString url);
-        void replace(URLString url);
-
-        // (These aren't `URLString`, but they should be something)
-        DOMString pathname;
-        DOMString search;
-    };
-    ```
-
-    ```webidl
-    // A few element types go here. `HTMLBaseElement`, `HTMLLinkElement`
-    // `HTMLHyperlinkElementUtils` from a quick skim through HTML.
-    partial interface HTMLXXXElement : HTMLElement {
-        attribute URLString href;
-    };
-    ```
-
-    ```webidl
-    // A few element types go here. `HTMLSourceElement`, `HTMLImageElement`,
-    // `HTMLIFrameElement`, `HTMLTrackElement`, `HTMLMediaElement`,
-    // `HTMLInputElement`,  `HTMLFrameElement`
-    // from a quick skim through HTML.
-    //
-    // The same applies to their SVG variants.
-    partial interface HTMLXXXElement : HTMLElement {
-        attribute URLString src;
-        attribute URLString srcset; // Only `HTMLSourceElement` and `HTMLImageElement`
-    };
-    ```
-
-    ```webidl
-    partial interface HTMLObjectElement : HTMLElement {
-        attribute URLString data;
-        attribute URLString codebase;
-    };
-    ```
-
-    ```webidl
-    partial interface Document {
-        attribute URLString location;
-    };
-    ```
-
-    ```webidl
-    partial interface Window {
-        attribute URLString location;
-        void open(URLString location);
-    };
-    ```
-
+    
 * **Script URL Context**: Given something like `typedef (USVString or TrustedScriptURL) ScriptURLString`,
     we'd poke at a number of methods and attribute setters to accept the new type:
 
@@ -323,7 +288,3 @@ Please check the [specification draft](https://w3c.github.io/trusted-types/dist/
         attribute DOMString textContent;
     };
     ```
-
-## Open Questions
-
-Some details have still not been sketched out - see [issues](https://github.com/w3c/webappsec-trusted-types/issues).
