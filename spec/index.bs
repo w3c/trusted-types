@@ -835,8 +835,7 @@ When the extended attribute appears on an attribute, the setter for that attribu
  1. If [=context object=]'s [=relevant global object=] has a [=Window/trusted type policy factory=]:
 
     Issue: Update when workers have TT.
-    1. If the [=context object=] is an {{Element}}, let |objectName| be the [=context object=]'s [=Element/local name=]; Otherwise, let |objectName| be the [=context object=]'s constructor name.
-    1. Set |sink| to the result of [=concatenating=] the list &laquo; |objectName|, [=attribute=] identifier. &raquo; with `"."` as |separator|.
+    1. Set |sink| to the result of [=concatenating=] the list &laquo; [=context object=]'s constructor name, [=attribute=] identifier. &raquo; with `"."` as |separator|.
         <div class="example" id="extended-attribute-attribute-example">
         For example, the following annotation and JavaScript code:
         <pre highlight=idl>
@@ -848,7 +847,7 @@ When the extended attribute appears on an attribute, the setter for that attribu
         document.createElement('script').src = foo;
         document.createElement('script').setAttribute('SrC', foo);
         </pre>
-        causes the |sink| value to be `"script.src"`.
+        causes the |sink| value to be `"HTMLScriptElement.src"`.
         </div>
     1. Set |value| to the result of running the [$Get Trusted Type compliant string$] algorithm, passing the following arguments:
         * the new value as |input|,
@@ -869,8 +868,7 @@ When the extended attribute appears on an [=operation=] argument, before its ope
  1. If [=context object=]'s [=relevant global object=] has a [=Window/trusted type policy factory=]:
 
     Issue: Update when workers have TT.
-    1. If the [=context object=] is an {{Element}}, let |objectName| be the [=context object=]'s [=Element/local name=]; Otherwise, let |objectName| be the [=context object=]'s constructor name.
-    1. Set |sink| to the result of [=concatenating=] the list &laquo; |objectName|, [=operation=] identifier. &raquo; with `"."` as |separator|.
+    1. Set |sink| to the result of [=concatenating=] the list &laquo; [=context object=]'s constructor name, [=operation=] identifier. &raquo; with `"."` as |separator|.
         <div class="example" id="extended-attribute-operation-example">
         For example, the following annotation and JavaScript code:
         <pre highlight=idl>
