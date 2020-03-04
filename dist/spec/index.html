@@ -1214,7 +1214,7 @@ Possible extra rowspan handling
 </style>
   <meta content="Bikeshed version 53d2305928d30790ebcc3b8ea611fb0709647013" name="generator">
   <link href="https://w3c.github.io/webappsec-trusted-types/dist/spec/" rel="canonical">
-  <meta content="d8377d0850715340a4aea806479b3506abb047c5" name="document-revision">
+  <meta content="87484744e8640f4947beef2c3688ae309a509095" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -2284,6 +2284,7 @@ via using the <code class="idl"><a data-link-type="idl">Content-Security-Report-
    <p class="note" role="note"><span>Note:</span> Most of the enforcement rules are defined as modifications of the
 algorithms in other specifications, see <a href="#integrations">§4 Integrations</a>.</p>
    <h4 class="heading settled" data-level="2.4.2" id="!trustedtypes-extended-attribute"><span class="secno">2.4.2. </span><span class="content">TrustedTypes extended attribute</span><a class="self-link" href="#!trustedtypes-extended-attribute"></a></h4>
+   <p class="issue" id="issue-98ce703e"><a class="self-link" href="#issue-98ce703e"></a> Rewrite to mirror https://github.com/heycam/webidl/pull/841.</p>
    <p class="note" role="note"><span>Note:</span> This section describes the implementation details of the Trusted Types mechanism. IDL extended attributes are not exposed to the JavasScript code.</p>
    <p>To annotate the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⑧">injection sink</a> functions that require Trusted Types, we introduce <dfn class="dfn-paneled idl-code" data-dfn-type="extended-attribute" data-export data-lt="TrustedTypes" data-x="TrustedTypes" id="extendedattrdef-trustedtypes"><code>[TrustedTypes]</code></dfn> IDL <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-extended-attribute" id="ref-for-dfn-extended-attribute">extended attribute</a>. Its presence indicates that the relevant construct is to be supplemented with additional
 Trusted Types enforcement logic.</p>
@@ -2298,7 +2299,7 @@ Additionally, it must not appear on <a data-link-type="dfn" href="https://heycam
      <p class="issue" id="issue-b92c7a17"><a class="self-link" href="#issue-b92c7a17"></a> Update when workers have TT.</p>
      <ol>
       <li data-md>
-       <p>Set <var>sink</var> to the result of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-concatenate" id="ref-for-string-concatenate">concatenating</a> the list « <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object⑥">context object</a>'s constructor name, <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-attribute" id="ref-for-dfn-attribute④">attribute</a> identifier. » with <code>"."</code> as <var>separator</var>.</p>
+       <p>Set <var>sink</var> to the result of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-concatenate" id="ref-for-string-concatenate">concatenating</a> the list « <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this">this</a> IDL value’s <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-identifier" id="ref-for-dfn-identifier">identifier</a>, <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-attribute" id="ref-for-dfn-attribute④">attribute</a> identifier. » with <code>" "</code> as <var>separator</var>.</p>
        <div class="example" id="extended-attribute-attribute-example">
         <a class="self-link" href="#extended-attribute-attribute-example"></a> For example, the following annotation and JavaScript code: 
 <pre class="highlight"><c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <c- g>HTMLScriptElement</c-> {
@@ -2308,7 +2309,7 @@ Additionally, it must not appear on <a data-link-type="dfn" href="https://heycam
 <pre class="highlight">document<c- p>.</c->createElement<c- p>(</c-><c- t>'script'</c-><c- p>).</c->src <c- o>=</c-> foo<c- p>;</c->
 document<c- p>.</c->createElement<c- p>(</c-><c- t>'script'</c-><c- p>).</c->setAttribute<c- p>(</c-><c- t>'SrC'</c-><c- p>,</c-> foo<c- p>);</c->
 </pre>
-        <p>causes the <var>sink</var> value to be <code>"HTMLScriptElement.src"</code>.</p>
+        <p>causes the <var>sink</var> value to be <code>"HTMLScriptElement src"</code>.</p>
        </div>
       <li data-md>
        <p>Set <var>value</var> to the result of running the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string">Get Trusted Type compliant string</a> algorithm, passing the following arguments:</p>
@@ -2322,7 +2323,7 @@ document<c- p>.</c->createElement<c- p>(</c-><c- t>'script'</c-><c- p>).</c->set
         <li data-md>
          <p><code>'script'</code> as <var>sinkGroup</var>,</p>
         <li data-md>
-         <p><a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object⑦">context object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global②">relevant global object</a> as <var>global</var>.</p>
+         <p><a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object⑥">context object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global②">relevant global object</a> as <var>global</var>.</p>
        </ul>
        <p class="issue" id="issue-adaa63a4"><a class="self-link" href="#issue-adaa63a4"></a> Remove hardcoding 'script' when new sink groups are specified.</p>
       <li data-md>
@@ -2335,11 +2336,11 @@ document<c- p>.</c->createElement<c- p>(</c-><c- t>'script'</c-><c- p>).</c->set
    <p>When the extended attribute appears on an <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-operation" id="ref-for-dfn-operation①">operation</a> argument, before its operation is invoked, run the following steps:</p>
    <ol>
     <li data-md>
-     <p>If <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object⑧">context object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global③">relevant global object</a> has a <a data-link-type="dfn" href="#window-trusted-type-policy-factory" id="ref-for-window-trusted-type-policy-factory①">trusted type policy factory</a>:</p>
+     <p>If <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object⑦">context object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global③">relevant global object</a> has a <a data-link-type="dfn" href="#window-trusted-type-policy-factory" id="ref-for-window-trusted-type-policy-factory①">trusted type policy factory</a>:</p>
      <p class="issue" id="issue-b92c7a17①"><a class="self-link" href="#issue-b92c7a17①"></a> Update when workers have TT.</p>
      <ol>
       <li data-md>
-       <p>Set <var>sink</var> to the result of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-concatenate" id="ref-for-string-concatenate①">concatenating</a> the list « <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object⑨">context object</a>'s constructor name, <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-operation" id="ref-for-dfn-operation②">operation</a> identifier. » with <code>"."</code> as <var>separator</var>.</p>
+       <p>Set <var>sink</var> to the result of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-concatenate" id="ref-for-string-concatenate①">concatenating</a> the list « <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this①">this</a> IDL value’s <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-identifier" id="ref-for-dfn-identifier①">identifier</a>, <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-operation" id="ref-for-dfn-operation②">operation</a> identifier. » with <code>" "</code> as <var>separator</var>.</p>
        <div class="example" id="extended-attribute-operation-example">
         <a class="self-link" href="#extended-attribute-operation-example"></a> For example, the following annotation and JavaScript code: 
 <pre class="highlight"><c- b>partial</c-> <c- b>interface</c-> <c- g>Element</c-> {
@@ -2348,7 +2349,7 @@ document<c- p>.</c->createElement<c- p>(</c-><c- t>'script'</c-><c- p>).</c->set
 </pre>
 <pre class="highlight">document<c- p>.</c->createElement<c- p>(</c-><c- t>'a'</c-><c- p>).</c->insertAdjacentHTML<c- p>(</c-><c- t>'beforebegin'</c-><c- p>,</c-> foo<c- p>);</c->
 </pre>
-        <p>causes the <var>sink</var> value to be <code>"a.insertAdjacentHTML"</code>.</p>
+        <p>causes the <var>sink</var> value to be <code>"Element insertAdjacentHTML"</code>.</p>
        </div>
       <li data-md>
        <p>Set the new argument value to the result of running the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string①">Get Trusted Type compliant string</a> algorithm, passing the following arguments:</p>
@@ -2362,7 +2363,7 @@ document<c- p>.</c->createElement<c- p>(</c-><c- t>'script'</c-><c- p>).</c->set
         <li data-md>
          <p><code>'script'</code> as <var>sinkGroup</var>,</p>
         <li data-md>
-         <p><a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object①⓪">context object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global④">relevant global object</a> as <var>global</var>.</p>
+         <p><a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object⑧">context object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global④">relevant global object</a> as <var>global</var>.</p>
        </ul>
        <p class="issue" id="issue-672bcf0f"><a class="self-link" href="#issue-672bcf0f"></a> Remove hardcoding 'script' when new sink types are specified.</p>
       <li data-md>
@@ -2526,7 +2527,7 @@ set <var>script</var>’s <code class="idl"><a data-link-type="idl">[[ScriptURL]
       <li data-md>
        <p><var>script</var>’s <code class="idl"><a data-link-type="idl">src</a></code> attribute value as <var>input</var>,</p>
       <li data-md>
-       <p><code>script.src</code> as <var>sink</var>,</p>
+       <p><code>HTMLScriptElement src</code> as <var>sink</var>,</p>
       <li data-md>
        <p><code>'script'</code> as <var>sinkGroup</var>.</p>
      </ul>
@@ -2542,7 +2543,7 @@ set <var>script</var>’s <code class="idl"><a data-link-type="idl">[[ScriptText
       <li data-md>
        <p><var>script</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-child-text-content" id="ref-for-concept-child-text-content①">child text content</a> attribute value,</p>
       <li data-md>
-       <p><code>script.text</code> as <var>sink</var>,</p>
+       <p><code>HTMLScriptElement text</code> as <var>sink</var>,</p>
       <li data-md>
        <p><code>'script'</code> as <var>sinkGroup</var>.</p>
      </ul>
@@ -2940,7 +2941,7 @@ add this step between 7.1 and 7.2:</p>
 the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string⑤">Get Trusted Type compliant string</a> algorithm, with</p>
      <ul>
       <li data-md>
-       <p><var>global</var> set to the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object①①">context object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global⑦">relevant global object</a>.</p>
+       <p><var>global</var> set to the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#context-object" id="ref-for-context-object⑨">context object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global⑦">relevant global object</a>.</p>
       <li data-md>
        <p><var>input</var> set to the first method argument, and</p>
       <li data-md>
@@ -2993,6 +2994,7 @@ img<c- p>.</c->setAttribute<c- p>(</c-><c- t>'onerror'</c-><c- p>,</c-> <c- t>'a
  [<a class="idl-code" data-link-type="extended-attribute" href="#extendedattrdef-trustedtypes" id="ref-for-extendedattrdef-trustedtypes②⓪"><c- g>TrustedTypes</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl①①"><c- n>TrustedScriptURL</c-></a>] <c- b>readonly</c-> <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring" id="ref-for-typedefdef-scripturlstring③"><c- n>ScriptURLString</c-></a> <dfn class="idl-code" data-dfn-for="SVGScriptElement" data-dfn-type="attribute" data-export data-readonly data-type="ScriptURLString" id="dom-svgscriptelement-href"><code><c- g>href</c-></code><a class="self-link" href="#dom-svgscriptelement-href"></a></dfn>;
 };
 </pre>
+   <p class="issue" id="issue-41de95e8"><a class="self-link" href="#issue-41de95e8"></a> Check the text of the script when preparing it, like with HTML scripts.</p>
    <h3 class="heading settled" data-level="4.3" id="integration-with-dom"><span class="secno">4.3. </span><span class="content">Integration with DOM</span><a class="self-link" href="#integration-with-dom"></a></h3>
    <p>This document modifies the <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#element" id="ref-for-element④">Element</a></code> interface, adding <a data-link-type="dfn" href="#concept-element-attributes-validation-ext" id="ref-for-concept-element-attributes-validation-ext">attribute validation steps</a>:</p>
    <p>
@@ -3163,7 +3165,7 @@ for a value <var>sinkGroup</var>, skip to the next <var>policy</var>.</p>
       <li data-md>
        <p>Let <var>trimmedSource</var> be the substring of <var>source</var>, containing its first 40 characters.</p>
       <li data-md>
-       <p>Set <var>violation</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation-sample" id="ref-for-violation-sample">sample</a> to be the result of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-concatenate" id="ref-for-string-concatenate③">concatenating</a> the list « <var>sink</var>, <var>trimmedSource</var> « using space (<code>"\x20"</code>) as a <var>separator</var>.</p>
+       <p>Set <var>violation</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation-sample" id="ref-for-violation-sample">sample</a> to be the result of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-concatenate" id="ref-for-string-concatenate③">concatenating</a> the list « <var>sink</var>, <var>trimmedSource</var> « using <code>"|"</code> as a <var>separator</var>.</p>
       <li data-md>
        <p>Execute <a href="https://www.w3.org/TR/CSP3/#report-violation">Report a violation</a> on <var>violation</var>.</p>
       <li data-md>
@@ -3604,8 +3606,8 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <ul>
     <li><a href="#ref-for-context-object">2.3.1. TrustedTypePolicyFactory</a> <a href="#ref-for-context-object①">(2)</a>
     <li><a href="#ref-for-context-object②">2.3.2. TrustedTypePolicy</a> <a href="#ref-for-context-object③">(2)</a> <a href="#ref-for-context-object④">(3)</a>
-    <li><a href="#ref-for-context-object⑤">2.4.2. TrustedTypes extended attribute</a> <a href="#ref-for-context-object⑥">(2)</a> <a href="#ref-for-context-object⑦">(3)</a> <a href="#ref-for-context-object⑧">(4)</a> <a href="#ref-for-context-object⑨">(5)</a> <a href="#ref-for-context-object①⓪">(6)</a>
-    <li><a href="#ref-for-context-object①①">4.1.5. Enforcement in timer functions</a>
+    <li><a href="#ref-for-context-object⑤">2.4.2. TrustedTypes extended attribute</a> <a href="#ref-for-context-object⑥">(2)</a> <a href="#ref-for-context-object⑦">(3)</a> <a href="#ref-for-context-object⑧">(4)</a>
+    <li><a href="#ref-for-context-object⑨">4.1.5. Enforcement in timer functions</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-attribute-element">
@@ -3948,6 +3950,12 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
     <li><a href="#ref-for-dfn-extended-attribute">2.4.2. TrustedTypes extended attribute</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-dfn-identifier">
+   <a href="https://heycam.github.io/webidl/#dfn-identifier">https://heycam.github.io/webidl/#dfn-identifier</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dfn-identifier">2.4.2. TrustedTypes extended attribute</a> <a href="#ref-for-dfn-identifier①">(2)</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-include">
    <a href="https://heycam.github.io/webidl/#include">https://heycam.github.io/webidl/#include</a><b>Referenced in:</b>
    <ul>
@@ -3982,6 +3990,12 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <a href="https://heycam.github.io/webidl/#dfn-xattr-identifier">https://heycam.github.io/webidl/#dfn-xattr-identifier</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dfn-xattr-identifier">2.4.2. TrustedTypes extended attribute</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-this">
+   <a href="https://heycam.github.io/webidl/#this">https://heycam.github.io/webidl/#this</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-this">2.4.2. TrustedTypes extended attribute</a> <a href="#ref-for-this①">(2)</a>
    </ul>
   </aside>
   <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
@@ -4077,12 +4091,14 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
      <li><span class="dfn-paneled" id="term-for-dfn-attribute" style="color:initial">attribute</span>
      <li><span class="dfn-paneled" id="term-for-idl-boolean" style="color:initial">boolean</span>
      <li><span class="dfn-paneled" id="term-for-dfn-extended-attribute" style="color:initial">extended attribute</span>
+     <li><span class="dfn-paneled" id="term-for-dfn-identifier" style="color:initial">identifier</span>
      <li><span class="dfn-paneled" id="term-for-include" style="color:initial">include</span>
      <li><span class="dfn-paneled" id="term-for-interface-mixin" style="color:initial">interface mixin</span>
      <li><span class="dfn-paneled" id="term-for-idl-long" style="color:initial">long</span>
      <li><span class="dfn-paneled" id="term-for-dfn-operation" style="color:initial">operation</span>
      <li><span class="dfn-paneled" id="term-for-dfn-read-only" style="color:initial">read only</span>
      <li><span class="dfn-paneled" id="term-for-dfn-xattr-identifier" style="color:initial">takes an identifier</span>
+     <li><span class="dfn-paneled" id="term-for-this" style="color:initial">this</span>
     </ul>
   </ul>
   <h2 class="no-num no-ref heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
@@ -4239,6 +4255,7 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
 </pre>
   <h2 class="no-num no-ref heading settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
   <div style="counter-reset:issue">
+   <div class="issue"> Rewrite to mirror https://github.com/heycam/webidl/pull/841.<a href="#issue-98ce703e"> ↵ </a></div>
    <div class="issue"> Update when workers have TT.<a href="#issue-b92c7a17"> ↵ </a></div>
    <div class="issue"> Remove hardcoding 'script' when new sink groups are specified.<a href="#issue-adaa63a4"> ↵ </a></div>
    <div class="issue"> Update when workers have TT.<a href="#issue-b92c7a17①"> ↵ </a></div>
@@ -4252,6 +4269,7 @@ This already caused problems in the polyfill. <a href="https://github.com/w3c/we
    <div class="issue"> Remove the note when the API in Chrome is shipped.<a href="#issue-3d9ee9e6"> ↵ </a></div>
    <div class="issue"> Figure out what to do with script.setAttribute('src'). See <a href="https://github.com/whatwg/dom/issues/789">DOM#789</a>.<a href="#issue-62c0f2c6"> ↵ </a></div>
    <div class="issue"> Add base.href enforcement.<a href="#issue-13577559"> ↵ </a></div>
+   <div class="issue"> Check the text of the script when preparing it, like with HTML scripts.<a href="#issue-41de95e8"> ↵ </a></div>
    <div class="issue"> Remove when <a href="https://github.com/whatwg/dom/pull/809">DOM #809</a> is merged.<a href="#issue-52c8f9b0"> ↵ </a></div>
    <div class="issue"> This depends on a solution to <a href="https://github.com/w3c/webappsec-trusted-types/issues/144">issue #144</a> like <a href="https://github.com/tc39-transfer/dynamic-code-brand-checks#problem-host-callout-does-not-receive-type-information">TC39 HostBeforeCompile</a><a href="#issue-e28ea232"> ↵ </a></div>
    <div class="issue"> In some cases, the violation "<code>'report-sample'</code>" contain the result of
