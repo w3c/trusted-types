@@ -25,6 +25,8 @@ urlPrefix: https://html.spec.whatwg.org/multipage/common-dom-interfaces.html; ty
     text: reflect
 url: https://www.w3.org/TR/DOM-Parsing/#h-the-domparser-interface; type: enum; spec: DOM-Parsing
     text: SupportedType
+url: https://heycam.github.io/webidl/#this; type: dfn; spec: WebIDL
+    text: this
 </pre>
 
 <pre class="link-defaults">
@@ -818,6 +820,8 @@ algorithms in other specifications, see [[#integrations]].
 
 ### TrustedTypes extended attribute ### {#!trustedtypes-extended-attribute}
 
+Issue: Rewrite to mirror https://github.com/heycam/webidl/pull/841.
+
 Note: This section describes the implementation details of the Trusted Types mechanism. IDL extended attributes are not exposed to the JavasScript code.
 
 To annotate the [=injection sink=] functions that require Trusted Types, we introduce
@@ -835,7 +839,7 @@ When the extended attribute appears on an attribute, the setter for that attribu
  1. If [=context object=]'s [=relevant global object=] has a [=Window/trusted type policy factory=]:
 
     Issue: Update when workers have TT.
-    1. Set |sink| to the result of [=concatenating=] the list &laquo; [=context object=]'s constructor name, [=attribute=] identifier. &raquo; with `"."` as |separator|.
+    1. Set |sink| to the result of [=concatenating=] the list &laquo; <a spec=webidl>this</a> IDL value's <a spec=webidl>identifier</a>, [=attribute=] identifier. &raquo; with `" "` as |separator|.
         <div class="example" id="extended-attribute-attribute-example">
         For example, the following annotation and JavaScript code:
         <pre highlight=idl>
@@ -847,7 +851,7 @@ When the extended attribute appears on an attribute, the setter for that attribu
         document.createElement('script').src = foo;
         document.createElement('script').setAttribute('SrC', foo);
         </pre>
-        causes the |sink| value to be `"HTMLScriptElement.src"`.
+        causes the |sink| value to be `"HTMLScriptElement src"`.
         </div>
     1. Set |value| to the result of running the [$Get Trusted Type compliant string$] algorithm, passing the following arguments:
         * the new value as |input|,
@@ -868,7 +872,7 @@ When the extended attribute appears on an [=operation=] argument, before its ope
  1. If [=context object=]'s [=relevant global object=] has a [=Window/trusted type policy factory=]:
 
     Issue: Update when workers have TT.
-    1. Set |sink| to the result of [=concatenating=] the list &laquo; [=context object=]'s constructor name, [=operation=] identifier. &raquo; with `"."` as |separator|.
+    1. Set |sink| to the result of [=concatenating=] the list &laquo; <a spec=webidl>this</a> IDL value's <a spec=webidl>identifier</a>, [=operation=] identifier. &raquo; with `" "` as |separator|.
         <div class="example" id="extended-attribute-operation-example">
         For example, the following annotation and JavaScript code:
         <pre highlight=idl>
@@ -879,7 +883,7 @@ When the extended attribute appears on an [=operation=] argument, before its ope
         <pre highlight=js>
         document.createElement('a').insertAdjacentHTML('beforebegin', foo);
         </pre>
-        causes the |sink| value to be `"a.insertAdjacentHTML"`.
+        causes the |sink| value to be `"Element insertAdjacentHTML"`.
         </div>
     1. Set the new argument value to the result of running the [$Get Trusted Type compliant string$] algorithm, passing the following arguments:
         * the argument value as |input|,
@@ -1027,7 +1031,7 @@ Given a {{script}} (|script|), this algorithm performs the following steps:
       * {{TrustedScriptURL}} as |expectedType|,
       * |script|'s {{Document}}'s [=relevant global object=] as |global|,
       * |script|'s {{script/src}} attribute value as |input|,
-      * `script.src` as |sink|,
+      * `HTMLScriptElement src` as |sink|,
       * `'script'` as |sinkGroup|.
 
     If the algorithm threw an error, rethrow the error and abort further steps.
@@ -1037,7 +1041,7 @@ Given a {{script}} (|script|), this algorithm performs the following steps:
       * {{TrustedScriptURL}} as |expectedType|,
       * |script|'s {{Document}}'s [=relevant global object=] as |global|,
       * |script|'s [=child text content=] attribute value,
-      * `script.text` as |sink|,
+      * `HTMLScriptElement text` as |sink|,
       * `'script'` as |sinkGroup|.
 
     If the algorithm threw an error, rethrow the error.
@@ -1527,6 +1531,8 @@ partial interface mixin SVGScriptElement : SVGElement {
 };
 </pre>
 
+Issue: Check the text of the script when preparing it, like with HTML scripts.
+
 ## Integration with DOM ## {#integration-with-dom}
 
 This document modifies the {{Element}} interface, adding <a>attribute validation steps</a>:
@@ -1721,7 +1727,7 @@ returns `"Blocked"` if the [=injection sink=] requires a [=Trusted Type=], and
         on |global|, |policy| and `"require-trusted-types-for"`
     1. Set |violation|'s [=violation/resource=] to `"trusted-types-sink"`.
     1. Let |trimmedSource| be the substring of |source|, containing its first 40 characters.
-    1. Set |violation|'s [=violation/sample=] to be the result of [=concatenating=] the list &laquo; |sink|, |trimmedSource| &laquo; using space (`"\x20"`) as a |separator|.
+    1. Set |violation|'s [=violation/sample=] to be the result of [=concatenating=] the list &laquo; |sink|, |trimmedSource| &laquo; using `"|"` as a |separator|.
     1.  Execute [[CSP#report-violation|Report a violation]] on |violation|.
     1.  If |policy|'s [=policy/disposition=] is `"enforce"`, then set |result| to
         `"Blocked"`.
