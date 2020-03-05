@@ -45,7 +45,6 @@ function setupPolyfill() {
     'isScriptURL': tt.isScriptURL,
     'isScript': tt.isScript,
     'createPolicy': tt.createPolicy,
-    'getPolicyNames': tt.getPolicyNames,
     'getAttributeType': tt.getAttributeType,
     'getPropertyType': tt.getPropertyType,
     'getTypeMapping': tt.getTypeMapping,

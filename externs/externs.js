@@ -63,12 +63,6 @@ var TrustedTypePolicyFactory = function() {};
 TrustedTypePolicyFactory.prototype.createPolicy = function(name, policy){};
 
 /**
- * Returns all defined policy names.
- * @return {!Array<string>}
- */
-TrustedTypePolicyFactory.prototype.getPolicyNames = function(){};
-
-/**
  * A reference to a default policy, if it was created, null otherwise.
  * @type {?TrustedTypePolicy}
  */

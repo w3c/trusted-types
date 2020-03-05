@@ -107,15 +107,6 @@ describe('TrustedTypes', () => {
     });
   });
 
-  describe('getPolicyNames', () => {
-    it('returns all policy names', () => {
-      TrustedTypes.createPolicy('first', {});
-      TrustedTypes.createPolicy('second', {});
-
-      expect(TrustedTypes.getPolicyNames()).toEqual(['first', 'second']);
-    });
-  });
-
   describe('trusted type constructors', () => {
     it('cannot be used directly', () => {
       const name = 'known';
@@ -569,17 +560,6 @@ describe('TrustedTypes', () => {
       expect(() => {
         TrustedTypes.createPolicy('default', {});
       }).not.toThrow();
-    });
-
-    it('removes the default policy from policy names', () => {
-      TrustedTypes.createPolicy('a', {});
-
-      expect(TrustedTypes.getPolicyNames()).toContain('default');
-      expect(TrustedTypes.getPolicyNames()).toContain('a');
-      resetDefaultPolicy();
-
-      expect(TrustedTypes.getPolicyNames()).not.toContain('default');
-      expect(TrustedTypes.getPolicyNames()).toContain('a');
     });
   });
 
