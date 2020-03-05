@@ -555,18 +555,6 @@ export const trustedTypesBuilderTestOnly = function() {
   }
 
   /**
-   * Returns all configured policy names (even for non-exposed policies).
-   * @return {!Array<string>}
-   */
-  function getPolicyNames() {
-    // TODO(msamuel): Should we sort policyNames to avoid leaking or
-    // encouraging dependency on the order in which policy names are
-    // registered?  I think JavaScript builtin sorts are efficient for
-    // almost-sorted lists so the amortized cost is close to O(n).
-    return policyNames.slice();
-  }
-
-  /**
    * Creates a TT policy.
    *
    * Returns a frozen object representing a policy - a collection of functions
@@ -668,8 +656,6 @@ export const trustedTypesBuilderTestOnly = function() {
   assign(api, {
     // The main function to create policies.
     createPolicy,
-
-    getPolicyNames,
 
     // Type checkers, also validating the object was initialized through a
     // policy.
