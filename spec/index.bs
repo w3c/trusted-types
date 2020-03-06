@@ -1886,6 +1886,21 @@ restrictions:
 
 * <a href="https://w3c.github.io/webcomponents/spec/imports/">HTML imports</a>
 
+## Plugin navigation ## {#plugins}
+
+Plugin content may have access to the document that embeds it (or; more broadly,
+to the origin it was served from), often giving it the same capabilities
+as DOM XSS. That's why Trusted Types limit {{HTMLObjectElement.src}} to
+{{TrustedScriptURL}}.
+
+However, it is also possible to navigate an existing object / embed to an
+arbitrary location, bypassing the {{TrustedScriptURL}} restriction.
+
+Since plugin content in the web in general is being phased out for other
+security reasons, and their navigation model is in flux, we recommend authors
+to prevent that bypass vector by limiting the plugins altogether with
+[=object-src=]. For example: `Content-Security-Policy: object-src: none`.
+
 ## Best practices for policy design ## {#best-practices-for-policy-design}
 
 Trusted Types limit the scope of the code that can introduce
