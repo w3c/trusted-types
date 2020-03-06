@@ -1889,7 +1889,7 @@ restrictions:
 ## Plugin navigation ## {#plugins}
 
 Plugin content may have access to the document that embeds it (or; more broadly,
-to the origin it was served from), giving it  some times the same capabilities
+to the origin it was served from), often giving it the same capabilities
 as DOM XSS. That's why Trusted Types limit {{HTMLObjectElement.src}} to
 {{TrustedScriptURL}}.
 
@@ -1898,7 +1898,7 @@ arbitrary location, bypassing the {{TrustedScriptURL}} restriction.
 
 Since plugin content in the web in general is being phased out for other
 security reasons, and their navigation model is in flux, we recommend authors
-to prevent that bypass vectors by limiting the plugins altogether with
+to prevent that bypass vector by limiting the plugins altogether with
 [=object-src=]. For example: `Content-Security-Policy: object-src: none`.
 
 ## Best practices for policy design ## {#best-practices-for-policy-design}

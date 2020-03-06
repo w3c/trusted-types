@@ -1214,7 +1214,7 @@ Possible extra rowspan handling
 </style>
   <meta content="Bikeshed version 53d2305928d30790ebcc3b8ea611fb0709647013" name="generator">
   <link href="https://w3c.github.io/webappsec-trusted-types/dist/spec/" rel="canonical">
-  <meta content="bcd3c1bbeeb57bfac728d65b543133719f167125" name="document-revision">
+  <meta content="4ef7905f726449562b10edda414903fa301b0e3c" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -3341,13 +3341,13 @@ restrictions:</p>
    </ul>
    <h3 class="heading settled" data-level="5.3" id="plugins"><span class="secno">5.3. </span><span class="content">Plugin navigation</span><a class="self-link" href="#plugins"></a></h3>
    <p>Plugin content may have access to the document that embeds it (or; more broadly,
-to the origin it was served from), giving it  some times the same capabilities
+to the origin it was served from), often giving it the same capabilities
 as DOM XSS. That’s why Trusted Types limit <code class="idl"><a data-link-type="idl">HTMLObjectElement.src</a></code> to <code class="idl"><a data-link-type="idl" href="#trustedscripturl" id="ref-for-trustedscripturl①②">TrustedScriptURL</a></code>.</p>
    <p>However, it is also possible to navigate an existing object / embed to an
 arbitrary location, bypassing the <code class="idl"><a data-link-type="idl" href="#trustedscripturl" id="ref-for-trustedscripturl①③">TrustedScriptURL</a></code> restriction.</p>
    <p>Since plugin content in the web in general is being phased out for other
 security reasons, and their navigation model is in flux, we recommend authors
-to prevent that bypass vectors by limiting the plugins altogether with <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#object-src" id="ref-for-object-src">object-src</a>. For example: <code>Content-Security-Policy: object-src: none</code>.</p>
+to prevent that bypass vector by limiting the plugins altogether with <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#object-src" id="ref-for-object-src">object-src</a>. For example: <code>Content-Security-Policy: object-src: none</code>.</p>
    <h3 class="heading settled" data-level="5.4" id="best-practices-for-policy-design"><span class="secno">5.4. </span><span class="content">Best practices for policy design</span><a class="self-link" href="#best-practices-for-policy-design"></a></h3>
    <p>Trusted Types limit the scope of the code that can introduce
 vulnerabilities via <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②⑦">injection sinks</a> to the implementation of <a data-link-type="dfn" href="#policies" id="ref-for-policies⑥">policies</a>.
