@@ -256,7 +256,7 @@ wrappers around a string, constructed via a {{TrustedTypePolicy}}'s
 {{TrustedTypePolicy/createHTML(input)|createHTML}} method.
 
 <pre class="idl">
-[Exposed=Window]
+[Exposed=Window, SecureContext]
 interface TrustedHTML {
   stringifier;
 };
@@ -279,7 +279,7 @@ around a string, constructed via a {{TrustedTypePolicy}}'s
 {{TrustedTypePolicy/createScript(input)|createScript}} method.
 
 <pre class="idl">
-[Exposed=Window]
+[Exposed=Window, SecureContext]
 interface TrustedScript {
   stringifier;
 };
@@ -303,7 +303,7 @@ string, constructed via a {{TrustedTypePolicy}}'s
 {{TrustedTypePolicy/createScriptURL(input)|createScriptURL}} method.
 
 <pre class="idl">
-[Exposed=Window]
+[Exposed=Window, SecureContext]
 interface TrustedScriptURL {
   stringifier;
 };
@@ -424,7 +424,7 @@ Note: This factory object is exposed to JavaScript through `window.trustedTypes`
 reference - see [[#extensions-to-the-window-interface]].
 
 <pre class="idl">
-[Exposed=Window] interface TrustedTypePolicyFactory {
+[Exposed=Window, SecureContext] interface TrustedTypePolicyFactory {
     TrustedTypePolicy createPolicy(
         DOMString policyName, optional TrustedTypePolicyOptions policyOptions);
     boolean isHTML(any value);
@@ -638,7 +638,7 @@ Each of the `create*` functions converts a string value to a given Trusted Type 
 throws a TypeError if a conversion of a given value is disallowed.
 
 <pre class="idl">
-[Exposed=Window]
+[Exposed=Window, SecureContext]
 interface TrustedTypePolicy {
   readonly attribute DOMString name;
   TrustedHTML createHTML(DOMString input, any... arguments);
@@ -1063,7 +1063,7 @@ This document extends the {{Window}} interface defined by [[HTML5|HTML]]:
 
 <pre class="idl">
 partial interface mixin Window {
-  readonly attribute TrustedTypePolicyFactory trustedTypes;
+  [SecureContext] readonly attribute TrustedTypePolicyFactory trustedTypes;
 };
 </pre>
 
