@@ -573,7 +573,8 @@ export const trustedTypesBuilderTestOnly = function() {
       throw new TypeError('Policy ' + pName + ' contains invalid characters.');
     }
 
-    if (enforceNameRestrictions && allowedNames.indexOf(pName) === -1) {
+    if (enforceNameRestrictions && allowedNames.indexOf(pName) === -1 &&
+        allowedNames.indexOf('*') === -1) {
       throw new TypeError('Policy ' + pName + ' disallowed.');
     }
 

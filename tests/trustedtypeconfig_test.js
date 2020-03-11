@@ -88,12 +88,20 @@ describe('TrustedTypeConfig', () => {
           .allowDuplicates).toEqual(false);
     });
 
-    it('supports \'allow-duplicates\' keyword', () => {
+    it('supports \'allow-duplicates\' keyword with a whitelist', () => {
       const config = TrustedTypeConfig.fromCSP(
           'trusted-types a b \'allow-duplicates\' c');
 
       expect(config.allowDuplicates).toEqual(true);
       expect(config.allowedPolicyNames).toEqual(['a', 'b', 'c']);
+    });
+
+    it('supports \'allow-duplicates\' keyword with wildcard', () => {
+      const config = TrustedTypeConfig.fromCSP(
+          'trusted-types \'allow-duplicates\' *');
+
+      expect(config.allowDuplicates).toEqual(true);
+      expect(config.allowedPolicyNames).toEqual(['*']);
     });
 
     it('ignores quoted keywords when extracting policy names', () => {
