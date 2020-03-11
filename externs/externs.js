@@ -22,13 +22,6 @@ var TrustedTypesInnerPolicy = {
   createHTML(s){},
 
   /**
-   * Function defining rules for creating a TrustedURL object.
-   * @param  {string} s The input string.
-   * @return {string} String that will be wrapped in a TrustedURL object.
-   */
-  createURL(s){},
-
-  /**
    * Function defining rules for creating a TrustedScriptURL object.
    * @param  {string} s The input string.
    * @return {string} String that will be wrapped in a TrustedScriptURL object.
@@ -120,13 +113,6 @@ TrustedTypePolicyFactory.prototype.getTypeMapping = function(namespaceUri = ''){
 TrustedTypePolicyFactory.prototype.isHTML = function(value){};
 
 /**
- * Returns true if the value is TrustedURL created by Trusted Types policy.
- * @param  {*} value A value to be checked.
- * @return {!boolean} true if the value is TrustedURL.
- */
-TrustedTypePolicyFactory.prototype.isURL = function(value){};
-
-/**
  * Returns true if the value is TrustedScriptURL created by Trusted Types policy.
  * @param  {*} value A value to be checked.
  * @return {!boolean} true if the value is TrustedScriptURL.
@@ -160,13 +146,6 @@ TrustedTypePolicyFactory.prototype.emptyScript;
 var TrustedHTML = function() {};
 
 /**
- * Object that represents a Trusted URL, safe to be inserted into DOM in
- * URL context.
- * @constructor
- */
-var TrustedURL = function() {};
-
-/**
  * Object that represents a Trusted Script URL, safe to be inserted into DOM as
  * a script URL.
  * @constructor
@@ -192,13 +171,6 @@ var TrustedTypePolicy = function() {};
  * @return {!TrustedHTML}
  */
 TrustedTypePolicy.prototype.createHTML = function(s) {};
-
-/**
- * Creates a TrustedURL object from a string.
- * @param  {string} s Input string
- * @return {!TrustedURL}
- */
-TrustedTypePolicy.prototype.createURL = function(s) {};
 
 /**
  * Creates a TrustedScriptURL object from a string.

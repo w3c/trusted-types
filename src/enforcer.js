@@ -55,11 +55,6 @@ const getConstructorName_ = document.createElement('div').constructor.name ?
     (fn) => fn.name :
     (fn) => ('' + fn).match(/^\[object (\S+)\]$/)[1];
 
-// window.open on IE 11 is set on WindowPrototype
-const windowOpenObject = getOwnPropertyDescriptor(window, 'open') ?
-  window :
-  window.constructor.prototype;
-
 // In IE 11, insertAdjacent(HTML|Text) is on HTMLElement prototype
 const insertAdjacentObject = apply(hasOwnProperty, Element.prototype,
     ['insertAdjacentHTML']) ? Element.prototype : HTMLElement.prototype;
@@ -92,7 +87,6 @@ const STRING_TO_TYPE = {
   'TrustedHTML': TrustedTypes.TrustedHTML,
   'TrustedScript': TrustedTypes.TrustedScript,
   'TrustedScriptURL': TrustedTypes.TrustedScriptURL,
-  'TrustedURL': TrustedTypes.TrustedURL,
 };
 
 /**
@@ -121,7 +115,6 @@ for (const tagName of Object.keys(typeMap)) {
  */
 const TYPE_CHECKER_MAP = {
   'TrustedHTML': TrustedTypes.isHTML,
-  'TrustedURL': TrustedTypes.isURL,
   'TrustedScriptURL': TrustedTypes.isScriptURL,
   'TrustedScript': TrustedTypes.isScript,
 };
@@ -132,7 +125,6 @@ const TYPE_CHECKER_MAP = {
  */
 const TYPE_PRODUCER_MAP = {
   'TrustedHTML': 'createHTML',
-  'TrustedURL': 'createURL',
   'TrustedScriptURL': 'createScriptURL',
   'TrustedScript': 'createScript',
 };
@@ -141,7 +133,6 @@ const TYPE_PRODUCER_MAP = {
 /**
  * @typedef {TrustedTypePolicy}
  * @property {function(string):TrustedHTML} createHTML
- * @property {function(string):TrustedURL} createURL
  * @property {function(string):TrustedScriptURL} createScriptURL
  * @property {function(string):TrustedScript} createScript
  */
@@ -205,18 +196,11 @@ export class TrustedTypesEnforcer {
       // Chrome
       this.wrapWithEnforceFunction_(Document.prototype, 'write',
           TrustedTypes.TrustedHTML, 0);
-      this.wrapWithEnforceFunction_(Document.prototype, 'open',
-          TrustedTypes.TrustedURL, 0);
     } else {
       // Firefox
       this.wrapWithEnforceFunction_(HTMLDocument.prototype, 'write',
           TrustedTypes.TrustedHTML, 0);
-      this.wrapWithEnforceFunction_(HTMLDocument.prototype, 'open',
-          TrustedTypes.TrustedURL, 0);
     }
-
-    this.wrapWithEnforceFunction_(windowOpenObject, 'open',
-        TrustedTypes.TrustedURL, 0);
 
     if ('DOMParser' in window) {
       this.wrapWithEnforceFunction_(DOMParser.prototype, 'parseFromString',
@@ -251,12 +235,9 @@ export class TrustedTypesEnforcer {
 
     if (getOwnPropertyDescriptor(Document.prototype, 'write')) {
       this.restoreFunction_(Document.prototype, 'write');
-      this.restoreFunction_(Document.prototype, 'open');
     } else {
       this.restoreFunction_(HTMLDocument.prototype, 'write');
-      this.restoreFunction_(HTMLDocument.prototype, 'open');
     }
-    this.restoreFunction_(windowOpenObject, 'open');
 
     if ('DOMParser' in window) {
       this.restoreFunction_(DOMParser.prototype, 'parseFromString');
@@ -856,8 +837,7 @@ export class TrustedTypesEnforcer {
     // Unconditionally dispatch an event.
     if (typeof SecurityPolicyViolationEvent == 'function') {
       let blockedURI = '';
-      if (typeToEnforce === TrustedTypes.TrustedURL ||
-          typeToEnforce === TrustedTypes.TrustedScriptURL) {
+      if (typeToEnforce === TrustedTypes.TrustedScriptURL) {
         blockedURI = parseUrl_(value) || '';
         if (blockedURI) {
           blockedURI = blockedURI.href;

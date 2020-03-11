@@ -22,7 +22,6 @@ describe('TrustedTypesEnforcer', function() {
   const noopPolicy = {
     createHTML: (s) => s,
     createScriptURL: (s) => s,
-    createURL: (s) => s,
     createScript: (s) => s,
   };
 
@@ -445,21 +444,21 @@ describe('TrustedTypesEnforcer', function() {
       });
 
       it('contains blocked URI when known', () => {
-        const el = document.createElement('a');
+        const el = document.createElement('script');
         document.body.appendChild(el);
 
         expect(function() {
-          el.href = 'foo';
+          el.src = 'foo';
         }).not.toThrow();
 
         expect(caughtEvent.blockedURI).toEqual(location.origin + '/foo');
         expect(function() {
-          el.href = 'http://example.com/bar';
+          el.src = 'http://example.com/bar';
         }).not.toThrow();
 
         expect(caughtEvent.blockedURI).toEqual('http://example.com/bar');
         expect(function() {
-          el.href = 'javascript:alert(1)';
+          el.src = 'javascript:alert(1)';
         }).not.toThrow();
 
         expect(caughtEvent.blockedURI).toEqual('javascript:alert(1)');
@@ -592,21 +591,21 @@ describe('TrustedTypesEnforcer', function() {
       });
 
       it('contains blocked URI when known', () => {
-        const el = document.createElement('a');
+        const el = document.createElement('script');
         document.body.appendChild(el);
 
         expect(function() {
-          el.href = 'foo';
+          el.src = 'foo';
         }).toThrow();
 
         expect(caughtEvent.blockedURI).toEqual(location.origin + '/foo');
         expect(function() {
-          el.href = 'http://example.com/bar';
+          el.src = 'http://example.com/bar';
         }).toThrow();
 
         expect(caughtEvent.blockedURI).toEqual('http://example.com/bar');
         expect(function() {
-          el.href = 'javascript:alert(1)';
+          el.src = 'javascript:alert(1)';
         }).toThrow();
 
         expect(caughtEvent.blockedURI).toEqual('javascript:alert(1)');
@@ -958,16 +957,6 @@ describe('TrustedTypesEnforcer', function() {
       expect(!el.srcdoc).toEqual(true);
     });
 
-    it('on a href', function() {
-      const el = document.createElement('a');
-
-      expect(function() {
-        el.href = TEST_URL;
-      }).toThrow();
-
-      expect(!el.srcdoc).toEqual(true);
-    });
-
     it('on object codebase', function() {
       const el = document.createElement('object');
 
@@ -1006,24 +995,14 @@ describe('TrustedTypesEnforcer', function() {
       expect(el.src).toEqual('');
     });
 
-    it('on input.formAction', function() {
-      const el = document.createElement('input');
+    it('on iframe.srcdoc via setAttribute', function() {
+      const el = document.createElement('iframe');
 
       expect(function() {
-        el.formAction = TEST_URL;
+        el.setAttribute('srcdoc', TEST_HTML);
       }).toThrow();
 
-      expect(el.formAction).not.toContain(TEST_URL);
-    });
-
-    it('on input.formAction via setAttribute', function() {
-      const el = document.createElement('input');
-
-      expect(function() {
-        el.setAttribute('formaction', TEST_URL);
-      }).toThrow();
-
-      expect(el.formAction).not.toContain(TEST_URL);
+      expect(el.srcdoc).not.toContain(TEST_HTML);
     });
 
     it('on inline event handlers via setAttribute', function() {
@@ -1080,7 +1059,7 @@ describe('TrustedTypesEnforcer', function() {
       const el = document.createElement('iframe');
 
       expect(function() {
-        el.setAttribute('src', TEST_URL);
+        el.setAttribute('srcdoc', TEST_HTML);
       }).toThrow();
 
       expect(el.src).toEqual('');
@@ -1090,68 +1069,22 @@ describe('TrustedTypesEnforcer', function() {
       const el = document.createElement('iframe');
 
       expect(function() {
-        el.setAttributeNS('http://www.w3.org/1999/xhtml', 'src', TEST_URL);
+        el.setAttributeNS('http://www.w3.org/1999/xhtml', 'srcdoc', TEST_HTML);
       }).toThrow();
 
       // Null on some browsers, but empty string on Edge.
-      expect(el.getAttributeNS('http://www.w3.org/1999/xhtml', 'src')).toBeFalsy();
+      expect(el.getAttributeNS('http://www.w3.org/1999/xhtml', 'srcdoc')).toBeFalsy();
     });
 
     it('on Element.prototype.setAttributeNS (empty ns)', function() {
       const el = document.createElement('iframe');
 
       expect(function() {
-        el.setAttributeNS('', 'src', TEST_URL);
+        el.setAttributeNS('', 'srcdoc', TEST_HTML);
       }).toThrow();
 
       // Null on some browsers, but empty string on Edge.
-      expect(el.getAttributeNS('http://www.w3.org/1999/xhtml', 'src')).toBeFalsy();
-    });
-
-    it('on svg:a xlink:href', function() {
-      // This works in FF & Chrome
-      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      const a = document.createElementNS('http://www.w3.org/2000/svg', 'a');
-      const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-
-      svg.appendChild(a);
-      a.appendChild(rect);
-
-      rect.setAttributeNS(null, 'height', 200);
-      rect.setAttributeNS(null, 'width', 300);
-
-      expect(function() {
-        a.setAttributeNS('http://www.w3.org/1999/xlink', 'href', 'javascript:alert(1)');
-      }).toThrow();
-    });
-
-    it('on svg:a href', function() {
-      // This works in FF & Chrome. xlink is deprecated.
-      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      const a = document.createElementNS('http://www.w3.org/2000/svg', 'a');
-      const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-
-      svg.appendChild(a);
-      a.appendChild(rect);
-
-      rect.setAttributeNS(null, 'height', 200);
-      rect.setAttributeNS(null, 'width', 300);
-
-      expect(function() {
-        a.setAttribute('href', 'javascript:alert(1)');
-      }).toThrow();
-
-      expect(function() {
-        a.setAttributeNS(null, 'href', 'javascript:alert(1)');
-      }).toThrow();
-
-      expect(function() {
-        a.setAttributeNS('http://foobar', 'href', 'javascript:alert(1)');
-      }).not.toThrow();
-
-      expect(function() {
-        a.setAttributeNS('http://www.w3.org/2000/svg', 'href', 'javascript:alert(1)');
-      }).toThrow();
+      expect(el.getAttributeNS('http://www.w3.org/1999/xhtml', 'srcdoc')).toBeFalsy();
     });
 
     it('on svg:a innerHTML', function() {
@@ -1175,17 +1108,6 @@ describe('TrustedTypesEnforcer', function() {
       expect(document.body.innerHTML).not.toContain('<foo>');
     });
 
-    it('on window.open', function() {
-      // I can't mock it under IE11 :(
-      let w = 'open_never_called';
-
-      expect(function() {
-        w = window.open('/');
-      }).toThrow();
-
-      expect(w).toEqual('open_never_called');
-    });
-
     it('on setTimeout', function(done) {
       setTimeout(function() {
         done();
@@ -1194,20 +1116,6 @@ describe('TrustedTypesEnforcer', function() {
       expect(function() {
         setTimeout('fail(\'should not execute\')', 100);
       }).toThrow();
-    });
-
-    it('on document.open', function() {
-      enforcer.uninstall();
-      const doc = 'open' in Document.prototype ? Document.prototype :
-          document.__proto__;
-      const mockOpen = spyOn(doc, 'open');
-      enforcer.install();
-
-      expect(function() {
-        document.open('/', 'foo', '');
-      }).toThrow();
-
-      expect(mockOpen).not.toHaveBeenCalled();
     });
 
     it('on DOMParser.parseFromString', function() {
@@ -1249,10 +1157,10 @@ describe('TrustedTypesEnforcer', function() {
       const el = document.createElement('iframe');
 
       expect(function() {
-        el.setAttribute('SrC', TEST_URL);
+        el.setAttribute('SrCdoc', TEST_HTML);
       }).toThrow();
 
-      expect(el.src).toEqual('');
+      expect(el.srcdoc).toEqual('');
     });
   });
 
@@ -1378,22 +1286,6 @@ describe('TrustedTypesEnforcer', function() {
       expect(el.src).toEqual(TEST_URL);
     });
 
-    it('on input.formAction', function() {
-      const el = document.createElement('input');
-
-      el.formAction = policy.createURL(TEST_URL);
-
-      expect(el.formAction).toEqual(TEST_URL);
-    });
-
-    it('on input.formAction via setAttribute', function() {
-      const el = document.createElement('input');
-
-      el.setAttribute('formaction', policy.createURL(TEST_URL));
-
-      expect(el.formAction).toEqual(TEST_URL);
-    });
-
     it('on inline event handlers via setAttribute', function() {
       const el = document.createElement('a');
       const alert = spyOn(window, 'alert');
@@ -1421,24 +1313,6 @@ describe('TrustedTypesEnforcer', function() {
       expect(el.innerText).toEqual('console.log(1)');
     });
 
-    it('on svg:a href', function() {
-      // This works in FF & Chrome. xlink is deprecated.
-      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      const a = document.createElementNS('http://www.w3.org/2000/svg', 'a');
-      const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-
-      svg.appendChild(a);
-      a.appendChild(rect);
-
-      rect.setAttributeNS(null, 'height', 200);
-      rect.setAttributeNS(null, 'width', 300);
-
-      a.setAttribute('href', policy.createURL(TEST_URL));
-      a.setAttributeNS(null, 'href', policy.createURL(TEST_URL));
-      a.setAttributeNS('http://foobar', 'href', policy.createURL(TEST_URL));
-      a.setAttributeNS('http://www.w3.org/2000/svg', 'href', policy.createURL(TEST_URL));
-    });
-
     it('on document.write', function() {
       enforcer.uninstall();
       const mockWrite = spyOn(document, 'write');
@@ -1447,19 +1321,6 @@ describe('TrustedTypesEnforcer', function() {
       document.write(html);
 
       expect(mockWrite).toHaveBeenCalledWith(html);
-    });
-
-    it('on window.open', function() {
-      enforcer.uninstall();
-      const mockOpen = spyOn(window, 'open');
-      enforcer.install();
-      const url = policy.createURL('/');
-
-      expect(function() {
-        window.open(url, 'foo', 'bar');
-      }).not.toThrow();
-
-      expect(mockOpen).toHaveBeenCalledWith(url, 'foo', 'bar');
     });
 
     it('on setTimeout', function(done) {
@@ -1534,26 +1395,9 @@ describe('TrustedTypesEnforcer', function() {
     it('on Element.prototype.setAttribute', function() {
       const el = document.createElement('iframe');
 
-      el.setAttribute('src', policy.createURL(TEST_URL));
+      el.setAttribute('srcdoc', policy.createHTML(TEST_HTML));
 
-      expect(el.src).toEqual(TEST_URL);
-    });
-
-    it('on Element.prototype.setAttributeNS', function() {
-      const el = document.createElement('img');
-
-      el.setAttributeNS('http://www.w3.org/1999/xhtml', 'src', policy.createURL(TEST_URL));
-
-      expect(el.getAttributeNS('http://www.w3.org/1999/xhtml', 'src')).toEqual(TEST_URL);
-      expect(el.getAttribute('src')).toEqual(TEST_URL);
-    });
-
-    it('on Element.prototype.setAttributeNS (xlink)', function() {
-      const a = document.createElementNS('http://www.w3.org/2000/svg', 'a');
-      a.setAttributeNS('http://www.w3.org/1999/xlink', 'href', policy.createURL(TEST_URL));
-
-      expect(a.getAttributeNS('http://www.w3.org/1999/xlink', 'href')).toEqual(TEST_URL);
-      expect(a.getAttribute('src')).toEqual(null);
+      expect(el.srcdoc).toEqual(TEST_HTML);
     });
 
     it('on object codebase', function() {
@@ -1733,7 +1577,7 @@ describe('TrustedTypesEnforcer', function() {
       const el = document.createElement('div');
 
       expect(() => {
-        el.innerHTML = policy.createURL(TEST_URL);
+        el.innerHTML = policy.createScript('foo');
       }).toThrow();
 
       expect(() => {
@@ -1747,7 +1591,7 @@ describe('TrustedTypesEnforcer', function() {
       const el = document.createElement('div');
 
       expect(() => {
-        el.insertAdjacentHTML('afterbegin', policy.createURL('bar'));
+        el.insertAdjacentHTML('afterbegin', policy.createScript('bar'));
       }).toThrow();
 
       expect(() => {
@@ -1765,7 +1609,7 @@ describe('TrustedTypesEnforcer', function() {
       }).toThrow();
 
       expect(() => {
-        el.src = policy.createURL(TEST_URL);
+        el.src = policy.createScript(TEST_URL);
       }).toThrow();
 
       expect(el.src).toEqual('');
@@ -1775,14 +1619,14 @@ describe('TrustedTypesEnforcer', function() {
       const el = document.createElement('iframe');
 
       expect(() => {
-        el.src = policy.createHTML(TEST_URL);
+        el.srcdoc = policy.createScript(TEST_URL);
       }).toThrow();
 
       expect(() => {
-        el.src = policy.createScript(TEST_URL);
+        el.srcdoc = policy.createScriptURL(TEST_URL);
       }).toThrow();
 
-      expect(el.src).toEqual('');
+      expect(el.srcdoc).toEqual('');
     });
 
     it('on HTMLElement innocuous attribute', function() {
@@ -1792,7 +1636,7 @@ describe('TrustedTypesEnforcer', function() {
 
       expect(el.title).toEqual(TEST_URL);
 
-      el.title = policy.createURL(TEST_HTML);
+      el.title = policy.createScript(TEST_HTML);
 
       expect(el.title).toEqual(TEST_HTML);
     });
