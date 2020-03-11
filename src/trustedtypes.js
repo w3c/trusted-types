@@ -20,13 +20,11 @@ const rejectInputDefaultPolicyFn = (s) => null;
 const {toLowerCase, toUpperCase} = String.prototype;
 
 export const HTML_NS = 'http://www.w3.org/1999/xhtml';
-export const XLINK_NS = 'http://www.w3.org/1999/xlink';
 export const SVG_NS = 'http://www.w3.org/2000/svg';
 
 /**
  * @constructor
  * @property {!function(string):TrustedHTML} createHTML
- * @property {!function(string):TrustedURL} createURL
  * @property {!function(string):TrustedScriptURL} createScriptURL
  * @property {!function(string):TrustedScript} createScript
  * @property {!string} name
@@ -46,7 +44,6 @@ export const TrustedTypePolicyFactory = function() {
 /**
  * @typedef {TrustedTypesInnerPolicy}
  * @property {function(string):string} createHTML
- * @property {function(string):string} createURL
  * @property {function(string):string} createScriptURL
  * @property {function(string):string} createScript
  */
@@ -205,14 +202,6 @@ export const trustedTypesBuilderTestOnly = function() {
   }
 
   /**
-   * Trusted URL object wrapping a string that can only be created from a
-   * TT policy.
-   */
-  class TrustedURL extends TrustedType {
-  }
-  lockdownTrustedType(TrustedURL, 'TrustedURL');
-
-  /**
    * Trusted Script URL object wrapping a string that can only be created from a
    * TT policy.
    */
@@ -253,50 +242,14 @@ export const trustedTypesBuilderTestOnly = function() {
   const TYPE_MAP = {
     [HTML_NS]: {
       // TODO(koto): Figure out what to to with <link>
-      'A': {
-        'attributes': {
-          'href': TrustedURL.name,
-        },
-      },
-      'AREA': {
-        'attributes': {
-          'href': TrustedURL.name,
-        },
-      },
-      'BASE': {
-        'attributes': {
-          'href': TrustedURL.name,
-        },
-      },
-      'BUTTON': {
-        'attributes': {
-          'formaction': TrustedURL.name,
-        },
-      },
       'EMBED': {
         'attributes': {
           'src': TrustedScriptURL.name,
         },
       },
-      'FORM': {
-        'attributes': {
-          'action': TrustedURL.name,
-        },
-      },
-      'FRAME': {
-        'attributes': {
-          'src': TrustedURL.name,
-        },
-      },
       'IFRAME': {
         'attributes': {
-          'src': TrustedURL.name,
           'srcdoc': TrustedHTML.name,
-        },
-      },
-      'INPUT': {
-        'attributes': {
-          'formaction': TrustedURL.name,
         },
       },
       'OBJECT': {
@@ -325,19 +278,9 @@ export const trustedTypesBuilderTestOnly = function() {
         },
       },
     },
-    [XLINK_NS]: {
-      '*': {
-        'attributes': {
-          'href': TrustedURL.name,
-        },
-        'properties': {},
-      },
-    },
     [SVG_NS]: {
       '*': {
-        'attributes': {
-          'href': TrustedURL.name,
-        },
+        'attributes': {},
         'properties': {},
       },
     },
@@ -381,7 +324,6 @@ export const trustedTypesBuilderTestOnly = function() {
   const createTypeMapping = {
     'createHTML': TrustedHTML,
     'createScriptURL': TrustedScriptURL,
-    'createURL': TrustedURL,
     'createScript': TrustedScript,
   };
 
@@ -661,7 +603,6 @@ export const trustedTypesBuilderTestOnly = function() {
     // Type checkers, also validating the object was initialized through a
     // policy.
     isHTML: isTrustedTypeChecker(TrustedHTML),
-    isURL: isTrustedTypeChecker(TrustedURL),
     isScriptURL: isTrustedTypeChecker(TrustedScriptURL),
     isScript: isTrustedTypeChecker(TrustedScript),
 
@@ -673,7 +614,6 @@ export const trustedTypesBuilderTestOnly = function() {
     defaultPolicy, // Just to make the compiler happy, this is overridden below.
 
     TrustedHTML: TrustedHTML,
-    TrustedURL: TrustedURL,
     TrustedScriptURL: TrustedScriptURL,
     TrustedScript: TrustedScript,
   });

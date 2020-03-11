@@ -41,7 +41,6 @@ function setupPolyfill() {
   const publicApi = Object.create(TrustedTypePolicyFactory.prototype);
   Object.assign(publicApi, {
     'isHTML': tt.isHTML,
-    'isURL': tt.isURL,
     'isScriptURL': tt.isScriptURL,
     'isScript': tt.isScript,
     'createPolicy': tt.createPolicy,
@@ -60,7 +59,6 @@ function setupPolyfill() {
   window[rootProperty] = Object.freeze(publicApi);
 
   window['TrustedHTML'] = tt.TrustedHTML;
-  window['TrustedURL'] = tt.TrustedURL;
   window['TrustedScriptURL'] = tt.TrustedScriptURL;
   window['TrustedScript'] = tt.TrustedScript;
   window['TrustedTypePolicy'] = TrustedTypePolicy;

@@ -29,7 +29,6 @@ describe('TrustedTypes', () => {
   const noopPolicy = {
     'createHTML': (s) => s,
     'createScriptURL': (s) => s,
-    'createURL': (s) => s,
     'createScript': (s) => s,
   };
 
@@ -42,7 +41,7 @@ describe('TrustedTypes', () => {
       const p = TrustedTypes.createPolicy('policy', {});
 
       expect(p.createHTML instanceof Function).toBe(true);
-      expect(p.createURL instanceof Function).toBe(true);
+      expect(p.createScript instanceof Function).toBe(true);
       expect(p.createScriptURL instanceof Function).toBe(true);
     });
 
@@ -145,14 +144,8 @@ describe('TrustedTypes', () => {
       expect(TrustedTypes.getAttributeType('script', 'src')).toEqual(
           'TrustedScriptURL');
 
-      expect(TrustedTypes.getAttributeType('input', 'formaction')).toEqual(
-          'TrustedURL');
-    });
-
-    it('supports xlink attributes', () => {
-      expect(TrustedTypes.getAttributeType(
-          'foo', 'href', '', 'http://www.w3.org/1999/xlink')).toEqual(
-          'TrustedURL');
+      expect(TrustedTypes.getAttributeType('object', 'data')).toEqual(
+          'TrustedScriptURL');
     });
 
     it('ignores attributes from unknown namespaces', () => {
@@ -164,16 +157,16 @@ describe('TrustedTypes', () => {
       expect(TrustedTypes.getAttributeType('SCRIPT', 'src')).toEqual(
           'TrustedScriptURL');
 
-      expect(TrustedTypes.getAttributeType('inPut', 'formaction')).toEqual(
-          'TrustedURL');
+      expect(TrustedTypes.getAttributeType('ObJECT', 'data')).toEqual(
+          'TrustedScriptURL');
     });
 
     it('is case insensitive for the attribute names', () => {
       expect(TrustedTypes.getAttributeType('script', 'SRC')).toEqual(
           'TrustedScriptURL');
 
-      expect(TrustedTypes.getAttributeType('input', 'formActioN')).toEqual(
-          'TrustedURL');
+      expect(TrustedTypes.getAttributeType('object', 'data')).toEqual(
+          'TrustedScriptURL');
     });
 
     it('supports the inline event handlers', () => {
@@ -196,16 +189,16 @@ describe('TrustedTypes', () => {
       expect(TrustedTypes.getPropertyType('script', 'src')).toEqual(
           'TrustedScriptURL');
 
-      expect(TrustedTypes.getPropertyType('input', 'formAction')).toEqual(
-          'TrustedURL');
+      expect(TrustedTypes.getPropertyType('object', 'data')).toEqual(
+          'TrustedScriptURL');
     });
 
     it('is case insensitive for tag names', () => {
       expect(TrustedTypes.getPropertyType('SCRIPT', 'src')).toEqual(
           'TrustedScriptURL');
 
-      expect(TrustedTypes.getPropertyType('INPut', 'formAction')).toEqual(
-          'TrustedURL');
+      expect(TrustedTypes.getPropertyType('ObjEct', 'data')).toEqual(
+          'TrustedScriptURL');
     });
 
     it('is case sensitive for property names', () => {
@@ -237,7 +230,7 @@ describe('TrustedTypes', () => {
 
       expect(map['SCRIPT'].attributes.src).toEqual('TrustedScriptURL');
 
-      expect(map['INPUT'].attributes.formaction).toEqual('TrustedURL');
+      expect(map['OBJECT'].attributes.data).toEqual('TrustedScriptURL');
     });
 
     it('returns a map that has a wildcard entry', () => {
@@ -336,7 +329,7 @@ describe('TrustedTypes', () => {
         const p = TrustedTypes.createPolicy('policy', {});
 
         expect(() => p.createHTML('foo')).toThrow();
-        expect(() => p.createURL('foo')).toThrow();
+        expect(() => p.createScript('foo')).toThrow();
         expect(() => p.createScriptURL('foo')).toThrow();
       });
 
@@ -367,7 +360,7 @@ describe('TrustedTypes', () => {
         });
 
         expect(() => p.createHTML('foo')).not.toThrow();
-        expect(() => p.createURL('foo')).toThrow();
+        expect(() => p.createScript('foo')).toThrow();
         expect(() => p.createScriptURL('foo')).toThrow();
       });
 
@@ -376,28 +369,23 @@ describe('TrustedTypes', () => {
         const p = TrustedTypes.createPolicy(name, noopPolicy);
 
         const html = p.createHTML('<foo>');
-        const url = p.createURL('http://a');
         const scriptURL = p.createScriptURL('http://b');
         const script = p.createScript('alert(1)');
 
         expect(TrustedTypes.isHTML(html)).toBe(true);
-        expect(TrustedTypes.isURL(url)).toBe(true);
         expect(TrustedTypes.isScriptURL(scriptURL)).toBe(true);
         expect(TrustedTypes.isScript(script)).toBe(true);
 
         // Do not rely on instanceof checks though...
         expect(html instanceof TrustedTypes.TrustedHTML).toBe(true);
-        expect(url instanceof TrustedTypes.TrustedURL).toBe(true);
         expect(scriptURL instanceof TrustedTypes.TrustedScriptURL).toBe(true);
         expect(script instanceof TrustedTypes.TrustedScript).toBe(true);
 
         expect('' + html).toEqual('<foo>');
-        expect('' + url).toEqual('http://a');
         expect('' + scriptURL).toEqual('http://b');
         expect('' + script).toEqual('alert(1)');
 
         expect(html.policyName).toEqual(name);
-        expect(url.policyName).toEqual(name);
         expect(scriptURL.policyName).toEqual(name);
         expect(script.policyName).toEqual(name);
       });
@@ -405,12 +393,14 @@ describe('TrustedTypes', () => {
       it('respect defined transformations', () => {
         const policyRules = {
           createHTML: (s) => 'createHTML:' + s,
-          createURL: (s) => 'createURL:' + s,
+          createScript: (s) => 'createScript:' + s,
           createScriptURL: (s) => 'createScriptURL:' + s,
         };
         const p = TrustedTypes.createPolicy('transform', policyRules);
 
-        expect('' + p.createURL('http://b')).toEqual('createURL:http://b');
+        expect('' + p.createScript('alert(1)')).
+            toEqual('createScript:alert(1)');
+
         expect('' + p.createScriptURL('http://a')).toEqual('createScriptURL:http://a');
         expect('' + p.createHTML('<foo>')).toEqual('createHTML:<foo>');
       });
@@ -451,7 +441,7 @@ describe('TrustedTypes', () => {
         // Prevent sanitizer that passes javascript:... from masquerading.
         expect(
             () => Object.setPrototypeOf(html,
-                TrustedTypes.TrustedURL.prototype))
+                TrustedTypes.TrustedScriptURL.prototype))
             .toThrow();
 
         // Proxy that traps get of toString.
@@ -468,7 +458,7 @@ describe('TrustedTypes', () => {
 
         // Check that the attacks above don't succeed and throw.
         expect(TrustedTypes.isHTML(html)).toBe(true);
-        expect(TrustedTypes.isURL(html)).toBe(false);
+        expect(TrustedTypes.isScriptURL(html)).toBe(false);
         expect(String(html)).toEqual('foo');
       });
     });
