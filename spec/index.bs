@@ -1650,7 +1650,8 @@ ABNF:
 directive-name = "trusted-types"
 directive-value = <a>serialized-tt-configuration</a>
 <dfn>serialized-tt-configuration</dfn> = ( <a>tt-expression</a> *( <a href="https://w3c.github.io/webappsec-csp/#grammardef-required-ascii-whitespace">required-ascii-whitespace</a> <a>tt-expression</a> ) )
-<dfn>tt-expression</dfn> = <a>tt-policy-name</a>  / <a>tt-keyword</a>
+<dfn>tt-expression</dfn> = <a>tt-policy-name</a>  / <a>tt-keyword</a> / <a>tt-wildcard</a>
+<dfn>tt-wildcard</dfn> = "*"
 <dfn>tt-policy-name</dfn> = 1*( <a href="https://tools.ietf.org/html/rfc5234#appendix-B.1">ALPHA</a> / <a href="https://tools.ietf.org/html/rfc5234#appendix-B.1">DIGIT</a> / "-" / "#" / "=" / "_" / "/" / "@" / "." / "%")
 <dfn>tt-keyword</dfn> = "'allow-duplicates'"
 </pre>
@@ -1736,7 +1737,10 @@ strings (|createdPolicyNames|), this algorithm returns `"Blocked"` if the
         Note: `trusted-types policyA policyB 'allow-duplicates'` allows authors to create policies with
         duplicated names.
     1.  If |directive|'s [=directive/value=] does not contain a <a>tt-policy-name</a>,
-        which value is |policyName|, set |createViolation| to true.
+        which value is |policyName|, and |directive|'s [=directive/value=] does not contain a <a>tt-wildcard</a>, set |createViolation| to true.
+
+        Note: `trusted-types *` allows authors to create policies with any unique names. To allow for multiple policies with the same name, use
+        `trusted-types * 'allow-duplicates'` or don't set the `trusted-types` directive at all.
     1.  If |createViolation| is false, skip to the next |policy|.
     1.  Let |violation| be the result of executing
         [[CSP#create-violation-for-global|Create a violation object for global, policy, and directive]] on |global|, |policy| and
