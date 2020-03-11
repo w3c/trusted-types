@@ -144,8 +144,8 @@ describe('TrustedTypes', () => {
       expect(TrustedTypes.getAttributeType('script', 'src')).toEqual(
           'TrustedScriptURL');
 
-      expect(TrustedTypes.getAttributeType('iframe', 'srcdoc')).toEqual(
-          'TrustedHTML');
+      expect(TrustedTypes.getAttributeType('object', 'data')).toEqual(
+          'TrustedScriptURL');
     });
 
     it('ignores attributes from unknown namespaces', () => {
@@ -157,16 +157,16 @@ describe('TrustedTypes', () => {
       expect(TrustedTypes.getAttributeType('SCRIPT', 'src')).toEqual(
           'TrustedScriptURL');
 
-      expect(TrustedTypes.getAttributeType('ifRame', 'srcdoc')).toEqual(
-          'TrustedHTML');
+      expect(TrustedTypes.getAttributeType('ObJECT', 'data')).toEqual(
+          'TrustedScriptURL');
     });
 
     it('is case insensitive for the attribute names', () => {
       expect(TrustedTypes.getAttributeType('script', 'SRC')).toEqual(
           'TrustedScriptURL');
 
-      expect(TrustedTypes.getAttributeType('iframe', 'SRCdoC')).toEqual(
-          'TrustedHTML');
+      expect(TrustedTypes.getAttributeType('object', 'data')).toEqual(
+          'TrustedScriptURL');
     });
 
     it('supports the inline event handlers', () => {
@@ -189,16 +189,16 @@ describe('TrustedTypes', () => {
       expect(TrustedTypes.getPropertyType('script', 'src')).toEqual(
           'TrustedScriptURL');
 
-      expect(TrustedTypes.getPropertyType('iframe', 'srcdoc')).toEqual(
-          'TrustedHTML');
+      expect(TrustedTypes.getPropertyType('object', 'data')).toEqual(
+          'TrustedScriptURL');
     });
 
     it('is case insensitive for tag names', () => {
       expect(TrustedTypes.getPropertyType('SCRIPT', 'src')).toEqual(
           'TrustedScriptURL');
 
-      expect(TrustedTypes.getPropertyType('iFRame', 'srcdoc')).toEqual(
-          'TrustedHTML');
+      expect(TrustedTypes.getPropertyType('ObjEct', 'data')).toEqual(
+          'TrustedScriptURL');
     });
 
     it('is case sensitive for property names', () => {
@@ -230,7 +230,7 @@ describe('TrustedTypes', () => {
 
       expect(map['SCRIPT'].attributes.src).toEqual('TrustedScriptURL');
 
-      expect(map['IFRAME'].attributes.srcdoc).toEqual('TrustedHTML');
+      expect(map['OBJECT'].attributes.data).toEqual('TrustedScriptURL');
     });
 
     it('returns a map that has a wildcard entry', () => {
