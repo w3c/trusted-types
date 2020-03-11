@@ -995,14 +995,14 @@ describe('TrustedTypesEnforcer', function() {
       expect(el.src).toEqual('');
     });
 
-    it('on iframe.srcdoc via setAttribute', function() {
-      const el = document.createElement('iframe');
+    it('on script.src via setAttribute', function() {
+      const el = document.createElement('script');
 
       expect(function() {
-        el.setAttribute('srcdoc', TEST_HTML);
+        el.setAttribute('src', TEST_HTML);
       }).toThrow();
 
-      expect(el.srcdoc).not.toContain(TEST_HTML);
+      expect(el.src).not.toContain(TEST_HTML);
     });
 
     it('on inline event handlers via setAttribute', function() {
@@ -1056,35 +1056,35 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('on Element.prototype.setAttribute', function() {
-      const el = document.createElement('iframe');
+      const el = document.createElement('script');
 
       expect(function() {
-        el.setAttribute('srcdoc', TEST_HTML);
+        el.setAttribute('src', TEST_URL);
       }).toThrow();
 
       expect(el.src).toEqual('');
     });
 
     it('on Element.prototype.setAttributeNS', function() {
-      const el = document.createElement('iframe');
+      const el = document.createElement('script');
 
       expect(function() {
-        el.setAttributeNS('http://www.w3.org/1999/xhtml', 'srcdoc', TEST_HTML);
+        el.setAttributeNS('http://www.w3.org/1999/xhtml', 'src', TEST_URL);
       }).toThrow();
 
       // Null on some browsers, but empty string on Edge.
-      expect(el.getAttributeNS('http://www.w3.org/1999/xhtml', 'srcdoc')).toBeFalsy();
+      expect(el.getAttributeNS('http://www.w3.org/1999/xhtml', 'src')).toBeFalsy();
     });
 
     it('on Element.prototype.setAttributeNS (empty ns)', function() {
-      const el = document.createElement('iframe');
+      const el = document.createElement('script');
 
       expect(function() {
-        el.setAttributeNS('', 'srcdoc', TEST_HTML);
+        el.setAttributeNS('', 'src', TEST_URL);
       }).toThrow();
 
       // Null on some browsers, but empty string on Edge.
-      expect(el.getAttributeNS('http://www.w3.org/1999/xhtml', 'srcdoc')).toBeFalsy();
+      expect(el.getAttributeNS('http://www.w3.org/1999/xhtml', 'src')).toBeFalsy();
     });
 
     it('on svg:a innerHTML', function() {
@@ -1154,13 +1154,13 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('on non-lowercase Element.prototype.setAttribute', function() {
-      const el = document.createElement('iframe');
+      const el = document.createElement('script');
 
       expect(function() {
-        el.setAttribute('SrCdoc', TEST_HTML);
+        el.setAttribute('SrC', TEST_URL);
       }).toThrow();
 
-      expect(el.srcdoc).toEqual('');
+      expect(el.src).toEqual('');
     });
   });
 
@@ -1393,11 +1393,11 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('on Element.prototype.setAttribute', function() {
-      const el = document.createElement('iframe');
+      const el = document.createElement('script');
 
-      el.setAttribute('srcdoc', policy.createHTML(TEST_HTML));
+      el.setAttribute('src', policy.createScriptURL(TEST_URL));
 
-      expect(el.srcdoc).toEqual(TEST_HTML);
+      expect(el.src).toEqual(TEST_URL);
     });
 
     it('on object codebase', function() {
@@ -1616,17 +1616,17 @@ describe('TrustedTypesEnforcer', function() {
     });
 
     it('on Element.prototype.setAttribute', function() {
-      const el = document.createElement('iframe');
+      const el = document.createElement('script');
 
       expect(() => {
-        el.srcdoc = policy.createScript(TEST_URL);
+        el.src = policy.createScript(TEST_URL);
       }).toThrow();
 
       expect(() => {
-        el.srcdoc = policy.createScriptURL(TEST_URL);
+        el.src = policy.createHTML(TEST_HTML);
       }).toThrow();
 
-      expect(el.srcdoc).toEqual('');
+      expect(el.src).toEqual('');
     });
 
     it('on HTMLElement innocuous attribute', function() {
