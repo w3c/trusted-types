@@ -493,6 +493,15 @@ describe('TrustedTypes', () => {
       expect(() => TrustedTypes.createPolicy('foo', {})).not.toThrow();
       expect(() => TrustedTypes.createPolicy('bar', {})).toThrow();
     });
+
+    it('when called with *, allows for any unique policy names', () => {
+      setPolicyNameRestrictions(['foo', '*'], false);
+
+      expect(() => TrustedTypes.createPolicy('foo', {})).not.toThrow();
+      expect(() => TrustedTypes.createPolicy('bar', {})).not.toThrow();
+      expect(() => TrustedTypes.createPolicy('baz', {})).not.toThrow();
+      expect(() => TrustedTypes.createPolicy('baz', {})).toThrow();
+    });
   });
 
   describe('clearPolicyNameRestrictions', () => {
