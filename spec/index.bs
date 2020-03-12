@@ -1544,6 +1544,38 @@ When <a>validate the string in context</a> is invoked, with |platformObject|, |v
     1. If an exception was thrown, rethrow exception and abort further steps.
  1. Return |value|.
 
+### Web Workers ###  {#html-workers}
+
+This specification modifies the Worker constuctors and {{importScripts}} function to require {{ScriptURLString}}.
+
+<pre class="idl">
+[Exposed=(Window,Worker)]
+partial interface Worker : EventTarget {
+    constructor(ScriptURLString scriptURL, optional WorkerOptions options = {});
+};
+
+[Exposed=(Window,Worker)]
+partial interface SharedWorker : EventTarget {
+  constructor(ScriptURLString scriptURL, optional (DOMString or WorkerOptions) options = {});
+};
+
+[Exposed=Worker]
+partial interface WorkerGlobalScope : EventTarget {
+  void importScripts(ScriptURLString... urls);
+};
+</pre>
+
+## Integration with Service Workers ## {#sw-integration}
+
+This document modifies the IDL for registering service workers, requiring {{ScriptURLString}}:
+
+<pre class="idl">
+[SecureContext, Exposed=(Window,Worker)]
+partial interface ServiceWorkerContainer : EventTarget {
+   [NewObject] Promise&lt;ServiceWorkerRegistration> register(ScriptURLString scriptURL, optional RegistrationOptions options = {});
+};
+</pre>
+
 ## Integration with SVG ## {#integration-with-svg}
 
 This document modifies the {{SVGScriptElement}} interface to enforce Trusted Types:
