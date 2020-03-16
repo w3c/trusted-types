@@ -1214,7 +1214,7 @@ Possible extra rowspan handling
 </style>
   <meta content="Bikeshed version 0dd2bba6dfda6c3168490a3a3044dd1d0b1ef8e0" name="generator">
   <link href="https://w3c.github.io/webappsec-trusted-types/dist/spec/" rel="canonical">
-  <meta content="05db7c24182f222e6118fb8b1f032ccb1f76a50e" name="document-revision">
+  <meta content="cddf3291b629f4e25e18c1f59ad10df6fc7d25dd" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -1461,7 +1461,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Trusted Types</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2020-03-12">12 March 2020</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2020-03-16">16 March 2020</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -3118,6 +3118,9 @@ directive-value = <a data-link-type="dfn" href="#trusted-types-sink-group" id="r
    <p class="note" role="note"><span>Note:</span> This algorithm assures that the code to be executed by a navigation to a <code>javascript:</code> URL will have to pass through a <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy">default policy</a>’s <code>createScript</code> function, in addition to all other restrictions imposed by other CSP directives.</p>
    <ol>
     <li data-md>
+     <p>If <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-client" id="ref-for-concept-request-client">client</a> is not a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-secure-contexts/#secure-contexts" id="ref-for-secure-contexts">secure context</a>, return <code>"Allowed"</code> and abort further steps.</p>
+     <p class="note" role="note"><span>Note:</span> <code>require-trusted-types-for</code> directive is recognized only for secure contexts.</p>
+    <li data-md>
      <p>If <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-url" id="ref-for-concept-request-url">url</a>'s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-scheme" id="ref-for-concept-url-scheme">scheme</a> is not <code>"javascript"</code>, return <code>"Allowed"</code> and abort further steps.</p>
     <li data-md>
      <p>Let <var>urlString</var> be the result of running the <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-serializer" id="ref-for-concept-url-serializer">URL serializer</a> on <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-url" id="ref-for-concept-request-url①">url</a>.</p>
@@ -3129,7 +3132,7 @@ directive-value = <a data-link-type="dfn" href="#trusted-types-sink-group" id="r
       <li data-md>
        <p><code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①①">TrustedScript</a></code> as <var>expectedType</var></p>
       <li data-md>
-       <p><var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-client" id="ref-for-concept-request-client">clients</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-global" id="ref-for-concept-settings-object-global">global object</a> as <var>global</var></p>
+       <p><var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-client" id="ref-for-concept-request-client①">clients</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-global" id="ref-for-concept-settings-object-global">global object</a> as <var>global</var></p>
       <li data-md>
        <p><var>encodedScriptSource</var> as <var>input</var></p>
       <li data-md>
@@ -3883,7 +3886,7 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
   <aside class="dfn-panel" data-for="term-for-concept-request-client">
    <a href="https://fetch.spec.whatwg.org/#concept-request-client">https://fetch.spec.whatwg.org/#concept-request-client</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-request-client">4.7.1.1. require-trusted-types-for Pre-Navigation check</a>
+    <li><a href="#ref-for-concept-request-client">4.7.1.1. require-trusted-types-for Pre-Navigation check</a> <a href="#ref-for-concept-request-client①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-local-scheme">
@@ -4074,6 +4077,12 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <a href="https://infra.spec.whatwg.org/#ordered-set">https://infra.spec.whatwg.org/#ordered-set</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-ordered-set">2.3.1. TrustedTypePolicyFactory</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-secure-contexts">
+   <a href="https://w3c.github.io/webappsec-secure-contexts/#secure-contexts">https://w3c.github.io/webappsec-secure-contexts/#secure-contexts</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-secure-contexts">4.7.1.1. require-trusted-types-for Pre-Navigation check</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dictdef-registrationoptions">
@@ -4425,6 +4434,11 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
      <li><span class="dfn-paneled" id="term-for-ordered-set" style="color:initial">ordered set</span>
     </ul>
    <li>
+    <a data-link-type="biblio">[secure-contexts]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-secure-contexts" style="color:initial">secure contexts</span>
+    </ul>
+   <li>
     <a data-link-type="biblio">[service-workers-1]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-dictdef-registrationoptions" style="color:initial">RegistrationOptions</span>
@@ -4497,6 +4511,8 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <dd>Anne van Kesteren; Domenic Denicola. <a href="https://infra.spec.whatwg.org/">Infra Standard</a>. Living Standard. URL: <a href="https://infra.spec.whatwg.org/">https://infra.spec.whatwg.org/</a>
    <dt id="biblio-rfc2119">[RFC2119]
    <dd>S. Bradner. <a href="https://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>. March 1997. Best Current Practice. URL: <a href="https://tools.ietf.org/html/rfc2119">https://tools.ietf.org/html/rfc2119</a>
+   <dt id="biblio-secure-contexts">[SECURE-CONTEXTS]
+   <dd>Mike West. <a href="https://www.w3.org/TR/secure-contexts/">Secure Contexts</a>. 15 September 2016. CR. URL: <a href="https://www.w3.org/TR/secure-contexts/">https://www.w3.org/TR/secure-contexts/</a>
    <dt id="biblio-service-workers-1">[SERVICE-WORKERS-1]
    <dd>Alex Russell; et al. <a href="https://www.w3.org/TR/service-workers-1/">Service Workers 1</a>. 13 August 2019. WD. URL: <a href="https://www.w3.org/TR/service-workers-1/">https://www.w3.org/TR/service-workers-1/</a>
    <dt id="biblio-svg2">[SVG2]

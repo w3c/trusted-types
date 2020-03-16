@@ -1691,6 +1691,9 @@ otherwise. This constitutes the {{#require-trusted-types-for-directive|require-t
 Note: This algorithm assures that the code to be executed by a navigation to a `javascript:` URL will have to pass through a
 <a>default policy</a>'s `createScript` function, in addition to all other restrictions imposed by other CSP directives.
 
+1. If |request|'s [=request/client=] is not a [=secure context=], return `"Allowed"` and abort further steps.
+
+    Note: `require-trusted-types-for` directive is recognized only for secure contexts.
 1. If |request|'s [=request/url=]'s [=url/scheme=] is not `"javascript"`, return `"Allowed"` and abort further steps.
 1. Let |urlString| be the result of running the [=URL serializer=] on |request|'s [=request/url=].
 1. Let |encodedScriptSource| be the result of removing the leading `"javascript:"` from |urlString|.
