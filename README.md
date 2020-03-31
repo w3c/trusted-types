@@ -9,7 +9,7 @@
 
 First time here? This is a repository hosting the Trusted Types specification draft and the polyfill code. You might want to check out other resources about Trusted Types:
 
- * [Introduction for web developers](https://developers.google.com/web/updates/2019/02/trusted-types) - API description with examples.
+ * [Introduction for web developers](https://web.dev/trusted-types/) - API description with examples.
  * [Explainer](explainer.md) - introductory explainer (what problem is the API solving?).
  * [Specification draft](https://w3c.github.io/webappsec-trusted-types/dist/spec/) - a more comprehensive and formalized description of the Trusted Types API.
  * [Origin trial for Trusted Types](https://developers.chrome.com/origintrials/#/view_trial/171136785840078849) - The API is available natively in Chrome via [origin trials](https://github.com/GoogleChrome/OriginTrials/blob/gh-pages/developer-guide.md).
