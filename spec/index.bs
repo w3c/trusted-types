@@ -1087,7 +1087,7 @@ partial interface mixin Document {
 };
 </pre>
 
-### Enforcement for scripts ### {#enfocement-in-scripts}
+### Enforcement for scripts ### {#enforcement-in-scripts}
 
 #### Slots with trusted values
 
@@ -1578,16 +1578,30 @@ partial interface ServiceWorkerContainer : EventTarget {
 
 ## Integration with SVG ## {#integration-with-svg}
 
-This document modifies the {{SVGScriptElement}} interface to enforce Trusted Types:
+This document modifies the {{SVGAnimatedString}} interface to enforce Trusted Types:
 
 <pre class="idl">
-partial interface mixin SVGScriptElement : SVGElement {
- // overwrites the definition in SVGURIReference.
- readonly attribute ScriptURLString href;
+[Exposed=Window]
+partial interface mixin SVGAnimatedString {
+           attribute (DOMString or TrustedScriptURL) baseVal;
 };
 </pre>
 
-Issue: Check the text of the script when preparing it, like with HTML scripts.
+On setting {{SVGAnimatedString/baseVal}}, the following steps are run:
+
+1. <ins>If the relected [=attribute=]'s element is a {{SVGScriptElement}}, set |value| to the result of executing [$Get Trusted Type compliant string$] algorithm, with the following arguments:</ins>
+
+      * <ins>{{TrustedScriptURL}} as |expectedType|,</ins>
+      * <ins>relected attribute's {{Document}}'s [=relevant global object=] as |global|,</ins>
+      * <ins>specified value as |input|,</ins>
+      * <ins>`SVGScriptElement href` as |sink|,</ins>
+      * <ins>'script' as |sinkGroup|.</ins>
+
+    <ins>Otherwise, set |value| to the specified value.</ins>
+
+1. If the reflected attribute is not present, the {{SVGAnimatedString}} object is defined to additionally reflect a second, deprecated attribute, and that deprecated attribute is present, then set that deprecated attribute to <del>the specified value</del> <ins>|value|</ins>. Otherwise, set the reflected attribute to <ins>|value|</ins> <del>the specified value</del>.
+
+Note: SVG does not have a complete script processing model <a href="https://github.com/w3c/svgwg/issues/196">yet</a>. Trusted Types assumes that the attribute and text body modification protections behave similarly to ones for HTML scripts outlined in [[#enforcement-in-scripts]].
 
 ## Integration with DOM ## {#integration-with-dom}
 
