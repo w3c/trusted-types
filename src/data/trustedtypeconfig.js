@@ -101,6 +101,9 @@ export class TrustedTypeConfig {
           (p) => p.charAt(0) !== '\'');
       allowDuplicates = policy[POLICIES_DIRECTIVE_NAME].includes(
           '\'allow-duplicates\'');
+      if (policy[POLICIES_DIRECTIVE_NAME].includes('\'none\'')) {
+        policies = [];
+      }
     }
     return new TrustedTypeConfig(
         isLoggingEnabled,

@@ -1742,7 +1742,7 @@ directive-value = <a>serialized-tt-configuration</a>
 <dfn>tt-expression</dfn> = <a>tt-policy-name</a>  / <a>tt-keyword</a> / <a>tt-wildcard</a>
 <dfn>tt-wildcard</dfn> = "*"
 <dfn>tt-policy-name</dfn> = 1*( <a href="https://tools.ietf.org/html/rfc5234#appendix-B.1">ALPHA</a> / <a href="https://tools.ietf.org/html/rfc5234#appendix-B.1">DIGIT</a> / "-" / "#" / "=" / "_" / "/" / "@" / "." / "%")
-<dfn>tt-keyword</dfn> = "'allow-duplicates'"
+<dfn>tt-keyword</dfn> = "'allow-duplicates'" / "'none'"
 </pre>
 
 <div class="example" id="whitelist-of-policy-names-in-header">
@@ -1820,6 +1820,8 @@ strings (|createdPolicyNames|), this algorithm returns `"Blocked"` if the
         which name is `"trusted-types"`, skip to the next |policy|.
     1.  Let |directive| be the |policy|'s |directive set|'s [=directive=] which name
         is `"trusted-types"`
+    1.  If |directive|'s [=directive/value=] contains a <a>tt-keyword</a> which
+        is a match for a value `'none'`, set |createViolation| to true.
     1.  If |createdPolicyNames| contains |policyName| and |directive|'s [=directive/value=] does not contain a <a>tt-keyword</a> which is a match
         for a value `'allow-duplicates'`, set |createViolation| to true.
 
