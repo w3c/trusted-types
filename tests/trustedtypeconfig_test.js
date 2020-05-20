@@ -114,6 +114,11 @@ describe('TrustedTypeConfig', () => {
           .allowedPolicyNames).toEqual([]);
     });
 
+    it('supports \'none\' keyword', () => {
+      expect(TrustedTypeConfig.fromCSP('trusted-types \'none\' a b c')
+          .allowedPolicyNames).toEqual([]);
+    });
+
     it('passes the CSP string to config object', () => {
       const csp = 'trusted-types a b c; script-src foo';
 
