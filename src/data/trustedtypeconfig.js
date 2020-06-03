@@ -101,7 +101,8 @@ export class TrustedTypeConfig {
           (p) => p.charAt(0) !== '\'');
       allowDuplicates = policy[POLICIES_DIRECTIVE_NAME].includes(
           '\'allow-duplicates\'');
-      if (policy[POLICIES_DIRECTIVE_NAME].includes('\'none\'')) {
+      if (policy[POLICIES_DIRECTIVE_NAME].length == 1 &&
+          policy[POLICIES_DIRECTIVE_NAME][0] == '\'none\'') {
         policies = [];
       }
     }

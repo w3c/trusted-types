@@ -115,8 +115,13 @@ describe('TrustedTypeConfig', () => {
     });
 
     it('supports \'none\' keyword', () => {
-      expect(TrustedTypeConfig.fromCSP('trusted-types \'none\' a b c')
+      expect(TrustedTypeConfig.fromCSP('trusted-types \'none\'')
           .allowedPolicyNames).toEqual([]);
+    });
+
+    it('ignores \'none\' keyword when policy names are present', () => {
+      expect(TrustedTypeConfig.fromCSP('trusted-types \'none\' a b c')
+          .allowedPolicyNames).toEqual(['a', 'b', 'c']);
     });
 
     it('passes the CSP string to config object', () => {
