@@ -1214,7 +1214,7 @@ Possible extra rowspan handling
 </style>
   <meta content="Bikeshed version 0dd2bba6dfda6c3168490a3a3044dd1d0b1ef8e0" name="generator">
   <link href="https://w3c.github.io/webappsec-trusted-types/dist/spec/" rel="canonical">
-  <meta content="b102df72dfed3fb5d2123a12b7aa8a350093522c" name="document-revision">
+  <meta content="460b1637183d80e6ca1992d3f9754e86c2a35c60" name="document-revision">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -1461,7 +1461,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Trusted Types</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2020-05-20">20 May 2020</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2020-06-03">3 June 2020</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -3265,8 +3265,9 @@ strings (<var>createdPolicyNames</var>), this algorithm returns <code>"Blocked"<
        <p>Let <var>directive</var> be the <var>policy</var>’s <var>directive set</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives⑦">directive</a> which name
 is <code>"trusted-types"</code></p>
       <li data-md>
-       <p>If <var>directive</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-value" id="ref-for-directive-value④">value</a> contains a <a data-link-type="dfn" href="#tt-keyword" id="ref-for-tt-keyword①">tt-keyword</a> which
+       <p>If <var>directive</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-value" id="ref-for-directive-value④">value</a> only contains a <a data-link-type="dfn" href="#tt-keyword" id="ref-for-tt-keyword①">tt-keyword</a> which
 is a match for a value <code>'none'</code>, set <var>createViolation</var> to true.</p>
+       <p class="note" role="note"><span>Note:</span> Like in other CSP directives, 'none' keyword will be ignored if other keywords or policy names are present.</p>
       <li data-md>
        <p>If <var>createdPolicyNames</var> contains <var>policyName</var> and <var>directive</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-value" id="ref-for-directive-value⑤">value</a> does not contain a <a data-link-type="dfn" href="#tt-keyword" id="ref-for-tt-keyword②">tt-keyword</a> which is a match
 for a value <code>'allow-duplicates'</code>, set <var>createViolation</var> to true.</p>

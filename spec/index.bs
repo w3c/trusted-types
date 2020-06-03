@@ -1820,8 +1820,11 @@ strings (|createdPolicyNames|), this algorithm returns `"Blocked"` if the
         which name is `"trusted-types"`, skip to the next |policy|.
     1.  Let |directive| be the |policy|'s |directive set|'s [=directive=] which name
         is `"trusted-types"`
-    1.  If |directive|'s [=directive/value=] contains a <a>tt-keyword</a> which
+    1.  If |directive|'s [=directive/value=] only contains a <a>tt-keyword</a> which
         is a match for a value `'none'`, set |createViolation| to true.
+
+        Note: Like in other CSP directives, 'none' keyword will be ignored if other keywords or policy names are present.
+
     1.  If |createdPolicyNames| contains |policyName| and |directive|'s [=directive/value=] does not contain a <a>tt-keyword</a> which is a match
         for a value `'allow-duplicates'`, set |createViolation| to true.
 
