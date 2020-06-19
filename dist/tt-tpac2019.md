@@ -146,7 +146,7 @@ trustedTypes.getAttributeType('img', 'alt')      // null
     trustedScriptURL`https://this.literal.is.not.an.injection`
     trustedScriptURL`https://but.this.might.be.${dangerous}.and.will.fail`
     ```
-* Built-in policies (HTML sanitizer? script-src whitelist?)
+* Built-in policies (HTML sanitizer? script-src allowlist?)
 * Per script capabilities
     ```html
     <script src=jquery.js trusted-type-policy=my-policy-for-jquery>
