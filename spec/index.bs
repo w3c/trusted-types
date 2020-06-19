@@ -457,7 +457,7 @@ initially empty.
 ::  Creates a policy object that will implement the rules
     passed in the {{TrustedTypePolicyOptions}} |policyOptions| object.
     The allowed policy names may be restricted by [[#content-security-policy-hdr|Content Security Policy]].
-    If the policy name is not on the whitelist defined in the [=trusted-types-directive|trusted-types=] CSP directive,
+    If the policy name is not on the allowlist defined in the [=trusted-types-directive|trusted-types=] CSP directive,
     the policy creation fails with a [[WebIDL-1#idl-Error|TypeError]].
     Also, if unique policy names are enforced (i.e. `'allow-duplicates'` is not used),
     and `createPolicy` is called more than once with any given `policyName`,
@@ -467,7 +467,7 @@ initially empty.
     <xmp highlight=js>
     // HTTP Response header: Content-Security-Policy: trusted-types foo
     trustedTypes.createPolicy("foo", {}); // ok.
-    trustedTypes.createPolicy("bar", {}); // throws - name not on the whitelist.
+    trustedTypes.createPolicy("bar", {}); // throws - name not on the allowlist.
     trustedTypes.createPolicy("foo", {}); // throws - duplicate name.
     </xmp>
     </div>
@@ -1745,7 +1745,7 @@ directive-value = <a>serialized-tt-configuration</a>
 <dfn>tt-keyword</dfn> = "'allow-duplicates'" / "'none'"
 </pre>
 
-<div class="example" id="whitelist-of-policy-names-in-header">
+<div class="example" id="allowlist-of-policy-names-in-header">
 Types are enforced at sinks, and only two policies may be created: “one” and “two”.
 
 <pre class="http">
