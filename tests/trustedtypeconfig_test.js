@@ -78,7 +78,7 @@ describe('TrustedTypeConfig', () => {
       expect(TrustedTypeConfig.fromCSP(csp).isEnforcementEnabled).toBe(false);
     }));
 
-    it('uses whitelisted directive names from the directive', () => {
+    it('uses allowlisted directive names from the directive', () => {
       expect(TrustedTypeConfig.fromCSP('trusted-types foo bar *')
           .allowedPolicyNames).toEqual(['*', 'bar', 'foo']);
     });
@@ -88,7 +88,7 @@ describe('TrustedTypeConfig', () => {
           .allowDuplicates).toEqual(false);
     });
 
-    it('supports \'allow-duplicates\' keyword with a whitelist', () => {
+    it('supports \'allow-duplicates\' keyword with an allowlist', () => {
       const config = TrustedTypeConfig.fromCSP(
           'trusted-types a b \'allow-duplicates\' c');
 
