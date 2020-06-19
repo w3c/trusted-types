@@ -127,7 +127,7 @@
   runTest(['HTMLScriptElement.src', 'TrustedScriptURL'], function(el) {
     el.appendChild(document.createElement('script')).src = 'data:,';
   }, true);
-  runTest(['creating policy from outside whitelist'], function(el) {
+  runTest(['creating policy from outside allowlist'], function(el) {
     trustedTypes.createPolicy('foo', {});
   }, true);
 
