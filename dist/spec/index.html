@@ -1167,6 +1167,18 @@ Possible extra rowspan handling
 		margin-left: auto;
 		margin-right: auto;
 	}
+	.overlarge {
+		/* Magic to create good table positioning:
+		   "content column" is 50ems wide at max; less on smaller screens.
+		   Extra space (after ToC + content) is empty on the right.
+
+		   1. When table < content column, centers table in column.
+		   2. When content < table < available, left-aligns.
+		   3. When table > available, fills available + scroll bar.
+		*/
+		display: grid;
+		grid-template-columns: minmax(0, 50em);
+	}
 	.overlarge > table {
 		/* limit preferred width of table */
 		max-width: 50em;
@@ -1176,7 +1188,6 @@ Possible extra rowspan handling
 
 	@media (min-width: 55em) {
 		.overlarge {
-			margin-left: calc(13px + 26.5rem - 50vw);
 			margin-right: calc(13px + 26.5rem - 50vw);
 			max-width: none;
 		}
@@ -1184,14 +1195,12 @@ Possible extra rowspan handling
 	@media screen and (min-width: 78em) {
 		body:not(.toc-inline) .overlarge {
 			/* 30.5em body padding 50em content area */
-			margin-left: calc(40em - 50vw) !important;
 			margin-right: calc(40em - 50vw) !important;
 		}
 	}
 	@media screen and (min-width: 90em) {
 		body:not(.toc-inline) .overlarge {
 			/* 4em html margin 30.5em body padding 50em content area */
-			margin-left: 0 !important;
 			margin-right: calc(84.5em - 100vw) !important;
 		}
 	}
@@ -1212,94 +1221,8 @@ Possible extra rowspan handling
 		}
 	}
 </style>
-  <meta content="Bikeshed version 0dd2bba6dfda6c3168490a3a3044dd1d0b1ef8e0" name="generator">
+  <meta content="Bikeshed version 6cf40e14, updated Fri Aug 14 17:42:41 2020 -0700" name="generator">
   <link href="https://w3c.github.io/webappsec-trusted-types/dist/spec/" rel="canonical">
-  <meta content="460b1637183d80e6ca1992d3f9754e86c2a35c60" name="document-revision">
-<style>/* style-md-lists */
-
-/* This is a weird hack for me not yet following the commonmark spec
-   regarding paragraph and lists. */
-[data-md] > :first-child {
-    margin-top: 0;
-}
-[data-md] > :last-child {
-    margin-bottom: 0;
-}</style>
-<style>/* style-selflinks */
-
-.heading, .issue, .note, .example, li, dt {
-    position: relative;
-}
-a.self-link {
-    position: absolute;
-    top: 0;
-    left: calc(-1 * (3.5rem - 26px));
-    width: calc(3.5rem - 26px);
-    height: 2em;
-    text-align: center;
-    border: none;
-    transition: opacity .2s;
-    opacity: .5;
-}
-a.self-link:hover {
-    opacity: 1;
-}
-.heading > a.self-link {
-    font-size: 83%;
-}
-li > a.self-link {
-    left: calc(-1 * (3.5rem - 26px) - 2em);
-}
-dfn > a.self-link {
-    top: auto;
-    left: auto;
-    opacity: 0;
-    width: 1.5em;
-    height: 1.5em;
-    background: gray;
-    color: white;
-    font-style: normal;
-    transition: opacity .2s, background-color .2s, color .2s;
-}
-dfn:hover > a.self-link {
-    opacity: 1;
-}
-dfn > a.self-link:hover {
-    color: black;
-}
-
-a.self-link::before            { content: "¶"; }
-.heading > a.self-link::before { content: "§"; }
-dfn > a.self-link::before      { content: "#"; }</style>
-<style>/* style-counters */
-
-body {
-    counter-reset: example figure issue;
-}
-.issue {
-    counter-increment: issue;
-}
-.issue:not(.no-marker)::before {
-    content: "Issue " counter(issue);
-}
-
-.example {
-    counter-increment: example;
-}
-.example:not(.no-marker)::before {
-    content: "Example " counter(example);
-}
-.invalid.example:not(.no-marker)::before,
-.illegal.example:not(.no-marker)::before {
-    content: "Invalid Example" counter(example);
-}
-
-figcaption {
-    counter-increment: figure;
-}
-figcaption:not(.no-marker)::before {
-    content: "Figure " counter(figure) " ";
-}</style>
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -1362,6 +1285,35 @@ pre .property::before, pre .property::after {
 [data-link-type=biblio] {
     white-space: pre;
 }</style>
+<style>/* style-counters */
+
+body {
+    counter-reset: example figure issue;
+}
+.issue {
+    counter-increment: issue;
+}
+.issue:not(.no-marker)::before {
+    content: "Issue " counter(issue);
+}
+
+.example {
+    counter-increment: example;
+}
+.example:not(.no-marker)::before {
+    content: "Example " counter(example);
+}
+.invalid.example:not(.no-marker)::before,
+.illegal.example:not(.no-marker)::before {
+    content: "Invalid Example" counter(example);
+}
+
+figcaption {
+    counter-increment: figure;
+}
+figcaption:not(.no-marker)::before {
+    content: "Figure " counter(figure) " ";
+}</style>
 <style>/* style-dfn-panel */
 
 .dfn-panel {
@@ -1399,6 +1351,62 @@ pre .property::before, pre .property::after {
 
 .dfn-paneled { cursor: pointer; }
 </style>
+<style>/* style-md-lists */
+
+/* This is a weird hack for me not yet following the commonmark spec
+   regarding paragraph and lists. */
+[data-md] > :first-child {
+    margin-top: 0;
+}
+[data-md] > :last-child {
+    margin-bottom: 0;
+}</style>
+<style>/* style-selflinks */
+
+.heading, .issue, .note, .example, li, dt {
+    position: relative;
+}
+a.self-link {
+    position: absolute;
+    top: 0;
+    left: calc(-1 * (3.5rem - 26px));
+    width: calc(3.5rem - 26px);
+    height: 2em;
+    text-align: center;
+    border: none;
+    transition: opacity .2s;
+    opacity: .5;
+}
+a.self-link:hover {
+    opacity: 1;
+}
+.heading > a.self-link {
+    font-size: 83%;
+}
+li > a.self-link {
+    left: calc(-1 * (3.5rem - 26px) - 2em);
+}
+dfn > a.self-link {
+    top: auto;
+    left: auto;
+    opacity: 0;
+    width: 1.5em;
+    height: 1.5em;
+    background: gray;
+    color: white;
+    font-style: normal;
+    transition: opacity .2s, background-color .2s, color .2s;
+}
+dfn:hover > a.self-link {
+    opacity: 1;
+}
+dfn > a.self-link:hover {
+    color: black;
+}
+
+a.self-link::before            { content: "¶"; }
+.heading > a.self-link::before { content: "§"; }
+dfn > a.self-link::before      { content: "#"; }</style>
 <style>/* style-syntax-highlighting */
 pre.idl.highlight { color: #708090; }
 .highlight:not(.idl) { background: hsl(24, 20%, 95%); }
@@ -1461,7 +1469,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Trusted Types</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2020-06-03">3 June 2020</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2020-08-17">17 August 2020</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1975,7 +1983,7 @@ initially empty.</p>
       <p>Creates a policy object that will implement the rules
 passed in the <code class="idl"><a data-link-type="idl" href="#dictdef-trustedtypepolicyoptions" id="ref-for-dictdef-trustedtypepolicyoptions①">TrustedTypePolicyOptions</a></code> <var>policyOptions</var> object.
 The allowed policy names may be restricted by <a href="#content-security-policy-hdr">Content Security Policy</a>.
-If the policy name is not on the whitelist defined in the <a data-link-type="dfn" href="#trusted-types-directive" id="ref-for-trusted-types-directive">trusted-types</a> CSP directive,
+If the policy name is not on the allowlist defined in the <a data-link-type="dfn" href="#trusted-types-directive" id="ref-for-trusted-types-directive">trusted-types</a> CSP directive,
 the policy creation fails with a <a href="https://www.w3.org/TR/2016/REC-WebIDL-1-20161215/#idl-Error">TypeError</a>.
 Also, if unique policy names are enforced (i.e. <code>'allow-duplicates'</code> is not used),
 and <code>createPolicy</code> is called more than once with any given <code>policyName</code>,
@@ -1984,7 +1992,7 @@ policy creation fails with a TypeError.</p>
        <a class="self-link" href="#create-policy-example"></a> 
 <pre class="highlight"><c- c1>// HTTP Response header: Content-Security-Policy: trusted-types foo</c->
 trustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- u>"foo"</c-><c- p>,</c-> <c- p>{});</c-> <c- c1>// ok.</c->
-trustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- u>"bar"</c-><c- p>,</c-> <c- p>{});</c-> <c- c1>// throws - name not on the whitelist.</c->
+trustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- u>"bar"</c-><c- p>,</c-> <c- p>{});</c-> <c- c1>// throws - name not on the allowlist.</c->
 trustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- u>"foo"</c-><c- p>,</c-> <c- p>{});</c-> <c- c1>// throws - duplicate name.</c->
 </pre>
       </div>
@@ -2056,7 +2064,7 @@ property (IDL attribute).</p>
        <li data-md>
         <p>Let <var>interface</var> be the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-interface" id="ref-for-concept-element-interface">element interface</a> for <var>localName</var> and <var>elementNs</var>.</p>
        <li data-md>
-        <p>If <var>interface</var> has an IDL <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-attribute" id="ref-for-dfn-attribute">attribute</a> member which identifier is <var>attribute</var>, and <code class="idl"><a data-link-type="idl">StringContext</a></code> IDL extended attribute appears on that attribute, return
+        <p>If <var>interface</var> has an IDL <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute" id="ref-for-concept-attribute">attribute</a> member which identifier is <var>attribute</var>, and <code class="idl"><a data-link-type="idl">StringContext</a></code> IDL extended attribute appears on that attribute, return
 stringified <code class="idl"><a data-link-type="idl">StringContext</a></code>'s identifier and abort futher steps.</p>
         <p class="note" role="note"><span>Note:</span> This also takes into account all members of <a data-link-type="dfn" href="https://heycam.github.io/webidl/#interface-mixin" id="ref-for-interface-mixin">interface mixins</a> that <var>interface</var> <a data-link-type="dfn" href="https://heycam.github.io/webidl/#include" id="ref-for-include">includes</a>.</p>
        <li data-md>
@@ -2086,8 +2094,8 @@ to <code>Element.setAttribute</code> passes the correct argument type.</p>
        <li data-md>
         <p>Let <var>interface</var> be the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-interface" id="ref-for-concept-element-interface①">element interface</a> for <var>localName</var> and <var>elementNs</var>.</p>
        <li data-md>
-        <p>If <var>interface</var> does not have an IDL <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-attribute" id="ref-for-dfn-attribute①">attribute</a> that <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/common-dom-interfaces.html#reflect" id="ref-for-reflect">reflects</a> a content attribute with <var>localName</var> <a data-link-type="dfn">local name</a> and <var>attrNs</var> <a data-link-type="dfn">namespace</a>,
-return undefined and abort further steps. Otherwise, let <var>idlAttribute</var> be that IDL <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-attribute" id="ref-for-dfn-attribute②">attribute</a>.</p>
+        <p>If <var>interface</var> does not have an IDL <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute" id="ref-for-concept-attribute①">attribute</a> that <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/common-dom-interfaces.html#reflect" id="ref-for-reflect">reflects</a> a content attribute with <var>localName</var> <a data-link-type="dfn">local name</a> and <var>attrNs</var> <a data-link-type="dfn">namespace</a>,
+return undefined and abort further steps. Otherwise, let <var>idlAttribute</var> be that IDL <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute" id="ref-for-concept-attribute②">attribute</a>.</p>
        <li data-md>
         <p>If <code class="idl"><a data-link-type="idl">StringContext</a></code> IDL extended attribute appears on <var>idlAttribute</var>, return
 stringified <code class="idl"><a data-link-type="idl">StringContext</a></code>'s identifier and abort futher steps.</p>
@@ -2151,9 +2159,9 @@ throws a TypeError if a conversion of a given value is disallowed.</p>
 <pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed④"><c- g>Exposed</c-></a>=<c- n>Window</c->, <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#SecureContext" id="ref-for-SecureContext④"><c- g>SecureContext</c-></a>]
 <c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="trustedtypepolicy"><code><c- g>TrustedTypePolicy</c-></code></dfn> {
   <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①⓪"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="TrustedTypePolicy" data-dfn-type="attribute" data-export data-readonly data-type="DOMString" id="dom-trustedtypepolicy-name"><code><c- g>name</c-></code><a class="self-link" href="#dom-trustedtypepolicy-name"></a></dfn>;
-  <a class="n" data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml⑤"><c- n>TrustedHTML</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createhtml" id="ref-for-dom-trustedtypepolicy-createhtml①"><c- g>createHTML</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①①"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="TrustedTypePolicy/createHTML(input, ...arguments)" data-dfn-type="argument" data-export id="dom-trustedtypepolicy-createhtml-input-arguments-input"><code><c- g>input</c-></code><a class="self-link" href="#dom-trustedtypepolicy-createhtml-input-arguments-input"></a></dfn>, <c- b>any</c->... <dfn class="idl-code" data-dfn-for="TrustedTypePolicy/createHTML(input, ...arguments)" data-dfn-type="argument" data-export id="dom-trustedtypepolicy-createhtml-input-arguments-arguments"><code><c- g>arguments</c-></code><a class="self-link" href="#dom-trustedtypepolicy-createhtml-input-arguments-arguments"></a></dfn>);
-  <a class="n" data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript④"><c- n>TrustedScript</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createscript" id="ref-for-dom-trustedtypepolicy-createscript①"><c- g>createScript</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①②"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="TrustedTypePolicy/createScript(input, ...arguments)" data-dfn-type="argument" data-export id="dom-trustedtypepolicy-createscript-input-arguments-input"><code><c- g>input</c-></code><a class="self-link" href="#dom-trustedtypepolicy-createscript-input-arguments-input"></a></dfn>, <c- b>any</c->... <dfn class="idl-code" data-dfn-for="TrustedTypePolicy/createScript(input, ...arguments)" data-dfn-type="argument" data-export id="dom-trustedtypepolicy-createscript-input-arguments-arguments"><code><c- g>arguments</c-></code><a class="self-link" href="#dom-trustedtypepolicy-createscript-input-arguments-arguments"></a></dfn>);
-  <a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl①"><c- n>TrustedScriptURL</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createscripturl" id="ref-for-dom-trustedtypepolicy-createscripturl①"><c- g>createScriptURL</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①③"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="TrustedTypePolicy/createScriptURL(input, ...arguments)" data-dfn-type="argument" data-export id="dom-trustedtypepolicy-createscripturl-input-arguments-input"><code><c- g>input</c-></code><a class="self-link" href="#dom-trustedtypepolicy-createscripturl-input-arguments-input"></a></dfn>, <c- b>any</c->... <dfn class="idl-code" data-dfn-for="TrustedTypePolicy/createScriptURL(input, ...arguments)" data-dfn-type="argument" data-export id="dom-trustedtypepolicy-createscripturl-input-arguments-arguments"><code><c- g>arguments</c-></code><a class="self-link" href="#dom-trustedtypepolicy-createscripturl-input-arguments-arguments"></a></dfn>);
+  <a class="n" data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml⑤"><c- n>TrustedHTML</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createhtml" id="ref-for-dom-trustedtypepolicy-createhtml①"><c- g>createHTML</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①①"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="TrustedTypePolicy/createHTML(input, ...arguments), TrustedTypePolicy/createHTML(input)" data-dfn-type="argument" data-export id="dom-trustedtypepolicy-createhtml-input-arguments-input"><code><c- g>input</c-></code><a class="self-link" href="#dom-trustedtypepolicy-createhtml-input-arguments-input"></a></dfn>, <c- b>any</c->... <dfn class="idl-code" data-dfn-for="TrustedTypePolicy/createHTML(input, ...arguments), TrustedTypePolicy/createHTML(input)" data-dfn-type="argument" data-export id="dom-trustedtypepolicy-createhtml-input-arguments-arguments"><code><c- g>arguments</c-></code><a class="self-link" href="#dom-trustedtypepolicy-createhtml-input-arguments-arguments"></a></dfn>);
+  <a class="n" data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript④"><c- n>TrustedScript</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createscript" id="ref-for-dom-trustedtypepolicy-createscript①"><c- g>createScript</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①②"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="TrustedTypePolicy/createScript(input, ...arguments), TrustedTypePolicy/createScript(input)" data-dfn-type="argument" data-export id="dom-trustedtypepolicy-createscript-input-arguments-input"><code><c- g>input</c-></code><a class="self-link" href="#dom-trustedtypepolicy-createscript-input-arguments-input"></a></dfn>, <c- b>any</c->... <dfn class="idl-code" data-dfn-for="TrustedTypePolicy/createScript(input, ...arguments), TrustedTypePolicy/createScript(input)" data-dfn-type="argument" data-export id="dom-trustedtypepolicy-createscript-input-arguments-arguments"><code><c- g>arguments</c-></code><a class="self-link" href="#dom-trustedtypepolicy-createscript-input-arguments-arguments"></a></dfn>);
+  <a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl①"><c- n>TrustedScriptURL</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createscripturl" id="ref-for-dom-trustedtypepolicy-createscripturl①"><c- g>createScriptURL</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①③"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="TrustedTypePolicy/createScriptURL(input, ...arguments), TrustedTypePolicy/createScriptURL(input)" data-dfn-type="argument" data-export id="dom-trustedtypepolicy-createscripturl-input-arguments-input"><code><c- g>input</c-></code><a class="self-link" href="#dom-trustedtypepolicy-createscripturl-input-arguments-input"></a></dfn>, <c- b>any</c->... <dfn class="idl-code" data-dfn-for="TrustedTypePolicy/createScriptURL(input, ...arguments), TrustedTypePolicy/createScriptURL(input)" data-dfn-type="argument" data-export id="dom-trustedtypepolicy-createscripturl-input-arguments-arguments"><code><c- g>arguments</c-></code><a class="self-link" href="#dom-trustedtypepolicy-createscripturl-input-arguments-arguments"></a></dfn>);
 };
 </pre>
    <p>Each policy has a <dfn class="dfn-paneled" data-dfn-for="TrustedTypePolicy" data-dfn-type="dfn" data-noexport id="trustedtypepolicy-name">name</dfn>.</p>
@@ -2371,7 +2379,7 @@ It will ensure that the Trusted Type <a data-link-type="dfn" href="#enforcement"
      <p class="assertion">Assert: <var>global</var> is a <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/window-object.html#window" id="ref-for-window">Window</a></code>.</p>
      <p class="issue" id="issue-74c24ff1"><a class="self-link" href="#issue-74c24ff1"></a> Synchronize when TT are added to workers (perhaps use "has a CSP list"?)</p>
     <li data-md>
-     <p>Let <var>cspList</var> be the <var>global</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#concept-document-csp-list" id="ref-for-concept-document-csp-list">CSP list</a>.</p>
+     <p>Let <var>cspList</var> be the <var>global</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#csp-list" id="ref-for-csp-list">CSP list</a>.</p>
     <li data-md>
      <p>If <var>cspList</var> does not contain a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#content-security-policy-object" id="ref-for-content-security-policy-object">policy</a> which <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#policy-directive-set" id="ref-for-policy-directive-set">directive set</a> containing a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives">directive</a> with a name <code>"require-trusted-types-for"</code>,
 or that directive does not contain a <a data-link-type="dfn" href="#trusted-types-sink-group" id="ref-for-trusted-types-sink-group③">trusted-types-sink-group</a> which is a match for a value <var>sinkGroup</var>,
@@ -2500,7 +2508,7 @@ attribute appears in is its <dfn class="dfn-paneled" data-dfn-type="dfn" data-no
     <ins>,
  [<code class="idl"><a data-link-type="idl">StringContext</a></code>]</ins>
      and
- [<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#TreatNullAs" id="ref-for-TreatNullAs">TreatNullAs</a></code>].
+ [<code class="idl"><a data-link-type="idl">TreatNullAs</a></code>].
    </p>
    <h4 class="heading settled" data-level="4.1.3" id="webidl-type-conversion"><span class="secno">4.1.3. </span><span class="content">Type conversion</span><a class="self-link" href="#webidl-type-conversion"></a></h4>
    <p>This specification modifies the algorithm implementing the conversion to DOMString in <a href="https://heycam.github.io/webidl/#es-DOMString">Web IDL §3.2.9 DOMString</a>:</p>
@@ -2513,7 +2521,7 @@ attribute appears in is its <dfn class="dfn-paneled" data-dfn-type="dfn" data-no
       <p class="note" role="note"><span>Note:</span> That algorithm may <a data-link-type="dfn">throw</a> a <code class="idl"><a data-link-type="idl">TypeError</a></code>.</p>
      </ins>
     <li data-md>
-     <p>If <var>V</var> is <emu-val>null</emu-val> and the conversion is to an IDL type <a data-link-type="dfn">associated with</a> the [<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#TreatNullAs" id="ref-for-TreatNullAs①">TreatNullAs</a></code>] extended
+     <p>If <var>V</var> is <emu-val>null</emu-val> and the conversion is to an IDL type <a data-link-type="dfn">associated with</a> the [<code class="idl"><a data-link-type="idl">TreatNullAs</a></code>] extended
   attribute, then return the <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②④">DOMString</a></code> value that represents the empty string.</p>
     <li data-md>
      <p>Let <var>x</var> be <a data-link-type="abstract-op">ToString</a>(<var>V</var>).</p>
@@ -2521,7 +2529,7 @@ attribute appears in is its <dfn class="dfn-paneled" data-dfn-type="dfn" data-no
      <p>Return the IDL <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②⑤">DOMString</a></code> value that represents the same sequence of code units as the one the ECMAScript String value <var>x</var> represents.</p>
    </ol>
    <h4 class="heading settled" data-level="4.1.4" id="webidl-validate-the-string-in-context"><span class="secno">4.1.4. </span><span class="content">Validate the string in context</span><a class="self-link" href="#webidl-validate-the-string-in-context"></a></h4>
-   <p>This specification adds a following section to <a href="https://heycam.github.io/webidl/#es-security">Web IDL §3.4 Security</a>.</p>
+   <p>This specification adds a following section to <a href="https://heycam.github.io/webidl/#es-security">Web IDL §3.5 Security</a>.</p>
    <p>Certain algorithms in <a href="https://heycam.github.io/webidl/#es-type-mapping">Web IDL §3.2 ECMAScript type mapping</a> are defined to <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="dfn-validate-the-string-in-context">validate the string in context</dfn> on a given
 value. This check is used to determine whether a given value
 is appropriate for its <code class="idl"><a data-link-type="idl">StringContext</a></code>. This validation takes the following four inputs:</p>
@@ -2556,8 +2564,8 @@ type policy factory</a> of the current <code class="idl"><a data-link-type="idl"
    <h4 class="heading settled" data-level="4.2.2" id="extensions-to-the-document-interface"><span class="secno">4.2.2. </span><span class="content">Extensions to the Document interface</span><a class="self-link" href="#extensions-to-the-document-interface"></a></h4>
    <p>This document modifies the <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document③">Document</a></code> interface defined by <a data-link-type="biblio" href="#biblio-html5">HTML</a>:</p>
 <pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#document" id="ref-for-document④"><c- g>Document</c-></a> {
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions"><c- g>CEReactions</c-></a>] <c- b>void</c-> <dfn class="dfn-paneled idl-code" data-dfn-for="Document" data-dfn-type="method" data-export data-lt="write(...text)|write()" id="dom-document-write"><code><c- g>write</c-></code></dfn>(<a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring"><c- n>HTMLString</c-></a>... <dfn class="idl-code" data-dfn-for="Document/write(...text)" data-dfn-type="argument" data-export id="dom-document-write-text-text"><code><c- g>text</c-></code><a class="self-link" href="#dom-document-write-text-text"></a></dfn>);
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions①"><c- g>CEReactions</c-></a>] <c- b>void</c-> <dfn class="idl-code" data-dfn-for="Document" data-dfn-type="method" data-export data-lt="writeln(...text)|writeln()" id="dom-document-writeln"><code><c- g>writeln</c-></code><a class="self-link" href="#dom-document-writeln"></a></dfn>(<a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring①"><c- n>HTMLString</c-></a>... <dfn class="idl-code" data-dfn-for="Document/writeln(...text)" data-dfn-type="argument" data-export id="dom-document-writeln-text-text"><code><c- g>text</c-></code><a class="self-link" href="#dom-document-writeln-text-text"></a></dfn>);
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions"><c- g>CEReactions</c-></a>] <c- b>void</c-> <dfn class="dfn-paneled idl-code" data-dfn-for="Document" data-dfn-type="method" data-export data-lt="write(...text)|write()" id="dom-document-write"><code><c- g>write</c-></code></dfn>(<a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring"><c- n>HTMLString</c-></a>... <dfn class="idl-code" data-dfn-for="Document/write(...text), Document/write()" data-dfn-type="argument" data-export id="dom-document-write-text-text"><code><c- g>text</c-></code><a class="self-link" href="#dom-document-write-text-text"></a></dfn>);
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions①"><c- g>CEReactions</c-></a>] <c- b>void</c-> <dfn class="idl-code" data-dfn-for="Document" data-dfn-type="method" data-export data-lt="writeln(...text)|writeln()" id="dom-document-writeln"><code><c- g>writeln</c-></code><a class="self-link" href="#dom-document-writeln"></a></dfn>(<a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring①"><c- n>HTMLString</c-></a>... <dfn class="idl-code" data-dfn-for="Document/writeln(...text), Document/writeln()" data-dfn-type="argument" data-export id="dom-document-writeln-text-text"><code><c- g>text</c-></code><a class="self-link" href="#dom-document-writeln-text-text"></a></dfn>);
 };
 </pre>
    <h4 class="heading settled" data-level="4.2.3" id="enforcement-in-scripts"><span class="secno">4.2.3. </span><span class="content">Enforcement for scripts</span><a class="self-link" href="#enforcement-in-scripts"></a></h4>
@@ -2581,7 +2589,7 @@ as in their original counterparts, apart from additional behavior triggered by t
    <p class="note" role="note"><span>Note:</span> Using these IDL attributes is the recommended way of dynamically setting URL or a text of a script. Manipulating attribute nodes or text nodes directly will call a default policy on the final value when the script is prepared.</p>
    <p class="issue" id="issue-62c0f2c6"><a class="self-link" href="#issue-62c0f2c6"></a> Figure out what to do with script.setAttribute('src'). See <a href="https://github.com/whatwg/dom/issues/789">DOM#789</a>.</p>
 <pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement" id="ref-for-htmlscriptelement②"><c- g>HTMLScriptElement</c-></a> : <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement" id="ref-for-htmlelement"><c- n>HTMLElement</c-></a> {
- [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions②"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#TreatNullAs" id="ref-for-TreatNullAs②"><c- g>TreatNullAs</c-></a>=<a class="n" data-link-type="idl-name"><c- n>EmptyString</c-></a>] <a class="n" data-link-type="idl-name" href="#typedefdef-scriptstring" id="ref-for-typedefdef-scriptstring"><c- n>ScriptString</c-></a> <dfn class="idl-code" data-dfn-for="HTMLScriptElement" data-dfn-type="attribute" data-export data-type="[TreatNullAs=EmptyString] ScriptString" id="dom-htmlscriptelement-innertext"><code><c- g>innerText</c-></code><a class="self-link" href="#dom-htmlscriptelement-innertext"></a></dfn>;
+ [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions②"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> [<a class="idl-code" data-link-type="extended-attribute"><c- g>TreatNullAs</c-></a>=<a class="n" data-link-type="idl-name"><c- n>EmptyString</c-></a>] <a class="n" data-link-type="idl-name" href="#typedefdef-scriptstring" id="ref-for-typedefdef-scriptstring"><c- n>ScriptString</c-></a> <dfn class="idl-code" data-dfn-for="HTMLScriptElement" data-dfn-type="attribute" data-export data-type="[TreatNullAs=EmptyString] ScriptString" id="dom-htmlscriptelement-innertext"><code><c- g>innerText</c-></code><a class="self-link" href="#dom-htmlscriptelement-innertext"></a></dfn>;
  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions③"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scriptstring" id="ref-for-typedefdef-scriptstring①"><c- n>ScriptString</c-></a>? <dfn class="idl-code" data-dfn-for="HTMLScriptElement" data-dfn-type="attribute" data-export data-type="ScriptString?" id="dom-htmlscriptelement-textcontent"><code><c- g>textContent</c-></code><a class="self-link" href="#dom-htmlscriptelement-textcontent"></a></dfn>;
  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions④"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring" id="ref-for-typedefdef-scripturlstring"><c- n>ScriptURLString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="HTMLScriptElement" data-dfn-type="attribute" data-export data-type="ScriptURLString" id="dom-htmlscriptelement-src"><code><c- g>src</c-></code></dfn>;
  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions⑤"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scriptstring" id="ref-for-typedefdef-scriptstring②"><c- n>ScriptString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="HTMLScriptElement" data-dfn-type="attribute" data-export data-type="ScriptString" id="dom-htmlscriptelement-text"><code><c- g>text</c-></code></dfn>;
@@ -2904,8 +2912,8 @@ as in their original counterparts, apart from additional behavior triggered by t
 <pre class="idl highlight def"><c- b>typedef</c-> (<a class="n" data-link-type="idl-name" href="#typedefdef-scriptstring" id="ref-for-typedefdef-scriptstring③"><c- n>ScriptString</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="https://heycam.github.io/webidl/#Function" id="ref-for-Function"><c- n>Function</c-></a>) <dfn class="dfn-paneled idl-code" data-dfn-type="typedef" data-export id="typedefdef-trustedtimerhandler"><code><c- g>TrustedTimerHandler</c-></code></dfn>;
 
 <c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/webappapis.html#windoworworkerglobalscope" id="ref-for-windoworworkerglobalscope①"><c- g>WindowOrWorkerGlobalScope</c-></a> {
-  <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-long" id="ref-for-idl-long"><c- b>long</c-></a> <dfn class="idl-code" data-dfn-for="WindowOrWorkerGlobalScope" data-dfn-type="method" data-export data-lt="setTimeout(handler, timeout, ...arguments)|setTimeout(handler, timeout)|setTimeout(handler)" id="dom-windoworworkerglobalscope-settimeout"><code><c- g>setTimeout</c-></code><a class="self-link" href="#dom-windoworworkerglobalscope-settimeout"></a></dfn>(<a class="n" data-link-type="idl-name" href="#typedefdef-trustedtimerhandler" id="ref-for-typedefdef-trustedtimerhandler"><c- n>TrustedTimerHandler</c-></a> <dfn class="idl-code" data-dfn-for="WindowOrWorkerGlobalScope/setTimeout(handler, timeout, ...arguments)" data-dfn-type="argument" data-export id="dom-windoworworkerglobalscope-settimeout-handler-timeout-arguments-handler"><code><c- g>handler</c-></code><a class="self-link" href="#dom-windoworworkerglobalscope-settimeout-handler-timeout-arguments-handler"></a></dfn>, <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-long" id="ref-for-idl-long①"><c- b>long</c-></a> <dfn class="idl-code" data-dfn-for="WindowOrWorkerGlobalScope/setTimeout(handler, timeout, ...arguments)" data-dfn-type="argument" data-export id="dom-windoworworkerglobalscope-settimeout-handler-timeout-arguments-timeout"><code><c- g>timeout</c-></code><a class="self-link" href="#dom-windoworworkerglobalscope-settimeout-handler-timeout-arguments-timeout"></a></dfn> = 0, <c- b>any</c->... <dfn class="idl-code" data-dfn-for="WindowOrWorkerGlobalScope/setTimeout(handler, timeout, ...arguments)" data-dfn-type="argument" data-export id="dom-windoworworkerglobalscope-settimeout-handler-timeout-arguments-arguments"><code><c- g>arguments</c-></code><a class="self-link" href="#dom-windoworworkerglobalscope-settimeout-handler-timeout-arguments-arguments"></a></dfn>);
-  <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-long" id="ref-for-idl-long②"><c- b>long</c-></a> <dfn class="idl-code" data-dfn-for="WindowOrWorkerGlobalScope" data-dfn-type="method" data-export data-lt="setInterval(handler, timeout, ...arguments)|setInterval(handler, timeout)|setInterval(handler)" id="dom-windoworworkerglobalscope-setinterval"><code><c- g>setInterval</c-></code><a class="self-link" href="#dom-windoworworkerglobalscope-setinterval"></a></dfn>(<a class="n" data-link-type="idl-name" href="#typedefdef-trustedtimerhandler" id="ref-for-typedefdef-trustedtimerhandler①"><c- n>TrustedTimerHandler</c-></a> <dfn class="idl-code" data-dfn-for="WindowOrWorkerGlobalScope/setInterval(handler, timeout, ...arguments)" data-dfn-type="argument" data-export id="dom-windoworworkerglobalscope-setinterval-handler-timeout-arguments-handler"><code><c- g>handler</c-></code><a class="self-link" href="#dom-windoworworkerglobalscope-setinterval-handler-timeout-arguments-handler"></a></dfn>, <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-long" id="ref-for-idl-long③"><c- b>long</c-></a> <dfn class="idl-code" data-dfn-for="WindowOrWorkerGlobalScope/setInterval(handler, timeout, ...arguments)" data-dfn-type="argument" data-export id="dom-windoworworkerglobalscope-setinterval-handler-timeout-arguments-timeout"><code><c- g>timeout</c-></code><a class="self-link" href="#dom-windoworworkerglobalscope-setinterval-handler-timeout-arguments-timeout"></a></dfn> = 0, <c- b>any</c->... <dfn class="idl-code" data-dfn-for="WindowOrWorkerGlobalScope/setInterval(handler, timeout, ...arguments)" data-dfn-type="argument" data-export id="dom-windoworworkerglobalscope-setinterval-handler-timeout-arguments-arguments"><code><c- g>arguments</c-></code><a class="self-link" href="#dom-windoworworkerglobalscope-setinterval-handler-timeout-arguments-arguments"></a></dfn>);
+  <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-long" id="ref-for-idl-long"><c- b>long</c-></a> <dfn class="idl-code" data-dfn-for="WindowOrWorkerGlobalScope" data-dfn-type="method" data-export data-lt="setTimeout(handler, timeout, ...arguments)|setTimeout(handler, timeout)|setTimeout(handler)" id="dom-windoworworkerglobalscope-settimeout"><code><c- g>setTimeout</c-></code><a class="self-link" href="#dom-windoworworkerglobalscope-settimeout"></a></dfn>(<a class="n" data-link-type="idl-name" href="#typedefdef-trustedtimerhandler" id="ref-for-typedefdef-trustedtimerhandler"><c- n>TrustedTimerHandler</c-></a> <dfn class="idl-code" data-dfn-for="WindowOrWorkerGlobalScope/setTimeout(handler, timeout, ...arguments), WindowOrWorkerGlobalScope/setTimeout(handler, timeout), WindowOrWorkerGlobalScope/setTimeout(handler)" data-dfn-type="argument" data-export id="dom-windoworworkerglobalscope-settimeout-handler-timeout-arguments-handler"><code><c- g>handler</c-></code><a class="self-link" href="#dom-windoworworkerglobalscope-settimeout-handler-timeout-arguments-handler"></a></dfn>, <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-long" id="ref-for-idl-long①"><c- b>long</c-></a> <dfn class="idl-code" data-dfn-for="WindowOrWorkerGlobalScope/setTimeout(handler, timeout, ...arguments), WindowOrWorkerGlobalScope/setTimeout(handler, timeout), WindowOrWorkerGlobalScope/setTimeout(handler)" data-dfn-type="argument" data-export id="dom-windoworworkerglobalscope-settimeout-handler-timeout-arguments-timeout"><code><c- g>timeout</c-></code><a class="self-link" href="#dom-windoworworkerglobalscope-settimeout-handler-timeout-arguments-timeout"></a></dfn> = 0, <c- b>any</c->... <dfn class="idl-code" data-dfn-for="WindowOrWorkerGlobalScope/setTimeout(handler, timeout, ...arguments), WindowOrWorkerGlobalScope/setTimeout(handler, timeout), WindowOrWorkerGlobalScope/setTimeout(handler)" data-dfn-type="argument" data-export id="dom-windoworworkerglobalscope-settimeout-handler-timeout-arguments-arguments"><code><c- g>arguments</c-></code><a class="self-link" href="#dom-windoworworkerglobalscope-settimeout-handler-timeout-arguments-arguments"></a></dfn>);
+  <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-long" id="ref-for-idl-long②"><c- b>long</c-></a> <dfn class="idl-code" data-dfn-for="WindowOrWorkerGlobalScope" data-dfn-type="method" data-export data-lt="setInterval(handler, timeout, ...arguments)|setInterval(handler, timeout)|setInterval(handler)" id="dom-windoworworkerglobalscope-setinterval"><code><c- g>setInterval</c-></code><a class="self-link" href="#dom-windoworworkerglobalscope-setinterval"></a></dfn>(<a class="n" data-link-type="idl-name" href="#typedefdef-trustedtimerhandler" id="ref-for-typedefdef-trustedtimerhandler①"><c- n>TrustedTimerHandler</c-></a> <dfn class="idl-code" data-dfn-for="WindowOrWorkerGlobalScope/setInterval(handler, timeout, ...arguments), WindowOrWorkerGlobalScope/setInterval(handler, timeout), WindowOrWorkerGlobalScope/setInterval(handler)" data-dfn-type="argument" data-export id="dom-windoworworkerglobalscope-setinterval-handler-timeout-arguments-handler"><code><c- g>handler</c-></code><a class="self-link" href="#dom-windoworworkerglobalscope-setinterval-handler-timeout-arguments-handler"></a></dfn>, <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-long" id="ref-for-idl-long③"><c- b>long</c-></a> <dfn class="idl-code" data-dfn-for="WindowOrWorkerGlobalScope/setInterval(handler, timeout, ...arguments), WindowOrWorkerGlobalScope/setInterval(handler, timeout), WindowOrWorkerGlobalScope/setInterval(handler)" data-dfn-type="argument" data-export id="dom-windoworworkerglobalscope-setinterval-handler-timeout-arguments-timeout"><code><c- g>timeout</c-></code><a class="self-link" href="#dom-windoworworkerglobalscope-setinterval-handler-timeout-arguments-timeout"></a></dfn> = 0, <c- b>any</c->... <dfn class="idl-code" data-dfn-for="WindowOrWorkerGlobalScope/setInterval(handler, timeout, ...arguments), WindowOrWorkerGlobalScope/setInterval(handler, timeout), WindowOrWorkerGlobalScope/setInterval(handler)" data-dfn-type="argument" data-export id="dom-windoworworkerglobalscope-setinterval-handler-timeout-arguments-arguments"><code><c- g>arguments</c-></code><a class="self-link" href="#dom-windoworworkerglobalscope-setinterval-handler-timeout-arguments-arguments"></a></dfn>);
 };
 </pre>
    <p>To the <a href="https://www.w3.org/TR/html5/#timer-initialisation-steps">timer initialization steps algorithm</a>,
@@ -2953,7 +2961,7 @@ also unconditionally accepts any <code class="idl"><a data-link-type="idl" href=
     <li data-md>
      <p>If the algorithm throws an error, abort these steps.</p>
    </ol>
-   <p class="note" role="note"><span>Note:</span> This also applies to events in <a href="https://www.w3.org/TR/SVG2/#EventAttributes">Scalable Vector Graphics (SVG) 2 §EventAttributes</a>.</p>
+   <p class="note" role="note"><span>Note:</span> This also applies to events in <a href="https://www.w3.org/TR/SVG2/interact.html#EventAttributes">SVG 2 §15.9 Event attributes</a>.</p>
    <div class="example" id="event-handlers-example">
     <a class="self-link" href="#event-handlers-example"></a> 
 <pre class="highlight"><c- c1>// Content-Security-Policy: require-trusted-types-for 'script'</c->
@@ -3009,17 +3017,17 @@ document<c- p>.</c->createElement<c- p>(</c-><c- t>'iframe'</c-><c- p>).</c->set
    <p>This specification modifies the Worker constuctors and <code class="idl"><a data-link-type="idl" href="#dom-workerglobalscope-importscripts" id="ref-for-dom-workerglobalscope-importscripts">importScripts</a></code> function to require <code class="idl"><a data-link-type="idl" href="#typedefdef-scripturlstring" id="ref-for-typedefdef-scripturlstring④">ScriptURLString</a></code>.</p>
 <pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed⑤"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
 <c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/workers.html#worker" id="ref-for-worker"><c- g>Worker</c-></a> : <a class="n" data-link-type="idl-name" href="https://dom.spec.whatwg.org/#eventtarget" id="ref-for-eventtarget"><c- n>EventTarget</c-></a> {
-    <dfn class="idl-code" data-dfn-for="Worker" data-dfn-type="constructor" data-export data-lt="Worker(scriptURL, options)|constructor(scriptURL, options)|Worker(scriptURL)|constructor(scriptURL)" id="dom-worker-worker"><code><c- g>constructor</c-></code><a class="self-link" href="#dom-worker-worker"></a></dfn>(<a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring" id="ref-for-typedefdef-scripturlstring⑤"><c- n>ScriptURLString</c-></a> <dfn class="idl-code" data-dfn-for="Worker/constructor(scriptURL, options), Worker/constructor(scriptURL)" data-dfn-type="argument" data-export id="dom-worker-constructor-scripturl-options-scripturl"><code><c- g>scriptURL</c-></code><a class="self-link" href="#dom-worker-constructor-scripturl-options-scripturl"></a></dfn>, <c- b>optional</c-> <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/workers.html#workeroptions" id="ref-for-workeroptions"><c- n>WorkerOptions</c-></a> <dfn class="idl-code" data-dfn-for="Worker/constructor(scriptURL, options), Worker/constructor(scriptURL)" data-dfn-type="argument" data-export id="dom-worker-constructor-scripturl-options-options"><code><c- g>options</c-></code><a class="self-link" href="#dom-worker-constructor-scripturl-options-options"></a></dfn> = {});
+    <dfn class="idl-code" data-dfn-for="Worker" data-dfn-type="constructor" data-export data-lt="Worker(scriptURL, options)|constructor(scriptURL, options)|Worker(scriptURL)|constructor(scriptURL)" id="dom-worker-worker"><code><c- g>constructor</c-></code><a class="self-link" href="#dom-worker-worker"></a></dfn>(<a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring" id="ref-for-typedefdef-scripturlstring⑤"><c- n>ScriptURLString</c-></a> <dfn class="idl-code" data-dfn-for="Worker/Worker(scriptURL, options), Worker/constructor(scriptURL, options), Worker/Worker(scriptURL), Worker/constructor(scriptURL)" data-dfn-type="argument" data-export id="dom-worker-worker-scripturl-options-scripturl"><code><c- g>scriptURL</c-></code><a class="self-link" href="#dom-worker-worker-scripturl-options-scripturl"></a></dfn>, <c- b>optional</c-> <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/workers.html#workeroptions" id="ref-for-workeroptions"><c- n>WorkerOptions</c-></a> <dfn class="idl-code" data-dfn-for="Worker/Worker(scriptURL, options), Worker/constructor(scriptURL, options), Worker/Worker(scriptURL), Worker/constructor(scriptURL)" data-dfn-type="argument" data-export id="dom-worker-worker-scripturl-options-options"><code><c- g>options</c-></code><a class="self-link" href="#dom-worker-worker-scripturl-options-options"></a></dfn> = {});
 };
 
 [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed⑥"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
 <c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/workers.html#sharedworker" id="ref-for-sharedworker"><c- g>SharedWorker</c-></a> : <a class="n" data-link-type="idl-name" href="https://dom.spec.whatwg.org/#eventtarget" id="ref-for-eventtarget①"><c- n>EventTarget</c-></a> {
-  <dfn class="idl-code" data-dfn-for="SharedWorker" data-dfn-type="constructor" data-export data-lt="SharedWorker(scriptURL, options)|constructor(scriptURL, options)|SharedWorker(scriptURL)|constructor(scriptURL)" id="dom-sharedworker-sharedworker"><code><c- g>constructor</c-></code><a class="self-link" href="#dom-sharedworker-sharedworker"></a></dfn>(<a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring" id="ref-for-typedefdef-scripturlstring⑥"><c- n>ScriptURLString</c-></a> <dfn class="idl-code" data-dfn-for="SharedWorker/constructor(scriptURL, options), SharedWorker/constructor(scriptURL)" data-dfn-type="argument" data-export id="dom-sharedworker-constructor-scripturl-options-scripturl"><code><c- g>scriptURL</c-></code><a class="self-link" href="#dom-sharedworker-constructor-scripturl-options-scripturl"></a></dfn>, <c- b>optional</c-> (<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②⑥"><c- b>DOMString</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/workers.html#workeroptions" id="ref-for-workeroptions①"><c- n>WorkerOptions</c-></a>) <dfn class="idl-code" data-dfn-for="SharedWorker/constructor(scriptURL, options), SharedWorker/constructor(scriptURL)" data-dfn-type="argument" data-export id="dom-sharedworker-constructor-scripturl-options-options"><code><c- g>options</c-></code><a class="self-link" href="#dom-sharedworker-constructor-scripturl-options-options"></a></dfn> = {});
+  <dfn class="idl-code" data-dfn-for="SharedWorker" data-dfn-type="constructor" data-export data-lt="SharedWorker(scriptURL, options)|constructor(scriptURL, options)|SharedWorker(scriptURL)|constructor(scriptURL)" id="dom-sharedworker-sharedworker"><code><c- g>constructor</c-></code><a class="self-link" href="#dom-sharedworker-sharedworker"></a></dfn>(<a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring" id="ref-for-typedefdef-scripturlstring⑥"><c- n>ScriptURLString</c-></a> <dfn class="idl-code" data-dfn-for="SharedWorker/SharedWorker(scriptURL, options), SharedWorker/constructor(scriptURL, options), SharedWorker/SharedWorker(scriptURL), SharedWorker/constructor(scriptURL)" data-dfn-type="argument" data-export id="dom-sharedworker-sharedworker-scripturl-options-scripturl"><code><c- g>scriptURL</c-></code><a class="self-link" href="#dom-sharedworker-sharedworker-scripturl-options-scripturl"></a></dfn>, <c- b>optional</c-> (<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②⑥"><c- b>DOMString</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/workers.html#workeroptions" id="ref-for-workeroptions①"><c- n>WorkerOptions</c-></a>) <dfn class="idl-code" data-dfn-for="SharedWorker/SharedWorker(scriptURL, options), SharedWorker/constructor(scriptURL, options), SharedWorker/SharedWorker(scriptURL), SharedWorker/constructor(scriptURL)" data-dfn-type="argument" data-export id="dom-sharedworker-sharedworker-scripturl-options-options"><code><c- g>options</c-></code><a class="self-link" href="#dom-sharedworker-sharedworker-scripturl-options-options"></a></dfn> = {});
 };
 
 [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed⑦"><c- g>Exposed</c-></a>=<c- n>Worker</c->]
 <c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/workers.html#workerglobalscope" id="ref-for-workerglobalscope"><c- g>WorkerGlobalScope</c-></a> : <a class="n" data-link-type="idl-name" href="https://dom.spec.whatwg.org/#eventtarget" id="ref-for-eventtarget②"><c- n>EventTarget</c-></a> {
-  <c- b>void</c-> <dfn class="dfn-paneled idl-code" data-dfn-for="WorkerGlobalScope" data-dfn-type="method" data-export data-lt="importScripts(...urls)|importScripts()" id="dom-workerglobalscope-importscripts"><code><c- g>importScripts</c-></code></dfn>(<a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring" id="ref-for-typedefdef-scripturlstring⑦"><c- n>ScriptURLString</c-></a>... <dfn class="idl-code" data-dfn-for="WorkerGlobalScope/importScripts(...urls)" data-dfn-type="argument" data-export id="dom-workerglobalscope-importscripts-urls-urls"><code><c- g>urls</c-></code><a class="self-link" href="#dom-workerglobalscope-importscripts-urls-urls"></a></dfn>);
+  <c- b>void</c-> <dfn class="dfn-paneled idl-code" data-dfn-for="WorkerGlobalScope" data-dfn-type="method" data-export data-lt="importScripts(...urls)|importScripts()" id="dom-workerglobalscope-importscripts"><code><c- g>importScripts</c-></code></dfn>(<a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring" id="ref-for-typedefdef-scripturlstring⑦"><c- n>ScriptURLString</c-></a>... <dfn class="idl-code" data-dfn-for="WorkerGlobalScope/importScripts(...urls), WorkerGlobalScope/importScripts()" data-dfn-type="argument" data-export id="dom-workerglobalscope-importscripts-urls-urls"><code><c- g>urls</c-></code><a class="self-link" href="#dom-workerglobalscope-importscripts-urls-urls"></a></dfn>);
 };
 </pre>
    <h3 class="heading settled" data-level="4.3" id="sw-integration"><span class="secno">4.3. </span><span class="content">Integration with Service Workers</span><a class="self-link" href="#sw-integration"></a></h3>
@@ -3039,7 +3047,7 @@ document<c- p>.</c->createElement<c- p>(</c-><c- t>'iframe'</c-><c- p>).</c->set
    <p>On setting <code class="idl"><a data-link-type="idl" href="#dom-svganimatedstring-baseval" id="ref-for-dom-svganimatedstring-baseval">baseVal</a></code>, the following steps are run:</p>
    <ol>
     <li data-md>
-     <ins>If the relected <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-attribute" id="ref-for-dfn-attribute③">attribute</a>'s element is a <code class="idl"><a data-link-type="idl" href="https://svgwg.org/svg2-draft/interact.html#InterfaceSVGScriptElement" id="ref-for-InterfaceSVGScriptElement">SVGScriptElement</a></code>, set <var>value</var> to the result of executing <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string⑥">Get Trusted Type compliant string</a> algorithm, with the following arguments:</ins>
+     <ins>If the relected <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute" id="ref-for-concept-attribute③">attribute</a>'s element is a <code class="idl"><a data-link-type="idl" href="https://svgwg.org/svg2-draft/interact.html#InterfaceSVGScriptElement" id="ref-for-InterfaceSVGScriptElement">SVGScriptElement</a></code>, set <var>value</var> to the result of executing <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string⑥">Get Trusted Type compliant string</a> algorithm, with the following arguments:</ins>
      <ul>
       <li data-md>
        <ins><code class="idl"><a data-link-type="idl" href="#trustedscripturl" id="ref-for-trustedscripturl⑧">TrustedScriptURL</a></code> as <var>expectedType</var>,</ins>
@@ -3080,7 +3088,7 @@ document<c- p>.</c->createElement<c- p>(</c-><c- t>'iframe'</c-><c- p>).</c->set
    </ol>
    <p>Additionally, this document changes the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-append" id="ref-for-concept-node-append">append</a> an attribute algorithm:</p>
    <p>
-    To <dfn data-dfn-type="dfn" data-export data-lt="append an attribute" id="concept-element-attributes-append">append<a class="self-link" href="#concept-element-attributes-append"></a></dfn> an <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-attribute" id="ref-for-dfn-attribute④">attribute</a> <var>attribute</var> to an <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element" id="ref-for-concept-element①">element</a> <var>element</var> 
+    To <dfn data-dfn-type="dfn" data-export data-lt="append an attribute" id="concept-element-attributes-append">append<a class="self-link" href="#concept-element-attributes-append"></a></dfn> an <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute" id="ref-for-concept-attribute④">attribute</a> <var>attribute</var> to an <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element" id="ref-for-concept-element①">element</a> <var>element</var> 
     <ins>with a <var>value</var></ins>
     , run these steps: 
    </p>
@@ -3106,20 +3114,21 @@ document<c- p>.</c->createElement<c- p>(</c-><c- t>'iframe'</c-><c- p>).</c->set
    <h3 class="heading settled" data-level="4.6" id="integration-with-dom-parsing"><span class="secno">4.6. </span><span class="content">Integration with DOM Parsing</span><a class="self-link" href="#integration-with-dom-parsing"></a></h3>
    <p>This document modifies the following interfaces defined by <a data-link-type="biblio" href="#biblio-dom-parsing">[DOM-Parsing]</a>:</p>
 <pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#element" id="ref-for-element⑤"><c- g>Element</c-></a> {
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions①⓪"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#TreatNullAs" id="ref-for-TreatNullAs③"><c- g>TreatNullAs</c-></a>=<a class="n" data-link-type="idl-name"><c- n>EmptyString</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring③"><c- n>HTMLString</c-></a> <dfn class="idl-code" data-dfn-for="Element" data-dfn-type="attribute" data-export data-type="HTMLString" id="dom-element-outerhtml"><code><c- g>outerHTML</c-></code><a class="self-link" href="#dom-element-outerhtml"></a></dfn>;
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions①⓪"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute"><c- g>TreatNullAs</c-></a>=<a class="n" data-link-type="idl-name"><c- n>EmptyString</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring③"><c- n>HTMLString</c-></a> <dfn class="idl-code" data-dfn-for="Element" data-dfn-type="attribute" data-export data-type="HTMLString" id="dom-element-outerhtml"><code><c- g>outerHTML</c-></code><a class="self-link" href="#dom-element-outerhtml"></a></dfn>;
   [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions①①"><c- g>CEReactions</c-></a>] <c- b>void</c-> <dfn class="idl-code" data-dfn-for="Element" data-dfn-type="method" data-export data-lt="insertAdjacentHTML(position, text)" id="dom-element-insertadjacenthtml"><code><c- g>insertAdjacentHTML</c-></code><a class="self-link" href="#dom-element-insertadjacenthtml"></a></dfn>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②⑧"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="Element/insertAdjacentHTML(position, text)" data-dfn-type="argument" data-export id="dom-element-insertadjacenthtml-position-text-position"><code><c- g>position</c-></code><a class="self-link" href="#dom-element-insertadjacenthtml-position-text-position"></a></dfn>, <a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring④"><c- n>HTMLString</c-></a> <dfn class="idl-code" data-dfn-for="Element/insertAdjacentHTML(position, text)" data-dfn-type="argument" data-export id="dom-element-insertadjacenthtml-position-text-text"><code><c- g>text</c-></code><a class="self-link" href="#dom-element-insertadjacenthtml-position-text-text"></a></dfn>);
 };
 
 <c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface"><c- g>InnerHTML</c-></a> { // specified in a draft version at https://w3c.github.io/DOM-Parsing/#the-innerhtml-mixin
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions①②"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#TreatNullAs" id="ref-for-TreatNullAs④"><c- g>TreatNullAs</c-></a>=<a class="n" data-link-type="idl-name"><c- n>EmptyString</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring⑤"><c- n>HTMLString</c-></a> <dfn class="idl-code" data-dfn-for="InnerHTML" data-dfn-type="attribute" data-export data-type="HTMLString" id="dom-innerhtml-innerhtml"><code><c- g>innerHTML</c-></code><a class="self-link" href="#dom-innerhtml-innerhtml"></a></dfn>;
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions①②"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute"><c- g>TreatNullAs</c-></a>=<a class="n" data-link-type="idl-name"><c- n>EmptyString</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring⑤"><c- n>HTMLString</c-></a> <dfn class="idl-code" data-dfn-for="InnerHTML" data-dfn-type="attribute" data-export data-type="HTMLString" id="dom-innerhtml-innerhtml"><code><c- g>innerHTML</c-></code><a class="self-link" href="#dom-innerhtml-innerhtml"></a></dfn>;
 };
 
 <c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#range" id="ref-for-range"><c- g>Range</c-></a> {
   [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions①③"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#NewObject" id="ref-for-NewObject①"><c- g>NewObject</c-></a>] <a class="n" data-link-type="idl-name" href="https://dom.spec.whatwg.org/#documentfragment" id="ref-for-documentfragment"><c- n>DocumentFragment</c-></a> <dfn class="idl-code" data-dfn-for="Range" data-dfn-type="method" data-export data-lt="createContextualFragment(fragment)" id="dom-range-createcontextualfragment"><code><c- g>createContextualFragment</c-></code><a class="self-link" href="#dom-range-createcontextualfragment"></a></dfn>(<a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring⑥"><c- n>HTMLString</c-></a> <dfn class="idl-code" data-dfn-for="Range/createContextualFragment(fragment)" data-dfn-type="argument" data-export id="dom-range-createcontextualfragment-fragment-fragment"><code><c- g>fragment</c-></code><a class="self-link" href="#dom-range-createcontextualfragment-fragment-fragment"></a></dfn>);
 };
 
-[<dfn class="idl-code" data-dfn-for="DOMParser" data-dfn-type="constructor" data-export data-lt="DOMParser()" id="dom-domparser-domparser"><code><c- g>Constructor</c-></code><a class="self-link" href="#dom-domparser-domparser"></a></dfn>, <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed①⓪"><c- g>Exposed</c-></a>=<c- n>Window</c->]
+[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed①⓪"><c- g>Exposed</c-></a>=<c- n>Window</c->]
 <c- b>interface</c-> <dfn class="idl-code" data-dfn-type="interface" data-export id="domparser"><code><c- g>DOMParser</c-></code><a class="self-link" href="#domparser"></a></dfn> {
+  <dfn class="idl-code" data-dfn-for="DOMParser" data-dfn-type="constructor" data-export data-lt="DOMParser()|constructor()" id="dom-domparser-domparser"><code><c- g>constructor</c-></code><a class="self-link" href="#dom-domparser-domparser"></a></dfn>();
   [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#NewObject" id="ref-for-NewObject②"><c- g>NewObject</c-></a>] <a class="n" data-link-type="idl-name" href="https://dom.spec.whatwg.org/#document" id="ref-for-document⑥"><c- n>Document</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="DOMParser" data-dfn-type="method" data-export data-lt="parseFromString(str, type)" id="dom-domparser-parsefromstring"><code><c- g>parseFromString</c-></code></dfn>(<a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring⑦"><c- n>HTMLString</c-></a> <dfn class="idl-code" data-dfn-for="DOMParser/parseFromString(str, type)" data-dfn-type="argument" data-export id="dom-domparser-parsefromstring-str-type-str"><code><c- g>str</c-></code><a class="self-link" href="#dom-domparser-parsefromstring-str-type-str"></a></dfn>, <a class="n" data-link-type="idl-name" href="https://www.w3.org/TR/DOM-Parsing/#h-the-domparser-interface" id="ref-for-h-the-domparser-interface"><c- n>SupportedType</c-></a> <dfn class="idl-code" data-dfn-for="DOMParser/parseFromString(str, type)" data-dfn-type="argument" data-export id="dom-domparser-parsefromstring-str-type-type"><code><c- g>type</c-></code><a class="self-link" href="#dom-domparser-parsefromstring-str-type-type"></a></dfn>);
 };
 </pre>
@@ -3146,7 +3155,7 @@ directive-value = <a data-link-type="dfn" href="#trusted-types-sink-group" id="r
    <p class="note" role="note"><span>Note:</span> This algorithm assures that the code to be executed by a navigation to a <code>javascript:</code> URL will have to pass through a <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy">default policy</a>’s <code>createScript</code> function, in addition to all other restrictions imposed by other CSP directives.</p>
    <ol>
     <li data-md>
-     <p>If <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-client" id="ref-for-concept-request-client">client</a> is not a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-secure-contexts/#secure-contexts" id="ref-for-secure-contexts">secure context</a>, return <code>"Allowed"</code> and abort further steps.</p>
+     <p>If <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-client" id="ref-for-concept-request-client">client</a> is not a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#secure-context" id="ref-for-secure-context">secure context</a>, return <code>"Allowed"</code> and abort further steps.</p>
      <p class="note" role="note"><span>Note:</span> <code>require-trusted-types-for</code> directive is recognized only for secure contexts.</p>
     <li data-md>
      <p>If <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-url" id="ref-for-concept-request-url">url</a>'s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-scheme" id="ref-for-concept-url-scheme">scheme</a> is not <code>"javascript"</code>, return <code>"Allowed"</code> and abort further steps.</p>
@@ -3190,8 +3199,8 @@ directive-value = <a data-link-type="dfn" href="#serialized-tt-configuration" id
 <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="tt-policy-name">tt-policy-name</dfn> = 1*( <a href="https://tools.ietf.org/html/rfc5234#appendix-B.1">ALPHA</a> / <a href="https://tools.ietf.org/html/rfc5234#appendix-B.1">DIGIT</a> / "-" / "#" / "=" / "_" / "/" / "@" / "." / "%")
 <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="tt-keyword">tt-keyword</dfn> = "'allow-duplicates'" / "'none'"
 </pre>
-   <div class="example" id="whitelist-of-policy-names-in-header">
-    <a class="self-link" href="#whitelist-of-policy-names-in-header"></a> Types are enforced at sinks, and only two policies may be created: “one” and “two”. 
+   <div class="example" id="allowlist-of-policy-names-in-header">
+    <a class="self-link" href="#allowlist-of-policy-names-in-header"></a> Types are enforced at sinks, and only two policies may be created: “one” and “two”. 
 <pre class="http">Content-Security-Policy: require-trusted-types-for 'script'; trusted-types one two
 </pre>
    </div>
@@ -3222,7 +3231,7 @@ returns <code>"Blocked"</code> if the <a data-link-type="dfn" href="#injection-s
     <li data-md>
      <p>Let <var>result</var> be <code>"Allowed"</code>.</p>
     <li data-md>
-     <p>For each <var>policy</var> in <var>global</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#concept-document-csp-list" id="ref-for-concept-document-csp-list①">CSP list</a>:</p>
+     <p>For each <var>policy</var> in <var>global</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#csp-list" id="ref-for-csp-list①">CSP list</a>:</p>
      <ol>
       <li data-md>
        <p>If <var>policy</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#policy-directive-set" id="ref-for-policy-directive-set①">directive set</a> does not contain a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives④">directive</a> which <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-name" id="ref-for-directive-name②">name</a> is <code>"require-trusted-types-for"</code>, skip to the next <var>policy</var>.</p>
@@ -3255,7 +3264,7 @@ strings (<var>createdPolicyNames</var>), this algorithm returns <code>"Blocked"<
     <li data-md>
      <p>Let <var>result</var> be <code>"Allowed"</code>.</p>
     <li data-md>
-     <p>For each <var>policy</var> in <var>global</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#concept-document-csp-list" id="ref-for-concept-document-csp-list②">CSP list</a>:</p>
+     <p>For each <var>policy</var> in <var>global</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#csp-list" id="ref-for-csp-list②">CSP list</a>:</p>
      <ol>
       <li data-md>
        <p>Let <var>createViolation</var> be false.</p>
@@ -3364,7 +3373,7 @@ set <var>source-list</var> to that <a data-link-type="dfn" href="https://w3c.git
 an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ascii-case-insensitive" id="ref-for-ascii-case-insensitive">ASCII case-insensitive</a> match for the string "<a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-unsafe-eval" id="ref-for-grammardef-unsafe-eval"><code>'unsafe-eval'</code></a>" then:</p>
          <ol>
           <li data-md>
-           <p>Let <var>violation</var> be the result of executing <a href="https://www.w3.org/TR/CSP3/#create-violation-for-global">Content Security Policy Level 3 §create-violation-for-global</a> on <var>global</var>, <var>policy</var>, and "<code>script-src</code>".</p>
+           <p>Let <var>violation</var> be the result of executing <a href="https://www.w3.org/TR/CSP3/#create-violation-for-global">Content Security Policy §2.4.1 Create a violation object for global, policy, and directive</a> on <var>global</var>, <var>policy</var>, and "<code>script-src</code>".</p>
           <li data-md>
            <p>Set <var>violation</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation-resource" id="ref-for-violation-resource③">resource</a> to "<code>inline</code>".</p>
           <li data-md>
@@ -3378,7 +3387,7 @@ the substring of
 40 characters.
            </p>
           <li data-md>
-           <p>Execute <a href="https://www.w3.org/TR/CSP3/#report-violation">Content Security Policy Level 3 §report-violation</a> on <var>violation</var>.</p>
+           <p>Execute <a href="https://www.w3.org/TR/CSP3/#report-violation">Content Security Policy §5.3 Report a violation</a> on <var>violation</var>.</p>
           <li data-md>
            <p>If <var>policy</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#policy-disposition" id="ref-for-policy-disposition②">disposition</a> is "<code>enforce</code>", then set <var>result</var> to
 "<code>Blocked</code>".</p>
@@ -3417,7 +3426,7 @@ possible that such nodes can be imported or adopted from documents in other
 windows, that don’t have the same set of restrictions. In essence - it is
 possible to bypass Trusted Types if a malicious author creates a setup in which
 a restricted document colludes with an unrestricted one.</p>
-   <p>CSP propagation rules (see <a href="https://www.w3.org/TR/CSP3/#initialize-document-csp">Content Security Policy Level 3 §initialize-document-csp</a> partially address this
+   <p>CSP propagation rules (see <a href="https://www.w3.org/TR/CSP3/#initialize-document-csp">Content Security Policy §4.2.1 Initialize a Document's CSP list</a> partially address this
 issue, as new <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#local-scheme" id="ref-for-local-scheme">local scheme</a> documents will inherit the same set of restrictions.
 To address this issue comprehensively, other mechanisms like <a href="https://wicg.github.io/origin-policy/">Origin Policy</a> should be used to ensure that baseline security rules are applied for the whole
 origin.</p>
@@ -3499,6 +3508,7 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <li><a href="#concept-element-attributes-validation-ext">attribute validation steps</a><span>, in §4.5</span>
    <li><a href="#dom-svganimatedstring-baseval">baseVal</a><span>, in §4.4</span>
    <li><a href="#dom-htmlobjectelement-codebase">codeBase</a><span>, in §4.2.4</span>
+   <li><a href="#dom-domparser-domparser">constructor()</a><span>, in §4.6</span>
    <li>
     constructor(scriptURL)
     <ul>
@@ -3531,8 +3541,8 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <li><a href="#dom-htmlobjectelement-data">data</a><span>, in §4.2.4</span>
    <li><a href="#default-policy">Default policy</a><span>, in §2.3.4</span>
    <li><a href="#dom-trustedtypepolicyfactory-defaultpolicy">defaultPolicy</a><span>, in §2.3.1</span>
-   <li><a href="#dom-domparser-domparser">DOMParser()</a><span>, in §4.6</span>
    <li><a href="#domparser">DOMParser</a><span>, in §4.6</span>
+   <li><a href="#dom-domparser-domparser">DOMParser()</a><span>, in §4.6</span>
    <li><a href="#dom-trustedtypepolicyfactory-emptyhtml">emptyHTML</a><span>, in §2.3.1</span>
    <li><a href="#dom-trustedtypepolicyfactory-emptyscript">emptyScript</a><span>, in §2.3.1</span>
    <li><a href="#enforcement">Enforcement</a><span>, in §2.4</span>
@@ -3620,21 +3630,21 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
      <li><a href="#typedef-trustedscripturl">(type)</a><span>, in §2.2.3</span>
     </ul>
    <li><a href="#typedefdef-trustedtimerhandler">TrustedTimerHandler</a><span>, in §4.2.5</span>
-   <li><a href="#typedefdef-trustedtype">TrustedType</a><span>, in §4</span>
    <li><a href="#trusted-type">Trusted Type</a><span>, in §2.2</span>
+   <li><a href="#typedefdef-trustedtype">TrustedType</a><span>, in §4</span>
    <li>
     TrustedTypePolicy
     <ul>
      <li><a href="#trustedtypepolicy">(interface)</a><span>, in §2.3.2</span>
      <li><a href="#typedef-trustedtypepolicy">(type)</a><span>, in §2.3.2</span>
     </ul>
+   <li><a href="#window-trusted-type-policy-factory">trusted type policy factory</a><span>, in §4.2</span>
    <li>
     TrustedTypePolicyFactory
     <ul>
      <li><a href="#trustedtypepolicyfactory">(interface)</a><span>, in §2.3.1</span>
      <li><a href="#typedef-trustedtypepolicyfactory">(type)</a><span>, in §2.3.1</span>
     </ul>
-   <li><a href="#window-trusted-type-policy-factory">trusted type policy factory</a><span>, in §4.2</span>
    <li>
     TrustedTypePolicyOptions
     <ul>
@@ -3831,6 +3841,14 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
     <li><a href="#ref-for-concept-node-append">4.5. Integration with DOM</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-attribute">
+   <a href="https://dom.spec.whatwg.org/#concept-attribute">https://dom.spec.whatwg.org/#concept-attribute</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-attribute">2.3.1. TrustedTypePolicyFactory</a> <a href="#ref-for-concept-attribute①">(2)</a> <a href="#ref-for-concept-attribute②">(3)</a>
+    <li><a href="#ref-for-concept-attribute③">4.4. Integration with SVG</a>
+    <li><a href="#ref-for-concept-attribute④">4.5. Integration with DOM</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-concept-element-attributes-change-ext">
    <a href="https://dom.spec.whatwg.org/#concept-element-attributes-change-ext">https://dom.spec.whatwg.org/#concept-element-attributes-change-ext</a><b>Referenced in:</b>
    <ul>
@@ -4018,14 +4036,6 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
     <li><a href="#ref-for-workeroptions">4.2.8. Web Workers</a> <a href="#ref-for-workeroptions①">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-document-csp-list">
-   <a href="https://html.spec.whatwg.org/multipage/dom.html#concept-document-csp-list">https://html.spec.whatwg.org/multipage/dom.html#concept-document-csp-list</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-concept-document-csp-list">3.3. Get Trusted Type compliant string</a>
-    <li><a href="#ref-for-concept-document-csp-list①">4.7.3. Should sink type mismatch violation be blocked by Content Security Policy?</a>
-    <li><a href="#ref-for-concept-document-csp-list②">4.7.4. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
-   </ul>
-  </aside>
   <aside class="dfn-panel" data-for="term-for-concept-settings-object-global">
    <a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-global">https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-global</a><b>Referenced in:</b>
    <ul>
@@ -4066,6 +4076,12 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
     <li><a href="#ref-for-concept-relevant-global④">4.2.6. Enforcement in event handler content attributes</a>
     <li><a href="#ref-for-concept-relevant-global⑤">4.2.7. Validate the string in context</a> <a href="#ref-for-concept-relevant-global⑥">(2)</a>
     <li><a href="#ref-for-concept-relevant-global⑦">4.4. Integration with SVG</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-secure-context">
+   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#secure-context">https://html.spec.whatwg.org/multipage/webappapis.html#secure-context</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-secure-context">4.7.1.1. require-trusted-types-for Pre-Navigation check</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-list-append">
@@ -4111,12 +4127,6 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <a href="https://infra.spec.whatwg.org/#ordered-set">https://infra.spec.whatwg.org/#ordered-set</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-ordered-set">2.3.1. TrustedTypePolicyFactory</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-secure-contexts">
-   <a href="https://w3c.github.io/webappsec-secure-contexts/#secure-contexts">https://w3c.github.io/webappsec-secure-contexts/#secure-contexts</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-secure-contexts">4.7.1.1. require-trusted-types-for Pre-Navigation check</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dictdef-registrationoptions">
@@ -4244,15 +4254,6 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
     <li><a href="#ref-for-SecureContext⑥">4.3. Integration with Service Workers</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-TreatNullAs">
-   <a href="https://heycam.github.io/webidl/#TreatNullAs">https://heycam.github.io/webidl/#TreatNullAs</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-TreatNullAs">4.1.2. Extended attributes applicable to types</a>
-    <li><a href="#ref-for-TreatNullAs①">4.1.3. Type conversion</a>
-    <li><a href="#ref-for-TreatNullAs②">4.2.3.2. Setting slot values</a>
-    <li><a href="#ref-for-TreatNullAs③">4.6. Integration with DOM Parsing</a> <a href="#ref-for-TreatNullAs④">(2)</a>
-   </ul>
-  </aside>
   <aside class="dfn-panel" data-for="term-for-exceptiondef-typeerror">
    <a href="https://heycam.github.io/webidl/#exceptiondef-typeerror">https://heycam.github.io/webidl/#exceptiondef-typeerror</a><b>Referenced in:</b>
    <ul>
@@ -4267,14 +4268,6 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
     <li><a href="#ref-for-idl-USVString">2.3.3. TrustedTypePolicyOptions</a>
     <li><a href="#ref-for-idl-USVString①">4. Integrations</a>
     <li><a href="#ref-for-idl-USVString②">4.1.1. [StringContext]</a> <a href="#ref-for-idl-USVString③">(2)</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-dfn-attribute">
-   <a href="https://heycam.github.io/webidl/#dfn-attribute">https://heycam.github.io/webidl/#dfn-attribute</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dfn-attribute">2.3.1. TrustedTypePolicyFactory</a> <a href="#ref-for-dfn-attribute①">(2)</a> <a href="#ref-for-dfn-attribute②">(3)</a>
-    <li><a href="#ref-for-dfn-attribute③">4.4. Integration with SVG</a>
-    <li><a href="#ref-for-dfn-attribute④">4.5. Integration with DOM</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idl-boolean">
@@ -4381,7 +4374,7 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
      <li><span class="dfn-paneled" id="term-for-grammardef-report-sample" style="color:initial">'report-sample'</span>
      <li><span class="dfn-paneled" id="term-for-grammardef-unsafe-eval" style="color:initial">'unsafe-eval'</span>
      <li><span class="dfn-paneled" id="term-for-content-security-policy-object" style="color:initial">content security policy object</span>
-     <li><span class="dfn-paneled" id="term-for-global-object-csp-list" style="color:initial">csp list</span>
+     <li><span class="dfn-paneled" id="term-for-global-object-csp-list" style="color:initial">csp list <small>(for global object)</small></span>
      <li><span class="dfn-paneled" id="term-for-policy-directive-set" style="color:initial">directive set</span>
      <li><span class="dfn-paneled" id="term-for-directives" style="color:initial">directives</span>
      <li><span class="dfn-paneled" id="term-for-policy-disposition" style="color:initial">disposition</span>
@@ -4410,6 +4403,7 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
      <li><span class="dfn-paneled" id="term-for-eventtarget" style="color:initial">EventTarget</span>
      <li><span class="dfn-paneled" id="term-for-range" style="color:initial">Range</span>
      <li><span class="dfn-paneled" id="term-for-concept-node-append" style="color:initial">append</span>
+     <li><span class="dfn-paneled" id="term-for-concept-attribute" style="color:initial">attribute</span>
      <li><span class="dfn-paneled" id="term-for-concept-element-attributes-change-ext" style="color:initial">attribute change steps</span>
      <li><span class="dfn-paneled" id="term-for-concept-element-attribute" style="color:initial">attribute list</span>
      <li><span class="dfn-paneled" id="term-for-concept-child-text-content" style="color:initial">child text content</span>
@@ -4451,13 +4445,13 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
      <li><span class="dfn-paneled" id="term-for-worker" style="color:initial">Worker</span>
      <li><span class="dfn-paneled" id="term-for-workerglobalscope" style="color:initial">WorkerGlobalScope</span>
      <li><span class="dfn-paneled" id="term-for-workeroptions" style="color:initial">WorkerOptions</span>
-     <li><span class="dfn-paneled" id="term-for-concept-document-csp-list" style="color:initial">csp list</span>
      <li><span class="dfn-paneled" id="term-for-concept-settings-object-global" style="color:initial">global object <small>(for environment settings object)</small></span>
      <li><span class="dfn-paneled" id="term-for-dom-innertext" style="color:initial">innerText</span>
      <li><span class="dfn-paneled" id="term-for-prepare-a-script" style="color:initial">prepare a script</span>
      <li><span class="dfn-paneled" id="term-for-concept-global-object-realm" style="color:initial">realm</span>
      <li><span class="dfn-paneled" id="term-for-reflect" style="color:initial">reflect</span>
      <li><span class="dfn-paneled" id="term-for-concept-relevant-global" style="color:initial">relevant global object</span>
+     <li><span class="dfn-paneled" id="term-for-secure-context" style="color:initial">secure context</span>
     </ul>
    <li>
     <a data-link-type="biblio">[INFRA]</a> defines the following terms:
@@ -4469,11 +4463,6 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
      <li><span class="dfn-paneled" id="term-for-list-contain" style="color:initial">contain</span>
      <li><span class="dfn-paneled" id="term-for-html-namespace" style="color:initial">html namespace</span>
      <li><span class="dfn-paneled" id="term-for-ordered-set" style="color:initial">ordered set</span>
-    </ul>
-   <li>
-    <a data-link-type="biblio">[secure-contexts]</a> defines the following terms:
-    <ul>
-     <li><span class="dfn-paneled" id="term-for-secure-contexts" style="color:initial">secure contexts</span>
     </ul>
    <li>
     <a data-link-type="biblio">[service-workers-1]</a> defines the following terms:
@@ -4507,10 +4496,8 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
      <li><span class="dfn-paneled" id="term-for-Function" style="color:initial">Function</span>
      <li><span class="dfn-paneled" id="term-for-NewObject" style="color:initial">NewObject</span>
      <li><span class="dfn-paneled" id="term-for-SecureContext" style="color:initial">SecureContext</span>
-     <li><span class="dfn-paneled" id="term-for-TreatNullAs" style="color:initial">TreatNullAs</span>
      <li><span class="dfn-paneled" id="term-for-exceptiondef-typeerror" style="color:initial">TypeError</span>
      <li><span class="dfn-paneled" id="term-for-idl-USVString" style="color:initial">USVString</span>
-     <li><span class="dfn-paneled" id="term-for-dfn-attribute" style="color:initial">attribute</span>
      <li><span class="dfn-paneled" id="term-for-idl-boolean" style="color:initial">boolean</span>
      <li><span class="dfn-paneled" id="term-for-dfn-convert-ecmascript-to-idl-value" style="color:initial">converted to an idl value</span>
      <li><span class="dfn-paneled" id="term-for-dfn-extended-attribute" style="color:initial">extended attribute</span>
@@ -4548,10 +4535,8 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <dd>Anne van Kesteren; Domenic Denicola. <a href="https://infra.spec.whatwg.org/">Infra Standard</a>. Living Standard. URL: <a href="https://infra.spec.whatwg.org/">https://infra.spec.whatwg.org/</a>
    <dt id="biblio-rfc2119">[RFC2119]
    <dd>S. Bradner. <a href="https://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>. March 1997. Best Current Practice. URL: <a href="https://tools.ietf.org/html/rfc2119">https://tools.ietf.org/html/rfc2119</a>
-   <dt id="biblio-secure-contexts">[SECURE-CONTEXTS]
-   <dd>Mike West. <a href="https://www.w3.org/TR/secure-contexts/">Secure Contexts</a>. 15 September 2016. CR. URL: <a href="https://www.w3.org/TR/secure-contexts/">https://www.w3.org/TR/secure-contexts/</a>
    <dt id="biblio-service-workers-1">[SERVICE-WORKERS-1]
-   <dd>Alex Russell; et al. <a href="https://www.w3.org/TR/service-workers-1/">Service Workers 1</a>. 13 August 2019. WD. URL: <a href="https://www.w3.org/TR/service-workers-1/">https://www.w3.org/TR/service-workers-1/</a>
+   <dd>Alex Russell; et al. <a href="https://www.w3.org/TR/service-workers-1/">Service Workers 1</a>. 19 November 2019. CR. URL: <a href="https://www.w3.org/TR/service-workers-1/">https://www.w3.org/TR/service-workers-1/</a>
    <dt id="biblio-svg2">[SVG2]
    <dd>Amelia Bellamy-Royds; et al. <a href="https://www.w3.org/TR/SVG2/">Scalable Vector Graphics (SVG) 2</a>. 4 October 2018. CR. URL: <a href="https://www.w3.org/TR/SVG2/">https://www.w3.org/TR/SVG2/</a>
    <dt id="biblio-url">[URL]
@@ -4567,140 +4552,141 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <dd>Ian Hickson; et al. <a href="https://www.w3.org/TR/html5/">HTML5</a>. 27 March 2018. REC. URL: <a href="https://www.w3.org/TR/html5/">https://www.w3.org/TR/html5/</a>
   </dl>
   <h2 class="no-num no-ref heading settled" id="idl-index"><span class="content">IDL Index</span><a class="self-link" href="#idl-index"></a></h2>
-<pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed①①"><c- g>Exposed</c-></a>=<c- n>Window</c->, <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#SecureContext" id="ref-for-SecureContext⑦"><c- g>SecureContext</c-></a>]
+<pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed"><c- g>Exposed</c-></a>=<c- n>Window</c->, <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#SecureContext"><c- g>SecureContext</c-></a>]
 <c- b>interface</c-> <a href="#trustedhtml"><code><c- g>TrustedHTML</c-></code></a> {
   <a href="#TrustedHTML-stringification-behavior"><c- b>stringifier</c-></a>;
 };
 
-[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed①②"><c- g>Exposed</c-></a>=<c- n>Window</c->, <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#SecureContext" id="ref-for-SecureContext①①"><c- g>SecureContext</c-></a>]
+[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed"><c- g>Exposed</c-></a>=<c- n>Window</c->, <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#SecureContext"><c- g>SecureContext</c-></a>]
 <c- b>interface</c-> <a href="#trustedscript"><code><c- g>TrustedScript</c-></code></a> {
   <a href="#TrustedScript-stringification-behavior"><c- b>stringifier</c-></a>;
 };
 
-[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed②①"><c- g>Exposed</c-></a>=<c- n>Window</c->, <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#SecureContext" id="ref-for-SecureContext②①"><c- g>SecureContext</c-></a>]
+[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed"><c- g>Exposed</c-></a>=<c- n>Window</c->, <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#SecureContext"><c- g>SecureContext</c-></a>]
 <c- b>interface</c-> <a href="#trustedscripturl"><code><c- g>TrustedScriptURL</c-></code></a> {
   <a href="#TrustedScriptURL-stringification-behavior"><c- b>stringifier</c-></a>;
 };
 
-[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed③①"><c- g>Exposed</c-></a>=<c- n>Window</c->, <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#SecureContext" id="ref-for-SecureContext③①"><c- g>SecureContext</c-></a>] <c- b>interface</c-> <a href="#trustedtypepolicyfactory"><code><c- g>TrustedTypePolicyFactory</c-></code></a> {
-    <a class="n" data-link-type="idl-name" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy④①"><c- n>TrustedTypePolicy</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicyfactory-createpolicy" id="ref-for-dom-trustedtypepolicyfactory-createpolicy②①"><c- g>createPolicy</c-></a>(
-        <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString③⓪"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicyfactory-createpolicy-policyname-policyoptions-policyname"><code><c- g>policyName</c-></code></a>, <c- b>optional</c-> <a class="n" data-link-type="idl-name" href="#dictdef-trustedtypepolicyoptions" id="ref-for-dictdef-trustedtypepolicyoptions⑤"><c- n>TrustedTypePolicyOptions</c-></a> <a href="#dom-trustedtypepolicyfactory-createpolicy-policyname-policyoptions-policyoptions"><code><c- g>policyOptions</c-></code></a>);
-    <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-boolean" id="ref-for-idl-boolean③"><c- b>boolean</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicyfactory-ishtml" id="ref-for-dom-trustedtypepolicyfactory-ishtml①"><c- g>isHTML</c-></a>(<c- b>any</c-> <a href="#dom-trustedtypepolicyfactory-ishtml-value-value"><code><c- g>value</c-></code></a>);
-    <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-boolean" id="ref-for-idl-boolean①①"><c- b>boolean</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicyfactory-isscript" id="ref-for-dom-trustedtypepolicyfactory-isscript①"><c- g>isScript</c-></a>(<c- b>any</c-> <a href="#dom-trustedtypepolicyfactory-isscript-value-value"><code><c- g>value</c-></code></a>);
-    <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-boolean" id="ref-for-idl-boolean②①"><c- b>boolean</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicyfactory-isscripturl" id="ref-for-dom-trustedtypepolicyfactory-isscripturl①"><c- g>isScriptURL</c-></a>(<c- b>any</c-> <a href="#dom-trustedtypepolicyfactory-isscripturl-value-value"><code><c- g>value</c-></code></a>);
-    <c- b>readonly</c-> <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml①①"><c- n>TrustedHTML</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="TrustedHTML" href="#dom-trustedtypepolicyfactory-emptyhtml" id="ref-for-dom-trustedtypepolicyfactory-emptyhtml①"><c- g>emptyHTML</c-></a>;
-    <c- b>readonly</c-> <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript①④"><c- n>TrustedScript</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="TrustedScript" href="#dom-trustedtypepolicyfactory-emptyscript" id="ref-for-dom-trustedtypepolicyfactory-emptyscript①"><c- g>emptyScript</c-></a>;
-    <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①①⓪"><c- b>DOMString</c-></a>? <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicyfactory-getattributetype" id="ref-for-dom-trustedtypepolicyfactory-getattributetype①"><c- g>getAttributeType</c-></a>(
-        <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②⑨"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicyfactory-getattributetype-tagname-attribute-elementns-attrns-tagname"><code><c- g>tagName</c-></code></a>,
-        <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString③①"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicyfactory-getattributetype-tagname-attribute-elementns-attrns-attribute"><code><c- g>attribute</c-></code></a>,
-        <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString④①"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicyfactory-getattributetype-tagname-attribute-elementns-attrns-elementns"><code><c- g>elementNs</c-></code></a> = "",
-        <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString⑤①"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicyfactory-getattributetype-tagname-attribute-elementns-attrns-attrns"><code><c- g>attrNs</c-></code></a> = "");
-    <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString⑥①"><c- b>DOMString</c-></a>? <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicyfactory-getpropertytype" id="ref-for-dom-trustedtypepolicyfactory-getpropertytype①"><c- g>getPropertyType</c-></a>(
-        <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString⑦①"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicyfactory-getpropertytype-tagname-property-elementns-tagname"><code><c- g>tagName</c-></code></a>,
-        <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString⑧①"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicyfactory-getpropertytype-tagname-property-elementns-property"><code><c- g>property</c-></code></a>,
-        <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString⑨①"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicyfactory-getpropertytype-tagname-property-elementns-elementns"><code><c- g>elementNs</c-></code></a> = "");
-    <c- b>readonly</c-> <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy⑤①"><c- n>TrustedTypePolicy</c-></a>? <a class="idl-code" data-link-type="attribute" data-readonly data-type="TrustedTypePolicy?" href="#dom-trustedtypepolicyfactory-defaultpolicy" id="ref-for-dom-trustedtypepolicyfactory-defaultpolicy①"><c- g>defaultPolicy</c-></a>;
+[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed"><c- g>Exposed</c-></a>=<c- n>Window</c->, <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#SecureContext"><c- g>SecureContext</c-></a>] <c- b>interface</c-> <a href="#trustedtypepolicyfactory"><code><c- g>TrustedTypePolicyFactory</c-></code></a> {
+    <a class="n" data-link-type="idl-name" href="#trustedtypepolicy"><c- n>TrustedTypePolicy</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicyfactory-createpolicy"><c- g>createPolicy</c-></a>(
+        <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicyfactory-createpolicy-policyname-policyoptions-policyname"><code><c- g>policyName</c-></code></a>, <c- b>optional</c-> <a class="n" data-link-type="idl-name" href="#dictdef-trustedtypepolicyoptions"><c- n>TrustedTypePolicyOptions</c-></a> <a href="#dom-trustedtypepolicyfactory-createpolicy-policyname-policyoptions-policyoptions"><code><c- g>policyOptions</c-></code></a>);
+    <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-boolean"><c- b>boolean</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicyfactory-ishtml"><c- g>isHTML</c-></a>(<c- b>any</c-> <a href="#dom-trustedtypepolicyfactory-ishtml-value-value"><code><c- g>value</c-></code></a>);
+    <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-boolean"><c- b>boolean</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicyfactory-isscript"><c- g>isScript</c-></a>(<c- b>any</c-> <a href="#dom-trustedtypepolicyfactory-isscript-value-value"><code><c- g>value</c-></code></a>);
+    <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-boolean"><c- b>boolean</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicyfactory-isscripturl"><c- g>isScriptURL</c-></a>(<c- b>any</c-> <a href="#dom-trustedtypepolicyfactory-isscripturl-value-value"><code><c- g>value</c-></code></a>);
+    <c- b>readonly</c-> <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#trustedhtml"><c- n>TrustedHTML</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="TrustedHTML" href="#dom-trustedtypepolicyfactory-emptyhtml"><c- g>emptyHTML</c-></a>;
+    <c- b>readonly</c-> <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#trustedscript"><c- n>TrustedScript</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="TrustedScript" href="#dom-trustedtypepolicyfactory-emptyscript"><c- g>emptyScript</c-></a>;
+    <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString"><c- b>DOMString</c-></a>? <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicyfactory-getattributetype"><c- g>getAttributeType</c-></a>(
+        <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicyfactory-getattributetype-tagname-attribute-elementns-attrns-tagname"><code><c- g>tagName</c-></code></a>,
+        <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicyfactory-getattributetype-tagname-attribute-elementns-attrns-attribute"><code><c- g>attribute</c-></code></a>,
+        <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicyfactory-getattributetype-tagname-attribute-elementns-attrns-elementns"><code><c- g>elementNs</c-></code></a> = "",
+        <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicyfactory-getattributetype-tagname-attribute-elementns-attrns-attrns"><code><c- g>attrNs</c-></code></a> = "");
+    <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString"><c- b>DOMString</c-></a>? <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicyfactory-getpropertytype"><c- g>getPropertyType</c-></a>(
+        <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicyfactory-getpropertytype-tagname-property-elementns-tagname"><code><c- g>tagName</c-></code></a>,
+        <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicyfactory-getpropertytype-tagname-property-elementns-property"><code><c- g>property</c-></code></a>,
+        <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicyfactory-getpropertytype-tagname-property-elementns-elementns"><code><c- g>elementNs</c-></code></a> = "");
+    <c- b>readonly</c-> <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#trustedtypepolicy"><c- n>TrustedTypePolicy</c-></a>? <a class="idl-code" data-link-type="attribute" data-readonly data-type="TrustedTypePolicy?" href="#dom-trustedtypepolicyfactory-defaultpolicy"><c- g>defaultPolicy</c-></a>;
 };
 
-[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed④①"><c- g>Exposed</c-></a>=<c- n>Window</c->, <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#SecureContext" id="ref-for-SecureContext④①"><c- g>SecureContext</c-></a>]
+[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed"><c- g>Exposed</c-></a>=<c- n>Window</c->, <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#SecureContext"><c- g>SecureContext</c-></a>]
 <c- b>interface</c-> <a href="#trustedtypepolicy"><code><c- g>TrustedTypePolicy</c-></code></a> {
-  <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①⓪①"><c- b>DOMString</c-></a> <a data-readonly data-type="DOMString" href="#dom-trustedtypepolicy-name"><code><c- g>name</c-></code></a>;
-  <a class="n" data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml⑤①"><c- n>TrustedHTML</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createhtml" id="ref-for-dom-trustedtypepolicy-createhtml①①"><c- g>createHTML</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①①①"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicy-createhtml-input-arguments-input"><code><c- g>input</c-></code></a>, <c- b>any</c->... <a href="#dom-trustedtypepolicy-createhtml-input-arguments-arguments"><code><c- g>arguments</c-></code></a>);
-  <a class="n" data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript④①"><c- n>TrustedScript</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createscript" id="ref-for-dom-trustedtypepolicy-createscript①①"><c- g>createScript</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①②①"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicy-createscript-input-arguments-input"><code><c- g>input</c-></code></a>, <c- b>any</c->... <a href="#dom-trustedtypepolicy-createscript-input-arguments-arguments"><code><c- g>arguments</c-></code></a>);
-  <a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl①①"><c- n>TrustedScriptURL</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createscripturl" id="ref-for-dom-trustedtypepolicy-createscripturl①①"><c- g>createScriptURL</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①③①"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicy-createscripturl-input-arguments-input"><code><c- g>input</c-></code></a>, <c- b>any</c->... <a href="#dom-trustedtypepolicy-createscripturl-input-arguments-arguments"><code><c- g>arguments</c-></code></a>);
+  <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString"><c- b>DOMString</c-></a> <a data-readonly data-type="DOMString" href="#dom-trustedtypepolicy-name"><code><c- g>name</c-></code></a>;
+  <a class="n" data-link-type="idl-name" href="#trustedhtml"><c- n>TrustedHTML</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createhtml"><c- g>createHTML</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicy-createhtml-input-arguments-input"><code><c- g>input</c-></code></a>, <c- b>any</c->... <a href="#dom-trustedtypepolicy-createhtml-input-arguments-arguments"><code><c- g>arguments</c-></code></a>);
+  <a class="n" data-link-type="idl-name" href="#trustedscript"><c- n>TrustedScript</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createscript"><c- g>createScript</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicy-createscript-input-arguments-input"><code><c- g>input</c-></code></a>, <c- b>any</c->... <a href="#dom-trustedtypepolicy-createscript-input-arguments-arguments"><code><c- g>arguments</c-></code></a>);
+  <a class="n" data-link-type="idl-name" href="#trustedscripturl"><c- n>TrustedScriptURL</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createscripturl"><c- g>createScriptURL</c-></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString"><c- b>DOMString</c-></a> <a href="#dom-trustedtypepolicy-createscripturl-input-arguments-input"><code><c- g>input</c-></code></a>, <c- b>any</c->... <a href="#dom-trustedtypepolicy-createscripturl-input-arguments-arguments"><code><c- g>arguments</c-></code></a>);
 };
 
 <c- b>dictionary</c-> <a href="#dictdef-trustedtypepolicyoptions"><code><c- g>TrustedTypePolicyOptions</c-></code></a> {
-   <a class="n" data-link-type="idl-name" href="#callbackdef-createhtmlcallback" id="ref-for-callbackdef-createhtmlcallback①"><c- n>CreateHTMLCallback</c-></a>? <a data-type="CreateHTMLCallback? " href="#dom-trustedtypepolicyoptions-createhtml"><code><c- g>createHTML</c-></code></a>;
-   <a class="n" data-link-type="idl-name" href="#callbackdef-createscriptcallback" id="ref-for-callbackdef-createscriptcallback①"><c- n>CreateScriptCallback</c-></a>? <a data-type="CreateScriptCallback? " href="#dom-trustedtypepolicyoptions-createscript"><code><c- g>createScript</c-></code></a>;
-   <a class="n" data-link-type="idl-name" href="#callbackdef-createscripturlcallback" id="ref-for-callbackdef-createscripturlcallback①"><c- n>CreateScriptURLCallback</c-></a>? <a data-type="CreateScriptURLCallback? " href="#dom-trustedtypepolicyoptions-createscripturl"><code><c- g>createScriptURL</c-></code></a>;
+   <a class="n" data-link-type="idl-name" href="#callbackdef-createhtmlcallback"><c- n>CreateHTMLCallback</c-></a>? <a data-type="CreateHTMLCallback? " href="#dom-trustedtypepolicyoptions-createhtml"><code><c- g>createHTML</c-></code></a>;
+   <a class="n" data-link-type="idl-name" href="#callbackdef-createscriptcallback"><c- n>CreateScriptCallback</c-></a>? <a data-type="CreateScriptCallback? " href="#dom-trustedtypepolicyoptions-createscript"><code><c- g>createScript</c-></code></a>;
+   <a class="n" data-link-type="idl-name" href="#callbackdef-createscripturlcallback"><c- n>CreateScriptURLCallback</c-></a>? <a data-type="CreateScriptURLCallback? " href="#dom-trustedtypepolicyoptions-createscripturl"><code><c- g>createScriptURL</c-></code></a>;
 };
-<c- b>callback</c-> <a href="#callbackdef-createhtmlcallback"><code><c- g>CreateHTMLCallback</c-></code></a> = <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①④①"><c- b>DOMString</c-></a> (<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①⑤①"><c- b>DOMString</c-></a> <a href="#dom-createhtmlcallback-input"><code><c- g>input</c-></code></a>, <c- b>any</c->... <a href="#dom-createhtmlcallback-arguments"><code><c- g>arguments</c-></code></a>);
-<c- b>callback</c-> <a href="#callbackdef-createscriptcallback"><code><c- g>CreateScriptCallback</c-></code></a> = <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①⑥①"><c- b>DOMString</c-></a> (<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①⑦①"><c- b>DOMString</c-></a> <a href="#dom-createscriptcallback-input"><code><c- g>input</c-></code></a>, <c- b>any</c->... <a href="#dom-createscriptcallback-arguments"><code><c- g>arguments</c-></code></a>);
-<c- b>callback</c-> <a href="#callbackdef-createscripturlcallback"><code><c- g>CreateScriptURLCallback</c-></code></a> = <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString④"><c- b>USVString</c-></a> (<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①⑧①"><c- b>DOMString</c-></a> <a href="#dom-createscripturlcallback-input"><code><c- g>input</c-></code></a>, <c- b>any</c->... <a href="#dom-createscripturlcallback-arguments"><code><c- g>arguments</c-></code></a>);
+<c- b>callback</c-> <a href="#callbackdef-createhtmlcallback"><code><c- g>CreateHTMLCallback</c-></code></a> = <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString"><c- b>DOMString</c-></a> (<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString"><c- b>DOMString</c-></a> <a href="#dom-createhtmlcallback-input"><code><c- g>input</c-></code></a>, <c- b>any</c->... <a href="#dom-createhtmlcallback-arguments"><code><c- g>arguments</c-></code></a>);
+<c- b>callback</c-> <a href="#callbackdef-createscriptcallback"><code><c- g>CreateScriptCallback</c-></code></a> = <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString"><c- b>DOMString</c-></a> (<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString"><c- b>DOMString</c-></a> <a href="#dom-createscriptcallback-input"><code><c- g>input</c-></code></a>, <c- b>any</c->... <a href="#dom-createscriptcallback-arguments"><code><c- g>arguments</c-></code></a>);
+<c- b>callback</c-> <a href="#callbackdef-createscripturlcallback"><code><c- g>CreateScriptURLCallback</c-></code></a> = <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString"><c- b>USVString</c-></a> (<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString"><c- b>DOMString</c-></a> <a href="#dom-createscripturlcallback-input"><code><c- g>input</c-></code></a>, <c- b>any</c->... <a href="#dom-createscripturlcallback-arguments"><code><c- g>arguments</c-></code></a>);
 
-<c- b>typedef</c-> [<a class="idl-code" data-link-type="extended-attribute"><c- g>StringContext</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml⑥①"><c- n>TrustedHTML</c-></a>] <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①⑨①"><c- b>DOMString</c-></a> <a href="#typedefdef-htmlstring"><code><c- g>HTMLString</c-></code></a>;
-<c- b>typedef</c-> [<a class="idl-code" data-link-type="extended-attribute"><c- g>StringContext</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript⑤①"><c- n>TrustedScript</c-></a>] <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②⓪①"><c- b>DOMString</c-></a> <a href="#typedefdef-scriptstring"><code><c- g>ScriptString</c-></code></a>;
-<c- b>typedef</c-> [<a class="idl-code" data-link-type="extended-attribute"><c- g>StringContext</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl④①"><c- n>TrustedScriptURL</c-></a>] <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString①①"><c- b>USVString</c-></a> <a href="#typedefdef-scripturlstring"><code><c- g>ScriptURLString</c-></code></a>;
-<c- b>typedef</c-> (<a class="n" data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml⑦①"><c- n>TrustedHTML</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript⑥①"><c- n>TrustedScript</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl⑤①"><c- n>TrustedScriptURL</c-></a>) <a href="#typedefdef-trustedtype"><code><c- g>TrustedType</c-></code></a>;
+<c- b>typedef</c-> [<a class="idl-code" data-link-type="extended-attribute"><c- g>StringContext</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedhtml"><c- n>TrustedHTML</c-></a>] <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString"><c- b>DOMString</c-></a> <a href="#typedefdef-htmlstring"><code><c- g>HTMLString</c-></code></a>;
+<c- b>typedef</c-> [<a class="idl-code" data-link-type="extended-attribute"><c- g>StringContext</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedscript"><c- n>TrustedScript</c-></a>] <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString"><c- b>DOMString</c-></a> <a href="#typedefdef-scriptstring"><code><c- g>ScriptString</c-></code></a>;
+<c- b>typedef</c-> [<a class="idl-code" data-link-type="extended-attribute"><c- g>StringContext</c-></a>=<a class="n" data-link-type="idl-name" href="#trustedscripturl"><c- n>TrustedScriptURL</c-></a>] <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString"><c- b>USVString</c-></a> <a href="#typedefdef-scripturlstring"><code><c- g>ScriptURLString</c-></code></a>;
+<c- b>typedef</c-> (<a class="n" data-link-type="idl-name" href="#trustedhtml"><c- n>TrustedHTML</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="#trustedscript"><c- n>TrustedScript</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="#trustedscripturl"><c- n>TrustedScriptURL</c-></a>) <a href="#typedefdef-trustedtype"><code><c- g>TrustedType</c-></code></a>;
 
-<c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/window-object.html#window" id="ref-for-window③①"><c- g>Window</c-></a> {
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#SecureContext" id="ref-for-SecureContext⑤①"><c- g>SecureContext</c-></a>] <c- b>readonly</c-> <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#trustedtypepolicyfactory" id="ref-for-trustedtypepolicyfactory②①"><c- n>TrustedTypePolicyFactory</c-></a> <a data-readonly data-type="TrustedTypePolicyFactory" href="#dom-window-trustedtypes"><code><c- g>trustedTypes</c-></code></a>;
-};
-
-<c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#document" id="ref-for-document④①"><c- g>Document</c-></a> {
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions①④"><c- g>CEReactions</c-></a>] <c- b>void</c-> <a href="#dom-document-write"><code><c- g>write</c-></code></a>(<a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring⑧"><c- n>HTMLString</c-></a>... <a href="#dom-document-write-text-text"><code><c- g>text</c-></code></a>);
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions①⑤"><c- g>CEReactions</c-></a>] <c- b>void</c-> <a href="#dom-document-writeln"><code><c- g>writeln</c-></code></a>(<a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring①①"><c- n>HTMLString</c-></a>... <a href="#dom-document-writeln-text-text"><code><c- g>text</c-></code></a>);
+<c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/window-object.html#window"><c- g>Window</c-></a> {
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#SecureContext"><c- g>SecureContext</c-></a>] <c- b>readonly</c-> <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#trustedtypepolicyfactory"><c- n>TrustedTypePolicyFactory</c-></a> <a data-readonly data-type="TrustedTypePolicyFactory" href="#dom-window-trustedtypes"><code><c- g>trustedTypes</c-></code></a>;
 };
 
-<c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement" id="ref-for-htmlscriptelement②①"><c- g>HTMLScriptElement</c-></a> : <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement" id="ref-for-htmlelement④"><c- n>HTMLElement</c-></a> {
- [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions②①"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#TreatNullAs" id="ref-for-TreatNullAs②①"><c- g>TreatNullAs</c-></a>=<a class="n" data-link-type="idl-name"><c- n>EmptyString</c-></a>] <a class="n" data-link-type="idl-name" href="#typedefdef-scriptstring" id="ref-for-typedefdef-scriptstring④"><c- n>ScriptString</c-></a> <a data-type="[TreatNullAs=EmptyString] ScriptString" href="#dom-htmlscriptelement-innertext"><code><c- g>innerText</c-></code></a>;
- [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions③①"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scriptstring" id="ref-for-typedefdef-scriptstring①①"><c- n>ScriptString</c-></a>? <a data-type="ScriptString?" href="#dom-htmlscriptelement-textcontent"><code><c- g>textContent</c-></code></a>;
- [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions④①"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring" id="ref-for-typedefdef-scripturlstring①⓪"><c- n>ScriptURLString</c-></a> <a data-type="ScriptURLString" href="#dom-htmlscriptelement-src"><code><c- g>src</c-></code></a>;
- [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions⑤①"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scriptstring" id="ref-for-typedefdef-scriptstring②①"><c- n>ScriptString</c-></a> <a data-type="ScriptString" href="#dom-htmlscriptelement-text"><code><c- g>text</c-></code></a>;
+<c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#document"><c- g>Document</c-></a> {
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions"><c- g>CEReactions</c-></a>] <c- b>void</c-> <a href="#dom-document-write"><code><c- g>write</c-></code></a>(<a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring"><c- n>HTMLString</c-></a>... <a href="#dom-document-write-text-text"><code><c- g>text</c-></code></a>);
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions"><c- g>CEReactions</c-></a>] <c- b>void</c-> <a href="#dom-document-writeln"><code><c- g>writeln</c-></code></a>(<a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring"><c- n>HTMLString</c-></a>... <a href="#dom-document-writeln-text-text"><code><c- g>text</c-></code></a>);
 };
 
-<c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#htmliframeelement" id="ref-for-htmliframeelement①"><c- g>HTMLIFrameElement</c-></a> : <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement" id="ref-for-htmlelement①①"><c- n>HTMLElement</c-></a> {
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions⑥①"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring②①"><c- n>HTMLString</c-></a> <a data-type="HTMLString" href="#dom-htmliframeelement-srcdoc"><code><c- g>srcdoc</c-></code></a>;
+<c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement"><c- g>HTMLScriptElement</c-></a> : <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement"><c- n>HTMLElement</c-></a> {
+ [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> [<a class="idl-code" data-link-type="extended-attribute"><c- g>TreatNullAs</c-></a>=<a class="n" data-link-type="idl-name"><c- n>EmptyString</c-></a>] <a class="n" data-link-type="idl-name" href="#typedefdef-scriptstring"><c- n>ScriptString</c-></a> <a data-type="[TreatNullAs=EmptyString] ScriptString" href="#dom-htmlscriptelement-innertext"><code><c- g>innerText</c-></code></a>;
+ [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scriptstring"><c- n>ScriptString</c-></a>? <a data-type="ScriptString?" href="#dom-htmlscriptelement-textcontent"><code><c- g>textContent</c-></code></a>;
+ [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring"><c- n>ScriptURLString</c-></a> <a data-type="ScriptURLString" href="#dom-htmlscriptelement-src"><code><c- g>src</c-></code></a>;
+ [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scriptstring"><c- n>ScriptString</c-></a> <a data-type="ScriptString" href="#dom-htmlscriptelement-text"><code><c- g>text</c-></code></a>;
 };
 
-<c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#htmlembedelement" id="ref-for-htmlembedelement①"><c- g>HTMLEmbedElement</c-></a> : <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement" id="ref-for-htmlelement②①"><c- n>HTMLElement</c-></a> {
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions⑦①"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring" id="ref-for-typedefdef-scripturlstring①①"><c- n>ScriptURLString</c-></a> <a data-type="ScriptURLString" href="#dom-htmlembedelement-src"><code><c- g>src</c-></code></a>;
+<c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#htmliframeelement"><c- g>HTMLIFrameElement</c-></a> : <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement"><c- n>HTMLElement</c-></a> {
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring"><c- n>HTMLString</c-></a> <a data-type="HTMLString" href="#dom-htmliframeelement-srcdoc"><code><c- g>srcdoc</c-></code></a>;
 };
 
-<c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#htmlobjectelement" id="ref-for-htmlobjectelement①"><c- g>HTMLObjectElement</c-></a> : <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement" id="ref-for-htmlelement③①"><c- n>HTMLElement</c-></a> {
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions⑧①"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring" id="ref-for-typedefdef-scripturlstring②①"><c- n>ScriptURLString</c-></a> <a data-type="ScriptURLString" href="#dom-htmlobjectelement-data"><code><c- g>data</c-></code></a>;
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions⑨①"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring" id="ref-for-typedefdef-scripturlstring③①"><c- n>ScriptURLString</c-></a> <a data-type="ScriptURLString" href="#dom-htmlobjectelement-codebase"><code><c- g>codeBase</c-></code></a>; // obsolete
+<c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#htmlembedelement"><c- g>HTMLEmbedElement</c-></a> : <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement"><c- n>HTMLElement</c-></a> {
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring"><c- n>ScriptURLString</c-></a> <a data-type="ScriptURLString" href="#dom-htmlembedelement-src"><code><c- g>src</c-></code></a>;
 };
 
-<c- b>typedef</c-> (<a class="n" data-link-type="idl-name" href="#typedefdef-scriptstring" id="ref-for-typedefdef-scriptstring③①"><c- n>ScriptString</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="https://heycam.github.io/webidl/#Function" id="ref-for-Function③"><c- n>Function</c-></a>) <a href="#typedefdef-trustedtimerhandler"><code><c- g>TrustedTimerHandler</c-></code></a>;
-
-<c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/webappapis.html#windoworworkerglobalscope" id="ref-for-windoworworkerglobalscope①①"><c- g>WindowOrWorkerGlobalScope</c-></a> {
-  <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-long" id="ref-for-idl-long④"><c- b>long</c-></a> <a href="#dom-windoworworkerglobalscope-settimeout"><code><c- g>setTimeout</c-></code></a>(<a class="n" data-link-type="idl-name" href="#typedefdef-trustedtimerhandler" id="ref-for-typedefdef-trustedtimerhandler②"><c- n>TrustedTimerHandler</c-></a> <a href="#dom-windoworworkerglobalscope-settimeout-handler-timeout-arguments-handler"><code><c- g>handler</c-></code></a>, <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-long" id="ref-for-idl-long①①"><c- b>long</c-></a> <a href="#dom-windoworworkerglobalscope-settimeout-handler-timeout-arguments-timeout"><code><c- g>timeout</c-></code></a> = 0, <c- b>any</c->... <a href="#dom-windoworworkerglobalscope-settimeout-handler-timeout-arguments-arguments"><code><c- g>arguments</c-></code></a>);
-  <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-long" id="ref-for-idl-long②①"><c- b>long</c-></a> <a href="#dom-windoworworkerglobalscope-setinterval"><code><c- g>setInterval</c-></code></a>(<a class="n" data-link-type="idl-name" href="#typedefdef-trustedtimerhandler" id="ref-for-typedefdef-trustedtimerhandler①①"><c- n>TrustedTimerHandler</c-></a> <a href="#dom-windoworworkerglobalscope-setinterval-handler-timeout-arguments-handler"><code><c- g>handler</c-></code></a>, <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-long" id="ref-for-idl-long③①"><c- b>long</c-></a> <a href="#dom-windoworworkerglobalscope-setinterval-handler-timeout-arguments-timeout"><code><c- g>timeout</c-></code></a> = 0, <c- b>any</c->... <a href="#dom-windoworworkerglobalscope-setinterval-handler-timeout-arguments-arguments"><code><c- g>arguments</c-></code></a>);
+<c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#htmlobjectelement"><c- g>HTMLObjectElement</c-></a> : <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement"><c- n>HTMLElement</c-></a> {
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring"><c- n>ScriptURLString</c-></a> <a data-type="ScriptURLString" href="#dom-htmlobjectelement-data"><code><c- g>data</c-></code></a>;
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring"><c- n>ScriptURLString</c-></a> <a data-type="ScriptURLString" href="#dom-htmlobjectelement-codebase"><code><c- g>codeBase</c-></code></a>; // obsolete
 };
 
-[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed⑤①"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
-<c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/workers.html#worker" id="ref-for-worker①"><c- g>Worker</c-></a> : <a class="n" data-link-type="idl-name" href="https://dom.spec.whatwg.org/#eventtarget" id="ref-for-eventtarget④"><c- n>EventTarget</c-></a> {
-    <a href="#dom-worker-worker"><code><c- g>constructor</c-></code></a>(<a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring" id="ref-for-typedefdef-scripturlstring⑤①"><c- n>ScriptURLString</c-></a> <a href="#dom-worker-constructor-scripturl-options-scripturl"><code><c- g>scriptURL</c-></code></a>, <c- b>optional</c-> <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/workers.html#workeroptions" id="ref-for-workeroptions②"><c- n>WorkerOptions</c-></a> <a href="#dom-worker-constructor-scripturl-options-options"><code><c- g>options</c-></code></a> = {});
+<c- b>typedef</c-> (<a class="n" data-link-type="idl-name" href="#typedefdef-scriptstring"><c- n>ScriptString</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="https://heycam.github.io/webidl/#Function"><c- n>Function</c-></a>) <a href="#typedefdef-trustedtimerhandler"><code><c- g>TrustedTimerHandler</c-></code></a>;
+
+<c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/webappapis.html#windoworworkerglobalscope"><c- g>WindowOrWorkerGlobalScope</c-></a> {
+  <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-long"><c- b>long</c-></a> <a href="#dom-windoworworkerglobalscope-settimeout"><code><c- g>setTimeout</c-></code></a>(<a class="n" data-link-type="idl-name" href="#typedefdef-trustedtimerhandler"><c- n>TrustedTimerHandler</c-></a> <a href="#dom-windoworworkerglobalscope-settimeout-handler-timeout-arguments-handler"><code><c- g>handler</c-></code></a>, <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-long"><c- b>long</c-></a> <a href="#dom-windoworworkerglobalscope-settimeout-handler-timeout-arguments-timeout"><code><c- g>timeout</c-></code></a> = 0, <c- b>any</c->... <a href="#dom-windoworworkerglobalscope-settimeout-handler-timeout-arguments-arguments"><code><c- g>arguments</c-></code></a>);
+  <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-long"><c- b>long</c-></a> <a href="#dom-windoworworkerglobalscope-setinterval"><code><c- g>setInterval</c-></code></a>(<a class="n" data-link-type="idl-name" href="#typedefdef-trustedtimerhandler"><c- n>TrustedTimerHandler</c-></a> <a href="#dom-windoworworkerglobalscope-setinterval-handler-timeout-arguments-handler"><code><c- g>handler</c-></code></a>, <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-long"><c- b>long</c-></a> <a href="#dom-windoworworkerglobalscope-setinterval-handler-timeout-arguments-timeout"><code><c- g>timeout</c-></code></a> = 0, <c- b>any</c->... <a href="#dom-windoworworkerglobalscope-setinterval-handler-timeout-arguments-arguments"><code><c- g>arguments</c-></code></a>);
 };
 
-[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed⑥①"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
-<c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/workers.html#sharedworker" id="ref-for-sharedworker①"><c- g>SharedWorker</c-></a> : <a class="n" data-link-type="idl-name" href="https://dom.spec.whatwg.org/#eventtarget" id="ref-for-eventtarget①①"><c- n>EventTarget</c-></a> {
-  <a href="#dom-sharedworker-sharedworker"><code><c- g>constructor</c-></code></a>(<a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring" id="ref-for-typedefdef-scripturlstring⑥①"><c- n>ScriptURLString</c-></a> <a href="#dom-sharedworker-constructor-scripturl-options-scripturl"><code><c- g>scriptURL</c-></code></a>, <c- b>optional</c-> (<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②⑥①"><c- b>DOMString</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/workers.html#workeroptions" id="ref-for-workeroptions①①"><c- n>WorkerOptions</c-></a>) <a href="#dom-sharedworker-constructor-scripturl-options-options"><code><c- g>options</c-></code></a> = {});
+[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
+<c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/workers.html#worker"><c- g>Worker</c-></a> : <a class="n" data-link-type="idl-name" href="https://dom.spec.whatwg.org/#eventtarget"><c- n>EventTarget</c-></a> {
+    <a href="#dom-worker-worker"><code><c- g>constructor</c-></code></a>(<a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring"><c- n>ScriptURLString</c-></a> <a href="#dom-worker-worker-scripturl-options-scripturl"><code><c- g>scriptURL</c-></code></a>, <c- b>optional</c-> <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/workers.html#workeroptions"><c- n>WorkerOptions</c-></a> <a href="#dom-worker-worker-scripturl-options-options"><code><c- g>options</c-></code></a> = {});
 };
 
-[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed⑦①"><c- g>Exposed</c-></a>=<c- n>Worker</c->]
-<c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/workers.html#workerglobalscope" id="ref-for-workerglobalscope①"><c- g>WorkerGlobalScope</c-></a> : <a class="n" data-link-type="idl-name" href="https://dom.spec.whatwg.org/#eventtarget" id="ref-for-eventtarget②①"><c- n>EventTarget</c-></a> {
-  <c- b>void</c-> <a href="#dom-workerglobalscope-importscripts"><code><c- g>importScripts</c-></code></a>(<a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring" id="ref-for-typedefdef-scripturlstring⑦①"><c- n>ScriptURLString</c-></a>... <a href="#dom-workerglobalscope-importscripts-urls-urls"><code><c- g>urls</c-></code></a>);
+[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
+<c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/workers.html#sharedworker"><c- g>SharedWorker</c-></a> : <a class="n" data-link-type="idl-name" href="https://dom.spec.whatwg.org/#eventtarget"><c- n>EventTarget</c-></a> {
+  <a href="#dom-sharedworker-sharedworker"><code><c- g>constructor</c-></code></a>(<a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring"><c- n>ScriptURLString</c-></a> <a href="#dom-sharedworker-sharedworker-scripturl-options-scripturl"><code><c- g>scriptURL</c-></code></a>, <c- b>optional</c-> (<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString"><c- b>DOMString</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/workers.html#workeroptions"><c- n>WorkerOptions</c-></a>) <a href="#dom-sharedworker-sharedworker-scripturl-options-options"><code><c- g>options</c-></code></a> = {});
 };
 
-[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#SecureContext" id="ref-for-SecureContext⑥①"><c- g>SecureContext</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed⑧①"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
-<c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://w3c.github.io/ServiceWorker/#serviceworkercontainer" id="ref-for-serviceworkercontainer①"><c- g>ServiceWorkerContainer</c-></a> : <a class="n" data-link-type="idl-name" href="https://dom.spec.whatwg.org/#eventtarget" id="ref-for-eventtarget③①"><c- n>EventTarget</c-></a> {
-   [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#NewObject" id="ref-for-NewObject③"><c- g>NewObject</c-></a>] <c- b>Promise</c->&lt;<a class="n" data-link-type="idl-name" href="https://w3c.github.io/ServiceWorker/#serviceworkerregistration" id="ref-for-serviceworkerregistration①"><c- n>ServiceWorkerRegistration</c-></a>> <a href="#dom-serviceworkercontainer-register"><code><c- g>register</c-></code></a>(<a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring" id="ref-for-typedefdef-scripturlstring⑨①"><c- n>ScriptURLString</c-></a> <a href="#dom-serviceworkercontainer-register-scripturl-options-scripturl"><code><c- g>scriptURL</c-></code></a>, <c- b>optional</c-> <a class="n" data-link-type="idl-name" href="https://w3c.github.io/ServiceWorker/#dictdef-registrationoptions" id="ref-for-dictdef-registrationoptions①"><c- n>RegistrationOptions</c-></a> <a href="#dom-serviceworkercontainer-register-scripturl-options-options"><code><c- g>options</c-></code></a> = {});
+[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed"><c- g>Exposed</c-></a>=<c- n>Worker</c->]
+<c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/workers.html#workerglobalscope"><c- g>WorkerGlobalScope</c-></a> : <a class="n" data-link-type="idl-name" href="https://dom.spec.whatwg.org/#eventtarget"><c- n>EventTarget</c-></a> {
+  <c- b>void</c-> <a href="#dom-workerglobalscope-importscripts"><code><c- g>importScripts</c-></code></a>(<a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring"><c- n>ScriptURLString</c-></a>... <a href="#dom-workerglobalscope-importscripts-urls-urls"><code><c- g>urls</c-></code></a>);
 };
 
-[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed⑨①"><c- g>Exposed</c-></a>=<c- n>Window</c->]
-<c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface" href="https://svgwg.org/svg2-draft/types.html#InterfaceSVGAnimatedString" id="ref-for-InterfaceSVGAnimatedString①①"><c- g>SVGAnimatedString</c-></a> {
-           <c- b>attribute</c-> (<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②⑦①"><c- b>DOMString</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl⑦①"><c- n>TrustedScriptURL</c-></a>) <a data-type="(DOMString or TrustedScriptURL)" href="#dom-svganimatedstring-baseval"><code><c- g>baseVal</c-></code></a>;
+[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#SecureContext"><c- g>SecureContext</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
+<c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://w3c.github.io/ServiceWorker/#serviceworkercontainer"><c- g>ServiceWorkerContainer</c-></a> : <a class="n" data-link-type="idl-name" href="https://dom.spec.whatwg.org/#eventtarget"><c- n>EventTarget</c-></a> {
+   [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#NewObject"><c- g>NewObject</c-></a>] <c- b>Promise</c->&lt;<a class="n" data-link-type="idl-name" href="https://w3c.github.io/ServiceWorker/#serviceworkerregistration"><c- n>ServiceWorkerRegistration</c-></a>> <a href="#dom-serviceworkercontainer-register"><code><c- g>register</c-></code></a>(<a class="n" data-link-type="idl-name" href="#typedefdef-scripturlstring"><c- n>ScriptURLString</c-></a> <a href="#dom-serviceworkercontainer-register-scripturl-options-scripturl"><code><c- g>scriptURL</c-></code></a>, <c- b>optional</c-> <a class="n" data-link-type="idl-name" href="https://w3c.github.io/ServiceWorker/#dictdef-registrationoptions"><c- n>RegistrationOptions</c-></a> <a href="#dom-serviceworkercontainer-register-scripturl-options-options"><code><c- g>options</c-></code></a> = {});
 };
 
-<c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#element" id="ref-for-element⑤①"><c- g>Element</c-></a> {
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions①⓪①"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#TreatNullAs" id="ref-for-TreatNullAs③①"><c- g>TreatNullAs</c-></a>=<a class="n" data-link-type="idl-name"><c- n>EmptyString</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring③①"><c- n>HTMLString</c-></a> <a data-type="HTMLString" href="#dom-element-outerhtml"><code><c- g>outerHTML</c-></code></a>;
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions①①①"><c- g>CEReactions</c-></a>] <c- b>void</c-> <a href="#dom-element-insertadjacenthtml"><code><c- g>insertAdjacentHTML</c-></code></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②⑧①"><c- b>DOMString</c-></a> <a href="#dom-element-insertadjacenthtml-position-text-position"><code><c- g>position</c-></code></a>, <a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring④①"><c- n>HTMLString</c-></a> <a href="#dom-element-insertadjacenthtml-position-text-text"><code><c- g>text</c-></code></a>);
+[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed"><c- g>Exposed</c-></a>=<c- n>Window</c->]
+<c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface" href="https://svgwg.org/svg2-draft/types.html#InterfaceSVGAnimatedString"><c- g>SVGAnimatedString</c-></a> {
+           <c- b>attribute</c-> (<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString"><c- b>DOMString</c-></a> <c- b>or</c-> <a class="n" data-link-type="idl-name" href="#trustedscripturl"><c- n>TrustedScriptURL</c-></a>) <a data-type="(DOMString or TrustedScriptURL)" href="#dom-svganimatedstring-baseval"><code><c- g>baseVal</c-></code></a>;
+};
+
+<c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#element"><c- g>Element</c-></a> {
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute"><c- g>TreatNullAs</c-></a>=<a class="n" data-link-type="idl-name"><c- n>EmptyString</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring"><c- n>HTMLString</c-></a> <a data-type="HTMLString" href="#dom-element-outerhtml"><code><c- g>outerHTML</c-></code></a>;
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions"><c- g>CEReactions</c-></a>] <c- b>void</c-> <a href="#dom-element-insertadjacenthtml"><code><c- g>insertAdjacentHTML</c-></code></a>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString"><c- b>DOMString</c-></a> <a href="#dom-element-insertadjacenthtml-position-text-position"><code><c- g>position</c-></code></a>, <a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring"><c- n>HTMLString</c-></a> <a href="#dom-element-insertadjacenthtml-position-text-text"><code><c- g>text</c-></code></a>);
 };
 
 <c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface"><c- g>InnerHTML</c-></a> { // specified in a draft version at https://w3c.github.io/DOM-Parsing/#the-innerhtml-mixin
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions①②①"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#TreatNullAs" id="ref-for-TreatNullAs④①"><c- g>TreatNullAs</c-></a>=<a class="n" data-link-type="idl-name"><c- n>EmptyString</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring⑤①"><c- n>HTMLString</c-></a> <a data-type="HTMLString" href="#dom-innerhtml-innerhtml"><code><c- g>innerHTML</c-></code></a>;
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute"><c- g>TreatNullAs</c-></a>=<a class="n" data-link-type="idl-name"><c- n>EmptyString</c-></a>] <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring"><c- n>HTMLString</c-></a> <a data-type="HTMLString" href="#dom-innerhtml-innerhtml"><code><c- g>innerHTML</c-></code></a>;
 };
 
-<c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#range" id="ref-for-range①"><c- g>Range</c-></a> {
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions①③①"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#NewObject" id="ref-for-NewObject①①"><c- g>NewObject</c-></a>] <a class="n" data-link-type="idl-name" href="https://dom.spec.whatwg.org/#documentfragment" id="ref-for-documentfragment①"><c- n>DocumentFragment</c-></a> <a href="#dom-range-createcontextualfragment"><code><c- g>createContextualFragment</c-></code></a>(<a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring⑥①"><c- n>HTMLString</c-></a> <a href="#dom-range-createcontextualfragment-fragment-fragment"><code><c- g>fragment</c-></code></a>);
+<c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#range"><c- g>Range</c-></a> {
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#NewObject"><c- g>NewObject</c-></a>] <a class="n" data-link-type="idl-name" href="https://dom.spec.whatwg.org/#documentfragment"><c- n>DocumentFragment</c-></a> <a href="#dom-range-createcontextualfragment"><code><c- g>createContextualFragment</c-></code></a>(<a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring"><c- n>HTMLString</c-></a> <a href="#dom-range-createcontextualfragment-fragment-fragment"><code><c- g>fragment</c-></code></a>);
 };
 
-[<a href="#dom-domparser-domparser"><code><c- g>Constructor</c-></code></a>, <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed①⓪①"><c- g>Exposed</c-></a>=<c- n>Window</c->]
+[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed"><c- g>Exposed</c-></a>=<c- n>Window</c->]
 <c- b>interface</c-> <a href="#domparser"><code><c- g>DOMParser</c-></code></a> {
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#NewObject" id="ref-for-NewObject②①"><c- g>NewObject</c-></a>] <a class="n" data-link-type="idl-name" href="https://dom.spec.whatwg.org/#document" id="ref-for-document⑥①"><c- n>Document</c-></a> <a href="#dom-domparser-parsefromstring"><code><c- g>parseFromString</c-></code></a>(<a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring⑦①"><c- n>HTMLString</c-></a> <a href="#dom-domparser-parsefromstring-str-type-str"><code><c- g>str</c-></code></a>, <a class="n" data-link-type="idl-name" href="https://www.w3.org/TR/DOM-Parsing/#h-the-domparser-interface" id="ref-for-h-the-domparser-interface①"><c- n>SupportedType</c-></a> <a href="#dom-domparser-parsefromstring-str-type-type"><code><c- g>type</c-></code></a>);
+  <a href="#dom-domparser-domparser"><code><c- g>constructor</c-></code></a>();
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#NewObject"><c- g>NewObject</c-></a>] <a class="n" data-link-type="idl-name" href="https://dom.spec.whatwg.org/#document"><c- n>Document</c-></a> <a href="#dom-domparser-parsefromstring"><code><c- g>parseFromString</c-></code></a>(<a class="n" data-link-type="idl-name" href="#typedefdef-htmlstring"><c- n>HTMLString</c-></a> <a href="#dom-domparser-parsefromstring-str-type-str"><code><c- g>str</c-></code></a>, <a class="n" data-link-type="idl-name" href="https://www.w3.org/TR/DOM-Parsing/#h-the-domparser-interface"><c- n>SupportedType</c-></a> <a href="#dom-domparser-parsefromstring-str-type-type"><code><c- g>type</c-></code></a>);
 };
 
 </pre>
