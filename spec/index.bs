@@ -1063,7 +1063,7 @@ Issue: Define for workers.
 This document extends the {{Window}} interface defined by [[HTML5|HTML]]:
 
 <pre class="idl">
-partial interface mixin Window {
+partial interface Window {
   [SecureContext] readonly attribute TrustedTypePolicyFactory trustedTypes;
 };
 </pre>
@@ -1081,7 +1081,7 @@ Issue: Remove the note when the API in Chrome is shipped.
 This document modifies the {{Document}} interface defined by [[HTML5|HTML]]:
 
 <pre class="idl">
-partial interface mixin Document {
+partial interface Document {
   [CEReactions] void write(HTMLString... text);
   [CEReactions] void writeln(HTMLString... text);
 };
@@ -1116,7 +1116,7 @@ Note: Using these IDL attributes is the recommended way of dynamically setting U
 Issue: Figure out what to do with script.setAttribute('src'). See [DOM#789](https://github.com/whatwg/dom/issues/789).
 
 <pre class="idl">
-partial interface mixin HTMLScriptElement : HTMLElement {
+partial interface HTMLScriptElement {
  [CEReactions] attribute [TreatNullAs=EmptyString] ScriptString innerText;
  [CEReactions] attribute ScriptString? textContent;
  [CEReactions] attribute ScriptURLString src;
@@ -1430,15 +1430,15 @@ The [=prepare a script=] algorithm is modified as follows:
 This document modifies following IDL attributes of various DOM elements:
 
 <pre class="idl">
-partial interface mixin HTMLIFrameElement : HTMLElement {
+partial interface HTMLIFrameElement {
   [CEReactions] attribute HTMLString srcdoc;
 };
 
-partial interface HTMLEmbedElement : HTMLElement {
+partial interface HTMLEmbedElement {
   [CEReactions] attribute ScriptURLString src;
 };
 
-partial interface HTMLObjectElement : HTMLElement {
+partial interface HTMLObjectElement {
   [CEReactions] attribute ScriptURLString data;
   [CEReactions] attribute ScriptURLString codeBase; // obsolete
 };
