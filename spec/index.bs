@@ -1660,8 +1660,9 @@ partial interface Range {
   [CEReactions, NewObject] DocumentFragment createContextualFragment(HTMLString fragment);
 };
 
-[Constructor, Exposed=Window]
+[Exposed=Window]
 interface DOMParser {
+  constructor();
   [NewObject] Document parseFromString(HTMLString str, SupportedType type);
 };
 </pre>
