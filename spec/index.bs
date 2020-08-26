@@ -927,7 +927,7 @@ Given a {{TrustedType}} type (|expectedType|), a [=Realm/global object=] (|globa
 
 ## <dfn abstract-op>Prepare the script URL and text</dfn> ## {#prepare-script-url-and-text}
 
-Given a {{script}} (|script|), this algorithm performs the following steps:
+Given an {{HTMLScriptElement}} (|script|), this algorithm performs the following steps:
 
 1.  If |script| does not have a {{script/src}} content attribute, set its {{script/[[ScriptURL]]}} internal slot value to `null`.
 
@@ -1093,7 +1093,7 @@ partial interface Document {
 
 Issue: Figure out if we can drop {{script/[[ScriptURL]]}} slot after IDL + DOM changes.
 
-This document modifies {{script}} elements. Each script has:
+This document modifies {{HTMLScriptElement|script}} elements. Each script has:
 
 : <dfn dfn-for="script">`[[ScriptURL]]`</dfn> internal slot.
 ::  A string, containing the URL to execute the script from
@@ -1159,7 +1159,7 @@ The [=prepare a script=] algorithm is modified as follows:
     it, it will execute in a non-blocking fashion even if the <code id="script-processing-model:attr-script-async-3"><a href="https://html.spec.whatwg.org/#attr-script-async">async</a></code>
     attribute isn't set.</p>
 
-   </li><li><ins>Execute the [$Prepare the script URL and text$] algorithm upon the {{script}} element. If that algorithm threw an error, then return. The script is not executed.
+   </li><li><ins>Execute the [$Prepare the script URL and text$] algorithm upon the {{HTMLScriptElement}}. If that algorithm threw an error, then return. The script is not executed.
 
    </li><li><p>Let <var>source text</var> be the element's <del><a id="script-processing-model:child-text-content" href="https://dom.spec.whatwg.org/#concept-child-text-content" data-x-internal="child-text-content">child text content</a></del> <ins>`[[ScriptText]]` internal slot value</ins>.</p>
 
