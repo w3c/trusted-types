@@ -177,7 +177,7 @@ Content-Security-Policy: trusted-types foo bar
 
 That will assure that no additional policies are created at runtime. Creating a policy with a name
 that was already created, or was not specified in the CSP throws, so introduction of non-reviewed
-policies breaks the application functionally. There's also an espace hatch - `'allow-duplicate'` 
+policies breaks the application functionally. There's also an escape hatch - `'allow-duplicate'`
 CSP keyword that allows the applications to create a given policy multiple times (that's useful 
 if a dependency is used twice in an application). 
 
