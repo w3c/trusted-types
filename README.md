@@ -33,7 +33,7 @@ The ES5 / ES6 builds can be loaded directly in the browsers. There are two varia
 
 ```html
 <!-- Full -->
-<script src="https://w3c.github.io/webappsec-trusted-types/dist/es5/trustedtypes.build.js" data-csp="trusted-types foo bar; enforce-trusted-types-for 'script'"></script>
+<script src="https://w3c.github.io/webappsec-trusted-types/dist/es5/trustedtypes.build.js" data-csp="trusted-types foo bar; require-trusted-types-for 'script'"></script>
 <script>
     trustedTypes.createPolicy('foo', ...);
     trustedTypes.createPolicy('unknown', ...); // throws
