@@ -17,6 +17,7 @@ Abstract: An API that allows applications to lock down powerful APIs to only acc
 Markup Shorthands: algorithm yes, biblio yes, css no, dfn yes, markdown yes, markup yes
 Ignored Terms: h1, h2, h3, h4, h5, h6, xmp, EmptyString
 Complain About: missing-example-ids yes
+Boilerplate: idl-index no
 <!-- WPT Path Prefix: /trusted-types/ # Cannot add this, as it requires all the tests to be referenced in the spec -->
 </pre>
 
@@ -1080,7 +1081,7 @@ Issue: Remove the note when the API in Chrome is shipped.
 
 This document modifies the {{Document}} interface defined by [[HTML5|HTML]]:
 
-<pre class="idl exclude">
+<pre class="idl">
 partial interface Document {
   [CEReactions] void write(HTMLString... text);
   [CEReactions] void writeln(HTMLString... text);
@@ -1115,7 +1116,7 @@ Note: Using these IDL attributes is the recommended way of dynamically setting U
 
 Issue: Figure out what to do with script.setAttribute('src'). See [DOM#789](https://github.com/whatwg/dom/issues/789).
 
-<pre class="idl exclude">
+<pre class="idl">
 partial interface HTMLScriptElement {
  [CEReactions] attribute [TreatNullAs=EmptyString] ScriptString innerText;
  [CEReactions] attribute ScriptString? textContent;
@@ -1429,7 +1430,7 @@ The [=prepare a script=] algorithm is modified as follows:
 
 This document modifies following IDL attributes of various DOM elements:
 
-<pre class="idl exclude">
+<pre class="idl">
 partial interface HTMLIFrameElement {
   [CEReactions] attribute HTMLString srcdoc;
 };
@@ -1450,7 +1451,7 @@ Issue: Add base.href enforcement.
 
 This document modifies the {{WindowOrWorkerGlobalScope}} interface mixin:
 
-<pre class="idl exclude">
+<pre class="idl">
 typedef (ScriptString or Function) TrustedTimerHandler;
 
 partial interface mixin WindowOrWorkerGlobalScope {
@@ -1548,7 +1549,7 @@ When <a>validate the string in context</a> is invoked, with |platformObject|, |v
 
 This specification modifies the Worker constuctors and {{importScripts}} function to require {{ScriptURLString}}.
 
-<pre class="idl exclude">
+<pre class="idl">
 [Exposed=(Window,Worker)]
 partial interface Worker : EventTarget {
     constructor(ScriptURLString scriptURL, optional WorkerOptions options = {});
@@ -1569,7 +1570,7 @@ partial interface WorkerGlobalScope : EventTarget {
 
 This document modifies the IDL for registering service workers, requiring {{ScriptURLString}}:
 
-<pre class="idl exclude">
+<pre class="idl">
 [SecureContext, Exposed=(Window,Worker)]
 partial interface ServiceWorkerContainer : EventTarget {
    [NewObject] Promise&lt;ServiceWorkerRegistration> register(ScriptURLString scriptURL, optional RegistrationOptions options = {});
@@ -1580,7 +1581,7 @@ partial interface ServiceWorkerContainer : EventTarget {
 
 This document modifies the {{SVGAnimatedString}} interface to enforce Trusted Types:
 
-<pre class="idl exclude">
+<pre class="idl">
 [Exposed=Window]
 partial interface mixin SVGAnimatedString {
            attribute (DOMString or TrustedScriptURL) baseVal;
@@ -1646,7 +1647,7 @@ Issue: Remove when <a href="https://github.com/whatwg/dom/pull/809">DOM #809</a>
 
 This document modifies the following interfaces defined by [[DOM-Parsing]]:
 
-<pre class="idl exclude">
+<pre class="idl">
 partial interface Element {
   [CEReactions, TreatNullAs=EmptyString] attribute HTMLString outerHTML;
   [CEReactions] void insertAdjacentHTML(DOMString position, HTMLString text);
