@@ -126,7 +126,7 @@ monitor and review.
     templating library and enables the enforcement for the [=DOM XSS injection sinks=].
 
 *   An existing web application interacts with the DOM mostly using XSS-safe
-    patterns (i.e. withour using [=DOM XSS injection sinks=]). In a few places,
+    patterns (i.e. without using [=DOM XSS injection sinks=]). In a few places,
     however, it resorts to using risky patterns like loading additional script using
     JSONP, calling into `innerHTML` or `eval`.
 
