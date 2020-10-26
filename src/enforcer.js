@@ -178,6 +178,9 @@ export class TrustedTypesEnforcer {
           TrustedTypes.TrustedHTML);
     }
     stringifyForRangeHack = (function(doc) {
+      // createRange is not supported by domino
+      // TODO: refactor feature testing with nodejs in mind
+      if (!doc.createRange) return false;
       const r = doc.createRange();
       // In IE 11 Range.createContextualFragment doesn't stringify its argument.
       const f = r.createContextualFragment(/** @type {string} */ (
@@ -185,8 +188,10 @@ export class TrustedTypesEnforcer {
       return f.childNodes.length == 0;
     })(document);
 
-    this.wrapWithEnforceFunction_(Range.prototype, 'createContextualFragment',
-        TrustedTypes.TrustedHTML, 0);
+    if (typeof Range !== 'undefined') {
+      this.wrapWithEnforceFunction_(Range.prototype, 'createContextualFragment',
+          TrustedTypes.TrustedHTML, 0);
+    }
 
     this.wrapWithEnforceFunction_(insertAdjacentObject,
         'insertAdjacentHTML',
