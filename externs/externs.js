@@ -190,8 +190,3 @@ TrustedTypePolicy.prototype.createScript = function(s) {};
  * @const {!TrustedTypePolicyFactory}
  */
 var trustedTypes;
-
-/**
- * To have access to global object in nodejs environment. 
- */
-var global = window

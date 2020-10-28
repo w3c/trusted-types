@@ -70,8 +70,17 @@ describe('TrustedTypesEnforcer', function() {
 
     afterEach(function() {
       if (enforcer) {
-        enforcer.uninstall();
+        let testCleanedUp = false;
+        try {
+          enforcer.uninstall();
+        } catch (ex) {
+          // Test cleaned up after itself.
+          testCleanedUp = true;
+        }
         enforcer = undefined;
+        if (!testCleanedUp) {
+          throw new Error('Test did not clean up enforcer');
+        }
       }
     });
 
@@ -122,6 +131,12 @@ describe('TrustedTypesEnforcer', function() {
       }).toThrow();
 
       enforcer.uninstall();
+
+      // Attempted double installation does not leave us in a state
+      // where two uninstalls are necessary/allowed.
+      expect(function() {
+        enforcer.uninstall();
+      }).toThrow();
     });
   });
 
@@ -179,14 +194,14 @@ describe('TrustedTypesEnforcer', function() {
       expect(el.innerText).toEqual('baz');
     });
 
-    it('can be called twice (second call is noop)', function() {
+    it('cannot be called twice', function() {
       enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
       enforcer.install();
       enforcer.uninstall();
 
       expect(function() {
         enforcer.uninstall();
-      }).not.toThrow();
+      }).toThrow();
     });
   });
 

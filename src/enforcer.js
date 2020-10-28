@@ -215,18 +215,9 @@ export class TrustedTypesEnforcer {
     if (window.hasOwnProperty('setInterval')) {
       this.wrapWithEnforceFunction_(window, 'setInterval',
           TrustedTypes.TrustedScript, 0);
-    } else if (typeof global !== 'undefined' &&
-    global.hasOwnProperty('setInterval')) {
-      this.wrapWithEnforceFunction_(global, 'setInterval',
-          TrustedTypes.TrustedScript, 0);
     }
-
     if (window.hasOwnProperty('setTimeout')) {
       this.wrapWithEnforceFunction_(window, 'setTimeout',
-          TrustedTypes.TrustedScript, 0);
-    } else if (typeof global !== 'undefined' &&
-    global.hasOwnProperty('setTimeout')) {
-      this.wrapWithEnforceFunction_(global, 'setTimeout',
           TrustedTypes.TrustedScript, 0);
     }
     this.wrapSetAttribute_();
@@ -595,18 +586,15 @@ export class TrustedTypesEnforcer {
    * @param {function(!Function, ...*)} functionBody The wrapper function.
    */
   wrapFunction_(object, name, functionBody) {
-    if (!(name in object)) {
-      // eslint-disable-next-line no-console
-      console.warn(name, 'doesn\'t exist in the object');
-      return;
-    }
     const descriptor = getOwnPropertyDescriptor(object, name);
     const originalFn = /** @type function(*):* */ (
         descriptor ? descriptor.value : null);
 
     if (!(originalFn instanceof Function)) {
-      throw new TypeError(
+      // eslint-disable-next-line no-console
+      console.log(
           'Property ' + name + ' on object' + object + ' is not a function');
+      return;
     }
 
     const key = this.getKey_(object, name);
@@ -657,9 +645,11 @@ export class TrustedTypesEnforcer {
       }
     } while (!(originalSetter || useObject === stopAt || !useObject));
 
+    // if there is no setter warn and return
+    // (some setters might not be available in certain environments, e.g. node)
     if (!(originalSetter instanceof Function)) {
       // eslint-disable-next-line no-console
-      console.log(
+      console.warn(
           'No setter for property ' + name + ' on object' + object);
       return;
     }
@@ -707,13 +697,40 @@ export class TrustedTypesEnforcer {
    * @private
    */
   restoreSetter_(object, name, descriptorObject = undefined) {
-    const key = this.getKey_(object, name);
     if (descriptorObject && !isPrototypeOf.call(descriptorObject, object)) {
       throw new Error('Invalid prototype chain');
     }
-    if (!this.originalSetters_[key]) {
-      // Some properties might not be monkey patched in node, so we can't throw
+
+    let useObject = descriptorObject || object;
+    let descriptor;
+    let originalSetter;
+    const stopAt = getPrototypeOf(Node.prototype);
+
+    // Find the descriptor on the object or its prototypes, stopping at Node.
+    do {
+      descriptor = getOwnPropertyDescriptor(useObject, name);
+      originalSetter = /** @type {function(*):*} */ (descriptor ?
+          descriptor.set : null);
+      if (!originalSetter) {
+        useObject = getPrototypeOf(useObject) || stopAt;
+      }
+    } while (!(originalSetter || useObject === stopAt || !useObject));
+
+    // if there is no setter warn and return
+    // (some setters might not be available in certain environments, e.g. node)
+    if (!(originalSetter instanceof Function)) {
+      // eslint-disable-next-line no-console
+      console.warn(
+          'No setter for property ' + name + ' on object' + object);
       return;
+    }
+
+    const key = this.getKey_(object, name);
+    if (!this.originalSetters_[key]) {
+      throw new Error(
+          // eslint-disable-next-line max-len
+          `TrustedTypesEnforcer: Cannot restore (double uninstallation?): ${key} ${name}`
+      );
     }
     if (descriptorObject) {
       // We have to also overwrite a getter.
@@ -732,10 +749,23 @@ export class TrustedTypesEnforcer {
    * @private
    */
   restoreFunction_(object, name) {
+    const descriptor = getOwnPropertyDescriptor(object, name);
+    const originalFn = /** @type function(*):* */ (
+        descriptor ? descriptor.value : null);
+
+    if (!(originalFn instanceof Function)) {
+      // eslint-disable-next-line no-console
+      console.log(
+          'Property ' + name + ' on object' + object + ' is not a function');
+      return;
+    }
+
     const key = this.getKey_(object, name);
     if (!this.originalSetters_[key]) {
-      // Some properties might not be monkey patched in node, so we can't throw
-      return;
+      throw new Error(
+          // eslint-disable-next-line max-len
+          `TrustedTypesEnforcer: Cannot restore (double uninstallation?): ${key} ${name}`
+      );
     }
     installFunction(object, name, this.originalSetters_[key]);
     delete this.originalSetters_[key];
