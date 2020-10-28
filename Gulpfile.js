@@ -29,6 +29,7 @@ var flags = {
   strict_mode_input: null,
   compilation_level: 'ADVANCED',
   language_in: 'ECMASCRIPT6_STRICT',
+  externs: './src/externs.js',
   jscomp_warning: [],
   jscomp_error: [
     "accessControls",

@@ -35,20 +35,20 @@ console.log(html.innerHTML)
 html.children[0].innerHTML = 'string'
 console.log(html.innerHTML)
 
-const config = new TrustedTypeConfig(true, true, ['foo'], false)
+const config = new TrustedTypeConfig(false, true, ['foo'], false)
 const enforcer = new TrustedTypesEnforcer(config)
 enforcer.install()
-const fooPolicy = trustedTypes.createPolicy('foo')
+const fooPolicy = trustedTypes.createPolicy('foo', { createHTML: (s) => s })
 try {
   html.children[0].innerHTML = 'string' // should fail
   throw new Error('Unexpected code path')
 } catch (err) {
-  console.log('error', err)
-  console.log(html.innerHTML)
+  console.log('Caught unsafe write to innerHTML property')
 }
+
 html.children[0].innerHTML = fooPolicy.createHTML('safeHTML') as any // should work
 console.log(html.innerHTML)
 
 enforcer.uninstall()
-html.children[0].innerHTML = 'string' // should work
+html.children[0].innerHTML = 'string after uninstall' // should work
 console.log(html.innerHTML)

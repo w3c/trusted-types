@@ -211,10 +211,24 @@ export class TrustedTypesEnforcer {
       this.wrapWithEnforceFunction_(DOMParser.prototype, 'parseFromString',
           TrustedTypes.TrustedHTML, 0);
     }
-    this.wrapWithEnforceFunction_(window, 'setInterval',
-        TrustedTypes.TrustedScript, 0);
-    this.wrapWithEnforceFunction_(window, 'setTimeout',
-        TrustedTypes.TrustedScript, 0);
+
+    if (window.hasOwnProperty('setInterval')) {
+      this.wrapWithEnforceFunction_(window, 'setInterval',
+          TrustedTypes.TrustedScript, 0);
+    } else if (typeof global !== 'undefined' &&
+    global.hasOwnProperty('setInterval')) {
+      this.wrapWithEnforceFunction_(global, 'setInterval',
+          TrustedTypes.TrustedScript, 0);
+    }
+
+    if (window.hasOwnProperty('setTimeout')) {
+      this.wrapWithEnforceFunction_(window, 'setTimeout',
+          TrustedTypes.TrustedScript, 0);
+    } else if (typeof global !== 'undefined' &&
+    global.hasOwnProperty('setTimeout')) {
+      this.wrapWithEnforceFunction_(global, 'setTimeout',
+          TrustedTypes.TrustedScript, 0);
+    }
     this.wrapSetAttribute_();
     this.installScriptMutatorGuards_();
     this.installPropertySetWrappers_();
@@ -233,7 +247,11 @@ export class TrustedTypesEnforcer {
     if ('ShadowRoot' in window) {
       this.restoreSetter_(ShadowRoot.prototype, 'innerHTML');
     }
-    this.restoreFunction_(Range.prototype, 'createContextualFragment');
+    // Range   is not supported by domino
+    // TODO: refactor feature testing with nodejs in mind
+    if (typeof Range !== 'undefined') {
+      this.restoreFunction_(Range.prototype, 'createContextualFragment');
+    }
     this.restoreFunction_(insertAdjacentObject, 'insertAdjacentHTML');
     this.restoreFunction_(Element.prototype, 'setAttribute');
     this.restoreFunction_(Element.prototype, 'setAttributeNS');
@@ -577,6 +595,11 @@ export class TrustedTypesEnforcer {
    * @param {function(!Function, ...*)} functionBody The wrapper function.
    */
   wrapFunction_(object, name, functionBody) {
+    if (!(name in object)) {
+      // eslint-disable-next-line no-console
+      console.warn(name, 'doesn\'t exist in the object');
+      return;
+    }
     const descriptor = getOwnPropertyDescriptor(object, name);
     const originalFn = /** @type function(*):* */ (
         descriptor ? descriptor.value : null);
@@ -635,8 +658,10 @@ export class TrustedTypesEnforcer {
     } while (!(originalSetter || useObject === stopAt || !useObject));
 
     if (!(originalSetter instanceof Function)) {
-      throw new TypeError(
+      // eslint-disable-next-line no-console
+      console.log(
           'No setter for property ' + name + ' on object' + object);
+      return;
     }
 
     const key = this.getKey_(object, name);
@@ -687,9 +712,8 @@ export class TrustedTypesEnforcer {
       throw new Error('Invalid prototype chain');
     }
     if (!this.originalSetters_[key]) {
-      throw new Error(
-          // eslint-disable-next-line max-len
-          `TrustedTypesEnforcer: Cannot restore (double uninstallation?): ${key} ${name}`);
+      // Some properties might not be monkey patched in node, so we can't throw
+      return;
     }
     if (descriptorObject) {
       // We have to also overwrite a getter.
@@ -710,9 +734,8 @@ export class TrustedTypesEnforcer {
   restoreFunction_(object, name) {
     const key = this.getKey_(object, name);
     if (!this.originalSetters_[key]) {
-      throw new Error(
-          // eslint-disable-next-line max-len
-          `TrustedTypesEnforcer: Cannot restore (double uninstallation?): ${key} ${name}`);
+      // Some properties might not be monkey patched in node, so we can't throw
+      return;
     }
     installFunction(object, name, this.originalSetters_[key]);
     delete this.originalSetters_[key];
