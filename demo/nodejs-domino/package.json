@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "run-demo": "yarn tsc && node ./lib/main"
+    "run-demo-global": "yarn tsc && node ./lib/main",
+    "run-demo-custom": "yarn tsc && node ./lib/custom"
   },
   "author": "",
   "license": "ISC",
