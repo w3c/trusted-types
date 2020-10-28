@@ -47,7 +47,7 @@ let stringifyForRangeHack;
  */
 function parseUrl_(url, windowObject) {
   // No URL in IE 11.
-  const UrlConstructor = windowObject && typeof windowObject.URL == 'function' ?
+  const UrlConstructor = typeof windowObject.URL == 'function' ?
     windowObject.URL.prototype.constructor : null;
 
   try {
@@ -112,7 +112,7 @@ const TrustedTypePolicy = {};
 export class TrustedTypesEnforcer {
   /**
    * @param {!TrustedTypeConfig} config The configuration for
-   * @param {!Window=} windowObject object to monkey patch
+   * @param {!Window=} windowObject to monkey patch
    */
   constructor(config, windowObject) {
     /**
@@ -149,24 +149,23 @@ export class TrustedTypesEnforcer {
   }
 
   /**
-     * Checks whether the value is instanceOf the specific window object.
-     * @param {*} value
-     * @param {!string} winProp
-     * @return {!boolean}
-     * @private
-     */
+   * Checks whether the value is instanceOf the specific window object.
+   * @param {*} value
+   * @param {!string} winProp
+   * @return {!boolean}
+   * @private
+   */
   instanceOfDomProperty(value, winProp) {
     const obj = this.windowObject[winProp];
-
     return value instanceof obj;
   }
 
   /**
- * Converts an uppercase tag name to an element constructor function name.
- * Used for property setter hijacking only.
- * @param {string} tagName
- * @return {string|null}
- */
+   * Converts an uppercase tag name to an element constructor function name.
+   * Used for property setter hijacking only.
+   * @param {string} tagName
+   * @return {string|null}
+   */
   convertTagToConstructor(tagName) {
     if (tagName == '*') {
       return 'HTMLElement';
@@ -180,12 +179,12 @@ export class TrustedTypesEnforcer {
   }
 
   /**
- * Return object constructor name
- * (their function.name is not available in IE 11).
- * @param {Function} fn
- * @return {string|null}
- * @private
- */
+   * Return object constructor name
+   * (their function.name is not available in IE 11).
+   * @param {Function} fn
+   * @return {string|null}
+   * @private
+   */
   getConstructorName_(fn) {
     if (!this.windowObject.document) return null;
     return this.windowObject.document.createElement('div').constructor.name ?
@@ -327,10 +326,10 @@ export class TrustedTypesEnforcer {
             this.windowObject.Node.prototype,
             fnName,
             /**
-           * @this {Node}
-           * @param {function(!Function, ...*)} originalFn
-           * @return {*}
-           */
+             * @this {Node}
+             * @param {function(!Function, ...*)} originalFn
+             * @return {*}
+             */
             function(originalFn, ...args) {
               return that.enforceTypeInScriptNodes_
                   .bind(that, this, /* checkParent */ false, originalFn)
