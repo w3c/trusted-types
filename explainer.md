@@ -54,7 +54,7 @@ first step:
     header could be used: This causes the `innerHTML` setter to throw a `TypeError` if a raw string was passed in.
 
     This is possible to polyfill for many setters and
-    methods, apart from the ones that are marked as [`[Unforgeable]`](https://heycam.github.io/webidl/#Unforgeable). 
+    methods, apart from the ones that are marked as [`[LegacyUnforgeable]`](https://heycam.github.io/webidl/#LegacyUnforgeable).
   
     This approach could later be extended to cover other types of risky and easy to misuse APIs (e.g. to cover 
     CSS-based data exfiltration attacks).
@@ -177,7 +177,7 @@ Content-Security-Policy: trusted-types foo bar
 
 That will assure that no additional policies are created at runtime. Creating a policy with a name
 that was already created, or was not specified in the CSP throws, so introduction of non-reviewed
-policies breaks the application functionally. There's also an espace hatch - `'allow-duplicate'` 
+policies breaks the application functionally. There's also an escape hatch - `'allow-duplicate'`
 CSP keyword that allows the applications to create a given policy multiple times (that's useful 
 if a dependency is used twice in an application). 
 

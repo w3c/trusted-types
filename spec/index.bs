@@ -17,6 +17,7 @@ Abstract: An API that allows applications to lock down powerful APIs to only acc
 Markup Shorthands: algorithm yes, biblio yes, css no, dfn yes, markdown yes, markup yes
 Ignored Terms: h1, h2, h3, h4, h5, h6, xmp, EmptyString
 Complain About: missing-example-ids yes
+Boilerplate: idl-index no
 <!-- WPT Path Prefix: /trusted-types/ # Cannot add this, as it requires all the tests to be referenced in the spec -->
 </pre>
 
@@ -125,7 +126,7 @@ monitor and review.
     templating library and enables the enforcement for the [=DOM XSS injection sinks=].
 
 *   An existing web application interacts with the DOM mostly using XSS-safe
-    patterns (i.e. withour using [=DOM XSS injection sinks=]). In a few places,
+    patterns (i.e. without using [=DOM XSS injection sinks=]). In a few places,
     however, it resorts to using risky patterns like loading additional script using
     JSONP, calling into `innerHTML` or `eval`.
 
@@ -1063,7 +1064,7 @@ Issue: Define for workers.
 This document extends the {{Window}} interface defined by [[HTML5|HTML]]:
 
 <pre class="idl">
-partial interface mixin Window {
+partial interface Window {
   [SecureContext] readonly attribute TrustedTypePolicyFactory trustedTypes;
 };
 </pre>
@@ -1081,7 +1082,7 @@ Issue: Remove the note when the API in Chrome is shipped.
 This document modifies the {{Document}} interface defined by [[HTML5|HTML]]:
 
 <pre class="idl">
-partial interface mixin Document {
+partial interface Document {
   [CEReactions] void write(HTMLString... text);
   [CEReactions] void writeln(HTMLString... text);
 };
@@ -1116,7 +1117,7 @@ Note: Using these IDL attributes is the recommended way of dynamically setting U
 Issue: Figure out what to do with script.setAttribute('src'). See [DOM#789](https://github.com/whatwg/dom/issues/789).
 
 <pre class="idl">
-partial interface mixin HTMLScriptElement : HTMLElement {
+partial interface HTMLScriptElement {
  [CEReactions] attribute [TreatNullAs=EmptyString] ScriptString innerText;
  [CEReactions] attribute ScriptString? textContent;
  [CEReactions] attribute ScriptURLString src;
@@ -1430,15 +1431,15 @@ The [=prepare a script=] algorithm is modified as follows:
 This document modifies following IDL attributes of various DOM elements:
 
 <pre class="idl">
-partial interface mixin HTMLIFrameElement : HTMLElement {
+partial interface HTMLIFrameElement {
   [CEReactions] attribute HTMLString srcdoc;
 };
 
-partial interface HTMLEmbedElement : HTMLElement {
+partial interface HTMLEmbedElement {
   [CEReactions] attribute ScriptURLString src;
 };
 
-partial interface HTMLObjectElement : HTMLElement {
+partial interface HTMLObjectElement {
   [CEReactions] attribute ScriptURLString data;
   [CEReactions] attribute ScriptURLString codeBase; // obsolete
 };
@@ -1660,8 +1661,9 @@ partial interface Range {
   [CEReactions, NewObject] DocumentFragment createContextualFragment(HTMLString fragment);
 };
 
-[Constructor, Exposed=Window]
+[Exposed=Window]
 interface DOMParser {
+  constructor();
   [NewObject] Document parseFromString(HTMLString str, SupportedType type);
 };
 </pre>
