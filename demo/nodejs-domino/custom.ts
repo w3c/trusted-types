@@ -20,8 +20,15 @@ html.children[0].innerHTML = 'string'
 console.log(html.innerHTML)
 
 // start enforcing mode
-const config = new TrustedTypeConfig(false, true, ['foo', 'default'], false)
-const enforcer = new TrustedTypesEnforcer(config, win)
+const config = new TrustedTypeConfig(
+  false,
+  true,
+  ['foo', 'default'],
+  false,
+  undefined,
+  win,
+)
+const enforcer = new TrustedTypesEnforcer(config)
 enforcer.install()
 const fooPolicy = trustedTypes.createPolicy('foo', { createHTML: (s) => s })
 
@@ -51,6 +58,14 @@ html.children[0].innerHTML = 'string' // should be rewritten to 'string-default'
 console.log(html.children[0].innerHTML)
 
 // it should work even with incomplete enforcer
-const incompleteEnforcer = new TrustedTypesEnforcer(config, {} as Window)
+const config2 = new TrustedTypeConfig(
+  false,
+  true,
+  ['foo', 'default'],
+  false,
+  undefined,
+  {} as Window,
+)
+const incompleteEnforcer = new TrustedTypesEnforcer(config2)
 incompleteEnforcer.install()
 incompleteEnforcer.uninstall()

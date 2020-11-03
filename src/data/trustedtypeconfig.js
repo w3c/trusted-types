@@ -27,12 +27,14 @@ export class TrustedTypeConfig {
    * @param {Array<string>} allowedPolicyNames Whitelisted policy names.
    * @param {boolean} allowDuplicates Should duplicate names be allowed.
    * @param {?string} cspString String with the CSP policy.
+   * @param {?Window} windowObject to monkey patch
    */
   constructor(isLoggingEnabled,
       isEnforcementEnabled,
       allowedPolicyNames,
       allowDuplicates,
-      cspString = null) {
+      cspString = null,
+      windowObject = null) {
     /**
       * True if logging is enabled.
       * @type {boolean}
@@ -62,6 +64,12 @@ export class TrustedTypeConfig {
      * @type {?string}
      */
     this.cspString = cspString;
+
+    /**
+     * Window like object to monkey patch.
+     * @type {?Window}
+     */
+    this.windowObject = windowObject;
   }
 
   /**

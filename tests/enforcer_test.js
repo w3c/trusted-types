@@ -67,7 +67,14 @@ describe('TrustedTypesEnforcer', function() {
 
   describe('execution in node', () => {
     it(`does not break when using emulated DOM object`, () => {
-      const enforcer = new TrustedTypesEnforcer(NOOP_CONFIG, {});
+      const enforcer = new TrustedTypesEnforcer(new TrustedTypeConfig(
+          /* isLoggingEnabled */ false,
+          /* isEnforcementEnabled */ false,
+          /* allowedPolicyNames */ ['default', 'named'],
+          /* allowDuplicates */ false,
+          /* CSP string */ null,
+          /* Window-like object to monkey patch*/ {}
+      ));
 
       enforcer.install();
       enforcer.uninstall();
