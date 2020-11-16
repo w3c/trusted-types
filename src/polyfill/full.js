@@ -10,62 +10,9 @@
 /**
  * @fileoverview Entry point for a polyfill that enforces the types.
  */
-import {
-  trustedTypes,
-  TrustedTypesEnforcer,
-  TrustedTypeConfig,
-} from './api_only.js';
-import {TrustedTypePolicy, TrustedTypePolicyFactory} from '../trustedtypes.js';
-
-/**
- * Sets up the public Trusted Types API in the global object.
- */
-function setupPolyfill() {
-  // We use array accessors to make sure Closure compiler will not alter the
-  // names of the properties..
-
-  // we setup the polyfill only in browser environment.
-  if (typeof window === 'undefined') {
-    return;
-  }
-  const rootProperty = 'trustedTypes';
-
-  // Convert old window.TrustedTypes to window.trustedTypes.
-  if (window['TrustedTypes'] && typeof window[rootProperty] === 'undefined') {
-    window[rootProperty] = Object.freeze(window['TrustedTypes']);
-  }
-
-  if (typeof window[rootProperty] !== 'undefined') {
-    return;
-  }
-
-  const publicApi = Object.create(TrustedTypePolicyFactory.prototype);
-  Object.assign(publicApi, {
-    isHTML: trustedTypes.isHTML,
-    isScriptURL: trustedTypes.isScriptURL,
-    isScript: trustedTypes.isScript,
-    createPolicy: trustedTypes.createPolicy,
-    getAttributeType: trustedTypes.getAttributeType,
-    getPropertyType: trustedTypes.getPropertyType,
-    getTypeMapping: trustedTypes.getTypeMapping,
-    emptyHTML: trustedTypes.emptyHTML,
-    emptyScript: trustedTypes.emptyScript,
-    _isPolyfill_: true,
-  });
-  Object.defineProperty(
-      publicApi,
-      'defaultPolicy',
-      Object.getOwnPropertyDescriptor(trustedTypes, 'defaultPolicy') || {}
-  );
-
-  window[rootProperty] = Object.freeze(publicApi);
-
-  window['TrustedHTML'] = trustedTypes.TrustedHTML;
-  window['TrustedScriptURL'] = trustedTypes.TrustedScriptURL;
-  window['TrustedScript'] = trustedTypes.TrustedScript;
-  window['TrustedTypePolicy'] = TrustedTypePolicy;
-  window['TrustedTypePolicyFactory'] = TrustedTypePolicyFactory;
-}
+import './api_only.js';
+import {TrustedTypesEnforcer} from '../enforcer.js';
+import {TrustedTypeConfig} from '../data/trustedtypeconfig.js';
 
 /* eslint-enable no-unused-vars */
 
@@ -136,6 +83,5 @@ function shouldBootstrap() {
 
 // Bootstrap only if native implementation is missing.
 if (shouldBootstrap()) {
-  setupPolyfill();
   bootstrap();
 }
