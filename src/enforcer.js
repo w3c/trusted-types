@@ -130,7 +130,7 @@ export class TrustedTypesEnforcer {
     this.windowObject_ = config.windowObject ||
       (typeof window !== 'undefined' ? window : null);
 
-    if (!this.windowObject_ || typeof this.windowObject_ !== 'object') {
+    if (!this.isValidWindowObject_()) {
       throw new Error(
           // eslint-disable-next-line
           'The polyfill expects a global `window` object or emulated `window-like` object passed to the enforcer as second argument'
@@ -139,34 +139,43 @@ export class TrustedTypesEnforcer {
 
     // In IE 11, insertAdjacent(HTML|Text) is on HTMLElement prototype
     this.insertAdjacentObjectPrototype = ((w) => {
-      if (!w.Element || !w.HTMLElement) return null;
       return apply(hasOwnProperty, w.Element.prototype,
           ['insertAdjacentHTML']) ?
           w.Element.prototype :
             w.HTMLElement.prototype;
     })(this.windowObject_);
 
+    this.functionConstructorNameGetter =
+      this.windowObject_.document.createElement('div').constructor.name ?
+        (fn) => fn.name :
+        (fn) => ('' + fn).match(/^\[object (\S+)\]$/)[1];
+  }
 
-    if (!this.windowObject_.document) {
-      this.functionConstructorNameGetter = () => null;
-    } else {
-      this.functionConstructorNameGetter =
-        this.windowObject_.document.createElement('div').constructor.name ?
-          (fn) => fn.name :
-          (fn) => ('' + fn).match(/^\[object (\S+)\]$/)[1];
-    }
+  /**
+   * Validates that the windowObject is in correct form.
+   * @return {boolean}
+   */
+  isValidWindowObject_() {
+    const w = this.windowObject_;
+    const requiredSymbols = [
+      'Element', 'HTMLElement',
+      'Document', 'Node',
+      'document',
+    ];
+
+    return !!w && typeof w === 'object' && requiredSymbols.every((s) => s in w);
   }
 
   /**
    * Checks whether the value is instanceOf the specific window object.
    * @param {*} value
    * @param {string} winProp
-   * @return {!boolean}
+   * @return {boolean}
    * @private
    */
   instanceOfDomProperty(value, winProp) {
     const obj = this.windowObject_[winProp];
-    return value instanceof obj;
+    return !!obj && value instanceof obj;
   }
 
   /**
@@ -178,8 +187,6 @@ export class TrustedTypesEnforcer {
   convertTagToConstructor(tagName) {
     if (tagName == '*') {
       return 'HTMLElement';
-    } else if (!this.windowObject_.document) {
-      return null;
     } else {
       return this.getConstructorName_(
           this.windowObject_.document.createElement(tagName).constructor
@@ -220,7 +227,7 @@ export class TrustedTypesEnforcer {
           TrustedTypes.TrustedHTML);
     }
     stringifyForRangeHack = (function(doc) {
-      if (!doc || !doc.createRange) return false;
+      if (!doc.createRange) return false;
       const r = doc.createRange();
       // In IE 11 Range.createContextualFragment doesn't stringify its argument.
       const f = r.createContextualFragment(/** @type {string} */ (
@@ -235,19 +242,22 @@ export class TrustedTypesEnforcer {
           TrustedTypes.TrustedHTML, 0);
     }
 
-    this.wrapWithEnforceFunction_(this.insertAdjacentObjectPrototype,
-        'insertAdjacentHTML',
-        TrustedTypes.TrustedHTML, 1);
+    if (this.insertAdjacentObjectPrototype) {
+      this.wrapWithEnforceFunction_(this.insertAdjacentObjectPrototype,
+          'insertAdjacentHTML',
+          TrustedTypes.TrustedHTML, 1);
+    }
 
-    if (this.windowObject_.Document && getOwnPropertyDescriptor(
+    if (getOwnPropertyDescriptor(
         this.windowObject_.Document.prototype, 'write'
     )) {
       // Chrome
       this.wrapWithEnforceFunction_(this.windowObject_.Document.prototype,
           'write',
           TrustedTypes.TrustedHTML, 0);
-    } else if (this.windowObject_.HTMLDocument && getOwnPropertyDescriptor(
-        this.windowObject_.HTMLDocument.prototype, 'write')) {
+    } else if (this.windowObject_.HTMLDocument &&
+      getOwnPropertyDescriptor(
+          this.windowObject_.HTMLDocument.prototype, 'write')) {
       // Firefox
       this.wrapWithEnforceFunction_(this.windowObject_.HTMLDocument.prototype,
           'write',
@@ -261,10 +271,14 @@ export class TrustedTypesEnforcer {
           TrustedTypes.TrustedHTML, 0);
     }
 
-    this.wrapWithEnforceFunction_(this.windowObject_, 'setInterval',
-        TrustedTypes.TrustedScript, 0);
-    this.wrapWithEnforceFunction_(this.windowObject_, 'setTimeout',
-        TrustedTypes.TrustedScript, 0);
+    if (this.windowObject_.hasOwnProperty('setInterval')) {
+      this.wrapWithEnforceFunction_(this.windowObject_, 'setInterval',
+          TrustedTypes.TrustedScript, 0);
+    }
+    if (this.windowObject_.hasOwnProperty('setTimeout')) {
+      this.wrapWithEnforceFunction_(this.windowObject_, 'setTimeout',
+          TrustedTypes.TrustedScript, 0);
+    }
     this.wrapSetAttribute_();
     this.installScriptMutatorGuards_();
     this.installPropertySetWrappers_();
@@ -294,20 +308,17 @@ export class TrustedTypesEnforcer {
         this.insertAdjacentObjectPrototype,
         'insertAdjacentHTML'
     );
-    if (this.windowObject_.Element) {
-      this.restoreFunction_(
-          this.windowObject_.Element.prototype, 'setAttribute');
-      this.restoreFunction_(
-          this.windowObject_.Element.prototype, 'setAttributeNS');
-    }
+    this.restoreFunction_(
+        this.windowObject_.Element.prototype, 'setAttribute');
+    this.restoreFunction_(
+        this.windowObject_.Element.prototype, 'setAttributeNS');
 
-    if (this.windowObject_.Document &&
-      getOwnPropertyDescriptor(
-          this.windowObject_.Document.prototype, 'write')
+    if (getOwnPropertyDescriptor(
+        this.windowObject_.Document.prototype, 'write')
     ) {
       this.restoreFunction_(this.windowObject_.Document.prototype, 'write');
-    } else if (this.windowObject_.HTMLDocument &&
-      getOwnPropertyDescriptor(this.windowObject_.HTMLDocument, 'write')
+    } else if (this.windowObject_.HTMLDocument && getOwnPropertyDescriptor(
+        this.windowObject_.HTMLDocument, 'write')
     ) {
       this.restoreFunction_(HTMLDocument.prototype, 'write');
     }
@@ -315,8 +326,12 @@ export class TrustedTypesEnforcer {
     if ('DOMParser' in this.windowObject_) {
       this.restoreFunction_(DOMParser.prototype, 'parseFromString');
     }
-    this.restoreFunction_(this.windowObject_, 'setTimeout');
-    this.restoreFunction_(this.windowObject_, 'setInterval');
+    if (this.windowObject_.hasOwnProperty('setTimeout')) {
+      this.restoreFunction_(this.windowObject_, 'setTimeout');
+    }
+    if (this.windowObject_.hasOwnProperty('setInterval')) {
+      this.restoreFunction_(this.windowObject_, 'setInterval');
+    }
     this.uninstallPropertySetWrappers_();
     this.uninstallScriptMutatorGuards_();
     resetDefaultPolicy();
@@ -331,39 +346,39 @@ export class TrustedTypesEnforcer {
     const that = this;
 
     ['appendChild', 'insertBefore', 'replaceChild'].forEach((fnName) => {
-      if (this.windowObject_.Node) {
-        this.wrapFunction_(
-            this.windowObject_.Node.prototype,
-            fnName,
-            /**
-             * @this {Node}
-             * @param {function(!Function, ...*)} originalFn
-             * @return {*}
-             */
-            function(originalFn, ...args) {
-              return that.enforceTypeInScriptNodes_
-                  .bind(that, this, /* checkParent */ false, originalFn)
-                  .apply(that, args);
-            });
-      }
+      this.wrapFunction_(
+          this.windowObject_.Node.prototype,
+          fnName,
+          /**
+           * @this {Node}
+           * @param {function(!Function, ...*)} originalFn
+           * @return {*}
+           */
+          function(originalFn, ...args) {
+            return that.enforceTypeInScriptNodes_
+                .bind(that, this, /* checkParent */ false, originalFn)
+                .apply(that, args);
+          });
     });
-    this.wrapFunction_(
-        this.insertAdjacentObjectPrototype,
-        'insertAdjacentText',
-        /**
-         * @this {Element}
-         * @param {function(!Function, ...*)} originalFn
-         * @return {*}
-         */
-        function(originalFn, ...args) {
-          return that.insertAdjacentTextWrapper_
-              .bind(that, this, originalFn)
-              .apply(that, args);
-        });
 
-    if (this.windowObject_.Element &&
-      'after' in this.windowObject_.Element.prototype) {
-      ['after', 'before', 'replaceWith'].forEach((fnName) => {
+    if (this.insertAdjacentObjectPrototype) {
+      this.wrapFunction_(
+          this.insertAdjacentObjectPrototype,
+          'insertAdjacentText',
+          /**
+           * @this {Element}
+           * @param {function(!Function, ...*)} originalFn
+           * @return {*}
+           */
+          function(originalFn, ...args) {
+            return that.insertAdjacentTextWrapper_
+                .bind(that, this, originalFn)
+                .apply(that, args);
+          });
+    }
+
+    ['after', 'before', 'replaceWith'].forEach((fnName) => {
+      if (fnName in this.windowObject_.Element.prototype) {
         this.wrapFunction_(
             this.windowObject_.Element.prototype,
             fnName,
@@ -377,8 +392,10 @@ export class TrustedTypesEnforcer {
                   .bind(that, this, /* checkParent */ true, originalFn)
                   .apply(that, args);
             });
-      });
-      ['append', 'prepend'].forEach((fnName) => {
+      }
+    });
+    ['append', 'prepend'].forEach((fnName) => {
+      if (fnName in this.windowObject_.Element.prototype) {
         this.wrapFunction_(
             this.windowObject_.Element.prototype,
             fnName,
@@ -392,8 +409,8 @@ export class TrustedTypesEnforcer {
                   .bind(that, this, /* checkParent */ false, originalFn)
                   .apply(that, args);
             });
-      });
-    }
+      }
+    });
   }
 
   /**
@@ -402,22 +419,24 @@ export class TrustedTypesEnforcer {
    * @private
    */
   uninstallScriptMutatorGuards_() {
-    if (this.windowObject_.Node) {
-      this.restoreFunction_(
-          this.windowObject_.Node.prototype, 'appendChild');
-      this.restoreFunction_(
-          this.windowObject_.Node.prototype, 'insertBefore');
-      this.restoreFunction_(
-          this.windowObject_.Node.prototype, 'replaceChild');
-    }
+    this.restoreFunction_(
+        this.windowObject_.Node.prototype, 'appendChild');
+    this.restoreFunction_(
+        this.windowObject_.Node.prototype, 'insertBefore');
+    this.restoreFunction_(
+        this.windowObject_.Node.prototype, 'replaceChild');
     this.restoreFunction_(
         this.insertAdjacentObjectPrototype, 'insertAdjacentText');
-    if (this.windowObject_.Element &&
-       'after' in this.windowObject_.Element.prototype) {
-      ['after', 'before', 'replaceWith', 'append', 'prepend'].forEach(
-          (fnName) => this.restoreFunction_(
-              this.windowObject_.Element.prototype, fnName));
-    }
+    ['after', 'before', 'replaceWith', 'append', 'prepend'].forEach(
+        (fnName) => {
+          if (fnName in this.windowObject_.Element.prototype) {
+            this.restoreFunction_(
+                this.windowObject_.Element.prototype,
+                fnName
+            );
+          }
+        }
+    );
   }
 
   /**
@@ -462,34 +481,32 @@ export class TrustedTypesEnforcer {
   /** Wraps set attribute with an enforcement function. */
   wrapSetAttribute_() {
     const that = this;
-    if (this.windowObject_.Element) {
-      this.wrapFunction_(
-          this.windowObject_.Element.prototype,
-          'setAttribute',
-          /**
-           * @this {TrustedTypesEnforcer}
-           * @param {function(!Function, ...*)} originalFn
-           * @return {*}
-           */
-          function(originalFn, ...args) {
-            return that.setAttributeWrapper_
-                .bind(that, this, originalFn)
-                .apply(that, args);
-          });
-      this.wrapFunction_(
-          this.windowObject_.Element.prototype,
-          'setAttributeNS',
-          /**
-           * @this {TrustedTypesEnforcer}
-           * @param {function(!Function, ...*)} originalFn
-           * @return {*}
-           */
-          function(originalFn, ...args) {
-            return that.setAttributeNSWrapper_
-                .bind(that, this, originalFn)
-                .apply(that, args);
-          });
-    }
+    this.wrapFunction_(
+        this.windowObject_.Element.prototype,
+        'setAttribute',
+        /**
+         * @this {TrustedTypesEnforcer}
+         * @param {function(!Function, ...*)} originalFn
+         * @return {*}
+         */
+        function(originalFn, ...args) {
+          return that.setAttributeWrapper_
+              .bind(that, this, originalFn)
+              .apply(that, args);
+        });
+    this.wrapFunction_(
+        this.windowObject_.Element.prototype,
+        'setAttributeNS',
+        /**
+         * @this {TrustedTypesEnforcer}
+         * @param {function(!Function, ...*)} originalFn
+         * @return {*}
+         */
+        function(originalFn, ...args) {
+          return that.setAttributeNSWrapper_
+              .bind(that, this, originalFn)
+              .apply(that, args);
+        });
   }
 
   /**
@@ -557,8 +574,6 @@ export class TrustedTypesEnforcer {
    * @return {*}
    */
   enforceTypeInScriptNodes_(context, checkParent, originalFn, ...args) {
-    if (!this.windowObject_.Node || !this.windowObject_.document) return;
-
     const objToCheck = checkParent ? context.parentNode : context;
     if (this.instanceOfDomProperty(objToCheck, 'HTMLScriptElement') &&
     args.length > 0) {
@@ -603,8 +618,7 @@ export class TrustedTypesEnforcer {
    */
   insertAdjacentTextWrapper_(context, originalFn, ...args) {
     const riskyPositions = ['beforebegin', 'afterend'];
-    if (this.windowObject_.document && this.windowObject_.Node &&
-       this.instanceOfDomProperty(context, 'Element') &&
+    if (this.instanceOfDomProperty(context, 'Element') &&
         this.instanceOfDomProperty(
             context['parentElement'], 'HTMLScriptElement'
         ) &&
@@ -646,14 +660,13 @@ export class TrustedTypesEnforcer {
 
   /**
    * Wraps a setter with the enforcement wrapper.
-   * @param {Object} object The object of the to-be-wrapped property.
+   * @param {!Object} object The object of the to-be-wrapped property.
    * @param {string} name The name of the property.
    * @param {!Function} type The type to enforce.
    * @param {number} argNumber Number of the argument to enforce the type of.
    * @private
    */
   wrapWithEnforceFunction_(object, name, type, argNumber) {
-    if (!object) return;
     const that = this;
     this.wrapFunction_(
         object,
@@ -678,18 +691,13 @@ export class TrustedTypesEnforcer {
    * @param {function(!Function, ...*)} functionBody The wrapper function.
    */
   wrapFunction_(object, name, functionBody) {
-    if (!object) return;
     const descriptor = getOwnPropertyDescriptor(object, name);
     const originalFn = /** @type function(*):* */ (
-        descriptor ? descriptor.value : null);
+      descriptor ? descriptor.value : null);
 
     if (!(originalFn instanceof Function)) {
-      if (this.config_.isLoggingEnabled) {
-        // eslint-disable-next-line no-console
-        console.warn(
-            'Property ' + name + ' on object' + object + ' is not a function');
-      }
-      return;
+      throw new TypeError(
+          'Property ' + name + ' on object' + object + ' is not a function');
     }
 
     const key = this.getKey_(object, name);
@@ -721,7 +729,6 @@ export class TrustedTypesEnforcer {
    * @private
    */
   wrapSetter_(object, name, type, descriptorObject = undefined) {
-    if (!this.windowObject_.Node) return;
     if (descriptorObject &&!isPrototypeOf.call(descriptorObject, object)) {
       throw new Error('Invalid prototype chain');
     }
@@ -794,7 +801,6 @@ export class TrustedTypesEnforcer {
    * @private
    */
   restoreSetter_(object, name, descriptorObject = undefined) {
-    if (!this.windowObject_.Node) return;
     if (descriptorObject &&
       !isPrototypeOf.call(descriptorObject, object)) {
       throw new Error('Invalid prototype chain');
@@ -844,25 +850,11 @@ export class TrustedTypesEnforcer {
 
   /**
    * Restores the original method of an object, as encountered during install().
-   * @param {Object} object The object of the to-be-wrapped property.
+   * @param {!Object} object The object of the to-be-wrapped property.
    * @param {string} name The name of the property.
    * @private
    */
   restoreFunction_(object, name) {
-    if (!object) return;
-    const descriptor = getOwnPropertyDescriptor(object, name);
-    const originalFn = /** @type function(*):* */ (
-        descriptor ? descriptor.value : null);
-
-    if (!(originalFn instanceof Function)) {
-      if (this.config_.isLoggingEnabled) {
-        // eslint-disable-next-line no-console
-        console.warn(
-            'Property ' + name + ' on object' + object + ' is not a function');
-      }
-      return;
-    }
-
     const key = this.getKey_(object, name);
     if (!this.originalSetters_[key]) {
       throw new Error(
@@ -996,15 +988,13 @@ export class TrustedTypesEnforcer {
       console.warn(message, propertyName, context, typeToEnforce, value);
     }
 
-    // This is not available in release Firefox :(
     // https://developer.mozilla.org/en-US/docs/Web/API/SecurityPolicyViolationEvent
     // https://bugzilla.mozilla.org/show_bug.cgi?id=1432523
     const SecurityPolicyViolationEvent_ =
     this.windowObject_['SecurityPolicyViolationEvent'] || null;
 
     // Unconditionally dispatch an event.
-    if (typeof SecurityPolicyViolationEvent_ === 'function'
-    && this.windowObject_.document) {
+    if (typeof SecurityPolicyViolationEvent_ === 'function') {
       let blockedURI = '';
       if (typeToEnforce === TrustedTypes.TrustedScriptURL) {
         blockedURI = parseUrl_(value, this.windowObject_) || '';

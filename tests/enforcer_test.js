@@ -73,7 +73,13 @@ describe('TrustedTypesEnforcer', function() {
           /* allowedPolicyNames */ [],
           /* allowDuplicates */ false,
           /* CSP string */ null,
-          /* Window-like object to monkey patch */ {}
+          /* Window-like object to monkey patch */ {
+            Element,
+            HTMLElement,
+            Document,
+            document,
+            Node,
+          }
       ));
 
       enforcer.install();

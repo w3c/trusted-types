@@ -64,7 +64,13 @@ const config2 = new TrustedTypeConfig(
   ['foo', 'default'],
   false,
   undefined,
-  {} as Window,
+  ['Element', 'HTMLElement', 'Document', 'Node'].reduce(
+    (acc, key) => {
+      acc[key] = (domino as any).impl[key]
+      return acc
+    },
+    { document: doc } as any,
+  ),
 )
 const incompleteEnforcer = new TrustedTypesEnforcer(config2)
 incompleteEnforcer.install()
