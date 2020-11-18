@@ -318,7 +318,7 @@ export class TrustedTypesEnforcer {
     ) {
       this.restoreFunction_(this.windowObject_.Document.prototype, 'write');
     } else if (this.windowObject_.HTMLDocument && getOwnPropertyDescriptor(
-        this.windowObject_.HTMLDocument, 'write')
+        this.windowObject_.HTMLDocument.prototype, 'write')
     ) {
       this.restoreFunction_(HTMLDocument.prototype, 'write');
     }

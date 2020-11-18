@@ -40,16 +40,16 @@ function setupPolyfill() {
 
   const publicApi = Object.create(TrustedTypePolicyFactory.prototype);
   Object.assign(publicApi, {
-    isHTML: trustedTypes.isHTML,
-    isScriptURL: trustedTypes.isScriptURL,
-    isScript: trustedTypes.isScript,
-    createPolicy: trustedTypes.createPolicy,
-    getAttributeType: trustedTypes.getAttributeType,
-    getPropertyType: trustedTypes.getPropertyType,
-    getTypeMapping: trustedTypes.getTypeMapping,
-    emptyHTML: trustedTypes.emptyHTML,
-    emptyScript: trustedTypes.emptyScript,
-    _isPolyfill_: true,
+    'isHTML': trustedTypes.isHTML,
+    'isScriptURL': trustedTypes.isScriptURL,
+    'isScript': trustedTypes.isScript,
+    'createPolicy': trustedTypes.createPolicy,
+    'getAttributeType': trustedTypes.getAttributeType,
+    'getPropertyType': trustedTypes.getPropertyType,
+    'getTypeMapping': trustedTypes.getTypeMapping,
+    'emptyHTML': trustedTypes.emptyHTML,
+    'emptyScript': trustedTypes.emptyScript,
+    '_isPolyfill_': true,
   });
   Object.defineProperty(
       publicApi,
