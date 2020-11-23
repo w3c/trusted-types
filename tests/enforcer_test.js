@@ -65,6 +65,62 @@ describe('TrustedTypesEnforcer', function() {
         }, params);
   }
 
+  describe('execution in node', () => {
+    it(`does not break when using emulated DOM object`, () => {
+      const enforcer = new TrustedTypesEnforcer(new TrustedTypeConfig(
+          /* isLoggingEnabled */ false,
+          /* isEnforcementEnabled */ true,
+          /* allowedPolicyNames */ [],
+          /* allowDuplicates */ false,
+          /* CSP string */ null,
+          /* Window-like object to monkey patch */ {
+            Element,
+            HTMLElement,
+            Document,
+            document,
+            Node,
+          }
+      ));
+
+      enforcer.install();
+      enforcer.uninstall();
+    });
+  });
+
+  it('will not get clobbered', () => {
+    document.body.innerHTML =
+      `<div id="Element">this</div>` +
+      `<div id="HTMLElement">might</div>` +
+      `<div id="Document">get</div>` +
+      `<div id="Range">clbbbered</div>`;
+
+    const enforcer = new TrustedTypesEnforcer(ENFORCING_CONFIG);
+    enforcer.install();
+
+    const s = document.createElement('script');
+    const p = document.createElement('p');
+    s.appendChild(p);
+
+    // TODO: enable once
+    // https://github.com/w3c/webappsec-trusted-types/issues/133#issuecomment-727900669
+    // is fixed.
+    // expect(() => {
+    //   s.insertAdjacentText(
+    //       'afterBegin',
+    //       'alert("script.insertAdjacentText");'
+    //   );
+    // }).toThrow();
+
+    expect(() => {
+      p.insertAdjacentText('beforebegin', 'alert("p.insertAdjacentText");');
+    }).toThrow();
+
+    document.body.appendChild(s);
+
+    enforcer.uninstall();
+    document.body.innerHTML = '';
+  });
+
   describe('install', function() {
     let enforcer;
 

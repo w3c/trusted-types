@@ -1,0 +1,19 @@
+{
+  "name": "target",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "run-demo-global": "yarn tsc && node ./lib/main",
+    "run-demo-custom": "yarn tsc && node ./lib/custom"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^14.14.3",
+    "@types/trusted-types": "^1.0.6",
+    "domino": "Siegrift/domino#configurable",
+    "trusted-types": "link:../../",
+    "typescript": "^4.0.3"
+  }
+}

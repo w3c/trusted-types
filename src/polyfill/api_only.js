@@ -8,13 +8,13 @@
  */
 
 /**
- * @fileoverview Entry point for a polyfill that only defines the types
- * (i.e. no enforcement logic).
+ * @fileoverview Entry point for a polyfill that only defines the trusted types
+ * API and makes it available in the global scope. This version of polyfill
+ * doesn't contain the enforcement API. If you want to protect DOM sinks, use
+ * the full polyfill instead.
  */
 import {trustedTypes, TrustedTypePolicy, TrustedTypePolicyFactory} from
   '../trustedtypes.js';
-
-const tt = trustedTypes;
 
 /**
  * Sets up the public Trusted Types API in the global object.
@@ -40,31 +40,31 @@ function setupPolyfill() {
 
   const publicApi = Object.create(TrustedTypePolicyFactory.prototype);
   Object.assign(publicApi, {
-    'isHTML': tt.isHTML,
-    'isScriptURL': tt.isScriptURL,
-    'isScript': tt.isScript,
-    'createPolicy': tt.createPolicy,
-    'getAttributeType': tt.getAttributeType,
-    'getPropertyType': tt.getPropertyType,
-    'getTypeMapping': tt.getTypeMapping,
-    'emptyHTML': tt.emptyHTML,
-    'emptyScript': tt.emptyScript,
+    'isHTML': trustedTypes.isHTML,
+    'isScriptURL': trustedTypes.isScriptURL,
+    'isScript': trustedTypes.isScript,
+    'createPolicy': trustedTypes.createPolicy,
+    'getAttributeType': trustedTypes.getAttributeType,
+    'getPropertyType': trustedTypes.getPropertyType,
+    'getTypeMapping': trustedTypes.getTypeMapping,
+    'emptyHTML': trustedTypes.emptyHTML,
+    'emptyScript': trustedTypes.emptyScript,
     '_isPolyfill_': true,
   });
   Object.defineProperty(
       publicApi,
       'defaultPolicy',
-      Object.getOwnPropertyDescriptor(tt, 'defaultPolicy') || {});
+      Object.getOwnPropertyDescriptor(trustedTypes, 'defaultPolicy') || {}
+  );
 
   window[rootProperty] = Object.freeze(publicApi);
 
-  window['TrustedHTML'] = tt.TrustedHTML;
-  window['TrustedScriptURL'] = tt.TrustedScriptURL;
-  window['TrustedScript'] = tt.TrustedScript;
+  window['TrustedHTML'] = trustedTypes.TrustedHTML;
+  window['TrustedScriptURL'] = trustedTypes.TrustedScriptURL;
+  window['TrustedScript'] = trustedTypes.TrustedScript;
   window['TrustedTypePolicy'] = TrustedTypePolicy;
   window['TrustedTypePolicyFactory'] = TrustedTypePolicyFactory;
 }
 
-setupPolyfill();
 
-export default tt;
+setupPolyfill();

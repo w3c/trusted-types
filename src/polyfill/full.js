@@ -10,10 +10,9 @@
 /**
  * @fileoverview Entry point for a polyfill that enforces the types.
  */
+import './api_only.js';
 import {TrustedTypesEnforcer} from '../enforcer.js';
 import {TrustedTypeConfig} from '../data/trustedtypeconfig.js';
-// import and setup trusted types
-import './api_only.js';
 
 /* eslint-enable no-unused-vars */
 
