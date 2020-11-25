@@ -557,7 +557,7 @@ initially empty.
     <div class="example" id="get-property-type-example">
     <xmp highlight="js">
     trustedTypes.getPropertyType('div', 'innerHTML'); // "TrustedHTML"
-    trustedTypes.getPropertyType('foo', 'bar'); // undefined
+    trustedTypes.getPropertyType('foo', 'bar'); // null
     </xmp>
     </div>
 
@@ -584,7 +584,7 @@ initially empty.
     <div class="example" id="get-attribute-type-example">
     <xmp highlight="js">
     trustedTypes.getAttributeType('script', 'SRC'); // "TrustedScriptURL"
-    trustedTypes.getAttributeType('foo', 'bar'); // undefined
+    trustedTypes.getAttributeType('foo', 'bar'); // null
     </xmp>
     </div>
 
