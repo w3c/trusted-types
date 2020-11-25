@@ -1486,6 +1486,7 @@ Possible extra rowspan handling
 </style>
   <meta content="Bikeshed version c5172e83, updated Fri Nov 20 15:35:20 2020 -0800" name="generator">
   <link href="https://w3c.github.io/webappsec-trusted-types/dist/spec/" rel="canonical">
+  <meta content="cfb6d165a8a35f3dfee7169bf295ab00712e6f49" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -2186,7 +2187,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
         <li><a href="#should-block-sink-type-mismatch"><span class="secno">4.7.3</span> <span class="content"><span>Should sink type mismatch violation be blocked by Content Security Policy?</span></span></a>
         <li><a href="#should-block-create-policy"><span class="secno">4.7.4</span> <span class="content"><span>Should Trusted Type policy creation be blocked by Content Security Policy?</span></span></a>
         <li><a href="#csp-violation-object-hdr"><span class="secno">4.7.5</span> <span class="content">Violation object changes</span></a>
-        <li><a href="#csp-eval"><span class="secno">4.7.6</span> <span class="content">Support for eval(TrustedScript)</span></a>
+        <li><a href="#csp-eval"><span class="secno">4.7.6</span> <span class="content">Support for dynamic code compilation</span></a>
        </ol>
      </ol>
     <li>
@@ -2702,7 +2703,7 @@ trustedTypes<c- p>.</c->getAttributeType<c- p>(</c-><c- t>'foo'</c-><c- p>,</c->
      <dd data-md>
       <p>is a <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript③">TrustedScript</a></code> object with its <code>[[Data]]</code> internal slot value set to an empty string.</p>
     </dl>
-    <p class="note" role="note"><span>Note:</span> This object can be used to detect if the runtime environment has <a href="#csp-eval">§ 4.7.6 Support for eval(TrustedScript)</a>. While native Trusted Types implementation can
+    <p class="note" role="note"><span>Note:</span> This object can be used to detect if the runtime environment has <a href="#csp-eval">§ 4.7.6 Support for dynamic code compilation</a>. While native Trusted Types implementation can
 support <code>eval(TrustedScript)</code>, it is impossible for a polyfill to  emulate that, as
 eval(TrustedScript) will return its input without unwrapping and evaluating the code.</p>
     <div class="example" id="empty-script-example">
@@ -3880,9 +3881,9 @@ which value is <var>policyName</var>, and <var>directive</var>’s <a data-link-
    </ol>
    <h4 class="heading settled" data-level="4.7.5" id="csp-violation-object-hdr"><span class="secno">4.7.5. </span><span class="content">Violation object changes</span><a class="self-link" href="#csp-violation-object-hdr"></a></h4>
    <p><a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation" id="ref-for-violation">Violation</a> object <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation-resource" id="ref-for-violation-resource②">resource</a> also allows <code>"trusted-types-policy"</code> and <code>"trusted-types-sink"</code> as values.</p>
-   <h4 class="heading settled" data-level="4.7.6" id="csp-eval"><span class="secno">4.7.6. </span><span class="content">Support for eval(TrustedScript)</span><a class="self-link" href="#csp-eval"></a></h4>
+   <h4 class="heading settled" data-level="4.7.6" id="csp-eval"><span class="secno">4.7.6. </span><span class="content">Support for dynamic code compilation</span><a class="self-link" href="#csp-eval"></a></h4>
    <p>This document modifies the <a href="https://www.w3.org/TR/CSP3/#can-compile-strings">EnsureCSPDoesNotBlockStringCompilation</a> which is reproduced in its entirety below with additions and deletions.</p>
-   <p class="note" role="note"><span>Note:</span> This is based on https://tc39.es/proposal-dynamic-code-brand-checks/ and
+   <p class="note" role="note"><span>Note:</span> This is based on <a href="https://tc39.es/proposal-dynamic-code-brand-checks/">dynamic-code-brand-checks</a> and
 assumes additional arguments are passed to this algorithm from ECMAScript.
 See also <a href="https://github.com/tc39/ecma262/issues/938">TC39/ecma262 issue #938</a>.</p>
    <div class="note" role="note">
@@ -3890,7 +3891,7 @@ See also <a href="https://github.com/tc39/ecma262/issues/938">TC39/ecma262 issue
 <pre class="highlight"><c- a>let</c-> f <c- o>=</c-> <c- k>new</c-> self<c- p>.</c->top<c- p>.</c->Function<c- p>(</c->source<c- p>);</c->
 </pre>
     <p>In this case, the <var>callerRealm</var>’s Window is <code>self</code> and the <var>calleeRealm</var>’s Window is <code>self.top</code>.
-The Trusted Types portion of this algorithm uses <var>calleeRealm</var> for consistency with other sinks.</p>
+The Trusted Types portion of this algorithm uses <var>calleeRealm</var> and its CSP setting for consistency with other sinks.</p>
 <pre class="highlight"><c- c1>// Assigning a string to another Realm’s DOM sink uses that Realm’s default policy.</c->
 self<c- p>.</c->top<c- p>.</c->body<c- p>.</c->innerHTML <c- o>=</c-> <c- t>'Hello, World!'</c-><c- p>;</c->
 <c- c1>// Using another Realm’s builtin Function constructor should analogously use that</c->
@@ -3906,10 +3907,11 @@ the <var>calleeRealm</var> or <var>callerRealm</var>’s Content-Security-Policy
     <ins>and a boolean <var>wasCodeLike</var></ins>
     , this algorithm returns 
     <del>normally</del>
+    <ins>the
+source string to compile</ins>
+     if compilation is allowed, and
+throws an "<code>EvalError</code>" if not:
    </p>
-   <ins>the source string to compile</ins>
-    if compilation is allowed, and
-throws an "<code>EvalError</code>" if not: 
    <ol>
     <li data-md>
      <ins>If <var>wasCodeLike</var> is true, let <var>sourceToValidate</var> be a new instance of
@@ -3934,7 +3936,7 @@ set to <var>source</var>. Otherwise, let <var>sourceToValidate</var> be <var>sou
     <li data-md>
      <ins>If the algorithm throws an error, throw an <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-evalerror" id="ref-for-exceptiondef-evalerror">EvalError</a></code>.</ins>
     <li data-md>
-     <p>Let <var>globals</var> be a list containing <var>calleeRealm</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global⑤">global object</a> and <var>calleeRealm</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global⑥">global object</a>.</p>
+     <p>Let <var>globals</var> be a list containing <var>callerRealm</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global⑤">global object</a> and <var>calleeRealm</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global⑥">global object</a>.</p>
     <li data-md>
      <p>For each <var>global</var> in <var>globals</var>:</p>
      <ol>
@@ -3984,14 +3986,6 @@ the substring of
    <p class="note" role="note"><span>Note:</span> returning <var>sourceString</var> means that the string that gets
 compiled is that returned by any <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy②">default policy</a> in the course of
 executing <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string⑧">Get Trusted Type compliant string</a>.</p>
-   <p class="issue" id="issue-649f8da4"><a class="self-link" href="#issue-649f8da4"></a> In some cases, the violation "<code>'report-sample'</code>" contain the result of
-applying the default policy to a string argument which differs.
-Specifically when, there is a <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy③">default policy</a>, <var>isExempt</var> is false,
-and <var>source</var> there is a CSP policy for either the <var>callerRealm</var> or <var>callerRealm</var> that disallows "<code>'unsafe-eval'"</code>.
-Is this a feature or a bug?</p>
-   <p class="note" role="note"><span>Note:</span> The previous algorithm reports violations via both report-uris where
-callerRealm != calleeRealm.  If <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string⑨">Get Trusted Type compliant string</a> reports an
-error, it only reports it via its <var>calleeRealm</var>’s report-uri.</p>
    <h2 class="heading settled" data-level="5" id="security-considerations"><span class="secno">5. </span><span class="content">Security Considerations</span><a class="self-link" href="#security-considerations"></a></h2>
    <p>Trusted Types are not intended to protect access to <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②⑤">injection sinks</a> in an
 actively malicious execution environment. It’s assumed that the application is
@@ -4047,7 +4041,7 @@ together.</p>
 NOT interfere with the operation of user-agent features like addons,
 extensions, or bookmarklets. These kinds of features generally advance
 the user’s priority over page authors, as espoused in <a data-link-type="biblio" href="#biblio-html-design-principles">[html-design-principles]</a>. Specifically, extensions SHOULD be able to pass strings
-to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②⑧">injection sinks</a> without triggering <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy④">default policy</a> execution, violation generation, or the rejection of the value.</p>
+to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②⑧">injection sinks</a> without triggering <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy③">default policy</a> execution, violation generation, or the rejection of the value.</p>
   </main>
   <h2 class="no-ref no-num heading settled" id="conformance"><span class="content">Conformance</span><a class="self-link" href="#conformance"></a></h2>
   <h3 class="no-ref no-num heading settled" id="conventions"><span class="content">Document conventions</span><a class="self-link" href="#conventions"></a></h3>
@@ -4250,13 +4244,13 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
   <aside class="dfn-panel" data-for="term-for-grammardef-report-sample">
    <a href="https://w3c.github.io/webappsec-csp/#grammardef-report-sample">https://w3c.github.io/webappsec-csp/#grammardef-report-sample</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-grammardef-report-sample">4.7.6. Support for eval(TrustedScript)</a>
+    <li><a href="#ref-for-grammardef-report-sample">4.7.6. Support for dynamic code compilation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-grammardef-unsafe-eval">
    <a href="https://w3c.github.io/webappsec-csp/#grammardef-unsafe-eval">https://w3c.github.io/webappsec-csp/#grammardef-unsafe-eval</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-grammardef-unsafe-eval">4.7.6. Support for eval(TrustedScript)</a>
+    <li><a href="#ref-for-grammardef-unsafe-eval">4.7.6. Support for dynamic code compilation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-content-security-policy-object">
@@ -4268,7 +4262,7 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
   <aside class="dfn-panel" data-for="term-for-global-object-csp-list">
    <a href="https://w3c.github.io/webappsec-csp/#global-object-csp-list">https://w3c.github.io/webappsec-csp/#global-object-csp-list</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-global-object-csp-list">4.7.6. Support for eval(TrustedScript)</a>
+    <li><a href="#ref-for-global-object-csp-list">4.7.6. Support for dynamic code compilation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-policy-directive-set">
@@ -4287,7 +4281,7 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
     <li><a href="#ref-for-directives②">4.7.2. trusted-types directive</a> <a href="#ref-for-directives③">(2)</a>
     <li><a href="#ref-for-directives④">4.7.3. Should sink type mismatch violation be blocked by Content Security Policy?</a> <a href="#ref-for-directives⑤">(2)</a>
     <li><a href="#ref-for-directives⑥">4.7.4. Should Trusted Type policy creation be blocked by Content Security Policy?</a> <a href="#ref-for-directives⑦">(2)</a>
-    <li><a href="#ref-for-directives⑧">4.7.6. Support for eval(TrustedScript)</a> <a href="#ref-for-directives⑨">(2)</a> <a href="#ref-for-directives①⓪">(3)</a>
+    <li><a href="#ref-for-directives⑧">4.7.6. Support for dynamic code compilation</a> <a href="#ref-for-directives⑨">(2)</a> <a href="#ref-for-directives①⓪">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-policy-disposition">
@@ -4295,7 +4289,7 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <ul>
     <li><a href="#ref-for-policy-disposition">4.7.3. Should sink type mismatch violation be blocked by Content Security Policy?</a>
     <li><a href="#ref-for-policy-disposition①">4.7.4. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
-    <li><a href="#ref-for-policy-disposition②">4.7.6. Support for eval(TrustedScript)</a>
+    <li><a href="#ref-for-policy-disposition②">4.7.6. Support for dynamic code compilation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-directive-inline-check">
@@ -4310,7 +4304,7 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
     <li><a href="#ref-for-directive-name">4.7.1. require-trusted-types-for directive</a>
     <li><a href="#ref-for-directive-name①">4.7.2. trusted-types directive</a>
     <li><a href="#ref-for-directive-name②">4.7.3. Should sink type mismatch violation be blocked by Content Security Policy?</a>
-    <li><a href="#ref-for-directive-name③">4.7.6. Support for eval(TrustedScript)</a> <a href="#ref-for-directive-name④">(2)</a>
+    <li><a href="#ref-for-directive-name③">4.7.6. Support for dynamic code compilation</a> <a href="#ref-for-directive-name④">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-object-src">
@@ -4331,7 +4325,7 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
     <li><a href="#ref-for-violation-resource">4.7.3. Should sink type mismatch violation be blocked by Content Security Policy?</a>
     <li><a href="#ref-for-violation-resource①">4.7.4. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
     <li><a href="#ref-for-violation-resource②">4.7.5. Violation object changes</a>
-    <li><a href="#ref-for-violation-resource③">4.7.6. Support for eval(TrustedScript)</a>
+    <li><a href="#ref-for-violation-resource③">4.7.6. Support for dynamic code compilation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-violation-sample">
@@ -4339,7 +4333,7 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <ul>
     <li><a href="#ref-for-violation-sample">4.7.3. Should sink type mismatch violation be blocked by Content Security Policy?</a>
     <li><a href="#ref-for-violation-sample①">4.7.4. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
-    <li><a href="#ref-for-violation-sample②">4.7.6. Support for eval(TrustedScript)</a>
+    <li><a href="#ref-for-violation-sample②">4.7.6. Support for dynamic code compilation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-script-src">
@@ -4351,7 +4345,7 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
   <aside class="dfn-panel" data-for="term-for-source-expression">
    <a href="https://w3c.github.io/webappsec-csp/#source-expression">https://w3c.github.io/webappsec-csp/#source-expression</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-source-expression">4.7.6. Support for eval(TrustedScript)</a>
+    <li><a href="#ref-for-source-expression">4.7.6. Support for dynamic code compilation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-directive-value">
@@ -4361,7 +4355,7 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
     <li><a href="#ref-for-directive-value①">4.7.2. trusted-types directive</a> <a href="#ref-for-directive-value②">(2)</a>
     <li><a href="#ref-for-directive-value③">4.7.3. Should sink type mismatch violation be blocked by Content Security Policy?</a>
     <li><a href="#ref-for-directive-value④">4.7.4. Should Trusted Type policy creation be blocked by Content Security Policy?</a> <a href="#ref-for-directive-value⑤">(2)</a> <a href="#ref-for-directive-value⑥">(3)</a> <a href="#ref-for-directive-value⑦">(4)</a>
-    <li><a href="#ref-for-directive-value⑧">4.7.6. Support for eval(TrustedScript)</a> <a href="#ref-for-directive-value⑨">(2)</a>
+    <li><a href="#ref-for-directive-value⑧">4.7.6. Support for dynamic code compilation</a> <a href="#ref-for-directive-value⑨">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-violation">
@@ -4668,7 +4662,7 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <a href="https://infra.spec.whatwg.org/#ascii-case-insensitive">https://infra.spec.whatwg.org/#ascii-case-insensitive</a><b>Referenced in:</b>
    <ul>
     <li><a href="#script-processing-model:ascii-case-insensitive">4.2.3.3. Slot value verification</a> <a href="#script-processing-model:ascii-case-insensitive-2">(2)</a> <a href="#script-processing-model:ascii-case-insensitive-3">(3)</a>
-    <li><a href="#ref-for-ascii-case-insensitive">4.7.6. Support for eval(TrustedScript)</a>
+    <li><a href="#ref-for-ascii-case-insensitive">4.7.6. Support for dynamic code compilation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-ascii-lowercase">
@@ -4688,7 +4682,7 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
   <aside class="dfn-panel" data-for="term-for-list-contain">
    <a href="https://infra.spec.whatwg.org/#list-contain">https://infra.spec.whatwg.org/#list-contain</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-list-contain">4.7.6. Support for eval(TrustedScript)</a>
+    <li><a href="#ref-for-list-contain">4.7.6. Support for dynamic code compilation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-html-namespace">
@@ -4786,7 +4780,7 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
   <aside class="dfn-panel" data-for="term-for-exceptiondef-evalerror">
    <a href="https://heycam.github.io/webidl/#exceptiondef-evalerror">https://heycam.github.io/webidl/#exceptiondef-evalerror</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-exceptiondef-evalerror">4.7.6. Support for eval(TrustedScript)</a>
+    <li><a href="#ref-for-exceptiondef-evalerror">4.7.6. Support for dynamic code compilation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-Exposed">
@@ -5154,11 +5148,6 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <div class="issue"> Update when workers have TT.<a href="#issue-b92c7a17"> ↵ </a></div>
    <div class="issue"> Remove hardcoding 'script' when new sink groups are specified.<a href="#issue-adaa63a4"> ↵ </a></div>
    <div class="issue"> Remove when <a href="https://github.com/whatwg/dom/pull/809">DOM #809</a> is merged.<a href="#issue-52c8f9b0"> ↵ </a></div>
-   <div class="issue"> In some cases, the violation "<code>'report-sample'</code>" contain the result of
-applying the default policy to a string argument which differs.
-Specifically when, there is a <a data-link-type="dfn" href="#default-policy">default policy</a>, <var>isExempt</var> is false,
-and <var>source</var> there is a CSP policy for either the <var>callerRealm</var> or <var>callerRealm</var> that disallows "<code>'unsafe-eval'"</code>.
-Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
    <div class="issue"> Refer to the external document on secure policy design.<a href="#issue-2eb927d2"> ↵ </a></div>
   </div>
   <aside class="dfn-panel" data-for="injection-sink">
@@ -5217,7 +5206,7 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
     <li><a href="#ref-for-trustedscript⑧">4.2.5. Enforcement in timer functions</a> <a href="#ref-for-trustedscript⑨">(2)</a>
     <li><a href="#ref-for-trustedscript①⓪">4.2.6. Enforcement in event handler content attributes</a>
     <li><a href="#ref-for-trustedscript①①">4.7.1.1. require-trusted-types-for Pre-Navigation check</a> <a href="#ref-for-trustedscript①②">(2)</a>
-    <li><a href="#ref-for-trustedscript①③">4.7.6. Support for eval(TrustedScript)</a> <a href="#ref-for-trustedscript①④">(2)</a>
+    <li><a href="#ref-for-trustedscript①③">4.7.6. Support for dynamic code compilation</a> <a href="#ref-for-trustedscript①④">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="trustedscripturl">
@@ -5399,8 +5388,8 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
    <ul>
     <li><a href="#ref-for-default-policy">4.7.1.1. require-trusted-types-for Pre-Navigation check</a>
     <li><a href="#ref-for-default-policy①">4.7.2. trusted-types directive</a>
-    <li><a href="#ref-for-default-policy②">4.7.6. Support for eval(TrustedScript)</a> <a href="#ref-for-default-policy③">(2)</a>
-    <li><a href="#ref-for-default-policy④">6.1. Vendor-specific Extensions and Addons</a>
+    <li><a href="#ref-for-default-policy②">4.7.6. Support for dynamic code compilation</a>
+    <li><a href="#ref-for-default-policy③">6.1. Vendor-specific Extensions and Addons</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="enforcement">
@@ -5436,7 +5425,7 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string④">4.2.6. Enforcement in event handler content attributes</a>
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑤">4.2.7. Validate the string in context</a>
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑥">4.4. Integration with SVG</a>
-    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑦">4.7.6. Support for eval(TrustedScript)</a> <a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑧">(2)</a> <a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑨">(3)</a>
+    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑦">4.7.6. Support for dynamic code compilation</a> <a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑧">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="abstract-opdef-process-value-with-a-default-policy">

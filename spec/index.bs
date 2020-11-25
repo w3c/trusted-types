@@ -1853,12 +1853,12 @@ strings (|createdPolicyNames|), this algorithm returns `"Blocked"` if the
 [=violation|Violation=] object [=violation/resource=] also allows `"trusted-types-policy"`
 and `"trusted-types-sink"` as values.
 
-### Support for eval(TrustedScript) ### {#csp-eval}
+### Support for dynamic code compilation ### {#csp-eval}
 
 This document modifies the [[CSP3#can-compile-strings|EnsureCSPDoesNotBlockStringCompilation]]
 which is reproduced in its entirety below with additions and deletions.
 
-Note: This is based on https://tc39.es/proposal-dynamic-code-brand-checks/ and
+Note: This is based on [dynamic-code-brand-checks](https://tc39.es/proposal-dynamic-code-brand-checks/) and
 assumes additional arguments are passed to this algorithm from ECMAScript.
 See also <a href="https://github.com/tc39/ecma262/issues/938">TC39/ecma262 issue #938</a>.
 
@@ -1867,7 +1867,7 @@ See also <a href="https://github.com/tc39/ecma262/issues/938">TC39/ecma262 issue
   let f = new self.top.Function(source);
 </pre>
 In this case, the |callerRealm|'s Window is `self` and the |calleeRealm|'s Window is `self.top`.
-The Trusted Types portion of this algorithm uses |calleeRealm| for consistency with other sinks.
+The Trusted Types portion of this algorithm uses |calleeRealm| and its CSP setting for consistency with other sinks.
 <pre highlight="js">
   // Assigning a string to another Realm's DOM sink uses that Realm's default policy.
   self.top.body.innerHTML = 'Hello, World!';
@@ -1881,8 +1881,8 @@ the |calleeRealm| or |callerRealm|'s Content-Security-Policy rejects string comp
 
 Given two [[ECMASCRIPT#realm|realms]] (|callerRealm| and
 |calleeRealm|), a string
-(|source|) <ins>and a boolean |wasCodeLike|</ins>, this algorithm returns <del>normally</del>
-<ins>the source string to compile</ins> if compilation is allowed, and
+(|source|) <ins>and a boolean |wasCodeLike|</ins>, this algorithm returns <del>normally</del><ins>the
+source string to compile</ins> if compilation is allowed, and
 throws an "`EvalError`" if not:
 
 1.  <ins>If |wasCodeLike| is true, let |sourceToValidate| be a new instance of
@@ -1899,7 +1899,7 @@ throws an "`EvalError`" if not:
 
 2.  <ins>If the algorithm throws an error, throw an {{EvalError}}.</ins>
 
-3.  Let |globals| be a list containing |calleeRealm|'s [=Realm/global object=] and |calleeRealm|'s
+3.  Let |globals| be a list containing |callerRealm|'s [=Realm/global object=] and |calleeRealm|'s
     [=Realm/global object=].
 
 4.  For each |global| in |globals|:
@@ -1941,17 +1941,6 @@ throws an "`EvalError`" if not:
 Note: returning |sourceString| means that the string that gets
 compiled is that returned by any [=default policy=] in the course of
 executing [$Get Trusted Type compliant string$].
-
-Issue: In some cases, the violation "`'report-sample'`" contain the result of
-applying the default policy to a string argument which differs.
-Specifically when, there is a [=default policy=], |isExempt| is false,
-and |source| there is a CSP policy for either the |callerRealm|
-or |callerRealm| that disallows "`'unsafe-eval'"`.
-Is this a feature or a bug?
-
-Note: The previous algorithm reports violations via both report-uris where
-callerRealm != calleeRealm.  If [$Get Trusted Type compliant string$] reports an
-error, it only reports it via its |calleeRealm|'s report-uri.
 
 # Security Considerations # {#security-considerations}
 
