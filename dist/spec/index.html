@@ -3882,7 +3882,9 @@ which value is <var>policyName</var>, and <var>directive</var>’s <a data-link-
    <p><a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation" id="ref-for-violation">Violation</a> object <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation-resource" id="ref-for-violation-resource②">resource</a> also allows <code>"trusted-types-policy"</code> and <code>"trusted-types-sink"</code> as values.</p>
    <h4 class="heading settled" data-level="4.7.6" id="csp-eval"><span class="secno">4.7.6. </span><span class="content">Support for eval(TrustedScript)</span><a class="self-link" href="#csp-eval"></a></h4>
    <p>This document modifies the <a href="https://www.w3.org/TR/CSP3/#can-compile-strings">EnsureCSPDoesNotBlockStringCompilation</a> which is reproduced in its entirety below with additions and deletions.</p>
-   <p class="note" role="note"><span>Note:</span> See <a href="https://github.com/tc39/ecma262/issues/938">TC39/ecma262 issue #938</a> (adding the value to be compiled to algorithm parameters).</p>
+   <p class="note" role="note"><span>Note:</span> This is based on https://tc39.es/proposal-dynamic-code-brand-checks/ and
+assumes additional arguments are passed to this algorithm from ECMAScript.
+See also <a href="https://github.com/tc39/ecma262/issues/938">TC39/ecma262 issue #938</a>.</p>
    <div class="note" role="note">
     Note: EcmaScript code may call <code>Function()</code> and <code>eval</code> cross realm. 
 <pre class="highlight"><c- a>let</c-> f <c- o>=</c-> <c- k>new</c-> self<c- p>.</c->top<c- p>.</c->Function<c- p>(</c->source<c- p>);</c->
@@ -3899,10 +3901,10 @@ self<c- p>.</c->top<c- p>.</c->body<c- p>.</c->innerHTML <c- o>=</c-> <c- t>'Hel
 the <var>calleeRealm</var> or <var>callerRealm</var>’s Content-Security-Policy rejects string compilation.</p>
    </div>
    <p>
-    Given two <a href="https://tc39.es/ecma262/#realm">realms</a> (<var>callerRealm</var> and <var>calleeRealm</var>), and a 
-    <del>string</del>
-    <ins>value</ins>
-     (<var>source</var>), this algorithm returns 
+    Given two <a href="https://tc39.es/ecma262/#realm">realms</a> (<var>callerRealm</var> and <var>calleeRealm</var>), a string
+(<var>source</var>) 
+    <ins>and a boolean <var>wasCodeLike</var></ins>
+    , this algorithm returns 
     <del>normally</del>
    </p>
    <ins>the source string to compile</ins>
@@ -3910,19 +3912,23 @@ the <var>calleeRealm</var> or <var>callerRealm</var>’s Content-Security-Policy
 throws an "<code>EvalError</code>" if not: 
    <ol>
     <li data-md>
+     <ins>If <var>wasCodeLike</var> is true, let <var>sourceToValidate</var> be a new instance of
+the <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①③">TrustedScript</a></code> interface, with its <code>[[Data]]</code> internal slot value
+set to <var>source</var>. Otherwise, let <var>sourceToValidate</var> be <var>source</var>.</ins>
+    <li data-md>
      <ins>
       Let <var>sourceString</var> be the result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string⑦">Get Trusted Type compliant string</a> algorithm, with: 
       <ul>
        <li data-md>
         <p><var>calleeRealm</var> as <var>global</var>,</p>
        <li data-md>
-        <p><var>source</var> as <var>input</var>,</p>
+        <p><var>sourceToValidate</var> as <var>input</var>,</p>
        <li data-md>
         <p><code>eval</code> as <var>sink</var>,</p>
        <li data-md>
         <p><code>'script'</code> as <var>sinkGroup</var>,</p>
        <li data-md>
-        <p><code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①③">TrustedScript</a></code> as <var>expectedType</var>.</p>
+        <p><code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①④">TrustedScript</a></code> as <var>expectedType</var>.</p>
       </ul>
      </ins>
     <li data-md>
@@ -3978,7 +3984,6 @@ the substring of
    <p class="note" role="note"><span>Note:</span> returning <var>sourceString</var> means that the string that gets
 compiled is that returned by any <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy②">default policy</a> in the course of
 executing <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string⑧">Get Trusted Type compliant string</a>.</p>
-   <p class="issue" id="issue-e28ea232"><a class="self-link" href="#issue-e28ea232"></a> This depends on a solution to <a href="https://github.com/w3c/webappsec-trusted-types/issues/144">issue #144</a> like <a href="https://github.com/tc39-transfer/dynamic-code-brand-checks#problem-host-callout-does-not-receive-type-information">TC39 HostBeforeCompile</a></p>
    <p class="issue" id="issue-649f8da4"><a class="self-link" href="#issue-649f8da4"></a> In some cases, the violation "<code>'report-sample'</code>" contain the result of
 applying the default policy to a string argument which differs.
 Specifically when, there is a <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy③">default policy</a>, <var>isExempt</var> is false,
@@ -5149,7 +5154,6 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <div class="issue"> Update when workers have TT.<a href="#issue-b92c7a17"> ↵ </a></div>
    <div class="issue"> Remove hardcoding 'script' when new sink groups are specified.<a href="#issue-adaa63a4"> ↵ </a></div>
    <div class="issue"> Remove when <a href="https://github.com/whatwg/dom/pull/809">DOM #809</a> is merged.<a href="#issue-52c8f9b0"> ↵ </a></div>
-   <div class="issue"> This depends on a solution to <a href="https://github.com/w3c/webappsec-trusted-types/issues/144">issue #144</a> like <a href="https://github.com/tc39-transfer/dynamic-code-brand-checks#problem-host-callout-does-not-receive-type-information">TC39 HostBeforeCompile</a><a href="#issue-e28ea232"> ↵ </a></div>
    <div class="issue"> In some cases, the violation "<code>'report-sample'</code>" contain the result of
 applying the default policy to a string argument which differs.
 Specifically when, there is a <a data-link-type="dfn" href="#default-policy">default policy</a>, <var>isExempt</var> is false,
@@ -5213,7 +5217,7 @@ Is this a feature or a bug?<a href="#issue-649f8da4"> ↵ </a></div>
     <li><a href="#ref-for-trustedscript⑧">4.2.5. Enforcement in timer functions</a> <a href="#ref-for-trustedscript⑨">(2)</a>
     <li><a href="#ref-for-trustedscript①⓪">4.2.6. Enforcement in event handler content attributes</a>
     <li><a href="#ref-for-trustedscript①①">4.7.1.1. require-trusted-types-for Pre-Navigation check</a> <a href="#ref-for-trustedscript①②">(2)</a>
-    <li><a href="#ref-for-trustedscript①③">4.7.6. Support for eval(TrustedScript)</a>
+    <li><a href="#ref-for-trustedscript①③">4.7.6. Support for eval(TrustedScript)</a> <a href="#ref-for-trustedscript①④">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="trustedscripturl">
