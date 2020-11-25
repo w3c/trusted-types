@@ -1486,7 +1486,7 @@ Possible extra rowspan handling
 </style>
   <meta content="Bikeshed version c5172e83, updated Fri Nov 20 15:35:20 2020 -0800" name="generator">
   <link href="https://w3c.github.io/webappsec-trusted-types/dist/spec/" rel="canonical">
-  <meta content="532846c12404b01e717b194107bef1d1dfd4601b" name="document-revision">
+  <meta content="a3d15b10dec6a607c1d1087298b89621c18d77fe" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -2650,7 +2650,7 @@ stringified <code class="idl"><a data-link-type="idl">StringContext</a></code>'s
       <div class="example" id="get-property-type-example">
        <a class="self-link" href="#get-property-type-example"></a> 
 <pre class="highlight">trustedTypes<c- p>.</c->getPropertyType<c- p>(</c-><c- t>'div'</c-><c- p>,</c-> <c- t>'innerHTML'</c-><c- p>);</c-> <c- c1>// "TrustedHTML"</c->
-trustedTypes<c- p>.</c->getPropertyType<c- p>(</c-><c- t>'foo'</c-><c- p>,</c-> <c- t>'bar'</c-><c- p>);</c-> <c- c1>// undefined</c->
+trustedTypes<c- p>.</c->getPropertyType<c- p>(</c-><c- t>'foo'</c-><c- p>,</c-> <c- t>'bar'</c-><c- p>);</c-> <c- c1>// null</c->
 </pre>
       </div>
      <dt data-md><dfn class="dfn-paneled idl-code" data-dfn-for="TrustedTypePolicyFactory" data-dfn-type="method" data-export data-lt="getAttributeType(tagName, attribute, elementNs, attrNs)|getAttributeType(tagName, attribute, elementNs)|getAttributeType(tagName, attribute)" id="dom-trustedtypepolicyfactory-getattributetype"><code>getAttributeType(tagName, attribute, elementNs, attrNs)</code></dfn>
@@ -2682,7 +2682,7 @@ stringified <code class="idl"><a data-link-type="idl">StringContext</a></code>'s
       <div class="example" id="get-attribute-type-example">
        <a class="self-link" href="#get-attribute-type-example"></a> 
 <pre class="highlight">trustedTypes<c- p>.</c->getAttributeType<c- p>(</c-><c- t>'script'</c-><c- p>,</c-> <c- t>'SRC'</c-><c- p>);</c-> <c- c1>// "TrustedScriptURL"</c->
-trustedTypes<c- p>.</c->getAttributeType<c- p>(</c-><c- t>'foo'</c-><c- p>,</c-> <c- t>'bar'</c-><c- p>);</c-> <c- c1>// undefined</c->
+trustedTypes<c- p>.</c->getAttributeType<c- p>(</c-><c- t>'foo'</c-><c- p>,</c-> <c- t>'bar'</c-><c- p>);</c-> <c- c1>// null</c->
 </pre>
       </div>
     </dl>
