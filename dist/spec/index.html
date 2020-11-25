@@ -1486,7 +1486,7 @@ Possible extra rowspan handling
 </style>
   <meta content="Bikeshed version c5172e83, updated Fri Nov 20 15:35:20 2020 -0800" name="generator">
   <link href="https://w3c.github.io/webappsec-trusted-types/dist/spec/" rel="canonical">
-  <meta content="cfb6d165a8a35f3dfee7169bf295ab00712e6f49" name="document-revision">
+  <meta content="532846c12404b01e717b194107bef1d1dfd4601b" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -3007,7 +3007,7 @@ Trusted Type</a> algorithm, with the following arguments:</p>
      <p>If the algorithm threw an error, rethrow it. Otherwise, return <var>convertedInput</var>.</p>
    </ol>
    <h3 class="heading settled" data-level="3.5" id="prepare-script-url-and-text"><span class="secno">3.5. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-prepare-the-script-url-and-text">Prepare the script URL and text</dfn></span><a class="self-link" href="#prepare-script-url-and-text"></a></h3>
-   <p>Given a <code class="idl"><a data-link-type="idl" href="https://fetch.spec.whatwg.org/#dom-requestdestination-script" id="ref-for-dom-requestdestination-script">script</a></code> (<var>script</var>), this algorithm performs the following steps:</p>
+   <p>Given an <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement" id="ref-for-htmlscriptelement">HTMLScriptElement</a></code> (<var>script</var>), this algorithm performs the following steps:</p>
    <ol>
     <li data-md>
      <p>If <var>script</var> does not have a <code class="idl"><a data-link-type="idl">src</a></code> content attribute, set its <code class="idl"><a data-link-type="idl">[[ScriptURL]]</a></code> internal slot value to <code>null</code>.</p>
@@ -3148,7 +3148,7 @@ type policy factory</a> of the current <code class="idl"><a data-link-type="idl"
    <h4 class="heading settled" data-level="4.2.3" id="enforcement-in-scripts"><span class="secno">4.2.3. </span><span class="content">Enforcement for scripts</span><a class="self-link" href="#enforcement-in-scripts"></a></h4>
    <h5 class="heading settled" data-level="4.2.3.1" id="slots-with-trusted-values"><span class="secno">4.2.3.1. </span><span class="content">Slots with trusted values</span><a class="self-link" href="#slots-with-trusted-values"></a></h5>
    <p class="issue" id="issue-bcb72f9a"><a class="self-link" href="#issue-bcb72f9a"></a> Figure out if we can drop <code class="idl"><a data-link-type="idl">[[ScriptURL]]</a></code> slot after IDL + DOM changes.</p>
-   <p>This document modifies <code class="idl"><a data-link-type="idl" href="https://fetch.spec.whatwg.org/#dom-requestdestination-script" id="ref-for-dom-requestdestination-script①">script</a></code> elements. Each script has:</p>
+   <p>This document modifies <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement" id="ref-for-htmlscriptelement①">script</a></code> elements. Each script has:</p>
    <dl>
     <dt data-md><dfn data-dfn-for="script" data-dfn-type="dfn" data-noexport id="script-scripturl"><code>[[ScriptURL]]</code><a class="self-link" href="#script-scripturl"></a></dfn> internal slot.
     <dd data-md>
@@ -3160,12 +3160,12 @@ that was set through a <code class="idl"><a data-link-type="idl">StringContext</
 through a <code class="idl"><a data-link-type="idl">StringContext</a></code> compliant sink. Equivalent to script’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-child-text-content" id="ref-for-concept-child-text-content②">child text content</a>. Initially null.</p>
    </dl>
    <h5 class="heading settled" data-level="4.2.3.2" id="setting-slot-values"><span class="secno">4.2.3.2. </span><span class="content">Setting slot values</span><a class="self-link" href="#setting-slot-values"></a></h5>
-   <p>This document modifies how <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement" id="ref-for-htmlscriptelement">HTMLScriptElement</a></code> <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-child-text-content" id="ref-for-concept-child-text-content③">child text content</a> can be set to allow applications to control dynamically created scripts. It does so by
-adding the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/dom.html#dom-innertext" id="ref-for-dom-innertext">innerText</a></code> and <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#dom-node-textcontent" id="ref-for-dom-node-textcontent">textContent</a></code> attributes directly on <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement" id="ref-for-htmlscriptelement①">HTMLScriptElement</a></code>. The behavior of the attributes remains the same
+   <p>This document modifies how <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement" id="ref-for-htmlscriptelement②">HTMLScriptElement</a></code> <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-child-text-content" id="ref-for-concept-child-text-content③">child text content</a> can be set to allow applications to control dynamically created scripts. It does so by
+adding the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/dom.html#dom-innertext" id="ref-for-dom-innertext">innerText</a></code> and <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#dom-node-textcontent" id="ref-for-dom-node-textcontent">textContent</a></code> attributes directly on <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement" id="ref-for-htmlscriptelement③">HTMLScriptElement</a></code>. The behavior of the attributes remains the same
 as in their original counterparts, apart from additional behavior triggered by the <code class="idl"><a data-link-type="idl">StringContext</a></code> extended attribute presence.</p>
    <p class="note" role="note"><span>Note:</span> Using these IDL attributes is the recommended way of dynamically setting URL or a text of a script. Manipulating attribute nodes or text nodes directly will call a default policy on the final value when the script is prepared.</p>
    <p class="issue" id="issue-62c0f2c6"><a class="self-link" href="#issue-62c0f2c6"></a> Figure out what to do with script.setAttribute('src'). See <a href="https://github.com/whatwg/dom/issues/789">DOM#789</a>.</p>
-<pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement" id="ref-for-htmlscriptelement②"><c- g>HTMLScriptElement</c-></a> {
+<pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement" id="ref-for-htmlscriptelement④"><c- g>HTMLScriptElement</c-></a> {
  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions②"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> [<a class="idl-code" data-link-type="extended-attribute"><c- g>TreatNullAs</c-></a>=<a data-link-type="idl-name"><c- n>EmptyString</c-></a>] <a data-link-type="idl-name" href="#typedefdef-scriptstring" id="ref-for-typedefdef-scriptstring"><c- n>ScriptString</c-></a> <dfn class="idl-code" data-dfn-for="HTMLScriptElement" data-dfn-type="attribute" data-export data-type="[TreatNullAs=EmptyString] ScriptString" id="dom-htmlscriptelement-innertext"><code><c- g>innerText</c-></code><a class="self-link" href="#dom-htmlscriptelement-innertext"></a></dfn>;
  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions③"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a data-link-type="idl-name" href="#typedefdef-scriptstring" id="ref-for-typedefdef-scriptstring①"><c- n>ScriptString</c-></a>? <dfn class="idl-code" data-dfn-for="HTMLScriptElement" data-dfn-type="attribute" data-export data-type="ScriptString?" id="dom-htmlscriptelement-textcontent"><code><c- g>textContent</c-></code><a class="self-link" href="#dom-htmlscriptelement-textcontent"></a></dfn>;
  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions④"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a data-link-type="idl-name" href="#typedefdef-scripturlstring" id="ref-for-typedefdef-scripturlstring"><c- n>ScriptURLString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="HTMLScriptElement" data-dfn-type="attribute" data-export data-type="ScriptURLString" id="dom-htmlscriptelement-src"><code><c- g>src</c-></code></dfn>;
@@ -3192,7 +3192,7 @@ as in their original counterparts, apart from additional behavior triggered by t
     run when the parser tries to run it, but it is later executed after a script dynamically updates
     it, it will execute in a non-blocking fashion even if the <code id="script-processing-model:attr-script-async-3"><a href="https://html.spec.whatwg.org/#attr-script-async">async</a></code> attribute isn’t set.</p>
     <li>
-     <ins>Execute the <a data-link-type="abstract-op" href="#abstract-opdef-prepare-the-script-url-and-text" id="ref-for-abstract-opdef-prepare-the-script-url-and-text">Prepare the script URL and text</a> algorithm upon the <code class="idl"><a data-link-type="idl" href="https://fetch.spec.whatwg.org/#dom-requestdestination-script" id="ref-for-dom-requestdestination-script②">script</a></code> element. If that algorithm threw an error, then return. The script is not executed. </ins>
+     <ins>Execute the <a data-link-type="abstract-op" href="#abstract-opdef-prepare-the-script-url-and-text" id="ref-for-abstract-opdef-prepare-the-script-url-and-text">Prepare the script URL and text</a> algorithm upon the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement" id="ref-for-htmlscriptelement⑤">HTMLScriptElement</a></code>. If that algorithm threw an error, then return. The script is not executed. </ins>
     <li>
      <p>
       Let <var>source text</var> be the element’s 
@@ -4501,14 +4501,6 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
     <li><a href="#ref-for-h-the-domparser-interface">4.6. Integration with DOM Parsing</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-dom-requestdestination-script">
-   <a href="https://fetch.spec.whatwg.org/#dom-requestdestination-script">https://fetch.spec.whatwg.org/#dom-requestdestination-script</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-requestdestination-script">3.5. Prepare the script URL and text</a>
-    <li><a href="#ref-for-dom-requestdestination-script①">4.2.3.1. Slots with trusted values</a>
-    <li><a href="#ref-for-dom-requestdestination-script②">4.2.3.3. Slot value verification</a>
-   </ul>
-  </aside>
   <aside class="dfn-panel" data-for="term-for-concept-request-client">
    <a href="https://fetch.spec.whatwg.org/#concept-request-client">https://fetch.spec.whatwg.org/#concept-request-client</a><b>Referenced in:</b>
    <ul>
@@ -4563,7 +4555,10 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
   <aside class="dfn-panel" data-for="term-for-htmlscriptelement">
    <a href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement">https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-htmlscriptelement">4.2.3.2. Setting slot values</a> <a href="#ref-for-htmlscriptelement①">(2)</a> <a href="#ref-for-htmlscriptelement②">(3)</a>
+    <li><a href="#ref-for-htmlscriptelement">3.5. Prepare the script URL and text</a>
+    <li><a href="#ref-for-htmlscriptelement①">4.2.3.1. Slots with trusted values</a>
+    <li><a href="#ref-for-htmlscriptelement②">4.2.3.2. Setting slot values</a> <a href="#ref-for-htmlscriptelement③">(2)</a> <a href="#ref-for-htmlscriptelement④">(3)</a>
+    <li><a href="#ref-for-htmlscriptelement⑤">4.2.3.3. Slot value verification</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-sharedworker">
@@ -5007,7 +5002,6 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <li>
     <a data-link-type="biblio">[Fetch]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-dom-requestdestination-script">"script"</span>
      <li><span class="dfn-paneled" id="term-for-concept-request-client">client</span>
      <li><span class="dfn-paneled" id="term-for-local-scheme">local scheme</span>
      <li><span class="dfn-paneled" id="term-for-concept-request">request</span>
