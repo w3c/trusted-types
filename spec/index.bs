@@ -1881,7 +1881,7 @@ the |calleeRealm| or |callerRealm|'s Content-Security-Policy rejects string comp
 
 Given two [[ECMASCRIPT#realm|realms]] (|callerRealm| and
 |calleeRealm|), a string
-(|source|) <ins>and a boolean |wasCodeLike|</ins>, this algorithm returns <del>normally</del><ins>the
+(|source|) <ins>, a boolean |wasCodeLike| and a string |compilationSink|</ins>, this algorithm returns <del>normally</del><ins>the
 source string to compile</ins> if compilation is allowed, and
 throws an "`EvalError`" if not:
 
@@ -1893,7 +1893,7 @@ throws an "`EvalError`" if not:
     [$Get Trusted Type compliant string$] algorithm, with:
     *   |calleeRealm| as |global|,
     *   |sourceToValidate| as |input|,
-    *   `eval` as |sink|,
+    *   |compilationSink| as |sink|,
     *   `'script'` as |sinkGroup|,
     *   {{TrustedScript}} as |expectedType|.</ins>
 

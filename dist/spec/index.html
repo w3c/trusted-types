@@ -1486,7 +1486,7 @@ Possible extra rowspan handling
 </style>
   <meta content="Bikeshed version c5172e83, updated Fri Nov 20 15:35:20 2020 -0800" name="generator">
   <link href="https://w3c.github.io/webappsec-trusted-types/dist/spec/" rel="canonical">
-  <meta content="a3d15b10dec6a607c1d1087298b89621c18d77fe" name="document-revision">
+  <meta content="8b960b3dceb3c05a4bd50e0d1c2827578e1b9d46" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -2047,7 +2047,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Trusted Types</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2020-11-25">25 November 2020</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2020-11-26">26 November 2020</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -3904,7 +3904,7 @@ the <var>calleeRealm</var> or <var>callerRealm</var>’s Content-Security-Policy
    <p>
     Given two <a href="https://tc39.es/ecma262/#realm">realms</a> (<var>callerRealm</var> and <var>calleeRealm</var>), a string
 (<var>source</var>) 
-    <ins>and a boolean <var>wasCodeLike</var></ins>
+    <ins>, a boolean <var>wasCodeLike</var> and a string <var>compilationSink</var></ins>
     , this algorithm returns 
     <del>normally</del>
     <ins>the
@@ -3926,7 +3926,7 @@ set to <var>source</var>. Otherwise, let <var>sourceToValidate</var> be <var>sou
        <li data-md>
         <p><var>sourceToValidate</var> as <var>input</var>,</p>
        <li data-md>
-        <p><code>eval</code> as <var>sink</var>,</p>
+        <p><var>compilationSink</var> as <var>sink</var>,</p>
        <li data-md>
         <p><code>'script'</code> as <var>sinkGroup</var>,</p>
        <li data-md>
