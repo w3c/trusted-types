@@ -596,7 +596,7 @@ export class TrustedTypesEnforcer {
 
         // Try to run a default policy on argsthe argument
         const fallbackValue = this.maybeCallDefaultPolicy_(
-            'TrustedScript', '' + arg, 'script.text');
+            'TrustedScript', '' + arg, 'HTMLScriptElement text');
         if (fallbackValue === null || fallbackValue === undefined) {
           this.processViolation_(context, originalFn.name,
               TrustedTypes.TrustedScript, arg);
@@ -628,7 +628,7 @@ export class TrustedTypesEnforcer {
       // Run a default policy on args[1]
       args[1] = '' + args[1];
       const fallbackValue = this.maybeCallDefaultPolicy_('TrustedScript',
-          args[1], 'script.text');
+          args[1], 'HTMLScriptElement text');
       if (fallbackValue === null || fallbackValue === undefined) {
         this.processViolation_(context, 'insertAdjacentText',
             TrustedTypes.TrustedScript, args[1]);
@@ -904,7 +904,8 @@ export class TrustedTypesEnforcer {
     if (!TYPE_CHECKER_MAP.hasOwnProperty(typeName)) {
       return null;
     }
-    return fallbackPolicy[TYPE_PRODUCER_MAP[typeName]](value, '' + sink);
+    return fallbackPolicy[TYPE_PRODUCER_MAP[typeName]](value,
+        typeName, '' + sink);
   }
 
   /**
@@ -953,12 +954,15 @@ export class TrustedTypesEnforcer {
 
     // Apply a fallback policy, if it exists.
     args[argNumber] = '' + value;
-    const objName = this.instanceOfDomProperty(context, 'Element') ?
-        context['localName'] :
-        this.getConstructorName_(
+    let objName = this.getConstructorName_(
           context ? context.constructor : window.constructor);
+    if (['innerHTML', 'setAttribute', 'setAttributeNS']
+        .includes(propertyName)) {
+      objName = 'Element';
+    }
+    const sink = objName + ' ' + propertyName;
     const fallbackValue = this.maybeCallDefaultPolicy_(
-        typeName, value, objName + '.' + propertyName);
+        typeName, value, sink);
     if (fallbackValue === null || fallbackValue === undefined) {
       // This will throw a TypeError if enforcement is enabled.
       this.processViolation_(context, propertyName, typeToEnforce, value);
