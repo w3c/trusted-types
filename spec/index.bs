@@ -877,6 +877,9 @@ a string |value| and a list |arguments|, execute the following steps:
 1.  Let |trustedObject| be a new instance of an interface with a type
     name |trustedTypeName|, with its `[[Data]]` internal slot value
     set to |dataString|.
+1.  If |trustedObject| is a {{TrustedScript}}, set its `[[HostDefinedCodeLike]]` internal slot value to `true`.
+
+    Note: This adds an integration point with [dynamic-code-brand-checks proposal](https://tc39.es/proposal-dynamic-code-brand-checks/).
 1.  Return |trustedObject|.
 
 ## <dfn abstract-op>Get Trusted Type compliant string</dfn> ## {#get-trusted-type-compliant-string-algorithm}

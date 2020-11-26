@@ -1486,7 +1486,7 @@ Possible extra rowspan handling
 </style>
   <meta content="Bikeshed version c5172e83, updated Fri Nov 20 15:35:20 2020 -0800" name="generator">
   <link href="https://w3c.github.io/webappsec-trusted-types/dist/spec/" rel="canonical">
-  <meta content="8b960b3dceb3c05a4bd50e0d1c2827578e1b9d46" name="document-revision">
+  <meta content="a8842d718d7f0807d68f6c404032e0fc31c2270f" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -2945,6 +2945,9 @@ a value was rejected.</p>
 name <var>trustedTypeName</var>, with its <code>[[Data]]</code> internal slot value
 set to <var>dataString</var>.</p>
     <li data-md>
+     <p>If <var>trustedObject</var> is a <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript⑤">TrustedScript</a></code>, set its <code>[[HostDefinedCodeLike]]</code> internal slot value to <code>true</code>.</p>
+     <p class="note" role="note"><span>Note:</span> This adds an integration point with <a href="https://tc39.es/proposal-dynamic-code-brand-checks/">dynamic-code-brand-checks proposal</a>.</p>
+    <li data-md>
      <p>Return <var>trustedObject</var>.</p>
    </ol>
    <h3 class="heading settled" data-level="3.3" id="get-trusted-type-compliant-string-algorithm"><span class="secno">3.3. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-get-trusted-type-compliant-string">Get Trusted Type compliant string</dfn></span><a class="self-link" href="#get-trusted-type-compliant-string-algorithm"></a></h3>
@@ -3046,9 +3049,9 @@ set <var>script</var>’s <code class="idl"><a data-link-type="idl">[[ScriptText
    </ol>
    <h2 class="heading settled" data-level="4" id="integrations"><span class="secno">4. </span><span class="content">Integrations</span><a class="self-link" href="#integrations"></a></h2>
 <pre class="idl highlight def"><c- b>typedef</c-> [<a class="idl-code" data-link-type="extended-attribute"><c- g>StringContext</c-></a>=<a data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml⑥"><c- n>TrustedHTML</c-></a>] <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①⑨"><c- b>DOMString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-type="typedef" data-export id="typedefdef-htmlstring"><code><c- g>HTMLString</c-></code></dfn>;
-<c- b>typedef</c-> [<a class="idl-code" data-link-type="extended-attribute"><c- g>StringContext</c-></a>=<a data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript⑤"><c- n>TrustedScript</c-></a>] <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②⓪"><c- b>DOMString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-type="typedef" data-export id="typedefdef-scriptstring"><code><c- g>ScriptString</c-></code></dfn>;
+<c- b>typedef</c-> [<a class="idl-code" data-link-type="extended-attribute"><c- g>StringContext</c-></a>=<a data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript⑥"><c- n>TrustedScript</c-></a>] <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②⓪"><c- b>DOMString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-type="typedef" data-export id="typedefdef-scriptstring"><code><c- g>ScriptString</c-></code></dfn>;
 <c- b>typedef</c-> [<a class="idl-code" data-link-type="extended-attribute"><c- g>StringContext</c-></a>=<a data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl④"><c- n>TrustedScriptURL</c-></a>] <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString①"><c- b>USVString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-type="typedef" data-export id="typedefdef-scripturlstring"><code><c- g>ScriptURLString</c-></code></dfn>;
-<c- b>typedef</c-> (<a data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml⑦"><c- n>TrustedHTML</c-></a> <c- b>or</c-> <a data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript⑥"><c- n>TrustedScript</c-></a> <c- b>or</c-> <a data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl⑤"><c- n>TrustedScriptURL</c-></a>) <dfn class="dfn-paneled idl-code" data-dfn-type="typedef" data-export id="typedefdef-trustedtype"><code><c- g>TrustedType</c-></code></dfn>;
+<c- b>typedef</c-> (<a data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml⑦"><c- n>TrustedHTML</c-></a> <c- b>or</c-> <a data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript⑦"><c- n>TrustedScript</c-></a> <c- b>or</c-> <a data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl⑤"><c- n>TrustedScriptURL</c-></a>) <dfn class="dfn-paneled idl-code" data-dfn-type="typedef" data-export id="typedefdef-trustedtype"><code><c- g>TrustedType</c-></code></dfn>;
 </pre>
    <h3 class="heading settled" data-level="4.1" id="webidl-integration"><span class="secno">4.1. </span><span class="content">Integration with WebIDL</span><a class="self-link" href="#webidl-integration"></a></h3>
    <p class="issue" id="issue-68115cf6"><a class="self-link" href="#issue-68115cf6"></a> Keep in sync with https://github.com/heycam/webidl/pull/841.</p>
@@ -3057,7 +3060,7 @@ set <var>script</var>’s <code class="idl"><a data-link-type="idl">[[ScriptText
    <p>If the [<code class="idl"><a data-link-type="idl">StringContext</a></code>] <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-extended-attribute" id="ref-for-dfn-extended-attribute①">extended attribute</a> appears on <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②①">DOMString</a></code> or <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-USVString" id="ref-for-idl-USVString②">USVString</a></code>, it
 modifies how the value is converted to the IDL type, causing additional value validation to
 adhere to the context the string is used in.</p>
-   <p>The [<code class="idl"><a data-link-type="idl">StringContext</a></code>] extended attribute must <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-xattr-identifier" id="ref-for-dfn-xattr-identifier">take an identifier</a>. The <a data-link-type="dfn" href="https://drafts.csswg.org/css-syntax-3/#identifier" id="ref-for-identifier">identifier</a> must be one of <code class="idl"><a data-link-type="idl" href="#trustedhtml" id="ref-for-trustedhtml⑧">TrustedHTML</a></code>, <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript⑦">TrustedScript</a></code> and <code class="idl"><a data-link-type="idl" href="#trustedscripturl" id="ref-for-trustedscripturl⑥">TrustedScriptURL</a></code>.</p>
+   <p>The [<code class="idl"><a data-link-type="idl">StringContext</a></code>] extended attribute must <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-xattr-identifier" id="ref-for-dfn-xattr-identifier">take an identifier</a>. The <a data-link-type="dfn" href="https://drafts.csswg.org/css-syntax-3/#identifier" id="ref-for-identifier">identifier</a> must be one of <code class="idl"><a data-link-type="idl" href="#trustedhtml" id="ref-for-trustedhtml⑧">TrustedHTML</a></code>, <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript⑧">TrustedScript</a></code> and <code class="idl"><a data-link-type="idl" href="#trustedscripturl" id="ref-for-trustedscripturl⑥">TrustedScriptURL</a></code>.</p>
    <p class="issue" id="issue-679ee1ba"><a class="self-link" href="#issue-679ee1ba"></a> Make sure this is OK, otherwise use strings and convert them to TrustedXYZ in this spec only.</p>
    <p>[<code class="idl"><a data-link-type="idl">StringContext</a></code>] extended attribute may only annotate a type of a <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-regular-attribute" id="ref-for-dfn-regular-attribute">regular attribute</a> or
 a <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-regular-operation" id="ref-for-dfn-regular-operation">regular operation</a> argument. A type annotated with the [<code class="idl"><a data-link-type="idl">StringContext</a></code>]
@@ -3505,7 +3508,7 @@ the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compl
       <li data-md>
        <p><var>input</var> set to the first method argument, and</p>
       <li data-md>
-       <p><var>expectedType</var> set to <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript⑧">TrustedScript</a></code>.</p>
+       <p><var>expectedType</var> set to <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript⑨">TrustedScript</a></code>.</p>
       <li data-md>
        <p><var>sink</var> set to <code>Window.setInterval</code> if <var>repeat</var> is true, <code>Window.setTimeout</code> otherwise.</p>
       <li data-md>
@@ -3513,7 +3516,7 @@ the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compl
        <p class="note" role="note"><span>Note:</span> This matches the logic that the extended attribute would apply.</p>
      </ul>
    </ol>
-   <p class="note" role="note"><span>Note:</span> This makes sure that a <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript⑨">TrustedScript</a></code> is passed to timer
+   <p class="note" role="note"><span>Note:</span> This makes sure that a <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①⓪">TrustedScript</a></code> is passed to timer
 functions in place of a string when Trusted Types are enforced, but
 also unconditionally accepts any <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#Function" id="ref-for-Function②">Function</a></code> object.</p>
    <h4 class="heading settled" data-level="4.2.6" id="enforcement-in-event-handler-content-attributes"><span class="secno">4.2.6. </span><span class="content">Enforcement in event handler content attributes</span><a class="self-link" href="#enforcement-in-event-handler-content-attributes"></a></h4>
@@ -3526,7 +3529,7 @@ also unconditionally accepts any <code class="idl"><a data-link-type="idl" href=
       <li data-md>
        <p><var>value</var> as <var>input</var>,</p>
       <li data-md>
-       <p><code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①⓪">TrustedScript</a></code> as <var>expectedType</var>,</p>
+       <p><code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①①">TrustedScript</a></code> as <var>expectedType</var>,</p>
       <li data-md>
        <p><code>'script'</code> as <var>sinkGroup</var></p>
       <li data-md>
@@ -3744,7 +3747,7 @@ directive-value = <a data-link-type="dfn" href="#trusted-types-sink-group" id="r
      <p>Let <var>convertedScriptSource</var> be the result of executing <a data-link-type="abstract-op" href="#abstract-opdef-process-value-with-a-default-policy" id="ref-for-abstract-opdef-process-value-with-a-default-policy①">Process value with a default policy</a> algorithm, with the following arguments:</p>
      <ul>
       <li data-md>
-       <p><code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①①">TrustedScript</a></code> as <var>expectedType</var></p>
+       <p><code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①②">TrustedScript</a></code> as <var>expectedType</var></p>
       <li data-md>
        <p><var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-client" id="ref-for-concept-request-client①">clients</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-global" id="ref-for-concept-settings-object-global">global object</a> as <var>global</var></p>
       <li data-md>
@@ -3752,7 +3755,7 @@ directive-value = <a data-link-type="dfn" href="#trusted-types-sink-group" id="r
       <li data-md>
        <p><code>"Location.href"</code> as <var>sink</var></p>
      </ul>
-     <p>If that algorithm threw an error or <var>convertedScriptSource</var> is not a <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①②">TrustedScript</a></code> object, return "Blocked" and abort further steps.</p>
+     <p>If that algorithm threw an error or <var>convertedScriptSource</var> is not a <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①③">TrustedScript</a></code> object, return "Blocked" and abort further steps.</p>
     <li data-md>
      <p>Set <var>urlString</var> to be the result of prepending <code>"javascript:"</code> to stringified <var>convertedScriptSource</var>.</p>
     <li data-md>
@@ -3915,7 +3918,7 @@ throws an "<code>EvalError</code>" if not:
    <ol>
     <li data-md>
      <ins>If <var>wasCodeLike</var> is true, let <var>sourceToValidate</var> be a new instance of
-the <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①③">TrustedScript</a></code> interface, with its <code>[[Data]]</code> internal slot value
+the <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①④">TrustedScript</a></code> interface, with its <code>[[Data]]</code> internal slot value
 set to <var>source</var>. Otherwise, let <var>sourceToValidate</var> be <var>source</var>.</ins>
     <li data-md>
      <ins>
@@ -3930,7 +3933,7 @@ set to <var>source</var>. Otherwise, let <var>sourceToValidate</var> be <var>sou
        <li data-md>
         <p><code>'script'</code> as <var>sinkGroup</var>,</p>
        <li data-md>
-        <p><code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①④">TrustedScript</a></code> as <var>expectedType</var>.</p>
+        <p><code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①⑤">TrustedScript</a></code> as <var>expectedType</var>.</p>
       </ul>
      </ins>
     <li data-md>
@@ -5195,12 +5198,13 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <ul>
     <li><a href="#ref-for-trustedscript">2.3.1. TrustedTypePolicyFactory</a> <a href="#ref-for-trustedscript①">(2)</a> <a href="#ref-for-trustedscript②">(3)</a> <a href="#ref-for-trustedscript③">(4)</a>
     <li><a href="#ref-for-trustedscript④">2.3.2. TrustedTypePolicy</a>
-    <li><a href="#ref-for-trustedscript⑤">4. Integrations</a> <a href="#ref-for-trustedscript⑥">(2)</a>
-    <li><a href="#ref-for-trustedscript⑦">4.1.1. [StringContext]</a>
-    <li><a href="#ref-for-trustedscript⑧">4.2.5. Enforcement in timer functions</a> <a href="#ref-for-trustedscript⑨">(2)</a>
-    <li><a href="#ref-for-trustedscript①⓪">4.2.6. Enforcement in event handler content attributes</a>
-    <li><a href="#ref-for-trustedscript①①">4.7.1.1. require-trusted-types-for Pre-Navigation check</a> <a href="#ref-for-trustedscript①②">(2)</a>
-    <li><a href="#ref-for-trustedscript①③">4.7.6. Support for dynamic code compilation</a> <a href="#ref-for-trustedscript①④">(2)</a>
+    <li><a href="#ref-for-trustedscript⑤">3.2. Create a Trusted Type</a>
+    <li><a href="#ref-for-trustedscript⑥">4. Integrations</a> <a href="#ref-for-trustedscript⑦">(2)</a>
+    <li><a href="#ref-for-trustedscript⑧">4.1.1. [StringContext]</a>
+    <li><a href="#ref-for-trustedscript⑨">4.2.5. Enforcement in timer functions</a> <a href="#ref-for-trustedscript①⓪">(2)</a>
+    <li><a href="#ref-for-trustedscript①①">4.2.6. Enforcement in event handler content attributes</a>
+    <li><a href="#ref-for-trustedscript①②">4.7.1.1. require-trusted-types-for Pre-Navigation check</a> <a href="#ref-for-trustedscript①③">(2)</a>
+    <li><a href="#ref-for-trustedscript①④">4.7.6. Support for dynamic code compilation</a> <a href="#ref-for-trustedscript①⑤">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="trustedscripturl">
