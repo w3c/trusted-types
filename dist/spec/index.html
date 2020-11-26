@@ -1486,7 +1486,7 @@ Possible extra rowspan handling
 </style>
   <meta content="Bikeshed version c5172e83, updated Fri Nov 20 15:35:20 2020 -0800" name="generator">
   <link href="https://w3c.github.io/webappsec-trusted-types/dist/spec/" rel="canonical">
-  <meta content="a8842d718d7f0807d68f6c404032e0fc31c2270f" name="document-revision">
+  <meta content="1d4498e43825cd2eaef7378a25b065f7ea80c752" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -2837,16 +2837,17 @@ the default policy is applied.</p>
 <pre class="highlight"><c- c1>// Content-Security-Policy: trusted-types default; require-trusted-types-for 'script'</c->
 
 trustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- t>'default'</c-><c- p>,</c-> <c- p>{</c->
-  createScriptURL<c- o>:</c-> <c- p>(</c->s<c- p>,</c-> sink<c- p>)</c-> <c- p>=></c-> <c- p>{</c->
+  createScriptURL<c- o>:</c-> <c- p>(</c->s<c- p>,</c-> type<c- p>,</c-> sink<c- p>)</c-> <c- p>=></c-> <c- p>{</c->
     console<c- p>.</c->log<c- p>(</c-><c- u>"Please refactor."</c-><c- p>);</c->
-    <c- k>return</c-> s <c- o>+</c-> <c- u>"?default-policy-used&amp;sink="</c-> <c- o>+</c-> encodeURIComponent<c- p>(</c->sink<c- p>);</c->
+    <c- k>return</c-> s <c- o>+</c-> <c- t>'?default-policy-used&amp;type='</c-> <c- o>+</c-> encodeURIComponent<c- p>(</c->type<c- p>)</c-> <c- o>+</c->
+          <c- t>'&amp;sink='</c-> <c- o>+</c-> encodeURIComponent<c- p>(</c->sink<c- p>);</c->
   <c- p>}</c->
 <c- p>});</c->
 
 aScriptElement<c- p>.</c->src <c- o>=</c-> <c- u>"https://cdn.example/script.js"</c-><c- p>;</c->
 <c- c1>// Please refactor.</c->
 console<c- p>.</c->log<c- p>(</c->aScriptElement<c- p>.</c->src<c- p>);</c->
-<c- c1>// https://cdn.example/script.js?default-policy-used&amp;sink=script.src</c->
+<c- c1>// https://cdn.example/script.js?default-policy-used&amp;type=TrustedScriptURL&amp;sink=HTMLScriptElement%20src</c->
 </pre>
    </div>
    <h3 class="heading settled" data-level="2.4" id="enforcement-hdr"><span class="secno">2.4. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="enforcement">Enforcement</dfn></span><a class="self-link" href="#enforcement-hdr"></a></h3>
@@ -3004,7 +3005,7 @@ Trusted Type</a> algorithm, with the following arguments:</p>
       <li data-md>
        <p><var>expectedType</var>’s type name as <var>trustedTypeName</var></p>
       <li data-md>
-       <p>« <var>sink</var> » as <var>arguments</var></p>
+       <p>« <var>trustedTypeName</var>, <var>sink</var> » as <var>arguments</var></p>
      </ul>
     <li data-md>
      <p>If the algorithm threw an error, rethrow it. Otherwise, return <var>convertedInput</var>.</p>
@@ -3510,7 +3511,7 @@ the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compl
       <li data-md>
        <p><var>expectedType</var> set to <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript⑨">TrustedScript</a></code>.</p>
       <li data-md>
-       <p><var>sink</var> set to <code>Window.setInterval</code> if <var>repeat</var> is true, <code>Window.setTimeout</code> otherwise.</p>
+       <p><var>sink</var> set to <code>Window setInterval</code> if <var>repeat</var> is true, <code>Window setTimeout</code> otherwise.</p>
       <li data-md>
        <p><var>sinkGroup</var> set to <code>'script'</code>.</p>
        <p class="note" role="note"><span>Note:</span> This matches the logic that the extended attribute would apply.</p>
@@ -3753,7 +3754,7 @@ directive-value = <a data-link-type="dfn" href="#trusted-types-sink-group" id="r
       <li data-md>
        <p><var>encodedScriptSource</var> as <var>input</var></p>
       <li data-md>
-       <p><code>"Location.href"</code> as <var>sink</var></p>
+       <p><code>"Location href"</code> as <var>sink</var></p>
      </ul>
      <p>If that algorithm threw an error or <var>convertedScriptSource</var> is not a <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①③">TrustedScript</a></code> object, return "Blocked" and abort further steps.</p>
     <li data-md>

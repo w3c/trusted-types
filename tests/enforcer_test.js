@@ -797,10 +797,10 @@ describe('TrustedTypesEnforcer', function() {
           expect(s.childNodes[3].textContent).toEqual('/*literaltext*/');
         });
 
-        it('and is passed script.text as a sink name', () => {
+        it('and is passed HTMLScriptElement text as a sink name', () => {
           enforcer.uninstall();
           TrustedTypes.createPolicy('default', {
-            createScript: (_, sink) => `/*${sink}*/`,
+            createScript: (_value, _type, sink) => `/*${sink}*/`,
           });
           enforcer.install();
 
@@ -814,8 +814,8 @@ describe('TrustedTypesEnforcer', function() {
           }).not.toThrow();
 
           expect(addedNode).not.toBe(text);
-          expect(addedNode.textContent).toEqual('/*script.text*/');
-          expect(s.textContent).toEqual('/*script.text*/');
+          expect(addedNode.textContent).toEqual('/*HTMLScriptElement text*/');
+          expect(s.textContent).toEqual('/*HTMLScriptElement text*/');
         });
       });
 
@@ -1521,31 +1521,32 @@ describe('TrustedTypesEnforcer', function() {
       expect(el.innerHTML).toEqual('fallback:' + TEST_HTML);
     });
 
-    it('is passed the sink name', function() {
+    it('is passed the type and sink name', function() {
       enforcer.uninstall();
       const mockSetTimeout = spyOn(window, 'setTimeout');
       enforcer.install();
 
       TrustedTypes.createPolicy('default', {
-        'createHTML': (s, sink) => {
-          return `fallback:${sink}:${s}`;
+        'createHTML': (s, type, sink) => {
+          return `fallback:${type}:${sink}:${s}`;
         },
-        'createScript': (s, sink) => {
-          return `//${sink}`;
+        'createScript': (_s, type, sink) => {
+          return `//${type}:${sink}`;
         },
 
       });
       const el = document.createElement('div');
       el.innerHTML = TEST_HTML;
 
-      expect(el.innerHTML).toEqual('fallback:div.innerHTML:' + TEST_HTML);
+      expect(el.innerHTML)
+          .toEqual('fallback:TrustedHTML:Element innerHTML:' + TEST_HTML);
 
       expect(function() {
         window.setTimeout('/**/', 1);
       }).not.toThrow();
 
       expect(mockSetTimeout).toHaveBeenCalledWith(
-          jasmine.stringMatching('//Window.setTimeout'), 1);
+          jasmine.stringMatching('//TrustedScript:Window.setTimeout'), 1);
     });
 
     it('is not used on typed values', function() {
@@ -1570,7 +1571,7 @@ describe('TrustedTypesEnforcer', function() {
 
     it('propagates the error thrown from the policy', function() {
       TrustedTypes.createPolicy('default', {
-        'createHTML': (s) => {
+        'createHTML': (_s) => {
           throw new EvalError();
         },
       });
@@ -1602,7 +1603,7 @@ describe('TrustedTypesEnforcer', function() {
 
     [null, undefined].forEach((v) => it('throws TypeError on ' + v, function() {
       TrustedTypes.createPolicy('default', {
-        'createHTML': (s) => {
+        'createHTML': (_s) => {
           return v;
         },
       });

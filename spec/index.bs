@@ -761,16 +761,17 @@ the default policy is applied.
 // Content-Security-Policy: trusted-types default; require-trusted-types-for 'script'
 
 trustedTypes.createPolicy('default', {
-  createScriptURL: (s, sink) => {
+  createScriptURL: (s, type, sink) => {
     console.log("Please refactor.");
-    return s + "?default-policy-used&sink=" + encodeURIComponent(sink);
+    return s + '?default-policy-used&type=' + encodeURIComponent(type) +
+          '&sink=' + encodeURIComponent(sink);
   }
 });
 
 aScriptElement.src = "https://cdn.example/script.js";
 // Please refactor.
 console.log(aScriptElement.src);
-// https://cdn.example/script.js?default-policy-used&sink=script.src
+// https://cdn.example/script.js?default-policy-used&type=TrustedScriptURL&sink=HTMLScriptElement%20src
 </xmp>
 </div>
 
@@ -926,7 +927,7 @@ Given a {{TrustedType}} type (|expectedType|), a [=Realm/global object=] (|globa
     *  |defaultPolicy| as |policy|
     *  |input| as |value|
     *  |expectedType|’s type name as |trustedTypeName|
-    *  &laquo; |sink| &raquo; as |arguments|
+    *  &laquo; |trustedTypeName|, |sink| &raquo; as |arguments|
 1. If the algorithm threw an error, rethrow it. Otherwise, return |convertedInput|.
 
 ## <dfn abstract-op>Prepare the script URL and text</dfn> ## {#prepare-script-url-and-text}
@@ -1471,7 +1472,7 @@ add this step between 7.1 and 7.2:
     *   |global| set to the [=context object=]'s [=relevant global object=].
     *   |input| set to the first method argument, and
     *   |expectedType| set to {{TrustedScript}}.
-    *   |sink| set to `Window.setInterval` if <var ignore>repeat</var> is true, `Window.setTimeout` otherwise.
+    *   |sink| set to `Window setInterval` if <var ignore>repeat</var> is true, `Window setTimeout` otherwise.
     *   |sinkGroup| set to `'script'`.
 
         Note: This matches the logic that the extended attribute would apply.
@@ -1721,7 +1722,7 @@ Note: This algorithm assures that the code to be executed by a navigation to a `
     * {{TrustedScript}} as |expectedType|
     * |request|'s [=request/clients=]'s [=environment settings object/global object=] as |global|
     * |encodedScriptSource| as |input|
-    * `"Location.href"` as |sink|
+    * `"Location href"` as |sink|
 
     If that algorithm threw an error or |convertedScriptSource| is not a {{TrustedScript}} object, return "Blocked" and abort further steps.
 1. Set |urlString| to be the result of prepending `"javascript:"` to stringified |convertedScriptSource|.
