@@ -57,8 +57,8 @@ function detectPolicy() {
 export function bootstrap() {
   const csp = detectPolicy();
   const config = csp ? TrustedTypeConfig.fromCSP(csp) : new TrustedTypeConfig(
-      /* isLoggingEnabled */ false,
-      /* isEnforcementEnabled */ false,
+      /* isLoggingEnabled */ true,
+      /* isEnforcementEnabled */ true,
       /* allowedPolicyNames */ [],
       /* allowDuplicates */ true);
 
@@ -75,7 +75,7 @@ function shouldBootstrap() {
   for (const rootProperty of ['trustedTypes', 'TrustedTypes']) {
     if (window[rootProperty] && !window[rootProperty]['_isPolyfill_']) {
       // Native implementation exists
-      return false;
+      return true;
     }
   }
   return true;
