@@ -180,6 +180,15 @@ export const trustedTypesBuilderTestOnly = function() {
     }
 
     /**
+     * Returns the wrapped string for JSON serialization.
+     * @return {string}
+     * @override
+     */
+    toJSON() {
+      return privates(this)['v'];
+    }
+
+    /**
      * Returns the wrapped string value of the object.
      * @return {string}
      * @override

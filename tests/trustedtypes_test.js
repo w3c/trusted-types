@@ -390,6 +390,18 @@ describe('TrustedTypes', () => {
         expect(script.policyName).toEqual(name);
       });
 
+      it('return values that stringify in JSON', () => {
+        const name = 'policy';
+        const p = TrustedTypes.createPolicy(name, noopPolicy);
+
+        const html = p.createHTML('<foo>');
+        const script = p.createScript('alert(1)');
+        const scriptURL = p.createScriptURL('http://foo.example');
+
+        expect(JSON.stringify([html, script, scriptURL])).toEqual(
+            `["<foo>","alert(1)","http://foo.example"]`);
+      });
+
       it('respect defined transformations', () => {
         const policyRules = {
           createHTML: (s) => 'createHTML:' + s,

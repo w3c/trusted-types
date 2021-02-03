@@ -260,6 +260,7 @@ wrappers around a string, constructed via a {{TrustedTypePolicy}}'s
 [Exposed=Window, SecureContext]
 interface TrustedHTML {
   stringifier;
+  DOMString toJSON();
 };
 </pre>
 
@@ -267,7 +268,9 @@ TrustedHTML objects have a `[[Data]]` internal slot which holds a
 DOMString. The slot's value is set when the object is created, and
 will never change during its lifetime.
 
-To stringify a TrustedHTML object, return the DOMString from its
+<dfn method for="TrustedHTML">toJSON()</dfn> method steps and the
+<dfn for="TrustedHTML">stringification behavior</dfn> steps of a
+TrustedHTML object are to return the value from its
 `[[Data]]` internal slot.
 
 ### <dfn type>TrustedScript</dfn> ### {#trusted-script}
@@ -283,6 +286,7 @@ around a string, constructed via a {{TrustedTypePolicy}}'s
 [Exposed=Window, SecureContext]
 interface TrustedScript {
   stringifier;
+  DOMString toJSON();
 };
 </pre>
 
@@ -290,7 +294,9 @@ TrustedScript objects have a `[[Data]]` internal slot which holds a
 DOMString. The slot's value is set when the object is created, and
 will never change during its lifetime.
 
-To stringify a TrustedScript object, return the DOMString from its
+<dfn method for="TrustedScript">toJSON()</dfn> method steps and the
+<dfn for="TrustedScript">stringification behavior</dfn> steps of a
+TrustedScript object are to return the value from its
 `[[Data]]` internal slot.
 
 
@@ -307,6 +313,7 @@ string, constructed via a {{TrustedTypePolicy}}'s
 [Exposed=Window, SecureContext]
 interface TrustedScriptURL {
   stringifier;
+  USVString toJSON();
 };
 </pre>
 
@@ -314,7 +321,9 @@ TrustedScriptURL objects have a `[[Data]]` internal slot which holds a
 USVString. The slot's value is set when the object is created, and
 will never change during its lifetime.
 
-To stringify a TrustedScriptURL object, return the USVString from its
+<dfn method for="TrustedScriptURL">toJSON()</dfn> method steps and the
+<dfn for="TrustedScriptURL">stringification behavior</dfn> steps of a
+TrustedScriptURL object are to return the value from its
 `[[Data]]` internal slot.
 
 
