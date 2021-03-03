@@ -38,7 +38,7 @@
     "browserify": "^16.3.0",
     "eslint": "^5.16.0",
     "eslint-config-google": "^0.12.0",
-    "eslint-plugin-jasmine": "^2.10.1",
+    "eslint-plugin-jasmine": "^4.1.2",
     "google-closure-compiler": "^20190415.0.0",
     "gulp": "^4.0.2",
     "gulp-sizereport": "^1.2.1",
