@@ -1448,8 +1448,6 @@ partial interface HTMLObjectElement {
 };
 </pre>
 
-Issue: Add base.href enforcement.
-
 ### Enforcement in timer functions ### {#enforcement-in-timer-functions}
 
 This document modifies the {{WindowOrWorkerGlobalScope}} interface mixin:

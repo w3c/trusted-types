@@ -1486,7 +1486,7 @@ Possible extra rowspan handling
 </style>
   <meta content="Bikeshed version c5172e83, updated Fri Nov 20 15:35:20 2020 -0800" name="generator">
   <link href="https://w3c.github.io/webappsec-trusted-types/dist/spec/" rel="canonical">
-  <meta content="d1d6b01c45b53d1c27d29cec170f7a7d4db8d228" name="document-revision">
+  <meta content="5efc88902109ecb82a99c721c5d5433acceb788f" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -3487,7 +3487,6 @@ as in their original counterparts, apart from additional behavior triggered by t
   [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions⑨"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a data-link-type="idl-name" href="#typedefdef-scripturlstring" id="ref-for-typedefdef-scripturlstring③"><c- n>ScriptURLString</c-></a> <dfn class="idl-code" data-dfn-for="HTMLObjectElement" data-dfn-type="attribute" data-export data-type="ScriptURLString" id="dom-htmlobjectelement-codebase"><code><c- g>codeBase</c-></code><a class="self-link" href="#dom-htmlobjectelement-codebase"></a></dfn>; // obsolete
 };
 </pre>
-   <p class="issue" id="issue-13577559"><a class="self-link" href="#issue-13577559"></a> Add base.href enforcement.</p>
    <h4 class="heading settled" data-level="4.2.5" id="enforcement-in-timer-functions"><span class="secno">4.2.5. </span><span class="content">Enforcement in timer functions</span><a class="self-link" href="#enforcement-in-timer-functions"></a></h4>
    <p>This document modifies the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/webappapis.html#windoworworkerglobalscope" id="ref-for-windoworworkerglobalscope②">WindowOrWorkerGlobalScope</a></code> interface mixin:</p>
 <pre class="idl exclude highlight def"><c- b>typedef</c-> (<a data-link-type="idl-name" href="#typedefdef-scriptstring" id="ref-for-typedefdef-scriptstring③"><c- n>ScriptString</c-></a> <c- b>or</c-> <a data-link-type="idl-name" href="https://heycam.github.io/webidl/#Function" id="ref-for-Function"><c- n>Function</c-></a>) <dfn class="dfn-paneled idl-code" data-dfn-type="typedef" data-export id="typedefdef-trustedtimerhandler"><code><c- g>TrustedTimerHandler</c-></code></dfn>;
@@ -5134,7 +5133,6 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <div class="issue"> Make sure this is OK, otherwise use strings and convert them to TrustedXYZ in this spec only.<a href="#issue-679ee1ba"> ↵ </a></div>
    <div class="issue"> Figure out if we can drop <code class="idl"><a data-link-type="idl">[[ScriptURL]]</a></code> slot after IDL + DOM changes.<a href="#issue-bcb72f9a"> ↵ </a></div>
    <div class="issue"> Figure out what to do with script.setAttribute('src'). See <a href="https://github.com/whatwg/dom/issues/789">DOM#789</a>.<a href="#issue-62c0f2c6"> ↵ </a></div>
-   <div class="issue"> Add base.href enforcement.<a href="#issue-13577559"> ↵ </a></div>
    <div class="issue"> Remove hardcoding 'script' when new sink groups are specified.<a href="#issue-adaa63a4"> ↵ </a></div>
    <div class="issue"> Remove when <a href="https://github.com/whatwg/dom/pull/809">DOM #809</a> is merged.<a href="#issue-52c8f9b0"> ↵ </a></div>
    <div class="issue"> Refer to the external document on secure policy design.<a href="#issue-2eb927d2"> ↵ </a></div>
