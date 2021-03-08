@@ -257,7 +257,7 @@ wrappers around a string, constructed via a {{TrustedTypePolicy}}'s
 {{TrustedTypePolicy/createHTML(input)|createHTML}} method.
 
 <pre class="idl">
-[Exposed=Window]
+[Exposed=(Window,Worker)]
 interface TrustedHTML {
   stringifier;
   DOMString toJSON();
@@ -283,7 +283,7 @@ around a string, constructed via a {{TrustedTypePolicy}}'s
 {{TrustedTypePolicy/createScript(input)|createScript}} method.
 
 <pre class="idl">
-[Exposed=Window]
+[Exposed=(Window,Worker)]
 interface TrustedScript {
   stringifier;
   DOMString toJSON();
@@ -310,7 +310,7 @@ string, constructed via a {{TrustedTypePolicy}}'s
 {{TrustedTypePolicy/createScriptURL(input)|createScriptURL}} method.
 
 <pre class="idl">
-[Exposed=Window]
+[Exposed=(Window,Worker)]
 interface TrustedScriptURL {
   stringifier;
   USVString toJSON();
@@ -430,11 +430,11 @@ TrustedTypePolicyFactory creates
 {{TrustedTypePolicy|policies}} and verifies that Trusted Type object instances
 were created via one of the policies.
 
-Note: This factory object is exposed to JavaScript through `window.trustedTypes`
-reference - see [[#extensions-to-the-window-interface]].
+Note: This factory object is exposed to JavaScript through `trustedTypes` property
+on the global object - see [[#extensions-to-the-windoworworkerglobalscope-interface]].
 
 <pre class="idl">
-[Exposed=Window] interface TrustedTypePolicyFactory {
+[Exposed=(Window,Worker)] interface TrustedTypePolicyFactory {
     TrustedTypePolicy createPolicy(
         DOMString policyName, optional TrustedTypePolicyOptions policyOptions = {});
     boolean isHTML(any value);
@@ -648,7 +648,7 @@ Each of the `create*` functions converts a string value to a given Trusted Type 
 throws a TypeError if a conversion of a given value is disallowed.
 
 <pre class="idl">
-[Exposed=Window]
+[Exposed=(Window,Worker)]
 interface TrustedTypePolicy {
   readonly attribute DOMString name;
   TrustedHTML createHTML(DOMString input, any... arguments);
@@ -901,11 +901,8 @@ It will ensure that the Trusted Type [=enforcement=] rules were respected.
 Given a {{TrustedType}} type (|expectedType|), a [=Realm/global object=] (|global|),
 {{TrustedType}} or a string (|input|), a string (|sink|) and a string (|sinkGroup|), run these steps:
 
-1.  Assert: |global| is a {{Window}}.
-
-    Issue: Synchronize when TT are added to workers (perhaps use "has a CSP list"?)
 1.  Let |cspList| be the |global|'s <a>CSP list</a>.
-1.  If |cspList| does not contain a [=content security policy object|policy=]
+1.  If |cspList| is `null` or does not contain a [=content security policy object|policy=]
     which [=directive set=] containing a [=directive=] with a name `"require-trusted-types-for"`,
     or that directive does not contain a <a>trusted-types-sink-group</a> which is a match for a value |sinkGroup|,
     return stringified |input| and abort these steps.
@@ -1067,28 +1064,21 @@ Note: The HTML Standard defines how the validation is performed. [[!HTML]]
 
 ## Integration with HTML ## {#integration-with-html}
 
-{{Window}} objects have a <dfn for="Window">trusted type policy factory</dfn>,
+{{Window}} and {{Worker}} objects have a <dfn for="Window">trusted type policy factory</dfn>,
 which is a {{TrustedTypePolicyFactory}} object.
 
-Issue: Define for workers.
+### Extensions to the WindowOrWorkerGlobalScope interface ### {#extensions-to-the-windoworworkerglobalscope-interface}
 
-### Extensions to the Window interface ### {#extensions-to-the-window-interface}
-
-This document extends the {{Window}} interface defined by [[HTML5|HTML]]:
+This document extends the {{WindowOrWorkerGlobalScope}} interface defined by [[HTML5|HTML]]:
 
 <pre class="idl">
-partial interface Window {
+partial interface WindowOrWorkerGlobalScope {
   readonly attribute TrustedTypePolicyFactory trustedTypes;
 };
 </pre>
 
-{{Window/trustedTypes}} returns the [[#integration-with-html|trusted
-type policy factory]] of the current {{Window}}.
-
-Note: The implementation in Chrome &lt; 78 uses `window.TrustedTypes` instead
-      of `window.trustedTypes`.
-
-Issue: Remove the note when the API in Chrome is shipped.
+The {{WindowOrWorkerGlobalScope/trustedTypes}} getter steps are to return [=this=]'s [=relevant global object=]'s [[#integration-with-html|trusted
+type policy factory]].
 
 ### Extensions to the Document interface ### {#extensions-to-the-document-interface}
 
@@ -1528,8 +1518,6 @@ This specification defines the <a>validate the string in context</a> algorithm i
 When <a>validate the string in context</a> is invoked, with |platformObject|, |value|, |stringContext|, and |identifier| run these steps:
 
  1. If [=platformObject=]'s [=relevant global object=] has a [=Window/trusted type policy factory=]:
-
-    Issue: Update when workers have TT.
 
     1. Set |sink| to the result of [=concatenating=] the list &laquo; |platformObject|'s <a spec=webidl>identifier</a>, |identifier| &raquo; with `" "` as |separator|.
         <div class="example" id="validate-string-example">
