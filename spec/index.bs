@@ -257,7 +257,7 @@ wrappers around a string, constructed via a {{TrustedTypePolicy}}'s
 {{TrustedTypePolicy/createHTML(input)|createHTML}} method.
 
 <pre class="idl">
-[Exposed=Window, SecureContext]
+[Exposed=Window]
 interface TrustedHTML {
   stringifier;
   DOMString toJSON();
@@ -283,7 +283,7 @@ around a string, constructed via a {{TrustedTypePolicy}}'s
 {{TrustedTypePolicy/createScript(input)|createScript}} method.
 
 <pre class="idl">
-[Exposed=Window, SecureContext]
+[Exposed=Window]
 interface TrustedScript {
   stringifier;
   DOMString toJSON();
@@ -310,7 +310,7 @@ string, constructed via a {{TrustedTypePolicy}}'s
 {{TrustedTypePolicy/createScriptURL(input)|createScriptURL}} method.
 
 <pre class="idl">
-[Exposed=Window, SecureContext]
+[Exposed=Window]
 interface TrustedScriptURL {
   stringifier;
   USVString toJSON();
@@ -434,7 +434,7 @@ Note: This factory object is exposed to JavaScript through `window.trustedTypes`
 reference - see [[#extensions-to-the-window-interface]].
 
 <pre class="idl">
-[Exposed=Window, SecureContext] interface TrustedTypePolicyFactory {
+[Exposed=Window] interface TrustedTypePolicyFactory {
     TrustedTypePolicy createPolicy(
         DOMString policyName, optional TrustedTypePolicyOptions policyOptions = {});
     boolean isHTML(any value);
@@ -648,7 +648,7 @@ Each of the `create*` functions converts a string value to a given Trusted Type 
 throws a TypeError if a conversion of a given value is disallowed.
 
 <pre class="idl">
-[Exposed=Window, SecureContext]
+[Exposed=Window]
 interface TrustedTypePolicy {
   readonly attribute DOMString name;
   TrustedHTML createHTML(DOMString input, any... arguments);
@@ -1078,7 +1078,7 @@ This document extends the {{Window}} interface defined by [[HTML5|HTML]]:
 
 <pre class="idl">
 partial interface Window {
-  [SecureContext] readonly attribute TrustedTypePolicyFactory trustedTypes;
+  readonly attribute TrustedTypePolicyFactory trustedTypes;
 };
 </pre>
 
@@ -1720,9 +1720,6 @@ otherwise. This constitutes the {{#require-trusted-types-for-directive|require-t
 Note: This algorithm assures that the code to be executed by a navigation to a `javascript:` URL will have to pass through a
 <a>default policy</a>'s `createScript` function, in addition to all other restrictions imposed by other CSP directives.
 
-1. If |request|'s [=request/client=] is not a [=secure context=], return `"Allowed"` and abort further steps.
-
-    Note: `require-trusted-types-for` directive is recognized only for secure contexts.
 1. If |request|'s [=request/url=]'s [=url/scheme=] is not `"javascript"`, return `"Allowed"` and abort further steps.
 1. Let |urlString| be the result of running the [=URL serializer=] on |request|'s [=request/url=].
 1. Let |encodedScriptSource| be the result of removing the leading `"javascript:"` from |urlString|.
