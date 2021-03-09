@@ -1072,7 +1072,7 @@ which is a {{TrustedTypePolicyFactory}} object.
 This document extends the {{WindowOrWorkerGlobalScope}} interface defined by [[HTML5|HTML]]:
 
 <pre class="idl">
-partial interface WindowOrWorkerGlobalScope {
+partial interface mixin WindowOrWorkerGlobalScope {
   readonly attribute TrustedTypePolicyFactory trustedTypes;
 };
 </pre>
