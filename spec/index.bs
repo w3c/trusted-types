@@ -125,6 +125,23 @@ monitor and review.
     XSS vulnerabilities, author defines a Trusted Type policy in the
     templating library and enables the enforcement for the [=DOM XSS injection sinks=].
 
+*   A large team maintains a complex client-side application.
+    They create a number of Trusted Types policies that satisfy the security
+    requirements for the application. The team consolidates the policy
+    implementations and the safe abstractions that use them in a small number
+    of heavily reviewed files and requires extra approval for commits that
+    affect these files.
+
+    The need to create trusted values to affect [=injection sinks=],
+    combined with additional scrutiny on changes that affect policy
+    code, incents developers to use safe abstractions instead of writing ad-hoc
+    string composition code when interacting with [=DOM XSS injection sinks=].
+
+    When considering the risk of DOM XSS, security auditors find a
+    small attack surface; they focus on the small amount of code that
+    crafts the CSP header and provides the safe abstractions, and ignore the
+    bulk of client-side application code.
+
 *   An existing web application interacts with the DOM mostly using XSS-safe
     patterns (i.e. without using [=DOM XSS injection sinks=]). In a few places,
     however, it resorts to using risky patterns like loading additional script using

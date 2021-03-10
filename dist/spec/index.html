@@ -1486,7 +1486,7 @@ Possible extra rowspan handling
 </style>
   <meta content="Bikeshed version c5172e83, updated Fri Nov 20 15:35:20 2020 -0800" name="generator">
   <link href="https://w3c.github.io/webappsec-trusted-types/dist/spec/" rel="canonical">
-  <meta content="59eb17c3d46d8bf630b7b3d2cb9eeaf6a9d24567" name="document-revision">
+  <meta content="7b6709245c4f46256a1dc345b4dfefd23d77ec1e" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -2306,6 +2306,21 @@ monitoring). To ensure that none of these components introduce DOM
 XSS vulnerabilities, author defines a Trusted Type policy in the
 templating library and enables the enforcement for the <a data-link-type="dfn">DOM XSS injection sinks</a>.</p>
     <li data-md>
+     <p>A large team maintains a complex client-side application.
+They create a number of Trusted Types policies that satisfy the security
+requirements for the application. The team consolidates the policy
+implementations and the safe abstractions that use them in a small number
+of heavily reviewed files and requires extra approval for commits that
+affect these files.</p>
+     <p>The need to create trusted values to affect <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①">injection sinks</a>,
+combined with additional scrutiny on changes that affect policy
+code, incents developers to use safe abstractions instead of writing ad-hoc
+string composition code when interacting with <a data-link-type="dfn">DOM XSS injection sinks</a>.</p>
+     <p>When considering the risk of DOM XSS, security auditors find a
+small attack surface; they focus on the small amount of code that
+crafts the CSP header and provides the safe abstractions, and ignore the
+bulk of client-side application code.</p>
+    <li data-md>
      <p>An existing web application interacts with the DOM mostly using XSS-safe
 patterns (i.e. without using <a data-link-type="dfn">DOM XSS injection sinks</a>). In a few places,
 however, it resorts to using risky patterns like loading additional script using
@@ -2342,7 +2357,7 @@ has undesired consequences and is considered a security vulnerability.</p>
    <p class="note" role="note"><span>Note:</span> The exact list of injection sinks covered by this document is defined in <a href="#integrations">§ 4 Integrations</a>.</p>
    <p>It’s difficult to determine if a given application contains such a
 vulnerability (e.g. if it is vulnerable to DOM XSS) only by analyzing
-the invocations of <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①">injection sinks</a>, as their inputs (usually strings)
+the invocations of <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②">injection sinks</a>, as their inputs (usually strings)
 do not carry the information about their provenance. For example, while
 the application might intentionally call <code>eval()</code> with dynamically created
 inputs (e.g. for code obfuscation purposes), calling <code>eval()</code> on strings
@@ -2352,7 +2367,7 @@ it’s not easy to distinguish one from the other.</p>
 capabilities that sinks in a given group have. <a data-link-type="dfn" href="#enforcement" id="ref-for-enforcement①">Enforcement</a> for groups is controlled via <a data-link-type="dfn" href="#trusted-types-sink-group" id="ref-for-trusted-types-sink-group">trusted-types-sink-group</a> values.</p>
    <h4 class="heading settled" data-level="2.1.1" id="html-injection-sinks"><span class="secno">2.1.1. </span><span class="content">HTML injection sinks</span><a class="self-link" href="#html-injection-sinks"></a></h4>
    <p><em>This section is not normative.</em></p>
-   <p>HTML <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②">injection sinks</a> parse input strings into a DOM tree. Since HTML parsers
+   <p>HTML <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink③">injection sinks</a> parse input strings into a DOM tree. Since HTML parsers
 can create arbitrary elements, including scripts, and set arbitrary attributes,
 enabling the <a data-link-type="dfn" href="#enforcement" id="ref-for-enforcement②">enforcement</a> of any <a data-link-type="dfn" href="#trusted-types-sink-group" id="ref-for-trusted-types-sink-group①">trusted-types-sink-group</a> also implies
 enforcing types for HTML injection sinks.</p>
@@ -2366,7 +2381,7 @@ markup like <code class="idl"><a data-link-type="idl" href="#dom-domparser-parse
    </ul>
    <h4 class="heading settled" data-level="2.1.2" id="dom-xss-injection-sinks"><span class="secno">2.1.2. </span><span class="content">DOM XSS injection sinks</span><a class="self-link" href="#dom-xss-injection-sinks"></a></h4>
    <p><em>This section is not normative.</em></p>
-   <p>DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink③">injection sinks</a> evaluate an input string value in a way that could
+   <p>DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink④">injection sinks</a> evaluate an input string value in a way that could
 result in DOM XSS if that value is untrusted.</p>
    <p>Examples of include:</p>
    <ul>
@@ -2384,7 +2399,7 @@ like <code class="idl"><a class="idl-code" data-link-type="attribute" href="#dom
    <h3 class="heading settled" data-level="2.2" id="trusted-types"><span class="secno">2.2. </span><span class="content">Trusted Types</span><a class="self-link" href="#trusted-types"></a></h3>
    <p>To allow the authors to control values reaching injection sinks,
 we introduce <a href="#trusted-types">§ 2.2 Trusted Types</a>. The following list of <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="trusted-type">Trusted Type</dfn>s indicating that a given value is
-trusted by the authors to be used with an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink④">injection sink</a> in a certain context.</p>
+trusted by the authors to be used with an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink⑤">injection sink</a> in a certain context.</p>
    <p class="note" role="note"><span>Note:</span> <strong>Trusted</strong> in this context signifies the fact that the application author
 is confident that a given value can be safely used with an injection sink - she <em>trusts</em> it does not introduce a vulnerability. That does not imply that the
 value is indeed <em>safe</em>.</p>
@@ -2406,7 +2421,7 @@ accepting strings in other parts of the codebase). In that sense,
 Trusted Types are backwards-compatible with the regular DOM APIs.</p>
    <h4 class="heading settled" data-level="2.2.1" id="trusted-html"><span class="secno">2.2.1. </span><span class="content"><dfn class="css" data-dfn-type="type" data-export id="typedef-trustedhtml">TrustedHTML<a class="self-link" href="#typedef-trustedhtml"></a></dfn></span><a class="self-link" href="#trusted-html"></a></h4>
    <p>The TrustedHTML interface represents a string that a developer can
-confidently insert into an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink⑤">injection sink</a> that will render it as HTML.
+confidently insert into an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink⑥">injection sink</a> that will render it as HTML.
 These objects are immutable
 wrappers around a string, constructed via a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy">TrustedTypePolicy</a></code>'s <code class="idl"><a data-link-type="idl" href="#dom-trustedtypepolicy-createhtml" id="ref-for-dom-trustedtypepolicy-createhtml">createHTML</a></code> method.</p>
 <pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
@@ -2422,7 +2437,7 @@ will never change during its lifetime.</p>
 TrustedHTML object are to return the value from its <code>[[Data]]</code> internal slot.</p>
    <h4 class="heading settled" data-level="2.2.2" id="trusted-script"><span class="secno">2.2.2. </span><span class="content"><dfn class="css" data-dfn-type="type" data-export id="typedef-trustedscript">TrustedScript<a class="self-link" href="#typedef-trustedscript"></a></dfn></span><a class="self-link" href="#trusted-script"></a></h4>
    <p>The TrustedScript interface represents a string with an uncompiled
-script body that a developer can confidently pass into an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink⑥">injection sink</a> that might lead to executing that script.
+script body that a developer can confidently pass into an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink⑦">injection sink</a> that might lead to executing that script.
 These objects are immutable wrappers
 around a string, constructed via a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy①">TrustedTypePolicy</a></code>'s <code class="idl"><a data-link-type="idl" href="#dom-trustedtypepolicy-createscript" id="ref-for-dom-trustedtypepolicy-createscript">createScript</a></code> method.</p>
 <pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed①"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
@@ -2438,7 +2453,7 @@ will never change during its lifetime.</p>
 TrustedScript object are to return the value from its <code>[[Data]]</code> internal slot.</p>
    <h4 class="heading settled" data-level="2.2.3" id="trused-script-url"><span class="secno">2.2.3. </span><span class="content"><dfn class="css" data-dfn-type="type" data-export id="typedef-trustedscripturl">TrustedScriptURL<a class="self-link" href="#typedef-trustedscripturl"></a></dfn></span><a class="self-link" href="#trused-script-url"></a></h4>
    <p>The TrustedScriptURL interface represents a string that a developer
-can confidently pass into an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink⑦">injection sink</a> that will parse it as a URL of
+can confidently pass into an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink⑧">injection sink</a> that will parse it as a URL of
 an external script resource.
 These objects are immutable wrappers around a
 string, constructed via a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy②">TrustedTypePolicy</a></code>'s <code class="idl"><a data-link-type="idl" href="#dom-trustedtypepolicy-createscripturl" id="ref-for-dom-trustedtypepolicy-createscripturl">createScriptURL</a></code> method.</p>
@@ -2475,7 +2490,7 @@ myDiv<c- p>.</c->innerHTML <c- o>=</c-> sanitizingPolicy<c- p>.</c->createHTML<c
    </div>
    <p class="note" role="note"><span>Note:</span> <a data-link-type="dfn" href="#trusted-type" id="ref-for-trusted-type">Trusted Type</a> objects wrap values that are explicitly trusted by
 the author. As such, creating a Trusted Type object instance becomes a de
-facto <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink⑧">injection sink</a>, and hence code that creates a Trusted Type
+facto <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink⑨">injection sink</a>, and hence code that creates a Trusted Type
 instances is security-critical. To allow for strict control over Trusted Type
 object creation we don’t expose the constructors of those
 directly, but require authors to create them via <a data-link-type="dfn" href="#policies" id="ref-for-policies②">policies</a>.</p>
@@ -2499,11 +2514,11 @@ myLibrary<c- p>.</c->init<c- p>({</c->policy<c- o>:</c-> cdnScriptsPolicy<c- p>}
 </pre>
    </div>
    <p class="note" role="note"><span>Note:</span> Trusted Type objects can only be created via policies. If <a data-link-type="dfn" href="#enforcement" id="ref-for-enforcement③">enforcement</a> is enabled, only the policy code can trigger an action
-of an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink⑨">injection sink</a> and hence call-sites of the policies' <code>create*</code> functions are the <em>only</em> security-sensitive code in the entire program
-with regards to the actions of the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⓪">injection sinks</a>.
+of an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⓪">injection sink</a> and hence call-sites of the policies' <code>create*</code> functions are the <em>only</em> security-sensitive code in the entire program
+with regards to the actions of the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①①">injection sinks</a>.
 Only this typically small subset of the entire code base needs to be
 security-reviewed - there’s no need to monitor or review
-the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①①">injection sinks</a> themselves, as User Agents <a data-link-type="dfn" href="#enforcement" id="ref-for-enforcement④">enforce</a> that
+the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①②">injection sinks</a> themselves, as User Agents <a data-link-type="dfn" href="#enforcement" id="ref-for-enforcement④">enforce</a> that
 those sinks will only accept matching Trusted Type objects, and these in turn
 can only be created via policies.</p>
    <p>The <code class="idl"><a data-link-type="idl" href="#dom-trustedtypepolicyfactory-createpolicy" id="ref-for-dom-trustedtypepolicyfactory-createpolicy">createPolicy</a></code> function returns a policy object which <code>create*</code> functions
@@ -2815,7 +2830,7 @@ values into trusted values. These functions do not create <a data-link-type="dfn
    <h4 class="heading settled" data-level="2.3.4" id="default-policy-hdr"><span class="secno">2.3.4. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="default-policy">Default policy</dfn></span><a class="self-link" href="#default-policy-hdr"></a></h4>
    <p><em>This section is not normative.</em></p>
    <p>One of the policies, the policy with a <a data-link-type="dfn" href="#trustedtypepolicy-name" id="ref-for-trustedtypepolicy-name">name</a> <code>"default"</code>, is special;
-When an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①②">injection sink</a> is passed a string (instead of a
+When an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①③">injection sink</a> is passed a string (instead of a
 Trusted Type object), this policy will be implicitly called by
 the user agent with the string value as the first argument, and the sink name
 as a second argument.</p>
@@ -2834,7 +2849,7 @@ Needless to say, this policy should
 necessarily be defined with very strict rules not to bypass the security
 restrictions in unknown parts of the application. In an extreme
 case, a lax, no-op default policy defeats all the benefits of using Trusted Types
-to protect access to <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①③">injection sinks</a>. If possible,
+to protect access to <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①④">injection sinks</a>. If possible,
 authors should resort to a default policy in a transitional period
 only, use it to detect and rewrite their dependencies that use injection
 sinks unsafely and eventually phase out the usage of the default policy entirely.</p>
@@ -2860,18 +2875,18 @@ console<c- p>.</c->log<c- p>(</c->aScriptElement<c- p>.</c->src<c- p>);</c->
    </div>
    <h3 class="heading settled" data-level="2.4" id="enforcement-hdr"><span class="secno">2.4. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="enforcement">Enforcement</dfn></span><a class="self-link" href="#enforcement-hdr"></a></h3>
    <p class="note" role="note"><span>Note:</span> Enforcement is the process of checking that a value
-has an appropriate type before it reaches an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①④">injection sink</a>.</p>
+has an appropriate type before it reaches an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⑤">injection sink</a>.</p>
    <p>The JavaScript API that allows authors to create policies and Trusted Types objects from them is always
-available (via <code class="idl"><a data-link-type="idl">trustedTypes</a></code>). Since <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⑤">injection sinks</a> stringify their security sensitive
+available (via <code class="idl"><a data-link-type="idl">trustedTypes</a></code>). Since <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⑥">injection sinks</a> stringify their security sensitive
 arguments, and <a data-link-type="dfn" href="#trusted-type" id="ref-for-trusted-type③">Trusted Type</a> objects stringify to their inner string values, this allows the authors
 to use Trusted Types in place of strings.</p>
-   <p>To secure the access to <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⑥">injection sinks</a>, on top of the JavaScript code using the Trusted Types,
+   <p>To secure the access to <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⑦">injection sinks</a>, on top of the JavaScript code using the Trusted Types,
 the user agent needs to enforce them i.e. assert that the injection sinks from a given group are <em>never</em> called with string values, and Trusted Type values are used instead. This section describes how authors
 may control this enforcing behavior.</p>
    <p>Authors may also control their <a data-link-type="dfn" href="#policies" id="ref-for-policies③">policies</a> by specifying rules around policy creation.</p>
    <h4 class="heading settled" data-level="2.4.1" id="content-security-policy-hdr"><span class="secno">2.4.1. </span><span class="content">Content Security Policy</span><a class="self-link" href="#content-security-policy-hdr"></a></h4>
    <p>Applications may control Trusted Type enforcement via <a href="https://www.w3.org/TR/CSP3/#policy-delivery">configuring a Content Security Policy</a>. This document defines new directives that correspond to Trusted Types rules.
-The <a href="#require-trusted-types-for-csp-directive">require-trusted-types-for</a> directive specifies the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⑦">injection sinks</a> groups, for which the types should be required. The <a href="#trusted-types-csp-directive">trusted-types</a> directive controls how <a data-link-type="dfn" href="#policies" id="ref-for-policies④">policies</a> can be created.</p>
+The <a href="#require-trusted-types-for-csp-directive">require-trusted-types-for</a> directive specifies the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⑧">injection sinks</a> groups, for which the types should be required. The <a href="#trusted-types-csp-directive">trusted-types</a> directive controls how <a data-link-type="dfn" href="#policies" id="ref-for-policies④">policies</a> can be created.</p>
    <p class="note" role="note"><span>Note:</span> Using CSP mechanisms allows the authors to prepare their application for enforcing Trusted Types
 via using the <code class="idl"><a data-link-type="idl">Content-Security-Report-Only</a></code> HTTP Response header.</p>
    <p class="note" role="note"><span>Note:</span> Most of the enforcement rules are defined as modifications of the
@@ -2960,7 +2975,7 @@ set to <var>dataString</var>.</p>
      <p>Return <var>trustedObject</var>.</p>
    </ol>
    <h3 class="heading settled" data-level="3.3" id="get-trusted-type-compliant-string-algorithm"><span class="secno">3.3. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-get-trusted-type-compliant-string">Get Trusted Type compliant string</dfn></span><a class="self-link" href="#get-trusted-type-compliant-string-algorithm"></a></h3>
-   <p>This algorithm will return a string that can be used with an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⑧">injection sink</a>, optionally unwrapping it from a matching <a data-link-type="dfn" href="#trusted-type" id="ref-for-trusted-type④">Trusted Type</a>.
+   <p>This algorithm will return a string that can be used with an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⑨">injection sink</a>, optionally unwrapping it from a matching <a data-link-type="dfn" href="#trusted-type" id="ref-for-trusted-type④">Trusted Type</a>.
 It will ensure that the Trusted Type <a data-link-type="dfn" href="#enforcement" id="ref-for-enforcement⑥">enforcement</a> rules were respected.</p>
    <p>Given a <code class="idl"><a data-link-type="idl" href="#typedefdef-trustedtype" id="ref-for-typedefdef-trustedtype">TrustedType</a></code> type (<var>expectedType</var>), a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global①">global object</a> (<var>global</var>), <code class="idl"><a data-link-type="idl" href="#typedefdef-trustedtype" id="ref-for-typedefdef-trustedtype①">TrustedType</a></code> or a string (<var>input</var>), a string (<var>sink</var>) and a string (<var>sinkGroup</var>), run these steps:</p>
    <ol>
@@ -2994,7 +3009,7 @@ passing <var>global</var>, <var>input</var> as <var>source</var>, <var>sinkGroup
      <p>Return stringified <var>convertedInput</var>.</p>
    </ol>
    <h3 class="heading settled" data-level="3.4" id="process-value-with-a-default-policy-algorithm"><span class="secno">3.4. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-process-value-with-a-default-policy">Process value with a default policy</dfn></span><a class="self-link" href="#process-value-with-a-default-policy-algorithm"></a></h3>
-   <p>This algorithm routes a value to be assigned to an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①⑨">injection sink</a> through a default policy, should one exist.</p>
+   <p>This algorithm routes a value to be assigned to an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②⓪">injection sink</a> through a default policy, should one exist.</p>
    <p>Given a <code class="idl"><a data-link-type="idl" href="#typedefdef-trustedtype" id="ref-for-typedefdef-trustedtype②">TrustedType</a></code> type (<var>expectedType</var>), a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global②">global object</a> (<var>global</var>), <code class="idl"><a data-link-type="idl" href="#typedefdef-trustedtype" id="ref-for-typedefdef-trustedtype③">TrustedType</a></code> or a string (<var>input</var>), and a string (<var>sink</var>), run these steps:</p>
    <ol>
     <li data-md>
@@ -3137,7 +3152,7 @@ which the operation invocation or attribute access is being done,</p>
 which is a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicyfactory" id="ref-for-trustedtypepolicyfactory①">TrustedTypePolicyFactory</a></code> object.</p>
    <h4 class="heading settled" data-level="4.2.1" id="extensions-to-the-windoworworkerglobalscope-interface"><span class="secno">4.2.1. </span><span class="content">Extensions to the WindowOrWorkerGlobalScope interface</span><a class="self-link" href="#extensions-to-the-windoworworkerglobalscope-interface"></a></h4>
    <p>This document extends the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/webappapis.html#windoworworkerglobalscope" id="ref-for-windoworworkerglobalscope">WindowOrWorkerGlobalScope</a></code> interface defined by <a data-link-type="biblio" href="#biblio-html5">HTML</a>:</p>
-<pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/webappapis.html#windoworworkerglobalscope" id="ref-for-windoworworkerglobalscope①"><c- g>WindowOrWorkerGlobalScope</c-></a> {
+<pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/webappapis.html#windoworworkerglobalscope" id="ref-for-windoworworkerglobalscope①"><c- g>WindowOrWorkerGlobalScope</c-></a> {
   <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="#trustedtypepolicyfactory" id="ref-for-trustedtypepolicyfactory②"><c- n>TrustedTypePolicyFactory</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="WindowOrWorkerGlobalScope" data-dfn-type="attribute" data-export data-readonly data-type="TrustedTypePolicyFactory" id="dom-windoworworkerglobalscope-trustedtypes"><code><c- g>trustedTypes</c-></code></dfn>;
 };
 </pre>
@@ -3716,8 +3731,8 @@ document<c- p>.</c->createElement<c- p>(</c-><c- t>'iframe'</c-><c- p>).</c->set
    <h4 class="heading settled" data-level="4.7.1" id="require-trusted-types-for-csp-directive"><span class="secno">4.7.1. </span><span class="content"><dfn data-dfn-type="dfn" data-lt="require-trusted-types-for-directive" data-noexport id="require-trusted-types-for-directive">require-trusted-types-for<a class="self-link" href="#require-trusted-types-for-directive"></a></dfn> directive</span><a class="self-link" href="#require-trusted-types-for-csp-directive"></a></h4>
    <p>This document defines <em>require-trusted-types-for</em> - a new <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives①">Content Security Policy directive</a>.</p>
    <p><code class="idl"><a data-link-type="idl">require-trusted-types-for</a></code> directive configures the Trusted
-Types framework for all the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②⓪">injection sinks</a> of certain groups in a current <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-global-object-realm" id="ref-for-concept-global-object-realm①">realm</a>.
-Specifically, it defines what should be the behavior when a string value is passed to an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②①">injection sink</a> of a given group (i.e. should the type-based enforcement be enabled for such sinks).</p>
+Types framework for all the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②①">injection sinks</a> of certain groups in a current <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-global-object-realm" id="ref-for-concept-global-object-realm①">realm</a>.
+Specifically, it defines what should be the behavior when a string value is passed to an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②②">injection sink</a> of a given group (i.e. should the type-based enforcement be enabled for such sinks).</p>
    <p class="note" role="note"><span>Note:</span> Currently, only the enforcement for <a href="#dom-xss-injection-sinks">§ 2.1.2 DOM XSS injection sinks</a> is specified.</p>
    <p>The syntax for the directive’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-name" id="ref-for-directive-name">name</a> and <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-value" id="ref-for-directive-value">value</a> is described by the following
 ABNF:</p>
@@ -3783,7 +3798,7 @@ directive-value = <a data-link-type="dfn" href="#serialized-tt-configuration" id
    </div>
    <div class="example" id="header-that-allows-no-policy-names">
     <a class="self-link" href="#header-that-allows-no-policy-names"></a> An empty <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives③">directive</a> <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-value" id="ref-for-directive-value②">value</a> indicates policies may not be created,
-and sinks expect Trusted Type values, i.e. no DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②②">injection sinks</a> can be used
+and sinks expect Trusted Type values, i.e. no DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②③">injection sinks</a> can be used
 at all. 
 <pre class="http">Content-Security-Policy: trusted-types; require-trusted-types-for 'script'
 </pre>
@@ -3794,7 +3809,7 @@ at all.
 <pre class="http">Content-Security-Policy: trusted-types foo bar 'allow-duplicates'
 </pre>
    </div>
-   <p>If the policy named <code>default</code> is present in the list, it refers to the <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy①">default policy</a>. All strings passed to <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②③">injection sinks</a> will be passed through it instead
+   <p>If the policy named <code>default</code> is present in the list, it refers to the <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy①">default policy</a>. All strings passed to <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②④">injection sinks</a> will be passed through it instead
 of being rejected outright.</p>
    <div class="example" id="default-in-header">
     <a class="self-link" href="#default-in-header"></a> 
@@ -3803,7 +3818,7 @@ of being rejected outright.</p>
    </div>
    <h4 class="heading settled" data-level="4.7.3" id="should-block-sink-type-mismatch"><span class="secno">4.7.3. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-should-sink-type-mismatch-violation-be-blocked-by-content-security-policy">Should sink type mismatch violation be blocked by Content Security Policy?</dfn></span><a class="self-link" href="#should-block-sink-type-mismatch"></a></h4>
    <p>Given a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global③">global object</a> (<var>global</var>), a string (<var>sink</var>), a string (<var>sinkGroup</var>) and a string (<var>source</var>) this algorithm
-returns <code>"Blocked"</code> if the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②④">injection sink</a> requires a <a data-link-type="dfn" href="#trusted-type" id="ref-for-trusted-type⑤">Trusted Type</a>, and <code>"Allowed"</code> otherwise.</p>
+returns <code>"Blocked"</code> if the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②⑤">injection sink</a> requires a <a data-link-type="dfn" href="#trusted-type" id="ref-for-trusted-type⑤">Trusted Type</a>, and <code>"Allowed"</code> otherwise.</p>
    <ol>
     <li data-md>
      <p>Let <var>result</var> be <code>"Allowed"</code>.</p>
@@ -3987,7 +4002,7 @@ the substring of
 compiled is that returned by any <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy②">default policy</a> in the course of
 executing <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string⑧">Get Trusted Type compliant string</a>.</p>
    <h2 class="heading settled" data-level="5" id="security-considerations"><span class="secno">5. </span><span class="content">Security Considerations</span><a class="self-link" href="#security-considerations"></a></h2>
-   <p>Trusted Types are not intended to protect access to <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②⑤">injection sinks</a> in an
+   <p>Trusted Types are not intended to protect access to <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②⑥">injection sinks</a> in an
 actively malicious execution environment. It’s assumed that the application is
 written by non-malicious authors; the intent is to prevent developer mistakes
 that could result in security bugs, and not to defend against first-party
@@ -4034,8 +4049,8 @@ passed to Trusted Type policies is indeed trustworthy, if the policy rules don�
 enforce constraints or validate the data themselves.</p>
    <h3 class="heading settled" data-level="5.5" id="best-practices-for-policy-design"><span class="secno">5.5. </span><span class="content">Best practices for policy design</span><a class="self-link" href="#best-practices-for-policy-design"></a></h3>
    <p>Trusted Types limit the scope of the code that can introduce
-vulnerabilities via <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②⑥">injection sinks</a> to the implementation of <a data-link-type="dfn" href="#policies" id="ref-for-policies⑥">policies</a>.
-In this design, insecure policies can still expose <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②⑦">injection sinks</a> to untrusted data.
+vulnerabilities via <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②⑦">injection sinks</a> to the implementation of <a data-link-type="dfn" href="#policies" id="ref-for-policies⑥">policies</a>.
+In this design, insecure policies can still expose <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②⑧">injection sinks</a> to untrusted data.
 Special emphasis needs to be taken by use policies that are either secure for all
 possible inputs, or limit the access to insecure policies, such that they are only
 called with non-attacker controlled inputs.</p>
@@ -4051,7 +4066,7 @@ together.</p>
 NOT interfere with the operation of user-agent features like addons,
 extensions, or bookmarklets. These kinds of features generally advance
 the user’s priority over page authors, as espoused in <a data-link-type="biblio" href="#biblio-html-design-principles">[html-design-principles]</a>. Specifically, extensions SHOULD be able to pass strings
-to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②⑧">injection sinks</a> without triggering <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy③">default policy</a> execution, violation generation, or the rejection of the value.</p>
+to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②⑨">injection sinks</a> without triggering <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy③">default policy</a> execution, violation generation, or the rejection of the value.</p>
   </main>
   <h2 class="no-ref no-num heading settled" id="conformance"><span class="content">Conformance</span><a class="self-link" href="#conformance"></a></h2>
   <h3 class="no-ref no-num heading settled" id="conventions"><span class="content">Document conventions</span><a class="self-link" href="#conventions"></a></h3>
@@ -5152,25 +5167,26 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <b><a href="#injection-sink">#injection-sink</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-injection-sink">1. Introduction</a>
-    <li><a href="#ref-for-injection-sink①">2.1. Injection sinks</a>
-    <li><a href="#ref-for-injection-sink②">2.1.1. HTML injection sinks</a>
-    <li><a href="#ref-for-injection-sink③">2.1.2. DOM XSS injection sinks</a>
-    <li><a href="#ref-for-injection-sink④">2.2. Trusted Types</a>
-    <li><a href="#ref-for-injection-sink⑤">2.2.1. TrustedHTML</a>
-    <li><a href="#ref-for-injection-sink⑥">2.2.2. TrustedScript</a>
-    <li><a href="#ref-for-injection-sink⑦">2.2.3. TrustedScriptURL</a>
-    <li><a href="#ref-for-injection-sink⑧">2.3. Policies</a> <a href="#ref-for-injection-sink⑨">(2)</a> <a href="#ref-for-injection-sink①⓪">(3)</a> <a href="#ref-for-injection-sink①①">(4)</a>
-    <li><a href="#ref-for-injection-sink①②">2.3.4. Default policy</a> <a href="#ref-for-injection-sink①③">(2)</a>
-    <li><a href="#ref-for-injection-sink①④">2.4. Enforcement</a> <a href="#ref-for-injection-sink①⑤">(2)</a> <a href="#ref-for-injection-sink①⑥">(3)</a>
-    <li><a href="#ref-for-injection-sink①⑦">2.4.1. Content Security Policy</a>
-    <li><a href="#ref-for-injection-sink①⑧">3.3. Get Trusted Type compliant string</a>
-    <li><a href="#ref-for-injection-sink①⑨">3.4. Process value with a default policy</a>
-    <li><a href="#ref-for-injection-sink②⓪">4.7.1. require-trusted-types-for directive</a> <a href="#ref-for-injection-sink②①">(2)</a>
-    <li><a href="#ref-for-injection-sink②②">4.7.2. trusted-types directive</a> <a href="#ref-for-injection-sink②③">(2)</a>
-    <li><a href="#ref-for-injection-sink②④">4.7.3. Should sink type mismatch violation be blocked by Content Security Policy?</a>
-    <li><a href="#ref-for-injection-sink②⑤">5. Security Considerations</a>
-    <li><a href="#ref-for-injection-sink②⑥">5.5. Best practices for policy design</a> <a href="#ref-for-injection-sink②⑦">(2)</a>
-    <li><a href="#ref-for-injection-sink②⑧">6.1. Vendor-specific Extensions and Addons</a>
+    <li><a href="#ref-for-injection-sink①">1.3. Use cases</a>
+    <li><a href="#ref-for-injection-sink②">2.1. Injection sinks</a>
+    <li><a href="#ref-for-injection-sink③">2.1.1. HTML injection sinks</a>
+    <li><a href="#ref-for-injection-sink④">2.1.2. DOM XSS injection sinks</a>
+    <li><a href="#ref-for-injection-sink⑤">2.2. Trusted Types</a>
+    <li><a href="#ref-for-injection-sink⑥">2.2.1. TrustedHTML</a>
+    <li><a href="#ref-for-injection-sink⑦">2.2.2. TrustedScript</a>
+    <li><a href="#ref-for-injection-sink⑧">2.2.3. TrustedScriptURL</a>
+    <li><a href="#ref-for-injection-sink⑨">2.3. Policies</a> <a href="#ref-for-injection-sink①⓪">(2)</a> <a href="#ref-for-injection-sink①①">(3)</a> <a href="#ref-for-injection-sink①②">(4)</a>
+    <li><a href="#ref-for-injection-sink①③">2.3.4. Default policy</a> <a href="#ref-for-injection-sink①④">(2)</a>
+    <li><a href="#ref-for-injection-sink①⑤">2.4. Enforcement</a> <a href="#ref-for-injection-sink①⑥">(2)</a> <a href="#ref-for-injection-sink①⑦">(3)</a>
+    <li><a href="#ref-for-injection-sink①⑧">2.4.1. Content Security Policy</a>
+    <li><a href="#ref-for-injection-sink①⑨">3.3. Get Trusted Type compliant string</a>
+    <li><a href="#ref-for-injection-sink②⓪">3.4. Process value with a default policy</a>
+    <li><a href="#ref-for-injection-sink②①">4.7.1. require-trusted-types-for directive</a> <a href="#ref-for-injection-sink②②">(2)</a>
+    <li><a href="#ref-for-injection-sink②③">4.7.2. trusted-types directive</a> <a href="#ref-for-injection-sink②④">(2)</a>
+    <li><a href="#ref-for-injection-sink②⑤">4.7.3. Should sink type mismatch violation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-injection-sink②⑥">5. Security Considerations</a>
+    <li><a href="#ref-for-injection-sink②⑦">5.5. Best practices for policy design</a> <a href="#ref-for-injection-sink②⑧">(2)</a>
+    <li><a href="#ref-for-injection-sink②⑨">6.1. Vendor-specific Extensions and Addons</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="trusted-type">
