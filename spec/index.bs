@@ -125,6 +125,39 @@ monitor and review.
     XSS vulnerabilities, author defines a Trusted Type policy in the
     templating library and enables the enforcement for the [=DOM XSS injection sinks=].
 
+*   A large team maintains a complex client-side application.
+    They create a number of Trusted Types policies so that
+    *   A strict auto-escaping template system can
+        *   produces {{TrustedHTML}},
+        *   exempts {{TrustedHTML}} from extra escaping,
+        *   checks that values for HTML attributes like
+            {{HTMLHyperlinkElementUtils/href|href}} and
+            {{HTMLImageElement/src|HTMLImageElement.src}}
+            are {{TrustedURL}} or {{TrustedScriptURL}} or are
+            convertible to the same via the [=default policy=].
+    *   A carefully reviewed HTML sanitizer can
+        *   produce {{TrustedHTML}} from untrusted strings
+        *   exempt {{TrustedHTML}} values from extra sanitizing.
+    *   Thorny legacy code that has a long history of running in
+        production without reported vulnerabilities can continue to
+        run with enforcement enabled.
+
+    The team consolidates the policy implementations and the
+    safe abstractions that use them in a small number of heavily
+    reviewed files and requires extra approval for commits that
+    affect these files.
+
+    The need to create trusted values to affect [=injection sinks=],
+    combined with additional scrutiny on changes that affect policy
+    code, incents developers to find novel ways to use safe
+    abstractions instead of writing ad-hoc string composition code.
+
+    When considering the risk of DOM XSS, security auditors find a
+    small attack surface; they focus on the small amount of code that
+    crafts the [=Trusted-Types HTTP Response Header=] and provides the
+    safe abstractions, and ignore the bulk of client-side application
+    code.
+
 *   An existing web application interacts with the DOM mostly using XSS-safe
     patterns (i.e. without using [=DOM XSS injection sinks=]). In a few places,
     however, it resorts to using risky patterns like loading additional script using
