@@ -1987,6 +1987,19 @@ security reasons, and their navigation model is in flux, we recommend authors
 to prevent that bypass vector by limiting the plugins altogether with
 [=object-src=]. For example: `Content-Security-Policy: object-src: none`.
 
+## Script gadgets
+
+While Trusted Types logic is called on many operations that results in creating
+DOM trees from string, it should not be treated as a mechanism for guarding all
+DOM tree creation in a document. This is important especially in the presence of
+[script gadgets](https://github.com/google/security-research-pocs/tree/master/script-gadgets),
+where an application reacts to contents of usually begign DOM elements or attributes.
+Developers using DOM API directly can trigger such gadgets without using
+Trusted Types. However, in order for the gadget to trigger DOM XSS, it needs to
+obtain a Trusted Type value via a policy. Authors need to ascertain that the data
+passed to Trusted Type policies is indeed trustworthy, if the policy rules don't
+enforce constraints or validate the data themselves.
+
 ## Best practices for policy design ## {#best-practices-for-policy-design}
 
 Trusted Types limit the scope of the code that can introduce
