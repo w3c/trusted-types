@@ -8,9 +8,7 @@
  *  https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
  */
 
-var path = require('path');
 var gulp = require('gulp');
-var bikeshed = require('bikeshed-js');
 var sizereport = require('gulp-sizereport');
 var closureCompiler = require('google-closure-compiler').gulp();
 var sourcemaps = require('gulp-sourcemaps');
@@ -144,24 +142,6 @@ gulp.task('es6.full', function() {
     .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest('dist/es6'));
 });
-
-gulp.task('spec', function() {
-  return bikeshed('spec/index.bs', 'dist/spec/index.html');
-});
-
-gulp.task('spec.watch', function() {
-  const watcher = gulp.watch('spec/**\/*.bs');
-  watcher.on('change', (bspath) => {
-    const reldir = path.relative(__dirname, path.dirname(bspath));
-    const outfile = path.join(
-        __dirname,
-        'dist',
-        reldir,
-        `${ path.basename(bspath, '.bs') }.html`);
-    bikeshed(bspath, outfile);
-  });
-});
-
 
 gulp.task('sizereport', function() {
   return gulp.src('./dist/es*/*.js')
