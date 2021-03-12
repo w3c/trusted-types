@@ -8,9 +8,7 @@
  *  https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
  */
 
-var path = require('path');
 var gulp = require('gulp');
-var bikeshed = require('bikeshed-js');
 var sizereport = require('gulp-sizereport');
 var closureCompiler = require('google-closure-compiler').gulp();
 var sourcemaps = require('gulp-sourcemaps');
