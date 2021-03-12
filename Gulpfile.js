@@ -145,24 +145,6 @@ gulp.task('es6.full', function() {
     .pipe(gulp.dest('dist/es6'));
 });
 
-gulp.task('spec', function() {
-  return bikeshed('spec/index.bs', 'dist/spec/index.html');
-});
-
-gulp.task('spec.watch', function() {
-  const watcher = gulp.watch('spec/**\/*.bs');
-  watcher.on('change', (bspath) => {
-    const reldir = path.relative(__dirname, path.dirname(bspath));
-    const outfile = path.join(
-        __dirname,
-        'dist',
-        reldir,
-        `${ path.basename(bspath, '.bs') }.html`);
-    bikeshed(bspath, outfile);
-  });
-});
-
-
 gulp.task('sizereport', function() {
   return gulp.src('./dist/es*/*.js')
       .pipe(sizereport({gzip: true}));

@@ -23,7 +23,8 @@
     "build:esm": "rollup --file build/esm/trustedtypes.module.js --format esm --input src/polyfill/module.js",
     "build:dist-es5": "gulp es5",
     "build:dist-es6": "gulp es6",
-    "spec": "gulp spec",
+    "spec": "bikeshed spec spec/index.bs dist/spec/index.html",
+    "spec:watch": "bikeshed watch spec/index.bs dist/spec/index.html",
     "sizereport": "gulp sizereport",
     "add_build": "git add ./dist/"
   },
@@ -34,7 +35,6 @@
     "@babel/polyfill": "^7.4.4",
     "@babel/preset-env": "^7.5.5",
     "babelify": "^10.0.0",
-    "bikeshed-js": "^1.0.7",
     "browserify": "^16.3.0",
     "eslint": "^5.16.0",
     "eslint-config-google": "^0.12.0",
@@ -62,7 +62,6 @@
     "lint",
     "test",
     "build",
-    "spec",
     "add_build"
   ],
   "files": [
