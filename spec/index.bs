@@ -2042,6 +2042,19 @@ together.
 
 Issue: Refer to the external document on secure policy design.
 
+# Privacy Considerations # {#privacy-considerations}
+
+The specification may partially observe and alter the behavior of scripts running
+within the application, e.g. causing certain operations on [=injection sinks=]
+to fail, or monitoring and changing their effect with a [=default policy=].
+However, early-running scripts already have this capability by overriding
+appropriate property descriptors.
+
+It is possible for the application to report violations of Trusted Types
+restrictions. Violation reports would include the trimmed-down payload passed to
+the injection sink (40 characters, including the sink name). These feature is
+reusing the Content Security Policy reporting mechanisms.
+
 # Implementation Considerations # {#implementation-considerations}
 
 ## Vendor-specific Extensions and Addons ## {#vendor-specific-extensions-and-addons}

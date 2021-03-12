@@ -1486,7 +1486,7 @@ Possible extra rowspan handling
 </style>
   <meta content="Bikeshed version c5172e83, updated Fri Nov 20 15:35:20 2020 -0800" name="generator">
   <link href="https://w3c.github.io/webappsec-trusted-types/dist/spec/" rel="canonical">
-  <meta content="679456b711c87495c4d377bfe8c1b4e7dcd35d55" name="document-revision">
+  <meta content="e3575f7989353484707facb401ba541a305297e1" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -2199,10 +2199,11 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
       <li><a href="#script-gadgets"><span class="secno">5.4</span> <span class="content">Script gadgets</span></a>
       <li><a href="#best-practices-for-policy-design"><span class="secno">5.5</span> <span class="content">Best practices for policy design</span></a>
      </ol>
+    <li><a href="#privacy-considerations"><span class="secno">6</span> <span class="content">Privacy Considerations</span></a>
     <li>
-     <a href="#implementation-considerations"><span class="secno">6</span> <span class="content">Implementation Considerations</span></a>
+     <a href="#implementation-considerations"><span class="secno">7</span> <span class="content">Implementation Considerations</span></a>
      <ol class="toc">
-      <li><a href="#vendor-specific-extensions-and-addons"><span class="secno">6.1</span> <span class="content">Vendor-specific Extensions and Addons</span></a>
+      <li><a href="#vendor-specific-extensions-and-addons"><span class="secno">7.1</span> <span class="content">Vendor-specific Extensions and Addons</span></a>
      </ol>
     <li>
      <a href="#conformance"><span class="secno"></span> <span class="content">Conformance</span></a>
@@ -4064,13 +4065,22 @@ be self-contained as much as possible. All objects that may alter security decis
 a policy makes effectively <em>become</em> the policy, and should be guarded &amp; reviewed
 together.</p>
    <p class="issue" id="issue-2eb927d2"><a class="self-link" href="#issue-2eb927d2"></a> Refer to the external document on secure policy design.</p>
-   <h2 class="heading settled" data-level="6" id="implementation-considerations"><span class="secno">6. </span><span class="content">Implementation Considerations</span><a class="self-link" href="#implementation-considerations"></a></h2>
-   <h3 class="heading settled" data-level="6.1" id="vendor-specific-extensions-and-addons"><span class="secno">6.1. </span><span class="content">Vendor-specific Extensions and Addons</span><a class="self-link" href="#vendor-specific-extensions-and-addons"></a></h3>
+   <h2 class="heading settled" data-level="6" id="privacy-considerations"><span class="secno">6. </span><span class="content">Privacy Considerations</span><a class="self-link" href="#privacy-considerations"></a></h2>
+   <p>The specification may partially observe and alter the behavior of scripts running
+within the application, e.g. causing certain operations on <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②⑨">injection sinks</a> to fail, or monitoring and changing their effect with a <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy③">default policy</a>.
+However, early-running scripts already have this capability by overriding
+appropriate property descriptors.</p>
+   <p>It is possible for the application to report violations of Trusted Types
+restrictions. Violation reports would include the trimmed-down payload passed to
+the injection sink (40 characters, including the sink name). These feature is
+reusing the Content Security Policy reporting mechanisms.</p>
+   <h2 class="heading settled" data-level="7" id="implementation-considerations"><span class="secno">7. </span><span class="content">Implementation Considerations</span><a class="self-link" href="#implementation-considerations"></a></h2>
+   <h3 class="heading settled" data-level="7.1" id="vendor-specific-extensions-and-addons"><span class="secno">7.1. </span><span class="content">Vendor-specific Extensions and Addons</span><a class="self-link" href="#vendor-specific-extensions-and-addons"></a></h3>
    <p>Restriction imposed by Trusted Types SHOULD
 NOT interfere with the operation of user-agent features like addons,
 extensions, or bookmarklets. These kinds of features generally advance
 the user’s priority over page authors, as espoused in <a data-link-type="biblio" href="#biblio-html-design-principles">[html-design-principles]</a>. Specifically, extensions SHOULD be able to pass strings
-to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②⑨">injection sinks</a> without triggering <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy③">default policy</a> execution, violation generation, or the rejection of the value.</p>
+to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink③⓪">injection sinks</a> without triggering <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy④">default policy</a> execution, violation generation, or the rejection of the value.</p>
   </main>
   <h2 class="no-ref no-num heading settled" id="conformance"><span class="content">Conformance</span><a class="self-link" href="#conformance"></a></h2>
   <h3 class="no-ref no-num heading settled" id="conventions"><span class="content">Document conventions</span><a class="self-link" href="#conventions"></a></h3>
@@ -5255,7 +5265,8 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
     <li><a href="#ref-for-injection-sink②⑤">4.8.3. Should sink type mismatch violation be blocked by Content Security Policy?</a>
     <li><a href="#ref-for-injection-sink②⑥">5. Security Considerations</a>
     <li><a href="#ref-for-injection-sink②⑦">5.5. Best practices for policy design</a> <a href="#ref-for-injection-sink②⑧">(2)</a>
-    <li><a href="#ref-for-injection-sink②⑨">6.1. Vendor-specific Extensions and Addons</a>
+    <li><a href="#ref-for-injection-sink②⑨">6. Privacy Considerations</a>
+    <li><a href="#ref-for-injection-sink③⓪">7.1. Vendor-specific Extensions and Addons</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="trusted-type">
@@ -5510,7 +5521,8 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
     <li><a href="#ref-for-default-policy">4.8.1.1. require-trusted-types-for Pre-Navigation check</a>
     <li><a href="#ref-for-default-policy①">4.8.2. trusted-types directive</a>
     <li><a href="#ref-for-default-policy②">4.8.6. Support for dynamic code compilation</a>
-    <li><a href="#ref-for-default-policy③">6.1. Vendor-specific Extensions and Addons</a>
+    <li><a href="#ref-for-default-policy③">6. Privacy Considerations</a>
+    <li><a href="#ref-for-default-policy④">7.1. Vendor-specific Extensions and Addons</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="enforcement">
