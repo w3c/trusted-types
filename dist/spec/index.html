@@ -1486,7 +1486,7 @@ Possible extra rowspan handling
 </style>
   <meta content="Bikeshed version c5172e83, updated Fri Nov 20 15:35:20 2020 -0800" name="generator">
   <link href="https://w3c.github.io/webappsec-trusted-types/dist/spec/" rel="canonical">
-  <meta content="57130c96ac610675b20dce8b205c7a5bfbca2b5a" name="document-revision">
+  <meta content="679456b711c87495c4d377bfe8c1b4e7dcd35d55" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -4016,10 +4016,13 @@ dynamically create nodes that would bypass the policy restrictions, it is
 possible that such nodes can be imported or adopted from documents in other
 windows, that don’t have the same set of restrictions. In essence - it is
 possible to bypass Trusted Types if a malicious author creates a setup in which
-a restricted document colludes with an unrestricted one.</p>
+a restricted document colludes with an unrestricted one. In an extreme case, the
+restricted document might create a <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/FileAPI/#dfn-Blob" id="ref-for-dfn-Blob">Blob</a></code> from strings and navigate to it.</p>
    <p>CSP propagation rules (see <a href="https://www.w3.org/TR/CSP3/#initialize-document-csp">Content Security Policy §4.2.1 Initialize a Document's CSP list</a> partially address this
-issue, as new <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#local-scheme" id="ref-for-local-scheme">local scheme</a> documents will inherit the same set of restrictions.
-To address this issue comprehensively, other mechanisms like <a href="https://wicg.github.io/origin-policy/">Origin Policy</a> should be used to ensure that baseline security rules are applied for the whole
+issue, as new <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#local-scheme" id="ref-for-local-scheme">local scheme</a> documents will inherit the same set of restrictions,
+so - for example - <code>script-src</code> restrictions could be used to make sure injections
+into <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/FileAPI/#dfn-Blob" id="ref-for-dfn-Blob①">Blob</a></code> contents would not execute scripts. To address this issue
+comprehensively, other mechanisms like <a href="https://wicg.github.io/origin-policy/">Origin Policy</a> should be used to ensure that baseline security rules are applied for the whole
 origin.</p>
    <h3 class="heading settled" data-level="5.2" id="deprecated-features"><span class="secno">5.2. </span><span class="content">Deprecated features</span><a class="self-link" href="#deprecated-features"></a></h3>
    <p>Some long-deprecated and rarely used plaform features are not subject to Trusted
@@ -4578,6 +4581,12 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
     <li><a href="#ref-for-concept-request-url">4.8.1.1. require-trusted-types-for Pre-Navigation check</a> <a href="#ref-for-concept-request-url①">(2)</a> <a href="#ref-for-concept-request-url②">(3)</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-dfn-Blob">
+   <a href="https://w3c.github.io/FileAPI/#dfn-Blob">https://w3c.github.io/FileAPI/#dfn-Blob</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dfn-Blob">5.1. Cross-document vectors</a> <a href="#ref-for-dfn-Blob①">(2)</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-cereactions">
    <a href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions">https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions</a><b>Referenced in:</b>
    <ul>
@@ -5083,6 +5092,11 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
      <li><span class="dfn-paneled" id="term-for-concept-request-url">url</span>
     </ul>
    <li>
+    <a data-link-type="biblio">[FileAPI]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-dfn-Blob">Blob</span>
+    </ul>
+   <li>
     <a data-link-type="biblio">[HTML]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-cereactions">CEReactions</span>
@@ -5184,6 +5198,8 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <dd><a href="https://tc39.es/ecma262/">ECMAScript Language Specification</a>. URL: <a href="https://tc39.es/ecma262/">https://tc39.es/ecma262/</a>
    <dt id="biblio-fetch">[Fetch]
    <dd>Anne van Kesteren. <a href="https://fetch.spec.whatwg.org/">Fetch Standard</a>. Living Standard. URL: <a href="https://fetch.spec.whatwg.org/">https://fetch.spec.whatwg.org/</a>
+   <dt id="biblio-fileapi">[FileAPI]
+   <dd>Marijn Kruisselbrink; Arun Ranganathan. <a href="https://www.w3.org/TR/FileAPI/">File API</a>. 11 September 2019. WD. URL: <a href="https://www.w3.org/TR/FileAPI/">https://www.w3.org/TR/FileAPI/</a>
    <dt id="biblio-html">[HTML]
    <dd>Anne van Kesteren; et al. <a href="https://html.spec.whatwg.org/multipage/">HTML Standard</a>. Living Standard. URL: <a href="https://html.spec.whatwg.org/multipage/">https://html.spec.whatwg.org/multipage/</a>
    <dt id="biblio-infra">[INFRA]

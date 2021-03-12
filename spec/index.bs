@@ -1978,12 +1978,14 @@ dynamically create nodes that would bypass the policy restrictions, it is
 possible that such nodes can be imported or adopted from documents in other
 windows, that don't have the same set of restrictions. In essence - it is
 possible to bypass Trusted Types if a malicious author creates a setup in which
-a restricted document colludes with an unrestricted one.
+a restricted document colludes with an unrestricted one. In an extreme case, the
+restricted document might create a {{Blob}} from strings and navigate to it.
 
 CSP propagation rules (see [[CSP3#initialize-document-csp]] partially address this
-issue, as new [=local scheme=] documents will inherit the same set of restrictions.
-To address this issue comprehensively, other mechanisms like
-<a href="https://wicg.github.io/origin-policy/">Origin Policy</a>
+issue, as new [=local scheme=] documents will inherit the same set of restrictions,
+so - for example -  `script-src` restrictions could be used to make sure injections
+into {{Blob}} contents would not execute scripts. To address this issue
+comprehensively, other mechanisms like <a href="https://wicg.github.io/origin-policy/">Origin Policy</a>
 should be used to ensure that baseline security rules are applied for the whole
 origin.
 
