@@ -210,7 +210,7 @@ trustedTypes.createPolicy('default', {
 });
 ```
 
-This mechanism compliments CSP's `'unsafe-inline'`, allowing the authors to enable strong security 
+This mechanism complements CSP's `'unsafe-inline'`, allowing the authors to enable strong security 
 controls in their application even if it occasionally uses `javascript:` URLs for legitimate purposes. 
 
 ### DOM Sinks
