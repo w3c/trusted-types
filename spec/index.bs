@@ -510,13 +510,13 @@ initially empty.
     with the following arguments:
     <dl>
     <dt>factory</dt>
-    <dd>[=context object=]</dd>
+    <dd>[=this=] value</dd>
     <dt>policyName</dt>
     <dd>|policyName|</dt>
     <dt>options</dt>
     <dd>|policyOptions|</dd>
     <dt>global</dt>
-    <dd>[=context object=]'s [=relevant global object=]</dd>
+    <dd>[=this=] value's [=relevant global object=]</dd>
     </dl>
 
     <div class="example" id="create-and-used-unexposed-policy">
@@ -693,7 +693,7 @@ Each TrustedTypePolicy object has an `[[options]]` internal slot, holding the {{
     following arguments:
     <dl>
       <dt>policy</dt>
-      <dd>[=context object=]</dt>
+      <dd>[=this=] value</dt>
       <dt>trustedTypeName</dt>
       <dd>`"TrustedHTML"`</dd>
       <dt>value</dt>
@@ -708,7 +708,7 @@ Each TrustedTypePolicy object has an `[[options]]` internal slot, holding the {{
     following arguments:
     <dl>
       <dt>policy</dt>
-      <dd>[=context object=]</dt>
+      <dd>[=this=] value</dt>
       <dt>trustedTypeName</dt>
       <dd>`"TrustedScript"`</dd>
       <dt>value</dt>
@@ -724,7 +724,7 @@ Each TrustedTypePolicy object has an `[[options]]` internal slot, holding the {{
     following arguments:
     <dl>
       <dt>policy</dt>
-      <dd>[=context object=]</dt>
+      <dd>[=this=] value</dt>
       <dt>trustedTypeName</dt>
       <dd>`"TrustedScriptURL"`</dd>
       <dt>value</dt>
@@ -1489,7 +1489,7 @@ add this step between 7.1 and 7.2:
 
 1.  If the first operation argument is not a {{Function}}, or if the first operation argument is a {{TrustedType}}, set the first operation argument to the result of executing
     the [$Get Trusted Type compliant string$] algorithm, with
-    *   |global| set to the [=context object=]'s [=relevant global object=].
+    *   |global| set to the [=this=] value's [=relevant global object=].
     *   |input| set to the first method argument, and
     *   |expectedType| set to {{TrustedScript}}.
     *   |sink| set to `Window setInterval` if <var ignore>repeat</var> is true, `Window setTimeout` otherwise.
@@ -1981,7 +1981,7 @@ possible to bypass Trusted Types if a malicious author creates a setup in which
 a restricted document colludes with an unrestricted one. In an extreme case, the
 restricted document might create a {{Blob}} from strings and navigate to it.
 
-CSP propagation rules (see [[CSP3#initialize-document-csp]] partially address this
+CSP propagation rules (see [[CSP3#security-inherit-csp]] partially address this
 issue, as new [=local scheme=] documents will inherit the same set of restrictions,
 so - for example -  `script-src` restrictions could be used to make sure injections
 into {{Blob}} contents would not execute scripts. To address this issue
