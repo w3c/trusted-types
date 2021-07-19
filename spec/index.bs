@@ -68,7 +68,7 @@ if `aString` contains untrusted data, `foo[bar] = aString` is a statement
 that potentially can trigger a vulnerability, depending on a value
 of `foo` and `bar`.
 
-This document focuses on prevening DOM-Based Cross-Site Scripting
+This document focuses on preventing DOM-Based Cross-Site Scripting
 that occurs when attacker-controlled data reaches
 [[#dom-xss-injection-sinks]], as that eventually causes execution of the
 script payload controlled by the attacker. DOM XSS is prevalent in the
@@ -119,7 +119,7 @@ monitor and review.
     don't guard loading new documents with JavaScript code via `data:` URLs).
 *   Prevent malicious authors of the web application's JavaScript code
     from being able to bypass the restrictions; attempting to protect against
-    malicious authors would result in an overtly complex and not-practical
+    malicious authors would result in an overly complex and not-practical
     design.
 
 ## Use cases ## {#use-cases}
@@ -164,19 +164,19 @@ monitor and review.
     or will be introduced in the future.
 
     To address this risk, the author converts the reviewed parts to using
-    Trusted Types, and enables Trusted Type [=enforcement=]. Addditional places
+    Trusted Types, and enables Trusted Type [=enforcement=]. Additional places
     using the injection sinks, should they exist in the future, are correctly
     blocked and reported.
 
 *   A security team is tasked with assuring that the client-side heavy
     application code does not contain XSS vulnerabilities. Since the server side
-    code is homogeneous (it's moslty an API backend), and the application
+    code is homogeneous (it's mostly an API backend), and the application
     enforces Trusted Types, the review only focuses on the Trusted Type
     [=policies=] and their rules. Later on the reviewed policy names are
     allowed in the 'trusted-types' CSP directive, safe for the developers to
     use.
 
-    Any additonal code, including the code of often-changing dependencies,
+    Any additional code, including the code of often-changing dependencies,
     can be excluded from the review, unless it creates a Trusted Type policy.
     Without it, the code cannot cause a DOM XSS.
 
@@ -580,7 +580,7 @@ initially empty.
     1. Let |interface| be the [=element interface=] for |localName| and |elementNs|.
     1. If |interface| has an IDL <a spec="webidl">attribute</a> member which identifier is |attribute|, and
         {{StringContext}} IDL extended attribute appears on that attribute, return
-        stringified {{StringContext}}'s identifier and abort futher steps.
+        stringified {{StringContext}}'s identifier and abort further steps.
 
         Note: This also takes into account all members of [=interface mixins=] that
         |interface| [=includes=].
@@ -611,7 +611,7 @@ initially empty.
         |localName| local name and |attrNs| namespace,
         return undefined and abort further steps. Otherwise, let |idlAttribute| be that IDL <a spec="webidl">attribute</a>.
     1. If {{StringContext}} IDL extended attribute appears on |idlAttribute|, return
-        stringified {{StringContext}}'s identifier and abort futher steps.
+        stringified {{StringContext}}'s identifier and abort further steps.
     1. Return null.
 
     <div class="example" id="get-attribute-type-example">
@@ -937,7 +937,7 @@ Given a {{TrustedType}} type (|expectedType|), a [=Realm/global object=] (|globa
 1.  If |convertedInput| is `null` or `undefined`, execute the following steps:
     1.  Let |disposition| be the result of executing [$Should sink type mismatch violation be blocked by Content Security Policy?$] algorithm,
         passing |global|, |input| as |source|, |sinkGroup| and |sink|.
-    1.  If |disposition| is `“Allowed”`, return stringified |input| and abort futher steps.
+    1.  If |disposition| is `“Allowed”`, return stringified |input| and abort further steps.
 
         Note: This step assures that the default policy rejection will be reported, but ignored in a report-only mode.
     1. Throw a TypeError and abort further steps.
@@ -1612,10 +1612,10 @@ partial interface mixin SVGAnimatedString {
 
 On setting {{SVGAnimatedString/baseVal}}, the following steps are run:
 
-1. <ins>If the relected <a spec="dom">attribute</a>'s element is a {{SVGScriptElement}}, set |value| to the result of executing [$Get Trusted Type compliant string$] algorithm, with the following arguments:</ins>
+1. <ins>If the reflected <a spec="dom">attribute</a>'s element is a {{SVGScriptElement}}, set |value| to the result of executing [$Get Trusted Type compliant string$] algorithm, with the following arguments:</ins>
 
       * <ins>{{TrustedScriptURL}} as |expectedType|,</ins>
-      * <ins>relected attribute's {{Document}}'s [=relevant global object=] as |global|,</ins>
+      * <ins>reflected attribute's {{Document}}'s [=relevant global object=] as |global|,</ins>
       * <ins>specified value as |input|,</ins>
       * <ins>`SVGScriptElement href` as |sink|,</ins>
       * <ins>'script' as |sinkGroup|.</ins>
@@ -1991,7 +1991,7 @@ origin.
 
 ## Deprecated features ## {#deprecated-features}
 
-Some long-deprecated and rarely used plaform features are not subject to Trusted
+Some long-deprecated and rarely used platform features are not subject to Trusted
 Types, and could potentially be used by malicious authors to overcome the
 restrictions:
 
@@ -2018,7 +2018,7 @@ While Trusted Types logic is called on many operations that results in creating
 DOM trees from string, it should not be treated as a mechanism for guarding all
 DOM tree creation in a document. This is important especially in the presence of
 [script gadgets](https://github.com/google/security-research-pocs/tree/master/script-gadgets),
-where an application reacts to contents of usually begign DOM elements or attributes.
+where an application reacts to contents of usually benign DOM elements or attributes.
 Developers using DOM API directly can trigger such gadgets without using
 Trusted Types. However, in order for the gadget to trigger DOM XSS, it needs to
 obtain a Trusted Type value via a policy. Authors need to ascertain that the data
