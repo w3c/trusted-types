@@ -272,7 +272,7 @@ producing types in parts of the application, while still using and
 accepting strings in other parts of the codebase). In that sense,
 Trusted Types are backwards-compatible with the regular DOM APIs.
 
-### <dfn type>TrustedHTML</dfn> ### {#trusted-html}
+### <dfn interface>TrustedHTML</dfn> ### {#trusted-html}
 
 The TrustedHTML interface represents a string that a developer can
 confidently insert into an [=injection sink=] that will render it as HTML.
@@ -297,7 +297,7 @@ will never change during its lifetime.
 TrustedHTML object are to return the value from its
 `[[Data]]` internal slot.
 
-### <dfn type>TrustedScript</dfn> ### {#trusted-script}
+### <dfn interface>TrustedScript</dfn> ### {#trusted-script}
 
 The TrustedScript interface represents a string with an uncompiled
 script body that a developer can confidently pass into an [=injection sink=]
@@ -324,7 +324,7 @@ TrustedScript object are to return the value from its
 `[[Data]]` internal slot.
 
 
-### <dfn type>TrustedScriptURL</dfn> ### {#trused-script-url}
+### <dfn interface>TrustedScriptURL</dfn> ### {#trused-script-url}
 
 The TrustedScriptURL interface represents a string that a developer
 can confidently pass into an [=injection sink=] that will parse it as a URL of
@@ -448,7 +448,7 @@ that it's called only with no attacker-controlled values.
 </xmp>
 </div>
 
-### <dfn type>TrustedTypePolicyFactory</dfn> ### {#trusted-type-policy-factory}
+### <dfn interface>TrustedTypePolicyFactory</dfn> ### {#trusted-type-policy-factory}
 
 TrustedTypePolicyFactory creates
 {{TrustedTypePolicy|policies}} and verifies that Trusted Type object instances
@@ -664,7 +664,7 @@ trustedTypes.defaultPolicy === dp;  // true
 
 </div>
 
-### <dfn type>TrustedTypePolicy</dfn> ### {#trusted-type-policy}
+### <dfn interface>TrustedTypePolicy</dfn> ### {#trusted-type-policy}
 
 Policy objects implement a TrustedTypePolicy interface and define a
 group of functions creating Trusted Type objects.
@@ -735,7 +735,7 @@ Each TrustedTypePolicy object has an `[[options]]` internal slot, holding the {{
 
 </div>
 
-### <dfn type>TrustedTypePolicyOptions</dfn> ### {#trusted-type-policy-options}
+### <dfn dictionary>TrustedTypePolicyOptions</dfn> ### {#trusted-type-policy-options}
 
 This dictionary holds author-defined functions for converting string
 values into trusted values. These functions do not create [=Trusted Type=]
