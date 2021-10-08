@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2016/W3C-ED" rel="stylesheet">
   <meta content="Bikeshed version a210b7d86, updated Thu Sep 16 13:45:19 2021 -0700" name="generator">
   <link href="https://w3c.github.io/webappsec-trusted-types/dist/spec/" rel="canonical">
-  <meta content="bb651fd53633a3f294ef245d43dffa26704d9613" name="document-revision">
+  <meta content="62aeb250ba85f68adfe82d2118399f420347a574" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -754,19 +754,20 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
       <li><a href="#integration-with-svg"><span class="secno">4.5</span> <span class="content">Integration with SVG</span></a>
       <li><a href="#integration-with-dom"><span class="secno">4.6</span> <span class="content">Integration with DOM</span></a>
       <li><a href="#integration-with-dom-parsing"><span class="secno">4.7</span> <span class="content">Integration with DOM Parsing</span></a>
+      <li><a href="#integration-with-exec-command"><span class="secno">4.8</span> <span class="content">Integration with execCommand</span></a>
       <li>
-       <a href="#integration-with-content-security-policy"><span class="secno">4.8</span> <span class="content">Integration with Content Security Policy</span></a>
+       <a href="#integration-with-content-security-policy"><span class="secno">4.9</span> <span class="content">Integration with Content Security Policy</span></a>
        <ol class="toc">
         <li>
-         <a href="#require-trusted-types-for-csp-directive"><span class="secno">4.8.1</span> <span class="content"><span>require-trusted-types-for</span> directive</span></a>
+         <a href="#require-trusted-types-for-csp-directive"><span class="secno">4.9.1</span> <span class="content"><span>require-trusted-types-for</span> directive</span></a>
          <ol class="toc">
-          <li><a href="#require-trusted-types-for-pre-navigation-check"><span class="secno">4.8.1.1</span> <span class="content"><code>require-trusted-types-for</code> Pre-Navigation check</span></a>
+          <li><a href="#require-trusted-types-for-pre-navigation-check"><span class="secno">4.9.1.1</span> <span class="content"><code>require-trusted-types-for</code> Pre-Navigation check</span></a>
          </ol>
-        <li><a href="#trusted-types-csp-directive"><span class="secno">4.8.2</span> <span class="content"><span>trusted-types</span> directive</span></a>
-        <li><a href="#should-block-sink-type-mismatch"><span class="secno">4.8.3</span> <span class="content"><span>Should sink type mismatch violation be blocked by Content Security Policy?</span></span></a>
-        <li><a href="#should-block-create-policy"><span class="secno">4.8.4</span> <span class="content"><span>Should Trusted Type policy creation be blocked by Content Security Policy?</span></span></a>
-        <li><a href="#csp-violation-object-hdr"><span class="secno">4.8.5</span> <span class="content">Violation object changes</span></a>
-        <li><a href="#csp-eval"><span class="secno">4.8.6</span> <span class="content">Support for dynamic code compilation</span></a>
+        <li><a href="#trusted-types-csp-directive"><span class="secno">4.9.2</span> <span class="content"><span>trusted-types</span> directive</span></a>
+        <li><a href="#should-block-sink-type-mismatch"><span class="secno">4.9.3</span> <span class="content"><span>Should sink type mismatch violation be blocked by Content Security Policy?</span></span></a>
+        <li><a href="#should-block-create-policy"><span class="secno">4.9.4</span> <span class="content"><span>Should Trusted Type policy creation be blocked by Content Security Policy?</span></span></a>
+        <li><a href="#csp-violation-object-hdr"><span class="secno">4.9.5</span> <span class="content">Violation object changes</span></a>
+        <li><a href="#csp-eval"><span class="secno">4.9.6</span> <span class="content">Support for dynamic code compilation</span></a>
        </ol>
      </ol>
     <li>
@@ -1593,7 +1594,7 @@ trustedTypes<c- p>.</c->getAttributeType<c- p>(</c-><c- t>'foo'</c-><c- p>,</c->
      <dd data-md>
       <p>is a <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript④">TrustedScript</a></code> object with its <code>[[Data]]</code> internal slot value set to an empty string.</p>
     </dl>
-    <p class="note" role="note"><span>Note:</span> This object can be used to detect if the runtime environment has <a href="#csp-eval">§ 4.8.6 Support for dynamic code compilation</a>. While native Trusted Types implementation can
+    <p class="note" role="note"><span>Note:</span> This object can be used to detect if the runtime environment has <a href="#csp-eval">§ 4.9.6 Support for dynamic code compilation</a>. While native Trusted Types implementation can
 support <code>eval(TrustedScript)</code>, it is impossible for a polyfill to  emulate that, as
 eval(TrustedScript) will return its input without unwrapping and evaluating the code.</p>
     <div class="example" id="empty-script-example">
@@ -2686,7 +2687,7 @@ document<c- p>.</c->createElement<c- p>(</c-><c- t>'iframe'</c-><c- p>).</c->set
 };
 
 <c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#range" id="ref-for-range"><c- g>Range</c-></a> {
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions①③"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#NewObject" id="ref-for-NewObject①"><c- g>NewObject</c-></a>] <a data-link-type="idl-name" href="https://dom.spec.whatwg.org/#documentfragment" id="ref-for-documentfragment"><c- n>DocumentFragment</c-></a> <dfn class="idl-code" data-dfn-for="Range" data-dfn-type="method" data-export data-lt="createContextualFragment(fragment)" id="dom-range-createcontextualfragment"><code><c- g>createContextualFragment</c-></code><a class="self-link" href="#dom-range-createcontextualfragment"></a></dfn>(<a data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring⑥"><c- n>HTMLString</c-></a> <dfn class="idl-code" data-dfn-for="Range/createContextualFragment(fragment)" data-dfn-type="argument" data-export id="dom-range-createcontextualfragment-fragment-fragment"><code><c- g>fragment</c-></code><a class="self-link" href="#dom-range-createcontextualfragment-fragment-fragment"></a></dfn>);
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions①③"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#NewObject" id="ref-for-NewObject①"><c- g>NewObject</c-></a>] <a data-link-type="idl-name" href="https://dom.spec.whatwg.org/#documentfragment" id="ref-for-documentfragment"><c- n>DocumentFragment</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="Range" data-dfn-type="method" data-export data-lt="createContextualFragment(fragment)" id="dom-range-createcontextualfragment"><code><c- g>createContextualFragment</c-></code></dfn>(<a data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring⑥"><c- n>HTMLString</c-></a> <dfn class="idl-code" data-dfn-for="Range/createContextualFragment(fragment)" data-dfn-type="argument" data-export id="dom-range-createcontextualfragment-fragment-fragment"><code><c- g>fragment</c-></code><a class="self-link" href="#dom-range-createcontextualfragment-fragment-fragment"></a></dfn>);
 };
 
 [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed①⓪"><c- g>Exposed</c-></a>=<c- n>Window</c->]
@@ -2695,8 +2696,16 @@ document<c- p>.</c->createElement<c- p>(</c-><c- t>'iframe'</c-><c- p>).</c->set
   [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#NewObject" id="ref-for-NewObject②"><c- g>NewObject</c-></a>] <a data-link-type="idl-name" href="https://dom.spec.whatwg.org/#document" id="ref-for-document⑥"><c- n>Document</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="DOMParser" data-dfn-type="method" data-export data-lt="parseFromString(str, type)" id="dom-domparser-parsefromstring"><code><c- g>parseFromString</c-></code></dfn>(<a data-link-type="idl-name" href="#typedefdef-htmlstring" id="ref-for-typedefdef-htmlstring⑦"><c- n>HTMLString</c-></a> <dfn class="idl-code" data-dfn-for="DOMParser/parseFromString(str, type)" data-dfn-type="argument" data-export id="dom-domparser-parsefromstring-str-type-str"><code><c- g>str</c-></code><a class="self-link" href="#dom-domparser-parsefromstring-str-type-str"></a></dfn>, <a data-link-type="idl-name" href="https://w3c.github.io/DOM-Parsing/#supportedtype" id="ref-for-supportedtype"><c- n>SupportedType</c-></a> <dfn class="idl-code" data-dfn-for="DOMParser/parseFromString(str, type)" data-dfn-type="argument" data-export id="dom-domparser-parsefromstring-str-type-type"><code><c- g>type</c-></code><a class="self-link" href="#dom-domparser-parsefromstring-str-type-type"></a></dfn>);
 };
 </pre>
-   <h3 class="heading settled" data-level="4.8" id="integration-with-content-security-policy"><span class="secno">4.8. </span><span class="content">Integration with Content Security Policy</span><a class="self-link" href="#integration-with-content-security-policy"></a></h3>
-   <h4 class="heading settled" data-level="4.8.1" id="require-trusted-types-for-csp-directive"><span class="secno">4.8.1. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="require-trusted-types-for-directive" data-noexport id="require-trusted-types-for-directive">require-trusted-types-for</dfn> directive</span><a class="self-link" href="#require-trusted-types-for-csp-directive"></a></h4>
+   <h3 class="heading settled" data-level="4.8" id="integration-with-exec-command"><span class="secno">4.8. </span><span class="content">Integration with execCommand</span><a class="self-link" href="#integration-with-exec-command"></a></h3>
+   <p>This document modifies the following interfaces defined by the unofficial <a href="https://w3c.github.io/editing/docs/execCommand/">execCommand</a> document:</p>
+<pre class="idl exclude highlight def"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#document" id="ref-for-document⑦"><c- g>Document</c-></a> {
+    [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions①④"><c- g>CEReactions</c-></a>, <a class="idl-code" data-link-type="extended-attribute"><c- g>RaisesException</c-></a>] <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-boolean" id="ref-for-idl-boolean③"><c- b>boolean</c-></a> <dfn class="idl-code" data-dfn-for="Document" data-dfn-type="method" data-export data-lt="execCommand(commandId, showUI, value)|execCommand(commandId, showUI)|execCommand(commandId)" id="dom-document-execcommand"><code><c- g>execCommand</c-></code><a class="self-link" href="#dom-document-execcommand"></a></dfn>(<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString③①"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="Document/execCommand(commandId, showUI, value), Document/execCommand(commandId, showUI), Document/execCommand(commandId)" data-dfn-type="argument" data-export id="dom-document-execcommand-commandid-showui-value-commandid"><code><c- g>commandId</c-></code><a class="self-link" href="#dom-document-execcommand-commandid-showui-value-commandid"></a></dfn>, <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-boolean" id="ref-for-idl-boolean④"><c- b>boolean</c-></a> <dfn class="idl-code" data-dfn-for="Document/execCommand(commandId, showUI, value), Document/execCommand(commandId, showUI), Document/execCommand(commandId)" data-dfn-type="argument" data-export id="dom-document-execcommand-commandid-showui-value-showui"><code><c- g>showUI</c-></code><a class="self-link" href="#dom-document-execcommand-commandid-showui-value-showui"></a></dfn> = <c- b>false</c->, <c- b>optional</c-> (<a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString③②"><c- b>DOMString</c-></a> <c- b>or</c-> <a data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml①⓪"><c- n>TrustedHTML</c-></a>) <dfn class="idl-code" data-dfn-for="Document/execCommand(commandId, showUI, value), Document/execCommand(commandId, showUI), Document/execCommand(commandId)" data-dfn-type="argument" data-export id="dom-document-execcommand-commandid-showui-value-value"><code><c- g>value</c-></code><a class="self-link" href="#dom-document-execcommand-commandid-showui-value-value"></a></dfn> = "");
+};
+</pre>
+   <p>The implementation of the <a href="https://w3c.github.io/editing/docs/execCommand/#the-inserthtml-command">insertHTML</a> execCommand passes the unmodified value from its third argument
+instance to the <code class="idl"><a data-link-type="idl" href="#dom-range-createcontextualfragment" id="ref-for-dom-range-createcontextualfragment">createContextualFragment()</a></code> algorithm.</p>
+   <h3 class="heading settled" data-level="4.9" id="integration-with-content-security-policy"><span class="secno">4.9. </span><span class="content">Integration with Content Security Policy</span><a class="self-link" href="#integration-with-content-security-policy"></a></h3>
+   <h4 class="heading settled" data-level="4.9.1" id="require-trusted-types-for-csp-directive"><span class="secno">4.9.1. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="require-trusted-types-for-directive" data-noexport id="require-trusted-types-for-directive">require-trusted-types-for</dfn> directive</span><a class="self-link" href="#require-trusted-types-for-csp-directive"></a></h4>
    <p>This document defines <em>require-trusted-types-for</em> - a new <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives①">Content Security Policy directive</a>.</p>
    <p><a data-link-type="dfn" href="#require-trusted-types-for-directive" id="ref-for-require-trusted-types-for-directive①">require-trusted-types-for</a> directive configures the Trusted
 Types framework for all the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②①">injection sinks</a> of certain groups in a current <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-global-object-realm" id="ref-for-concept-global-object-realm①">realm</a>.
@@ -2713,7 +2722,7 @@ directive-value = <a data-link-type="dfn" href="#trusted-types-sink-group" id="r
 <pre class="http">Content-Security-Policy: require-trusted-types-for 'script'
 </pre>
    </div>
-   <h5 class="heading settled" data-level="4.8.1.1" id="require-trusted-types-for-pre-navigation-check"><span class="secno">4.8.1.1. </span><span class="content"><code>require-trusted-types-for</code> Pre-Navigation check</span><a class="self-link" href="#require-trusted-types-for-pre-navigation-check"></a></h5>
+   <h5 class="heading settled" data-level="4.9.1.1" id="require-trusted-types-for-pre-navigation-check"><span class="secno">4.9.1.1. </span><span class="content"><code>require-trusted-types-for</code> Pre-Navigation check</span><a class="self-link" href="#require-trusted-types-for-pre-navigation-check"></a></h5>
    <p>Given a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request" id="ref-for-concept-request">request</a> (<var>request</var>), a string <var>navigation type</var> and a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#content-security-policy-object" id="ref-for-content-security-policy-object①">policy</a> (<var>policy</var>), this algorithm returns <code>"Blocked"</code> if a navigation violates the <a data-link-type="dfn" href="#require-trusted-types-for-directive" id="ref-for-require-trusted-types-for-directive②">require-trusted-types-for</a> directive’s constraints and <code>"Allowed"</code> otherwise. This constitutes the <a data-link-type="dfn" href="#require-trusted-types-for-directive" id="ref-for-require-trusted-types-for-directive③">require-trusted-types-for</a> directive’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-pre-navigation-check" id="ref-for-directive-pre-navigation-check">pre-navigation check</a>:</p>
    <p class="note" role="note"><span>Note:</span> This algorithm assures that the code to be executed by a navigation to a <code>javascript:</code> URL will have to pass through a <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy">default policy</a>’s <code>createScript</code> function, in addition to all other restrictions imposed by other CSP directives.</p>
    <ol>
@@ -2747,7 +2756,7 @@ directive-value = <a data-link-type="dfn" href="#trusted-types-sink-group" id="r
     <li data-md>
      <p>Return <code>"Allowed"</code>.</p>
    </ol>
-   <h4 class="heading settled" data-level="4.8.2" id="trusted-types-csp-directive"><span class="secno">4.8.2. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="trusted-types-directive" data-noexport id="trusted-types-directive">trusted-types</dfn> directive</span><a class="self-link" href="#trusted-types-csp-directive"></a></h4>
+   <h4 class="heading settled" data-level="4.9.2" id="trusted-types-csp-directive"><span class="secno">4.9.2. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="trusted-types-directive" data-noexport id="trusted-types-directive">trusted-types</dfn> directive</span><a class="self-link" href="#trusted-types-csp-directive"></a></h4>
    <div class="mdn-anno wrapped after">
     <button class="mdn-anno-btn"><b class="less-than-two-engines-flag" title="This feature is in less than two current engines.">⚠</b><span>MDN</span></button>
     <div class="feature">
@@ -2800,7 +2809,7 @@ of being rejected outright.</p>
 <pre class="http">Content-Security-Policy: trusted-types one two default
 </pre>
    </div>
-   <h4 class="heading settled" data-level="4.8.3" id="should-block-sink-type-mismatch"><span class="secno">4.8.3. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-should-sink-type-mismatch-violation-be-blocked-by-content-security-policy">Should sink type mismatch violation be blocked by Content Security Policy?</dfn></span><a class="self-link" href="#should-block-sink-type-mismatch"></a></h4>
+   <h4 class="heading settled" data-level="4.9.3" id="should-block-sink-type-mismatch"><span class="secno">4.9.3. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-should-sink-type-mismatch-violation-be-blocked-by-content-security-policy">Should sink type mismatch violation be blocked by Content Security Policy?</dfn></span><a class="self-link" href="#should-block-sink-type-mismatch"></a></h4>
    <p>Given a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global③">global object</a> (<var>global</var>), a string (<var>sink</var>), a string (<var>sinkGroup</var>) and a string (<var>source</var>) this algorithm
 returns <code>"Blocked"</code> if the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②⑤">injection sink</a> requires a <a data-link-type="dfn" href="#trusted-type" id="ref-for-trusted-type⑤">Trusted Type</a>, and <code>"Allowed"</code> otherwise.</p>
    <ol>
@@ -2833,7 +2842,7 @@ for a value <var>sinkGroup</var>, skip to the next <var>policy</var>.</p>
     <li data-md>
      <p>Return <var>result</var>.</p>
    </ol>
-   <h4 class="heading settled" data-level="4.8.4" id="should-block-create-policy"><span class="secno">4.8.4. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-should-trusted-type-policy-creation-be-blocked-by-content-security-policy">Should Trusted Type policy creation be blocked by Content Security Policy?</dfn></span><a class="self-link" href="#should-block-create-policy"></a></h4>
+   <h4 class="heading settled" data-level="4.9.4" id="should-block-create-policy"><span class="secno">4.9.4. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-should-trusted-type-policy-creation-be-blocked-by-content-security-policy">Should Trusted Type policy creation be blocked by Content Security Policy?</dfn></span><a class="self-link" href="#should-block-create-policy"></a></h4>
    <p>Given a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global④">global object</a> (<var>global</var>), a string (<var>policyName</var>) and a list of
 strings (<var>createdPolicyNames</var>), this algorithm returns <code>"Blocked"</code> if the <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy①③">TrustedTypePolicy</a></code> should not be created, and <code>"Allowed"</code> otherwise.</p>
    <ol>
@@ -2878,9 +2887,9 @@ which value is <var>policyName</var>, and <var>directive</var>’s <a data-link-
     <li data-md>
      <p>Return <var>result</var>.</p>
    </ol>
-   <h4 class="heading settled" data-level="4.8.5" id="csp-violation-object-hdr"><span class="secno">4.8.5. </span><span class="content">Violation object changes</span><a class="self-link" href="#csp-violation-object-hdr"></a></h4>
+   <h4 class="heading settled" data-level="4.9.5" id="csp-violation-object-hdr"><span class="secno">4.9.5. </span><span class="content">Violation object changes</span><a class="self-link" href="#csp-violation-object-hdr"></a></h4>
    <p><a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation" id="ref-for-violation">Violation</a> object <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation-resource" id="ref-for-violation-resource②">resource</a> also allows <code>"trusted-types-policy"</code> and <code>"trusted-types-sink"</code> as values.</p>
-   <h4 class="heading settled" data-level="4.8.6" id="csp-eval"><span class="secno">4.8.6. </span><span class="content">Support for dynamic code compilation</span><a class="self-link" href="#csp-eval"></a></h4>
+   <h4 class="heading settled" data-level="4.9.6" id="csp-eval"><span class="secno">4.9.6. </span><span class="content">Support for dynamic code compilation</span><a class="self-link" href="#csp-eval"></a></h4>
    <p>This document modifies the <a href="https://www.w3.org/TR/CSP3/#can-compile-strings">EnsureCSPDoesNotBlockStringCompilation</a> which is reproduced in its entirety below with additions and deletions.</p>
    <p class="note" role="note"><span>Note:</span> This is based on <a href="https://tc39.es/proposal-dynamic-code-brand-checks/">dynamic-code-brand-checks</a> and
 assumes additional arguments are passed to this algorithm from ECMAScript.
@@ -3142,6 +3151,9 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <li><a href="#dom-trustedtypepolicyfactory-emptyhtml">emptyHTML</a><span>, in § 2.3.1</span>
    <li><a href="#dom-trustedtypepolicyfactory-emptyscript">emptyScript</a><span>, in § 2.3.1</span>
    <li><a href="#enforcement">Enforcement</a><span>, in § 2.4</span>
+   <li><a href="#dom-document-execcommand">execCommand(commandId)</a><span>, in § 4.8</span>
+   <li><a href="#dom-document-execcommand">execCommand(commandId, showUI)</a><span>, in § 4.8</span>
+   <li><a href="#dom-document-execcommand">execCommand(commandId, showUI, value)</a><span>, in § 4.8</span>
    <li><a href="#dom-trustedtypepolicyfactory-getattributetype">getAttributeType(tagName, attribute)</a><span>, in § 2.3.1</span>
    <li><a href="#dom-trustedtypepolicyfactory-getattributetype">getAttributeType(tagName, attribute, elementNs)</a><span>, in § 2.3.1</span>
    <li><a href="#dom-trustedtypepolicyfactory-getattributetype">getAttributeType(tagName, attribute, elementNs, attrNs)</a><span>, in § 2.3.1</span>
@@ -3174,12 +3186,12 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <li><a href="#dom-serviceworkercontainer-register">register(scriptURL)</a><span>, in § 4.4</span>
    <li><a href="#dom-serviceworkercontainer-register">register(scriptURL, options)</a><span>, in § 4.4</span>
    <li><a href="#related-construct">related construct</a><span>, in § 4.2</span>
-   <li><a href="#require-trusted-types-for-directive">require-trusted-types-for-directive</a><span>, in § 4.8.1</span>
+   <li><a href="#require-trusted-types-for-directive">require-trusted-types-for-directive</a><span>, in § 4.9.1</span>
    <li><a href="#typedefdef-scriptstring">ScriptString</a><span>, in § 4</span>
    <li><a href="#dom-htmlscriptelement-scripttext-slot">[[ScriptText]]</a><span>, in § 4.3.3.1</span>
    <li><a href="#dom-htmlscriptelement-scripturl-slot">[[ScriptURL]]</a><span>, in § 4.3.3.1</span>
    <li><a href="#typedefdef-scripturlstring">ScriptURLString</a><span>, in § 4</span>
-   <li><a href="#serialized-tt-configuration">serialized-tt-configuration</a><span>, in § 4.8.2</span>
+   <li><a href="#serialized-tt-configuration">serialized-tt-configuration</a><span>, in § 4.9.2</span>
    <li><a href="#dom-windoworworkerglobalscope-setinterval">setInterval(handler)</a><span>, in § 4.3.5</span>
    <li><a href="#dom-windoworworkerglobalscope-setinterval">setInterval(handler, timeout)</a><span>, in § 4.3.5</span>
    <li><a href="#dom-windoworworkerglobalscope-setinterval">setInterval(handler, timeout, ...arguments)</a><span>, in § 4.3.5</span>
@@ -3189,8 +3201,8 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <li><a href="#dom-windoworworkerglobalscope-settimeout">setTimeout(handler, timeout, ...arguments)</a><span>, in § 4.3.5</span>
    <li><a href="#dom-sharedworker-sharedworker">SharedWorker(scriptURL)</a><span>, in § 4.3.8</span>
    <li><a href="#dom-sharedworker-sharedworker">SharedWorker(scriptURL, options)</a><span>, in § 4.3.8</span>
-   <li><a href="#abstract-opdef-should-sink-type-mismatch-violation-be-blocked-by-content-security-policy">Should sink type mismatch violation be blocked by Content Security Policy?</a><span>, in § 4.8.3</span>
-   <li><a href="#abstract-opdef-should-trusted-type-policy-creation-be-blocked-by-content-security-policy">Should Trusted Type policy creation be blocked by Content Security Policy?</a><span>, in § 4.8.4</span>
+   <li><a href="#abstract-opdef-should-sink-type-mismatch-violation-be-blocked-by-content-security-policy">Should sink type mismatch violation be blocked by Content Security Policy?</a><span>, in § 4.9.3</span>
+   <li><a href="#abstract-opdef-should-trusted-type-policy-creation-be-blocked-by-content-security-policy">Should Trusted Type policy creation be blocked by Content Security Policy?</a><span>, in § 4.9.4</span>
    <li>
     src
     <ul>
@@ -3226,12 +3238,12 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <li><a href="#trustedtypepolicyfactory">TrustedTypePolicyFactory</a><span>, in § 2.3.1</span>
    <li><a href="#dictdef-trustedtypepolicyoptions">TrustedTypePolicyOptions</a><span>, in § 2.3.3</span>
    <li><a href="#dom-windoworworkerglobalscope-trustedtypes">trustedTypes</a><span>, in § 4.3.1</span>
-   <li><a href="#trusted-types-directive">trusted-types-directive</a><span>, in § 4.8.2</span>
-   <li><a href="#trusted-types-sink-group">trusted-types-sink-group</a><span>, in § 4.8.1</span>
-   <li><a href="#tt-expression">tt-expression</a><span>, in § 4.8.2</span>
-   <li><a href="#tt-keyword">tt-keyword</a><span>, in § 4.8.2</span>
-   <li><a href="#tt-policy-name">tt-policy-name</a><span>, in § 4.8.2</span>
-   <li><a href="#tt-wildcard">tt-wildcard</a><span>, in § 4.8.2</span>
+   <li><a href="#trusted-types-directive">trusted-types-directive</a><span>, in § 4.9.2</span>
+   <li><a href="#trusted-types-sink-group">trusted-types-sink-group</a><span>, in § 4.9.1</span>
+   <li><a href="#tt-expression">tt-expression</a><span>, in § 4.9.2</span>
+   <li><a href="#tt-keyword">tt-keyword</a><span>, in § 4.9.2</span>
+   <li><a href="#tt-policy-name">tt-policy-name</a><span>, in § 4.9.2</span>
+   <li><a href="#tt-wildcard">tt-wildcard</a><span>, in § 4.9.2</span>
    <li><a href="#dfn-validate-the-string-in-context">validate the string in context</a><span>, in § 4.2.3</span>
    <li><a href="#dom-worker-worker">Worker(scriptURL)</a><span>, in § 4.3.8</span>
    <li><a href="#dom-worker-worker">Worker(scriptURL, options)</a><span>, in § 4.3.8</span>
@@ -3243,20 +3255,20 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
   <aside class="dfn-panel" data-for="term-for-grammardef-report-sample">
    <a href="https://w3c.github.io/webappsec-csp/#grammardef-report-sample">https://w3c.github.io/webappsec-csp/#grammardef-report-sample</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-grammardef-report-sample">4.8.6. Support for dynamic code compilation</a>
+    <li><a href="#ref-for-grammardef-report-sample">4.9.6. Support for dynamic code compilation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-grammardef-unsafe-eval">
    <a href="https://w3c.github.io/webappsec-csp/#grammardef-unsafe-eval">https://w3c.github.io/webappsec-csp/#grammardef-unsafe-eval</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-grammardef-unsafe-eval">4.8.6. Support for dynamic code compilation</a>
+    <li><a href="#ref-for-grammardef-unsafe-eval">4.9.6. Support for dynamic code compilation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-content-security-policy-object">
    <a href="https://w3c.github.io/webappsec-csp/#content-security-policy-object">https://w3c.github.io/webappsec-csp/#content-security-policy-object</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-content-security-policy-object">3.3. Get Trusted Type compliant string</a>
-    <li><a href="#ref-for-content-security-policy-object①">4.8.1.1. require-trusted-types-for Pre-Navigation check</a>
+    <li><a href="#ref-for-content-security-policy-object①">4.9.1.1. require-trusted-types-for Pre-Navigation check</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-header-content-security-policy-report-only">
@@ -3269,51 +3281,51 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <a href="https://w3c.github.io/webappsec-csp/#global-object-csp-list">https://w3c.github.io/webappsec-csp/#global-object-csp-list</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-global-object-csp-list">3.3. Get Trusted Type compliant string</a>
-    <li><a href="#ref-for-global-object-csp-list①">4.8.3. Should sink type mismatch violation be blocked by Content Security Policy?</a>
-    <li><a href="#ref-for-global-object-csp-list②">4.8.4. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
-    <li><a href="#ref-for-global-object-csp-list③">4.8.6. Support for dynamic code compilation</a>
+    <li><a href="#ref-for-global-object-csp-list①">4.9.3. Should sink type mismatch violation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-global-object-csp-list②">4.9.4. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-global-object-csp-list③">4.9.6. Support for dynamic code compilation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-policy-directive-set">
    <a href="https://w3c.github.io/webappsec-csp/#policy-directive-set">https://w3c.github.io/webappsec-csp/#policy-directive-set</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-policy-directive-set">3.3. Get Trusted Type compliant string</a>
-    <li><a href="#ref-for-policy-directive-set①">4.8.3. Should sink type mismatch violation be blocked by Content Security Policy?</a>
-    <li><a href="#ref-for-policy-directive-set②">4.8.4. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-policy-directive-set①">4.9.3. Should sink type mismatch violation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-policy-directive-set②">4.9.4. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-directives">
    <a href="https://w3c.github.io/webappsec-csp/#directives">https://w3c.github.io/webappsec-csp/#directives</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-directives">3.3. Get Trusted Type compliant string</a>
-    <li><a href="#ref-for-directives①">4.8.1. require-trusted-types-for directive</a>
-    <li><a href="#ref-for-directives②">4.8.2. trusted-types directive</a> <a href="#ref-for-directives③">(2)</a>
-    <li><a href="#ref-for-directives④">4.8.3. Should sink type mismatch violation be blocked by Content Security Policy?</a> <a href="#ref-for-directives⑤">(2)</a>
-    <li><a href="#ref-for-directives⑥">4.8.4. Should Trusted Type policy creation be blocked by Content Security Policy?</a> <a href="#ref-for-directives⑦">(2)</a>
-    <li><a href="#ref-for-directives⑧">4.8.6. Support for dynamic code compilation</a> <a href="#ref-for-directives⑨">(2)</a> <a href="#ref-for-directives①⓪">(3)</a>
+    <li><a href="#ref-for-directives①">4.9.1. require-trusted-types-for directive</a>
+    <li><a href="#ref-for-directives②">4.9.2. trusted-types directive</a> <a href="#ref-for-directives③">(2)</a>
+    <li><a href="#ref-for-directives④">4.9.3. Should sink type mismatch violation be blocked by Content Security Policy?</a> <a href="#ref-for-directives⑤">(2)</a>
+    <li><a href="#ref-for-directives⑥">4.9.4. Should Trusted Type policy creation be blocked by Content Security Policy?</a> <a href="#ref-for-directives⑦">(2)</a>
+    <li><a href="#ref-for-directives⑧">4.9.6. Support for dynamic code compilation</a> <a href="#ref-for-directives⑨">(2)</a> <a href="#ref-for-directives①⓪">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-policy-disposition">
    <a href="https://w3c.github.io/webappsec-csp/#policy-disposition">https://w3c.github.io/webappsec-csp/#policy-disposition</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-policy-disposition">4.8.3. Should sink type mismatch violation be blocked by Content Security Policy?</a>
-    <li><a href="#ref-for-policy-disposition①">4.8.4. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
-    <li><a href="#ref-for-policy-disposition②">4.8.6. Support for dynamic code compilation</a>
+    <li><a href="#ref-for-policy-disposition">4.9.3. Should sink type mismatch violation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-policy-disposition①">4.9.4. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-policy-disposition②">4.9.6. Support for dynamic code compilation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-directive-inline-check">
    <a href="https://w3c.github.io/webappsec-csp/#directive-inline-check">https://w3c.github.io/webappsec-csp/#directive-inline-check</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-directive-inline-check">4.8.1.1. require-trusted-types-for Pre-Navigation check</a>
+    <li><a href="#ref-for-directive-inline-check">4.9.1.1. require-trusted-types-for Pre-Navigation check</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-directive-name">
    <a href="https://w3c.github.io/webappsec-csp/#directive-name">https://w3c.github.io/webappsec-csp/#directive-name</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-directive-name">4.8.1. require-trusted-types-for directive</a>
-    <li><a href="#ref-for-directive-name①">4.8.2. trusted-types directive</a>
-    <li><a href="#ref-for-directive-name②">4.8.3. Should sink type mismatch violation be blocked by Content Security Policy?</a>
-    <li><a href="#ref-for-directive-name③">4.8.6. Support for dynamic code compilation</a> <a href="#ref-for-directive-name④">(2)</a>
+    <li><a href="#ref-for-directive-name">4.9.1. require-trusted-types-for directive</a>
+    <li><a href="#ref-for-directive-name①">4.9.2. trusted-types directive</a>
+    <li><a href="#ref-for-directive-name②">4.9.3. Should sink type mismatch violation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-directive-name③">4.9.6. Support for dynamic code compilation</a> <a href="#ref-for-directive-name④">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-object-src">
@@ -3325,24 +3337,24 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
   <aside class="dfn-panel" data-for="term-for-directive-pre-navigation-check">
    <a href="https://w3c.github.io/webappsec-csp/#directive-pre-navigation-check">https://w3c.github.io/webappsec-csp/#directive-pre-navigation-check</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-directive-pre-navigation-check">4.8.1.1. require-trusted-types-for Pre-Navigation check</a>
+    <li><a href="#ref-for-directive-pre-navigation-check">4.9.1.1. require-trusted-types-for Pre-Navigation check</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-violation-resource">
    <a href="https://w3c.github.io/webappsec-csp/#violation-resource">https://w3c.github.io/webappsec-csp/#violation-resource</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-violation-resource">4.8.3. Should sink type mismatch violation be blocked by Content Security Policy?</a>
-    <li><a href="#ref-for-violation-resource①">4.8.4. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
-    <li><a href="#ref-for-violation-resource②">4.8.5. Violation object changes</a>
-    <li><a href="#ref-for-violation-resource③">4.8.6. Support for dynamic code compilation</a>
+    <li><a href="#ref-for-violation-resource">4.9.3. Should sink type mismatch violation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-violation-resource①">4.9.4. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-violation-resource②">4.9.5. Violation object changes</a>
+    <li><a href="#ref-for-violation-resource③">4.9.6. Support for dynamic code compilation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-violation-sample">
    <a href="https://w3c.github.io/webappsec-csp/#violation-sample">https://w3c.github.io/webappsec-csp/#violation-sample</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-violation-sample">4.8.3. Should sink type mismatch violation be blocked by Content Security Policy?</a>
-    <li><a href="#ref-for-violation-sample①">4.8.4. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
-    <li><a href="#ref-for-violation-sample②">4.8.6. Support for dynamic code compilation</a>
+    <li><a href="#ref-for-violation-sample">4.9.3. Should sink type mismatch violation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-violation-sample①">4.9.4. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-violation-sample②">4.9.6. Support for dynamic code compilation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-script-src">
@@ -3354,23 +3366,23 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
   <aside class="dfn-panel" data-for="term-for-source-expression">
    <a href="https://w3c.github.io/webappsec-csp/#source-expression">https://w3c.github.io/webappsec-csp/#source-expression</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-source-expression">4.8.6. Support for dynamic code compilation</a>
+    <li><a href="#ref-for-source-expression">4.9.6. Support for dynamic code compilation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-directive-value">
    <a href="https://w3c.github.io/webappsec-csp/#directive-value">https://w3c.github.io/webappsec-csp/#directive-value</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-directive-value">4.8.1. require-trusted-types-for directive</a>
-    <li><a href="#ref-for-directive-value①">4.8.2. trusted-types directive</a> <a href="#ref-for-directive-value②">(2)</a>
-    <li><a href="#ref-for-directive-value③">4.8.3. Should sink type mismatch violation be blocked by Content Security Policy?</a>
-    <li><a href="#ref-for-directive-value④">4.8.4. Should Trusted Type policy creation be blocked by Content Security Policy?</a> <a href="#ref-for-directive-value⑤">(2)</a> <a href="#ref-for-directive-value⑥">(3)</a> <a href="#ref-for-directive-value⑦">(4)</a>
-    <li><a href="#ref-for-directive-value⑧">4.8.6. Support for dynamic code compilation</a> <a href="#ref-for-directive-value⑨">(2)</a>
+    <li><a href="#ref-for-directive-value">4.9.1. require-trusted-types-for directive</a>
+    <li><a href="#ref-for-directive-value①">4.9.2. trusted-types directive</a> <a href="#ref-for-directive-value②">(2)</a>
+    <li><a href="#ref-for-directive-value③">4.9.3. Should sink type mismatch violation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-directive-value④">4.9.4. Should Trusted Type policy creation be blocked by Content Security Policy?</a> <a href="#ref-for-directive-value⑤">(2)</a> <a href="#ref-for-directive-value⑥">(3)</a> <a href="#ref-for-directive-value⑦">(4)</a>
+    <li><a href="#ref-for-directive-value⑧">4.9.6. Support for dynamic code compilation</a> <a href="#ref-for-directive-value⑨">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-violation">
    <a href="https://w3c.github.io/webappsec-csp/#violation">https://w3c.github.io/webappsec-csp/#violation</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-violation">4.8.5. Violation object changes</a>
+    <li><a href="#ref-for-violation">4.9.5. Violation object changes</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-document">
@@ -3381,6 +3393,7 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
     <li><a href="#ref-for-document③">4.3.2. Extensions to the Document interface</a> <a href="#ref-for-document④">(2)</a>
     <li><a href="#ref-for-document⑤">4.5. Integration with SVG</a>
     <li><a href="#ref-for-document⑥">4.7. Integration with DOM Parsing</a>
+    <li><a href="#ref-for-document⑦">4.8. Integration with execCommand</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-documentfragment">
@@ -3514,7 +3527,7 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
   <aside class="dfn-panel" data-for="term-for-concept-request-client">
    <a href="https://fetch.spec.whatwg.org/#concept-request-client">https://fetch.spec.whatwg.org/#concept-request-client</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-request-client">4.8.1.1. require-trusted-types-for Pre-Navigation check</a>
+    <li><a href="#ref-for-concept-request-client">4.9.1.1. require-trusted-types-for Pre-Navigation check</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-local-scheme">
@@ -3526,13 +3539,13 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
   <aside class="dfn-panel" data-for="term-for-concept-request">
    <a href="https://fetch.spec.whatwg.org/#concept-request">https://fetch.spec.whatwg.org/#concept-request</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-request">4.8.1.1. require-trusted-types-for Pre-Navigation check</a>
+    <li><a href="#ref-for-concept-request">4.9.1.1. require-trusted-types-for Pre-Navigation check</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-request-url">
    <a href="https://fetch.spec.whatwg.org/#concept-request-url">https://fetch.spec.whatwg.org/#concept-request-url</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-request-url">4.8.1.1. require-trusted-types-for Pre-Navigation check</a> <a href="#ref-for-concept-request-url①">(2)</a> <a href="#ref-for-concept-request-url②">(3)</a>
+    <li><a href="#ref-for-concept-request-url">4.9.1.1. require-trusted-types-for Pre-Navigation check</a> <a href="#ref-for-concept-request-url①">(2)</a> <a href="#ref-for-concept-request-url②">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dfn-Blob">
@@ -3548,6 +3561,7 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
     <li><a href="#ref-for-cereactions②">4.3.3.2. Setting slot values</a> <a href="#ref-for-cereactions③">(2)</a> <a href="#ref-for-cereactions④">(3)</a> <a href="#ref-for-cereactions⑤">(4)</a>
     <li><a href="#ref-for-cereactions⑥">4.3.4. Enforcement in element attributes</a> <a href="#ref-for-cereactions⑦">(2)</a> <a href="#ref-for-cereactions⑧">(3)</a> <a href="#ref-for-cereactions⑨">(4)</a>
     <li><a href="#ref-for-cereactions①⓪">4.7. Integration with DOM Parsing</a> <a href="#ref-for-cereactions①①">(2)</a> <a href="#ref-for-cereactions①②">(3)</a> <a href="#ref-for-cereactions①③">(4)</a>
+    <li><a href="#ref-for-cereactions①④">4.8. Integration with execCommand</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-htmlembedelement">
@@ -3619,7 +3633,7 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
   <aside class="dfn-panel" data-for="term-for-concept-settings-object-global">
    <a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-global">https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-global</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-settings-object-global">4.8.1.1. require-trusted-types-for Pre-Navigation check</a>
+    <li><a href="#ref-for-concept-settings-object-global">4.9.1.1. require-trusted-types-for Pre-Navigation check</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-innertext">
@@ -3638,7 +3652,7 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-global-object-realm">https://html.spec.whatwg.org/multipage/webappapis.html#concept-global-object-realm</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-global-object-realm">2.3. Policies</a>
-    <li><a href="#ref-for-concept-global-object-realm①">4.8.1. require-trusted-types-for directive</a>
+    <li><a href="#ref-for-concept-global-object-realm①">4.9.1. require-trusted-types-for directive</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-reflect">
@@ -3676,7 +3690,7 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <a href="https://infra.spec.whatwg.org/#ascii-case-insensitive">https://infra.spec.whatwg.org/#ascii-case-insensitive</a><b>Referenced in:</b>
    <ul>
     <li><a href="#script-processing-model:ascii-case-insensitive">4.3.3.3. Slot value verification</a> <a href="#script-processing-model:ascii-case-insensitive-2">(2)</a> <a href="#script-processing-model:ascii-case-insensitive-3">(3)</a>
-    <li><a href="#ref-for-ascii-case-insensitive">4.8.6. Support for dynamic code compilation</a>
+    <li><a href="#ref-for-ascii-case-insensitive">4.9.6. Support for dynamic code compilation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-ascii-lowercase">
@@ -3690,13 +3704,13 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <ul>
     <li><a href="#ref-for-string-concatenate">4.3.6. Enforcement in event handler content attributes</a>
     <li><a href="#ref-for-string-concatenate①">4.3.7. Validate the string in context</a>
-    <li><a href="#ref-for-string-concatenate②">4.8.3. Should sink type mismatch violation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-string-concatenate②">4.9.3. Should sink type mismatch violation be blocked by Content Security Policy?</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-list-contain">
    <a href="https://infra.spec.whatwg.org/#list-contain">https://infra.spec.whatwg.org/#list-contain</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-list-contain">4.8.6. Support for dynamic code compilation</a>
+    <li><a href="#ref-for-list-contain">4.9.6. Support for dynamic code compilation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-html-namespace">
@@ -3744,19 +3758,19 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
   <aside class="dfn-panel" data-for="term-for-concept-url-scheme">
    <a href="https://url.spec.whatwg.org/#concept-url-scheme">https://url.spec.whatwg.org/#concept-url-scheme</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-url-scheme">4.8.1.1. require-trusted-types-for Pre-Navigation check</a>
+    <li><a href="#ref-for-concept-url-scheme">4.9.1.1. require-trusted-types-for Pre-Navigation check</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-url-parser">
    <a href="https://url.spec.whatwg.org/#concept-url-parser">https://url.spec.whatwg.org/#concept-url-parser</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-url-parser">4.8.1.1. require-trusted-types-for Pre-Navigation check</a>
+    <li><a href="#ref-for-concept-url-parser">4.9.1.1. require-trusted-types-for Pre-Navigation check</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-url-serializer">
    <a href="https://url.spec.whatwg.org/#concept-url-serializer">https://url.spec.whatwg.org/#concept-url-serializer</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-url-serializer">4.8.1.1. require-trusted-types-for Pre-Navigation check</a>
+    <li><a href="#ref-for-concept-url-serializer">4.9.1.1. require-trusted-types-for Pre-Navigation check</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-AllowShared">
@@ -3785,6 +3799,7 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
     <li><a href="#ref-for-idl-DOMString②⑧">4.3.8. Web Workers</a>
     <li><a href="#ref-for-idl-DOMString②⑨">4.5. Integration with SVG</a>
     <li><a href="#ref-for-idl-DOMString③⓪">4.7. Integration with DOM Parsing</a>
+    <li><a href="#ref-for-idl-DOMString③①">4.8. Integration with execCommand</a> <a href="#ref-for-idl-DOMString③②">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-EnforceRange">
@@ -3796,7 +3811,7 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
   <aside class="dfn-panel" data-for="term-for-exceptiondef-evalerror">
    <a href="https://heycam.github.io/webidl/#exceptiondef-evalerror">https://heycam.github.io/webidl/#exceptiondef-evalerror</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-exceptiondef-evalerror">4.8.6. Support for dynamic code compilation</a>
+    <li><a href="#ref-for-exceptiondef-evalerror">4.9.6. Support for dynamic code compilation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-Exposed">
@@ -3875,6 +3890,7 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <a href="https://heycam.github.io/webidl/#idl-boolean">https://heycam.github.io/webidl/#idl-boolean</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-idl-boolean">2.3.1. TrustedTypePolicyFactory</a> <a href="#ref-for-idl-boolean①">(2)</a> <a href="#ref-for-idl-boolean②">(3)</a>
+    <li><a href="#ref-for-idl-boolean③">4.8. Integration with execCommand</a> <a href="#ref-for-idl-boolean④">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dfn-convert-ecmascript-to-idl-value">
@@ -4206,9 +4222,9 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
     <li><a href="#ref-for-injection-sink①⑧">2.4.1. Content Security Policy</a>
     <li><a href="#ref-for-injection-sink①⑨">3.3. Get Trusted Type compliant string</a>
     <li><a href="#ref-for-injection-sink②⓪">3.4. Process value with a default policy</a>
-    <li><a href="#ref-for-injection-sink②①">4.8.1. require-trusted-types-for directive</a> <a href="#ref-for-injection-sink②②">(2)</a>
-    <li><a href="#ref-for-injection-sink②③">4.8.2. trusted-types directive</a> <a href="#ref-for-injection-sink②④">(2)</a>
-    <li><a href="#ref-for-injection-sink②⑤">4.8.3. Should sink type mismatch violation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-injection-sink②①">4.9.1. require-trusted-types-for directive</a> <a href="#ref-for-injection-sink②②">(2)</a>
+    <li><a href="#ref-for-injection-sink②③">4.9.2. trusted-types directive</a> <a href="#ref-for-injection-sink②④">(2)</a>
+    <li><a href="#ref-for-injection-sink②⑤">4.9.3. Should sink type mismatch violation be blocked by Content Security Policy?</a>
     <li><a href="#ref-for-injection-sink②⑥">5. Security Considerations</a>
     <li><a href="#ref-for-injection-sink②⑦">5.5. Best practices for policy design</a> <a href="#ref-for-injection-sink②⑧">(2)</a>
     <li><a href="#ref-for-injection-sink②⑨">6. Privacy Considerations</a>
@@ -4223,7 +4239,7 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
     <li><a href="#ref-for-trusted-type②">2.3.3. TrustedTypePolicyOptions</a>
     <li><a href="#ref-for-trusted-type③">2.4. Enforcement</a>
     <li><a href="#ref-for-trusted-type④">3.3. Get Trusted Type compliant string</a>
-    <li><a href="#ref-for-trusted-type⑤">4.8.3. Should sink type mismatch violation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-trusted-type⑤">4.9.3. Should sink type mismatch violation be blocked by Content Security Policy?</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="trustedhtml">
@@ -4235,6 +4251,7 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
     <li><a href="#ref-for-trustedhtml⑥">2.3.2. TrustedTypePolicy</a>
     <li><a href="#ref-for-trustedhtml⑦">4. Integrations</a> <a href="#ref-for-trustedhtml⑧">(2)</a>
     <li><a href="#ref-for-trustedhtml⑨">4.2. [StringContext]</a>
+    <li><a href="#ref-for-trustedhtml①⓪">4.8. Integration with execCommand</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-trustedhtml-tojson">
@@ -4260,8 +4277,8 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
     <li><a href="#ref-for-trustedscript⑨">4.2. [StringContext]</a>
     <li><a href="#ref-for-trustedscript①⓪">4.3.5. Enforcement in timer functions</a> <a href="#ref-for-trustedscript①①">(2)</a>
     <li><a href="#ref-for-trustedscript①②">4.3.6. Enforcement in event handler content attributes</a>
-    <li><a href="#ref-for-trustedscript①③">4.8.1.1. require-trusted-types-for Pre-Navigation check</a> <a href="#ref-for-trustedscript①④">(2)</a>
-    <li><a href="#ref-for-trustedscript①⑤">4.8.6. Support for dynamic code compilation</a> <a href="#ref-for-trustedscript①⑥">(2)</a>
+    <li><a href="#ref-for-trustedscript①③">4.9.1.1. require-trusted-types-for Pre-Navigation check</a> <a href="#ref-for-trustedscript①④">(2)</a>
+    <li><a href="#ref-for-trustedscript①⑤">4.9.6. Support for dynamic code compilation</a> <a href="#ref-for-trustedscript①⑥">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-trustedscript-tojson">
@@ -4309,7 +4326,7 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
     <li><a href="#ref-for-policies②">2.3. Policies</a>
     <li><a href="#ref-for-policies③">2.4. Enforcement</a>
     <li><a href="#ref-for-policies④">2.4.1. Content Security Policy</a>
-    <li><a href="#ref-for-policies⑤">4.8.2. trusted-types directive</a>
+    <li><a href="#ref-for-policies⑤">4.9.2. trusted-types directive</a>
     <li><a href="#ref-for-policies⑥">5.5. Best practices for policy design</a>
    </ul>
   </aside>
@@ -4388,7 +4405,7 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
     <li><a href="#ref-for-trustedtypepolicy⑨">2.3.3. TrustedTypePolicyOptions</a>
     <li><a href="#ref-for-trustedtypepolicy①⓪">3.1. Create a Trusted Type Policy</a> <a href="#ref-for-trustedtypepolicy①①">(2)</a>
     <li><a href="#ref-for-trustedtypepolicy①②">3.2. Create a Trusted Type</a>
-    <li><a href="#ref-for-trustedtypepolicy①③">4.8.4. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-trustedtypepolicy①③">4.9.4. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="trustedtypepolicy-name">
@@ -4470,9 +4487,9 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
   <aside class="dfn-panel" data-for="default-policy">
    <b><a href="#default-policy">#default-policy</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-default-policy">4.8.1.1. require-trusted-types-for Pre-Navigation check</a>
-    <li><a href="#ref-for-default-policy①">4.8.2. trusted-types directive</a>
-    <li><a href="#ref-for-default-policy②">4.8.6. Support for dynamic code compilation</a>
+    <li><a href="#ref-for-default-policy">4.9.1.1. require-trusted-types-for Pre-Navigation check</a>
+    <li><a href="#ref-for-default-policy①">4.9.2. trusted-types directive</a>
+    <li><a href="#ref-for-default-policy②">4.9.6. Support for dynamic code compilation</a>
     <li><a href="#ref-for-default-policy③">6. Privacy Considerations</a>
     <li><a href="#ref-for-default-policy④">7.1. Vendor-specific Extensions and Addons</a>
    </ul>
@@ -4510,14 +4527,14 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string④">4.3.6. Enforcement in event handler content attributes</a>
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑤">4.3.7. Validate the string in context</a>
     <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑥">4.5. Integration with SVG</a>
-    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑦">4.8.6. Support for dynamic code compilation</a> <a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑧">(2)</a>
+    <li><a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑦">4.9.6. Support for dynamic code compilation</a> <a href="#ref-for-abstract-opdef-get-trusted-type-compliant-string⑧">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="abstract-opdef-process-value-with-a-default-policy">
    <b><a href="#abstract-opdef-process-value-with-a-default-policy">#abstract-opdef-process-value-with-a-default-policy</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-abstract-opdef-process-value-with-a-default-policy">3.3. Get Trusted Type compliant string</a>
-    <li><a href="#ref-for-abstract-opdef-process-value-with-a-default-policy①">4.8.1.1. require-trusted-types-for Pre-Navigation check</a>
+    <li><a href="#ref-for-abstract-opdef-process-value-with-a-default-policy①">4.9.1.1. require-trusted-types-for Pre-Navigation check</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="abstract-opdef-prepare-the-script-url-and-text">
@@ -4658,6 +4675,12 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
     <li><a href="#ref-for-concept-element-attributes-validation-ext">4.6. Integration with DOM</a> <a href="#ref-for-concept-element-attributes-validation-ext①">(2)</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="dom-range-createcontextualfragment">
+   <b><a href="#dom-range-createcontextualfragment">#dom-range-createcontextualfragment</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-range-createcontextualfragment">4.8. Integration with execCommand</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="dom-domparser-parsefromstring">
    <b><a href="#dom-domparser-parsefromstring">#dom-domparser-parsefromstring</a></b><b>Referenced in:</b>
    <ul>
@@ -4668,8 +4691,8 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <b><a href="#require-trusted-types-for-directive">#require-trusted-types-for-directive</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-require-trusted-types-for-directive">2.4.1. Content Security Policy</a>
-    <li><a href="#ref-for-require-trusted-types-for-directive①">4.8.1. require-trusted-types-for directive</a>
-    <li><a href="#ref-for-require-trusted-types-for-directive②">4.8.1.1. require-trusted-types-for Pre-Navigation check</a> <a href="#ref-for-require-trusted-types-for-directive③">(2)</a>
+    <li><a href="#ref-for-require-trusted-types-for-directive①">4.9.1. require-trusted-types-for directive</a>
+    <li><a href="#ref-for-require-trusted-types-for-directive②">4.9.1.1. require-trusted-types-for Pre-Navigation check</a> <a href="#ref-for-require-trusted-types-for-directive③">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="trusted-types-sink-group">
@@ -4679,48 +4702,48 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
     <li><a href="#ref-for-trusted-types-sink-group①">2.1.1. HTML injection sinks</a>
     <li><a href="#ref-for-trusted-types-sink-group②">2.1.2. DOM XSS injection sinks</a>
     <li><a href="#ref-for-trusted-types-sink-group③">3.3. Get Trusted Type compliant string</a>
-    <li><a href="#ref-for-trusted-types-sink-group④">4.8.1. require-trusted-types-for directive</a> <a href="#ref-for-trusted-types-sink-group⑤">(2)</a>
-    <li><a href="#ref-for-trusted-types-sink-group⑥">4.8.3. Should sink type mismatch violation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-trusted-types-sink-group④">4.9.1. require-trusted-types-for directive</a> <a href="#ref-for-trusted-types-sink-group⑤">(2)</a>
+    <li><a href="#ref-for-trusted-types-sink-group⑥">4.9.3. Should sink type mismatch violation be blocked by Content Security Policy?</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="trusted-types-directive">
    <b><a href="#trusted-types-directive">#trusted-types-directive</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-trusted-types-directive">2.3.1. TrustedTypePolicyFactory</a>
-    <li><a href="#ref-for-trusted-types-directive①">4.8.2. trusted-types directive</a>
+    <li><a href="#ref-for-trusted-types-directive①">4.9.2. trusted-types directive</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="serialized-tt-configuration">
    <b><a href="#serialized-tt-configuration">#serialized-tt-configuration</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-serialized-tt-configuration">4.8.2. trusted-types directive</a>
+    <li><a href="#ref-for-serialized-tt-configuration">4.9.2. trusted-types directive</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="tt-expression">
    <b><a href="#tt-expression">#tt-expression</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-tt-expression">4.8.2. trusted-types directive</a> <a href="#ref-for-tt-expression①">(2)</a>
+    <li><a href="#ref-for-tt-expression">4.9.2. trusted-types directive</a> <a href="#ref-for-tt-expression①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="tt-wildcard">
    <b><a href="#tt-wildcard">#tt-wildcard</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-tt-wildcard">4.8.2. trusted-types directive</a>
-    <li><a href="#ref-for-tt-wildcard①">4.8.4. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-tt-wildcard">4.9.2. trusted-types directive</a>
+    <li><a href="#ref-for-tt-wildcard①">4.9.4. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="tt-policy-name">
    <b><a href="#tt-policy-name">#tt-policy-name</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-tt-policy-name">4.8.2. trusted-types directive</a>
-    <li><a href="#ref-for-tt-policy-name①">4.8.4. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
+    <li><a href="#ref-for-tt-policy-name">4.9.2. trusted-types directive</a>
+    <li><a href="#ref-for-tt-policy-name①">4.9.4. Should Trusted Type policy creation be blocked by Content Security Policy?</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="tt-keyword">
    <b><a href="#tt-keyword">#tt-keyword</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-tt-keyword">4.8.2. trusted-types directive</a>
-    <li><a href="#ref-for-tt-keyword①">4.8.4. Should Trusted Type policy creation be blocked by Content Security Policy?</a> <a href="#ref-for-tt-keyword②">(2)</a>
+    <li><a href="#ref-for-tt-keyword">4.9.2. trusted-types directive</a>
+    <li><a href="#ref-for-tt-keyword①">4.9.4. Should Trusted Type policy creation be blocked by Content Security Policy?</a> <a href="#ref-for-tt-keyword②">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="abstract-opdef-should-sink-type-mismatch-violation-be-blocked-by-content-security-policy">

@@ -1690,6 +1690,19 @@ interface DOMParser {
 };
 </pre>
 
+## Integration with execCommand ## {#integration-with-exec-command}
+
+This document modifies the following interfaces defined by the unofficial <a href="https://w3c.github.io/editing/docs/execCommand/">execCommand</a> document:
+
+<pre class="idl exclude">
+partial interface Document {
+    [CEReactions, RaisesException] boolean execCommand(DOMString commandId, optional boolean showUI = false, optional (DOMString or TrustedHTML) value = "");
+};
+</pre>
+
+The implementation of the <a href="https://w3c.github.io/editing/docs/execCommand/#the-inserthtml-command">insertHTML</a> execCommand passes the unmodified value from its third argument
+instance to the  {{Range/createContextualFragment()}} algorithm.
+
 ## Integration with Content Security Policy ## {#integration-with-content-security-policy}
 
 ### <dfn lt="require-trusted-types-for-directive">require-trusted-types-for</dfn> directive ### {#require-trusted-types-for-csp-directive}
