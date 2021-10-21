@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<!--
+/**
+ * @license
+ * Copyright 2017 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the W3C SOFTWARE AND DOCUMENT NOTICE AND LICENSE.
+ *
+ *  https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
+ */
+-->
+<head>
+  <meta http-equiv="Content-Security-Policy" content="trusted-types unsafe escape; require-trusted-types-for 'script'">
+  <script src="../dist/es5/trustedtypes.build.js"></script>
+
+  <style>
+    table {display: block; border-collapse: collapse;}
+    td {border: 1px solid #888; padding: 0.5em;}
+    .result {width: 100px;}
+    .pass {background-color: green;}
+    .fail {background-color: red;}
+    #row {display: none;}
+    iframe {width: 20px; height: 20px;}
+  </style>
+</head>
+<body>
+  <h1>Trusted Types demo</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Test case</th>
+        <th>Name</th>
+        <th>Payload</th>
+        <th>Result</th>
+      </tr>
+    </thead>
+    <tbody id=table>
+      <tr id="row">
+        <td class=id></td>
+        <td class=name></td>
+        <td class=payload></td>
+        <td class=result>&nbsp;</td>
+      </tr>
+    </tbody>
+  </table>
+  <script>
+  var trustedValue;
+
+  (function() {
+    // Create an unsafe policy - it can only be used on a trusted input,
+    // inside of this function.
+    var policy = trustedTypes.createPolicy('unsafe', {
+      'createHTML': function(unsafe) {
+        return unsafe;
+      },
+    });
+    trustedValue = policy.createHTML('<b>trusted input</b>');
+  })();
+
+  // Create escaping policy
+  var escapePolicy = trustedTypes.createPolicy('escape', {
+    'createHTML': function(unsafe) {
+      return unsafe
+           .replace(/&/g, "&amp;")
+           .replace(/</g, "&lt;")
+           .replace(/>/g, "&gt;")
+           .replace(/"/g, "&quot;")
+           .replace(/'/g, "&#039;");
+    },
+  });
+
+  var testNumber = 0;
+
+  function runTest(names, fn, shouldThrow) {
+    try {
+      var row = document.getElementById('row').cloneNode(true);
+      row.id = '';
+      document.getElementById('table').appendChild(row);
+      row.querySelector('.id').innerText = ++testNumber;
+      row.querySelector('.name').innerText = names.join(' ');
+      fn(row.querySelector('.payload'));
+      row.querySelector('.result').className += (shouldThrow ? ' fail' : ' pass');
+    } catch (e) {
+      row.querySelector('.result').className += (!shouldThrow ? ' fail' : ' pass');
+      console.error(names, e);
+    };
+  };
+
+  // Use the escaping policy.
+  var escapedValue = escapePolicy.createHTML('<b>escape me</b>');
+
+  function setHtml(value, el) {
+    el.innerHTML = value;
+  }
+
+  runTest(['innerHTML', 'TrustedHTML (unsafe policy)'], setHtml.bind(this, trustedValue), false);
+  runTest(['innerHTML', 'string'], setHtml.bind(this, 'string'), true);
+  runTest(['innerHTML', 'TrustedHTML (escape policy)'], setHtml.bind(this, escapedValue), false);
+  if ('srcdoc' in HTMLIFrameElement.prototype) {
+    runTest(['iframe.srcdoc', 'string'], function(el) {
+      el.appendChild(document.createElement('iframe')).srcdoc = 'throw';
+    }, true);
+    runTest(['iframe.srcdoc', 'TrustedHTML'], function(el) {
+      el.appendChild(document.createElement('iframe')).srcdoc = trustedValue;
+    }, false);
+    runTest(['iframe.srcdoc', 'setAttribute', 'string'], function(el) {
+      el.appendChild(document.createElement('iframe')).setAttribute('srcdoc', 'throw');
+    }, true);
+    runTest(['iframe.srcdoc', 'setAttribute', 'TrustedHTML'], function(el) {
+      el.appendChild(document.createElement('iframe')).setAttribute('srcdoc', trustedValue);
+    }, false);
+  }
+  runTest(['Range.createContextualFragment', 'string'], function(el) {
+    el.appendChild(
+      document.createRange().createContextualFragment('<b>a</b>'));
+  }, true);
+  runTest(['Range.createContextualFragment', 'TrustedHTML'], function(el) {
+    el.appendChild(
+      document.createRange().createContextualFragment(trustedValue));
+  }, false);
+  runTest(['Element.insertAdjacentHTML', 'string'], function(el) {
+    el.insertAdjacentHTML('afterbegin', '<b>a</b>');
+  }, true);
+  runTest(['Element.insertAdjacentHTML', 'TrustedHTML'], function(el) {
+    el.insertAdjacentHTML('afterbegin', trustedValue);
+  }, false);
+  runTest(['HTMLScriptElement.src', 'TrustedScriptURL'], function(el) {
+    el.appendChild(document.createElement('script')).src = 'data:,';
+  }, true);
+  runTest(['creating policy from outside allowlist'], function(el) {
+    trustedTypes.createPolicy('foo', {});
+  }, true);
+
+  </script>
+</body>
