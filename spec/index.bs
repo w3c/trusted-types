@@ -942,7 +942,7 @@ Given a {{TrustedType}} type |type| and an object |template|, execute the follow
     1.  Let |fragment| be the result of invoking [$fragment parsing algorithm$], with |templatedValue| as <var ignore>markup</var>, and |templateNode| as a <var ignore>context element</var>.
     1.  Set |templatedValue| to be the result of invoking [=HTML fragment serialization algorithm=], with |fragment| as <var ignore>the node</var>.
 
-1. Return a new instace of an interface |type|, with its `[[Data]]` internal slot value set to |templatedValue|.
+1. Return a new instance of an interface |type|, with its `[[Data]]` internal slot value set to |templatedValue|.
 
 ## Check templatedness of an object ## {#check-templatedness-algorithm}
 
