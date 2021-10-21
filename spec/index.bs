@@ -935,9 +935,9 @@ Given a {{TrustedType}} type |type| and an object |template|, execute the follow
 
 1.  If [$check templatedness$] of |template| returns false, throw a {{TypeError}}.
 1.  If [$Get$](|template|, "length") is not equal to 1, throw a {{TypeError}}.
-1.  Let |templatedValue| be the result of [$Get$](|template|, 1), stringified.
+1.  Let |templatedValue| be the result of [$Get$](|template|, 0).
 1.  If |type| is {{TrustedHTML}}, perform the following steps:
-    1.  Let |templateNode| be the results of [=create an element|creating an element=] with "template" as a <var ignore>localName</var>, [=HTML namespace=] as <var ignore>namespace</var>, and current document as <var ignore>document</var>.
+    1.  Let |templateNode| be the results of [=create an element|creating an element=] given "template", the [=HTML namespace=] and [=current global object=]'s [=associated Document=].
     1.  Assert: |templateNode| is {{HTMLTemplateElement}}.
     1.  Let |fragment| be the result of invoking [$fragment parsing algorithm$], with |templatedValue| as <var ignore>markup</var>, and |templateNode| as a <var ignore>context element</var>.
     1.  Set |templatedValue| to be the result of invoking [=HTML fragment serialization algorithm=], with |fragment| as <var ignore>the node</var>.
@@ -948,9 +948,8 @@ Given a {{TrustedType}} type |type| and an object |template|, execute the follow
 
 To <dfn abstract-op>check templatedness</dfn> of an object |value|, perform the following steps. They return a boolean value:
 
-1. If |value| is not a Array exotic object, return false.
 1. Let |realm| be the <a>current Realm Record</a>.
-1. For each |item| of |realm|'s `[[TemplateMap]]` field, if |item|'s `[[Array]]` slot is |value|, return true.
+1. For each |item| of |realm|.\[[TemplateMap]], if |item|.\[[Array]] is |value|, return true.
 1. Return false.
 
 ## <dfn abstract-op>Get Trusted Type compliant string</dfn> ## {#get-trusted-type-compliant-string-algorithm}
