@@ -23,8 +23,8 @@
     "build:esm": "rollup --file build/esm/trustedtypes.module.js --format esm --input src/polyfill/module.js",
     "build:dist-es5": "gulp es5",
     "build:dist-es6": "gulp es6",
-    "spec": "bikeshed spec spec/index.bs dist/spec/index.html",
-    "spec:watch": "bikeshed watch spec/index.bs dist/spec/index.html",
+    "spec": "bikeshed spec spec/index.bs build/index.html",
+    "spec:watch": "bikeshed watch spec/index.bs build/index.html",
     "sizereport": "gulp sizereport",
     "add_build": "git add ./dist/"
   },

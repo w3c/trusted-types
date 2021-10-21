@@ -1,0 +1,23 @@
+name: Generate spec
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'spec/**'
+  pull_request:
+    paths:
+      - 'spec/**'
+
+jobs:
+  generate:
+    name: Generate spec
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: w3c/spec-prod@v2
+        with:
+          TOOLCHAIN: bikeshed
+          SOURCE: spec/index.bs
+          DESTINATION: dist/spec
+          BUILD_FAIL_ON: link-error
+          GH_PAGES_BRANCH: gh-pages # deploy only happens on push trigger.
