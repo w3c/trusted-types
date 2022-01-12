@@ -15,7 +15,7 @@ const {
  * Installs the setter of a given property.
  * @param {!Object} object An object for which to wrap the property.
  * @param {string} name The name of the property to wrap.
- * @param {function(*): *|undefined} setter A setter function}
+ * @param {function(*): void|undefined} setter A setter function}
  */
 export function installSetter(object, name, setter) {
   const descriptor = {
@@ -28,8 +28,8 @@ export function installSetter(object, name, setter) {
  * Installs a setter and getter of a given property.
  * @param {!Object} object An object for which to wrap the property.
  * @param {string} name The name of the property to wrap.
- * @param {function(*): *|undefined} setter A setter function}
- * @param {function(*): *|undefined} getter A getter function}
+ * @param {function(*): void|undefined} setter A setter function}
+ * @param {function(): *|undefined} getter A getter function}
  */
 export function installSetterAndGetter(object, name, setter, getter) {
   const descriptor = {

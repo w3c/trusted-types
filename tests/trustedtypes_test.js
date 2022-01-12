@@ -623,4 +623,52 @@ describe('TrustedTypes', () => {
       expect(eval(TrustedTypes.emptyScript)).toBeTruthy();
     });
   });
+
+  describe('fromLiteral', () => {
+    it('creates a TrustedScript', () => {
+      const script = TrustedTypes.TrustedScript.fromLiteral`alert(1)`;
+
+      expect(TrustedTypes.isScript(script)).toBe(true);
+      expect('' + script).toEqual('alert(1)');
+    });
+
+    it('creates a TrustedScriptURL', () => {
+      const scriptURL = TrustedTypes.TrustedScriptURL.fromLiteral`https://foo.example`;
+
+      expect(TrustedTypes.isScriptURL(scriptURL)).toBe(true);
+      expect('' + scriptURL).toEqual('https://foo.example');
+    });
+
+    it('creates a TrustedHTML', () => {
+      const html = TrustedTypes.TrustedHTML.fromLiteral`<div>foo</div>`;
+
+      expect(TrustedTypes.isHTML(html)).toBe(true);
+      expect('' + html).toEqual('<div>foo</div>');
+    });
+
+    it('canonicalizes TrustedHTML', () => {
+      const html = TrustedTypes.TrustedHTML.fromLiteral`<div>foo`;
+
+      expect(TrustedTypes.isHTML(html)).toBe(true);
+      expect('' + html).toEqual('<div>foo</div>');
+    });
+
+    it('must be called as a template tag', () => {
+      expect(() => {
+        TrustedTypes.TrustedScript.fromLiteral([`alert(1)`]);
+      }).toThrowError(TypeError);
+    });
+
+    it('must not interpolate', () => {
+      expect(() => {
+        TrustedTypes.TrustedScript.fromLiteral`alert(${'1'})`;
+      }).toThrowError(TypeError);
+    });
+
+    it('cannot be overridden', () => {
+      expect(() => {
+        TrustedTypes.TrustedScript.fromLiteral = () => {};
+      }).toThrow();
+    });
+  });
 });

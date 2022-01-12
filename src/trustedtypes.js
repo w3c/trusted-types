@@ -64,10 +64,14 @@ export const trustedTypesBuilderTestOnly = function() {
   // Capture common names early.
   const {
     assign, create, defineProperty, freeze, getOwnPropertyNames,
-    getPrototypeOf, prototype: ObjectPrototype,
+    getPrototypeOf, prototype: ObjectPrototype, isFrozen,
   } = Object;
 
+  const {raw} = String;
+
   const {hasOwnProperty} = ObjectPrototype;
+
+  const createElement = document ? document.createElement.bind(document) : null;
 
   const {
     forEach, push,
@@ -199,6 +203,30 @@ export const trustedTypesBuilderTestOnly = function() {
   }
 
   /**
+   * @template T
+   * @this {T}
+   * @param {!ITemplateArray} template
+   * @return {T}
+   */
+  function fromLiteral(template) {
+    if (!isFrozen(template)
+        || !isFrozen(template.raw)
+        || template.length !== 1) {
+      // Not a template object.
+      throw new TypeError('Invalid input');
+    }
+    let allowedValue = raw(template);
+    if (this === TrustedHTML) {
+      const tplEl = createElement.call(null, 'template');
+      tplEl.innerHTML = allowedValue;
+      allowedValue = tplEl.innerHTML;
+    }
+    const o = freeze((new this(creatorSymbol, 'fromLiteral')));
+    privates(o)['v'] = allowedValue;
+    return o;
+  }
+
+  /**
    * @param {function(new:TrustedType, symbol, string)} SubClass
    * @param {string} canonName The class name which should be independent of
    *     any renaming pass and which is relied upon by the enforcer and for
@@ -207,6 +235,9 @@ export const trustedTypesBuilderTestOnly = function() {
   function lockdownTrustedType(SubClass, canonName) {
     freeze(SubClass.prototype);
     delete SubClass.name;
+    defineProperty(SubClass, 'fromLiteral', {value:
+      fromLiteral.bind(SubClass),
+    });
     defineProperty(SubClass, 'name', {value: canonName});
   }
 
@@ -234,7 +265,7 @@ export const trustedTypesBuilderTestOnly = function() {
   }
   lockdownTrustedType(TrustedScript, 'TrustedScript');
 
-  lockdownTrustedType(TrustedType, 'TrustedType');
+  freeze(TrustedType.prototype);
 
   // Common constants.
   const emptyHTML = freeze(create(new TrustedHTML(creatorSymbol, '')));
@@ -246,7 +277,6 @@ export const trustedTypesBuilderTestOnly = function() {
    * A map of attribute / property names to allowed types
    * for known namespaces.
    * @type {!Object<string,!TrustedTypesTypeMap>}
-   * @export
    */
   const TYPE_MAP = {
     [HTML_NS]: {
@@ -545,7 +575,7 @@ export const trustedTypesBuilderTestOnly = function() {
     const innerPolicy = create(null);
     if (policy && typeof policy === 'object') {
       // Treat non-objects as empty policies.
-      for (const key of getOwnPropertyNames(policy)) {
+      for (const key of getOwnPropertyNames(/** @type {!Object} */ (policy))) {
         if (createFunctionAllowed.call(createTypeMapping, key)) {
           innerPolicy[key] = policy[key];
         }
@@ -649,4 +679,3 @@ export const {
   getDefaultPolicy,
   resetDefaultPolicy,
 } = trustedTypesBuilderTestOnly();
-

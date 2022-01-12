@@ -39,7 +39,7 @@
     "eslint": "^5.16.0",
     "eslint-config-google": "^0.12.0",
     "eslint-plugin-jasmine": "^2.10.1",
-    "google-closure-compiler": "^20190415.0.0",
+    "google-closure-compiler": "^20220104.0.0",
     "gulp": "^4.0.2",
     "gulp-sizereport": "^1.2.1",
     "gulp-sourcemaps": "^2.6.5",
