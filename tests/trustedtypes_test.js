@@ -640,6 +640,13 @@ describe('TrustedTypes', () => {
     });
 
     it('creates a TrustedHTML', () => {
+      const html = TrustedTypes.TrustedHTML.fromLiteral`<div>foo</div>`;
+
+      expect(TrustedTypes.isHTML(html)).toBe(true);
+      expect('' + html).toEqual('<div>foo</div>');
+    });
+
+    it('canonicalizes TrustedHTML', () => {
       const html = TrustedTypes.TrustedHTML.fromLiteral`<div>foo`;
 
       expect(TrustedTypes.isHTML(html)).toBe(true);

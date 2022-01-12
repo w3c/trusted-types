@@ -67,13 +67,11 @@ export const trustedTypesBuilderTestOnly = function() {
     getPrototypeOf, prototype: ObjectPrototype, isFrozen,
   } = Object;
 
-  const { raw } = String;
+  const {raw} = String;
 
   const {hasOwnProperty} = ObjectPrototype;
 
-  const domParser = DOMParser;
-
-  const parseFromString = DOMParser.prototype.parseFromString;
+  const createElement = document ? document.createElement.bind(document) : null;
 
   const {
     forEach, push,
@@ -219,9 +217,9 @@ export const trustedTypesBuilderTestOnly = function() {
     }
     let allowedValue = raw(template);
     if (this === TrustedHTML) {
-      const parser = new domParser();
-      const node = parseFromString.call(parser, allowedValue, 'text/html');
-      console.log(node.innerHTML);
+      const tplEl = createElement.call(null, 'template');
+      tplEl.innerHTML = allowedValue;
+      allowedValue = tplEl.innerHTML;
     }
     const o = freeze((new this(creatorSymbol, 'fromLiteral')));
     privates(o)['v'] = allowedValue;
