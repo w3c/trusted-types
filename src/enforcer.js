@@ -120,7 +120,7 @@ export class TrustedTypesEnforcer {
      */
     this.config_ = config;
     /**
-     * @private {Object<string, function(*): *|undefined>}
+     * @private {Object<string, function(*): void|undefined>}
      */
     this.originalSetters_ = {};
     /**
@@ -692,7 +692,7 @@ export class TrustedTypesEnforcer {
    */
   wrapFunction_(object, name, functionBody) {
     const descriptor = getOwnPropertyDescriptor(object, name);
-    const originalFn = /** @type function(*):* */ (
+    const originalFn = /** @type function(*):void */ (
       descriptor ? descriptor.value : null);
 
     if (!(originalFn instanceof Function)) {
@@ -740,7 +740,7 @@ export class TrustedTypesEnforcer {
 
     do {
       descriptor = getOwnPropertyDescriptor(useObject, name);
-      originalSetter = /** @type {function(*):*} */ (descriptor ?
+      originalSetter = /** @type {function(*):void} */ (descriptor ?
           descriptor.set : null);
       if (!originalSetter) {
         useObject = getPrototypeOf(useObject) || stopAt;

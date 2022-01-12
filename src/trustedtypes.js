@@ -246,7 +246,6 @@ export const trustedTypesBuilderTestOnly = function() {
    * A map of attribute / property names to allowed types
    * for known namespaces.
    * @type {!Object<string,!TrustedTypesTypeMap>}
-   * @export
    */
   const TYPE_MAP = {
     [HTML_NS]: {
@@ -545,7 +544,7 @@ export const trustedTypesBuilderTestOnly = function() {
     const innerPolicy = create(null);
     if (policy && typeof policy === 'object') {
       // Treat non-objects as empty policies.
-      for (const key of getOwnPropertyNames(policy)) {
+      for (const key of getOwnPropertyNames(/** @type {!Object} */ (policy))) {
         if (createFunctionAllowed.call(createTypeMapping, key)) {
           innerPolicy[key] = policy[key];
         }
