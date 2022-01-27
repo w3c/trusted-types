@@ -52,7 +52,7 @@ $ npm install trusted-types
 The polyfill supports both CommonJS and ES Modules.
 
 ```javascript
-const tt = require('trusted-types'); // or import {tt} from 'trusted-types'
+const tt = require('trusted-types'); // or import tt from 'trusted-types'
 tt.createPolicy(...);
 ```
 
