@@ -1943,12 +1943,9 @@ The Trusted Types portion of this algorithm uses |calleeRealm| and its CSP setti
   // Realm's default policy.
   new self.top.Function('alert(1)')()
 </pre>
-This is subtly different from the CSP directive enforcement portion which rejects if either
-the |calleeRealm| or |callerRealm|'s Content-Security-Policy rejects string compilation.
 </div>
 
-Given two [[ECMASCRIPT#realm|realms]] (|callerRealm| and
-|calleeRealm|), a string
+Given a [[ECMASCRIPT#realm|realms]] (|calleeRealm|), a string
 (|source|) <ins>, a boolean |wasCodeLike| and a string |compilationSink|</ins>, this algorithm returns <del>normally</del><ins>the
 source string to compile</ins> if compilation is allowed, and
 throws an "`EvalError`" if not:
@@ -1967,44 +1964,41 @@ throws an "`EvalError`" if not:
 
 2.  <ins>If the algorithm throws an error, throw an {{EvalError}}.</ins>
 
-3.  Let |globals| be a list containing |callerRealm|'s [=Realm/global object=] and |calleeRealm|'s
-    [=Realm/global object=].
+3.  Let |global| be a |calleeRealm|'s [=Realm/global object=].
 
-4.  For each |global| in |globals|:
+4.  Let |result| be "`Allowed`".
 
-    1.  Let |result| be "`Allowed`".
+5.  For each |policy| in |global|'s <a for="global object" spec="CSP3">CSP list</a>:
 
-    2.  For each |policy| in |global|'s <a for="global object" spec="CSP3">CSP list</a>:
+    1.  Let |source-list| be `null`.
 
-        1.  Let |source-list| be `null`.
+    2.  If |policy| contains a [=directive=] whose [=directive/name=] is "`script-src`", then
+        set |source-list| to that [=directive=]'s [=directive/value=].
 
-        2.  If |policy| contains a [=directive=] whose [=directive/name=] is "`script-src`", then
-            set |source-list| to that [=directive=]'s [=directive/value=].
+        Otherwise if |policy| contains a [=directive=] whose [=directive/name=] is
+        "`default-src`", then set |source-list| to that directive's [=directive/value=].
 
-            Otherwise if |policy| contains a [=directive=] whose [=directive/name=] is
-            "`default-src`", then set |source-list| to that directive's [=directive/value=].
+    3.  If |source-list| is not `null`, and does not contain a [=source expression=] which is
+        an [=ASCII case-insensitive=] match for the string "<a grammar>`'unsafe-eval'`</a>" then:
 
-        3.  If |source-list| is not `null`, and does not contain a [=source expression=] which is
-            an [=ASCII case-insensitive=] match for the string "<a grammar>`'unsafe-eval'`</a>" then:
+        1.  Let |violation| be the result of executing [[CSP3#create-violation-for-global]] on
+            |global|, |policy|, and "`script-src`".
 
-            1.  Let |violation| be the result of executing [[CSP3#create-violation-for-global]] on
-                |global|, |policy|, and "`script-src`".
+        2.  Set |violation|'s [=violation/resource=] to "`inline`".
 
-            2.  Set |violation|'s [=violation/resource=] to "`inline`".
+        3.  If |source-list| [=list/contains=] the expression
+            "<a grammar>`'report-sample'`</a>", then set |violation|'s [=violation/sample=] to
+            the substring of <del>|source|</del> <ins>|sourceString|</ins> containing its first
+            40 characters.
 
-            3.  If |source-list| [=list/contains=] the expression
-                "<a grammar>`'report-sample'`</a>", then set |violation|'s [=violation/sample=] to
-                the substring of <del>|source|</del> <ins>|sourceString|</ins> containing its first
-                40 characters.
+        4.  Execute [[CSP3#report-violation]] on |violation|.
 
-            4.  Execute [[CSP3#report-violation]] on |violation|.
+        5.  If |policy|'s [=policy/disposition=] is "`enforce`", then set |result| to
+            "`Blocked`".
 
-            5.  If |policy|'s [=policy/disposition=] is "`enforce`", then set |result| to
-                "`Blocked`".
+6.  If |result| is "`Blocked`", throw an `EvalError` exception.
 
-    3.  If |result| is "`Blocked`", throw an `EvalError` exception.
-
-6. <ins>Return |sourceString|.</ins>
+7. <ins>Return |sourceString|.</ins>
 
 Note: returning |sourceString| means that the string that gets
 compiled is that returned by any [=default policy=] in the course of
