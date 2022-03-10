@@ -629,7 +629,7 @@ initially empty.
 
     <div class="example" id="get-attribute-type-example">
     <xmp highlight="js">
-    trustedTypes.getAttributeType('script', 'SRC'); // "TrustedScriptURL"
+    trustedTypes.getAttributeType('script', 'src'); // "TrustedScriptURL"
     trustedTypes.getAttributeType('foo', 'bar'); // null
     </xmp>
     </div>
@@ -773,8 +773,8 @@ callback CreateScriptURLCallback = USVString (DOMString input, any... arguments)
 One of the policies, the policy with a [=TrustedTypePolicy/name=] `"default"`, is special;
 When an [=injection sink=] is passed a string (instead of a
 Trusted Type object), this policy will be implicitly called by
-the user agent with the string value as the first argument, and the sink name
-as a second argument.
+the user agent with the non trusted string value, Trusted Type of the sink and
+the sink type, respectively.
 
 This allows the application to define a fallback behavior to use instead of
 causing a violation. The intention is to allow the applications to recover from
@@ -807,9 +807,9 @@ the default policy is applied.
 // Content-Security-Policy: trusted-types default; require-trusted-types-for 'script'
 
 trustedTypes.createPolicy('default', {
-  createScriptURL: (s, type, sink) => {
+  createScriptURL: (value, type, sink) => {
     console.log("Please refactor.");
-    return s + '?default-policy-used&type=' + encodeURIComponent(type) +
+    return value + '?default-policy-used&type=' + encodeURIComponent(type) +
           '&sink=' + encodeURIComponent(sink);
   }
 });
