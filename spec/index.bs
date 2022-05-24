@@ -11,7 +11,7 @@ Level: none
 Status: ED
 URL: https://w3c.github.io/webappsec-trusted-types/dist/spec/
 Editor: Krzysztof Kotowicz, Google LLC https://google.com, koto@google.com
-Editor: Mike West, Google LLC https://google.com, mkwst@google.com
+Former Editor: Mike West, Google LLC https://google.com, mkwst@google.com
 Repository: w3c/webappsec-trusted-types
 Abstract: An API that allows applications to lock down powerful APIs to only accept non-spoofable, typed values in place of strings to prevent vulnerabilities caused by using these APIs with attacker-controlled inputs.
 Markup Shorthands: algorithm yes, biblio yes, css no, dfn yes, markdown yes, markup yes
