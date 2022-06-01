@@ -3,10 +3,12 @@
   <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <title>Trusted Types</title>
+  <meta content="ED" name="w3c-status">
   <link href="https://www.w3.org/StyleSheets/TR/2021/W3C-ED" rel="stylesheet">
-  <meta content="Bikeshed version dfbc2b297, updated Thu Nov 11 15:52:32 2021 -0800" name="generator">
+  <link href="https://www.w3.org/2008/site/images/favicon.ico" rel="icon">
+  <meta content="Bikeshed version 37b7e7e68, updated Fri May 27 15:08:11 2022 -0700" name="generator">
   <link href="https://w3c.github.io/webappsec-trusted-types/dist/spec/" rel="canonical">
-  <meta content="49af1553a61df0af914380c9485d404ea5598bd6" name="document-revision">
+  <meta content="5924016a77542b527db6bf8b82bca73397f4e547" name="document-revision">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -633,9 +635,9 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Trusted Types</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2021-11-17">17 November 2021</time></p>
-   <details>
-    <summary>Specification Metadata</summary>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2022-06-01">1 June 2022</time></p>
+   <details open>
+    <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
      <dl>
       <dt>This version:
@@ -652,14 +654,14 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
     </div>
    </details>
    <div data-fill-with="warning"></div>
-   <p class="copyright" data-fill-with="copyright"><a href="https://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> © 2021 <a href="https://www.w3.org/"><abbr title="World Wide Web Consortium">W3C</abbr></a><sup>®</sup> (<a href="https://www.csail.mit.edu/"><abbr title="Massachusetts Institute of Technology">MIT</abbr></a>, <a href="https://www.ercim.eu/"><abbr title="European Research Consortium for Informatics and Mathematics">ERCIM</abbr></a>, <a href="https://www.keio.ac.jp/">Keio</a>, <a href="https://ev.buaa.edu.cn/">Beihang</a>). W3C <a href="https://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="https://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a> and <a href="https://www.w3.org/Consortium/Legal/copyright-software">permissive document license</a> rules apply. </p>
+   <p class="copyright" data-fill-with="copyright"><a href="https://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> © 2022 <a href="https://www.w3.org/"><abbr title="World Wide Web Consortium">W3C</abbr></a><sup>®</sup> (<a href="https://www.csail.mit.edu/"><abbr title="Massachusetts Institute of Technology">MIT</abbr></a>, <a href="https://www.ercim.eu/"><abbr title="European Research Consortium for Informatics and Mathematics">ERCIM</abbr></a>, <a href="https://www.keio.ac.jp/">Keio</a>, <a href="https://ev.buaa.edu.cn/">Beihang</a>). W3C <a href="https://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="https://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a> and <a href="https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document" rel="license">permissive document license</a> rules apply. </p>
    <hr title="Separator for header">
   </div>
   <div class="p-summary" data-fill-with="abstract">
    <h2 class="no-num no-toc no-ref heading settled" id="abstract"><span class="content">Abstract</span></h2>
    <p>An API that allows applications to lock down powerful APIs to only accept non-spoofable, typed values in place of strings to prevent vulnerabilities caused by using these APIs with attacker-controlled inputs.</p>
   </div>
-  <h2 class="no-num no-toc no-ref heading settled" id="status"><span class="content">Status of this document</span></h2>
+  <h2 class="no-num no-toc no-ref heading settled" id="sotd"><span class="content">Status of this document</span></h2>
   <div data-fill-with="status">
    <p> This is a public copy of the editors’ draft.
 	It is provided for discussion only and may change at any moment.
@@ -798,10 +800,10 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
       <li><a href="#vendor-specific-extensions-and-addons"><span class="secno">7.1</span> <span class="content">Vendor-specific Extensions and Addons</span></a>
      </ol>
     <li>
-     <a href="#conformance"><span class="secno"></span> <span class="content">Conformance</span></a>
+     <a href="#w3c-conformance"><span class="secno"></span> <span class="content">Conformance</span></a>
      <ol class="toc">
-      <li><a href="#conventions"><span class="secno"></span> <span class="content">Document conventions</span></a>
-      <li><a href="#conformant-algorithms"><span class="secno"></span> <span class="content">Conformant Algorithms</span></a>
+      <li><a href="#w3c-conventions"><span class="secno"></span> <span class="content">Document conventions</span></a>
+      <li><a href="#w3c-conformant-algorithms"><span class="secno"></span> <span class="content">Conformant Algorithms</span></a>
      </ol>
     <li>
      <a href="#index"><span class="secno"></span> <span class="content">Index</span></a>
@@ -1239,11 +1241,11 @@ codebase.</p>
 a given host. 
 <pre class="highlight"><c- a>const</c-> cdnScriptsPolicy <c- o>=</c-> trustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- t>'cdn-scripts'</c-><c- p>,</c-> <c- p>{</c->
   createScriptURL<c- p>(</c->url<c- p>)</c-> <c- p>{</c->
-    <c- a>const</c-> parsed <c- o>=</c-> <c- k>new</c-> URL<c- p>(</c->url<c- p>,</c-> document<c- p>.</c->baseURI<c- p>);</c->
+    <c- a>const</c-> parsed <c- o>=</c-> <c- ow>new</c-> URL<c- p>(</c->url<c- p>,</c-> document<c- p>.</c->baseURI<c- p>);</c->
     <c- k>if</c-> <c- p>(</c->parsed<c- p>.</c->origin <c- o>==</c-> <c- t>'https://mycdn.example'</c-><c- p>)</c-> <c- p>{</c->
       <c- k>return</c-> url<c- p>;</c->
     <c- p>}</c->
-    <c- k>throw</c-> <c- k>new</c-> TypeError<c- p>(</c-><c- t>'invalid URL'</c-><c- p>);</c->
+    <c- k>throw</c-> <c- ow>new</c-> <c- ne>TypeError</c-><c- p>(</c-><c- t>'invalid URL'</c-><c- p>);</c->
   <c- p>},</c->
 <c- p>});</c->
 
@@ -1385,11 +1387,11 @@ with the following arguments:</p>
   <c- c1>// a flaw in this code could cause DOM XSS.</c->
   createHTML<c- p>(</c->input<c- p>)</c-> <c- p>{</c-> <c- k>return</c-> aSanitizer<c- p>.</c->sanitize<c- p>(</c->input<c- p>)</c-> <c- p>},</c->
   createScriptURL<c- p>(</c->input<c- p>)</c-> <c- p>{</c->
-    <c- a>const</c-> u <c- o>=</c-> <c- k>new</c-> URL<c- p>(</c->dirty<c- p>,</c-> document<c- p>.</c->baseURI<c- p>);</c->
+    <c- a>const</c-> u <c- o>=</c-> <c- ow>new</c-> URL<c- p>(</c->dirty<c- p>,</c-> document<c- p>.</c->baseURI<c- p>);</c->
     <c- k>if</c-> <c- p>(</c->APPLICATION_CONFIG<c- p>.</c->scriptOrigins<c- p>.</c->includes<c- p>(</c->u<c- p>.</c->origin<c- p>))</c-> <c- p>{</c->
       <c- k>return</c-> u<c- p>.</c->href<c- p>;</c->
     <c- p>}</c->
-    <c- k>throw</c-> <c- k>new</c-> Error<c- p>(</c-><c- t>'Cannot load scripts from this origin'</c-><c- p>);</c->
+    <c- k>throw</c-> <c- ow>new</c-> <c- ne>Error</c-><c- p>(</c-><c- t>'Cannot load scripts from this origin'</c-><c- p>);</c->
   <c- p>},</c->
 <c- p>});</c->
 
@@ -1559,7 +1561,7 @@ stringified <code class="idl"><a data-link-type="idl" href="#StringContext" id="
       </ol>
       <div class="example" id="get-attribute-type-example">
        <a class="self-link" href="#get-attribute-type-example"></a> 
-<pre class="highlight">trustedTypes<c- p>.</c->getAttributeType<c- p>(</c-><c- t>'script'</c-><c- p>,</c-> <c- t>'SRC'</c-><c- p>);</c-> <c- c1>// "TrustedScriptURL"</c->
+<pre class="highlight">trustedTypes<c- p>.</c->getAttributeType<c- p>(</c-><c- t>'script'</c-><c- p>,</c-> <c- t>'src'</c-><c- p>);</c-> <c- c1>// "TrustedScriptURL"</c->
 trustedTypes<c- p>.</c->getAttributeType<c- p>(</c-><c- t>'foo'</c-><c- p>,</c-> <c- t>'bar'</c-><c- p>);</c-> <c- c1>// null</c->
 </pre>
       </div>
@@ -1821,8 +1823,8 @@ values into trusted values. These functions do not create <a data-link-type="dfn
    <p>One of the policies, the policy with a <a data-link-type="dfn" href="#trustedtypepolicy-name" id="ref-for-trustedtypepolicy-name">name</a> <code>"default"</code>, is special;
 When an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink①③">injection sink</a> is passed a string (instead of a
 Trusted Type object), this policy will be implicitly called by
-the user agent with the string value as the first argument, and the sink name
-as a second argument.</p>
+the user agent with the non trusted string value, Trusted Type of the sink and
+the sink type, respectively.</p>
    <p>This allows the application to define a fallback behavior to use instead of
 causing a violation. The intention is to allow the applications to recover from
 an unexpected data flow, and sanitize the
@@ -1849,9 +1851,9 @@ the default policy is applied.</p>
 <pre class="highlight"><c- c1>// Content-Security-Policy: trusted-types default; require-trusted-types-for 'script'</c->
 
 trustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- t>'default'</c-><c- p>,</c-> <c- p>{</c->
-  createScriptURL<c- o>:</c-> <c- p>(</c->s<c- p>,</c-> type<c- p>,</c-> sink<c- p>)</c-> <c- p>=></c-> <c- p>{</c->
+  createScriptURL<c- o>:</c-> <c- p>(</c->value<c- p>,</c-> type<c- p>,</c-> sink<c- p>)</c-> <c- p>=></c-> <c- p>{</c->
     console<c- p>.</c->log<c- p>(</c-><c- u>"Please refactor."</c-><c- p>);</c->
-    <c- k>return</c-> s <c- o>+</c-> <c- t>'?default-policy-used&amp;type='</c-> <c- o>+</c-> encodeURIComponent<c- p>(</c->type<c- p>)</c-> <c- o>+</c->
+    <c- k>return</c-> value <c- o>+</c-> <c- t>'?default-policy-used&amp;type='</c-> <c- o>+</c-> encodeURIComponent<c- p>(</c->type<c- p>)</c-> <c- o>+</c->
           <c- t>'&amp;sink='</c-> <c- o>+</c-> encodeURIComponent<c- p>(</c->sink<c- p>);</c->
   <c- p>}</c->
 <c- p>});</c->
@@ -2219,299 +2221,56 @@ as in their original counterparts, apart from additional behavior triggered by t
    <p>On setting, the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/dom.html#dom-innertext" id="ref-for-dom-innertext①">innerText</a></code>, <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#dom-node-textcontent" id="ref-for-dom-node-textcontent①">textContent</a></code> and <code class="idl"><a data-link-type="idl" href="#dom-htmlscriptelement-text" id="ref-for-dom-htmlscriptelement-text①">text</a></code> IDL attributes perform the regular steps, and then set <code class="idl"><a data-link-type="idl" href="#dom-htmlscriptelement-scripttext-slot" id="ref-for-dom-htmlscriptelement-scripttext-slot②">[[ScriptText]]</a></code> internal slot value with the stringified value.</p>
    <p>On setting, the <code class="idl"><a data-link-type="idl" href="#dom-htmlscriptelement-src" id="ref-for-dom-htmlscriptelement-src②">src</a></code> IDL attribute performs the usual steps, and then sets <code class="idl"><a data-link-type="idl" href="#dom-htmlscriptelement-scripturl-slot" id="ref-for-dom-htmlscriptelement-scripturl-slot④">[[ScriptURL]]</a></code> internal slot value to its <code><a data-link-type="element-sub" href="https://html.spec.whatwg.org/multipage/scripting.html#attr-script-src" id="ref-for-attr-script-src③">src</a></code> content attribute value.</p>
    <h5 class="heading settled" data-level="4.3.3.3" id="slot-value-verification"><span class="secno">4.3.3.3. </span><span class="content">Slot value verification</span><a class="self-link" href="#slot-value-verification"></a></h5>
-   <p>The <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/scripting.html#prepare-a-script" id="ref-for-prepare-a-script">prepare a script</a> algorithm is modified as follows:</p>
+   <p>The first few steps of the <a data-link-type="dfn" href="https://html.spec.whatwg.org/#prepare-the-script-element" id="ref-for-prepare-the-script-element">prepare the script element</a> algorithm are modified as follows:</p>
    <ol>
     <li>
-     <p>If the <code id="script-processing-model:the-script-element-18"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element is marked as having <a href="https://html.spec.whatwg.org/#already-started" id="script-processing-model:already-started">"already started"</a>, then
-    return. The script is not executed.</p>
+     <p>If <var>el</var>’s <a href="https://html.spec.whatwg.org/#already-started" id="script-processing-model:already-started-3">already started</a> is true, then return. </p>
     <li>
-     <p>If the element has its <a href="https://html.spec.whatwg.org/#parser-inserted" id="script-processing-model:parser-inserted-3">"parser-inserted"</a> flag set, then set <var>was-parser-inserted</var> to true and unset the element’s <a href="https://html.spec.whatwg.org/#parser-inserted" id="script-processing-model:parser-inserted-4">"parser-inserted"</a> flag. Otherwise, set <var>was-parser-inserted</var> to
-    false.</p>
-     <p class="note" role="note">This is done so that if parser-inserted <code id="script-processing-model:the-script-element-19"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> elements fail to run
+     <p>Let <var>parser document</var> be <var>el</var>’s <a href="https://html.spec.whatwg.org/#parser-document" id="script-processing-model:parser-document-2">parser document</a>. </p>
+    <li>
+     <p>Set <var>el</var>’s <a href="https://html.spec.whatwg.org/#parser-document" id="script-processing-model:parser-document-3">parser document</a> to null.</p>
+     <p class="note" role="note">This is done so that if parser-inserted <code id="script-processing-model:the-script-element-27"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> elements fail to run
     when the parser tries to run them, e.g. because they are empty or specify an unsupported
     scripting language, another script can later mutate them and cause them to run again.</p>
     <li>
-     <p>If <var>was-parser-inserted</var> is true and the element does not have an <code id="script-processing-model:attr-script-async-2"><a href="https://html.spec.whatwg.org/#attr-script-async">async</a></code> attribute, then set the element’s <a href="https://html.spec.whatwg.org/#non-blocking" id="script-processing-model:non-blocking-3">"non-blocking"</a> flag to true.</p>
-     <p class="note" role="note">This is done so that if a parser-inserted <code id="script-processing-model:the-script-element-20"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element fails to
-    run when the parser tries to run it, but it is later executed after a script dynamically updates
-    it, it will execute in a non-blocking fashion even if the <code id="script-processing-model:attr-script-async-3"><a href="https://html.spec.whatwg.org/#attr-script-async">async</a></code> attribute isn’t set.</p>
-    <li>
-     <ins>Execute the <a data-link-type="abstract-op" href="#abstract-opdef-prepare-the-script-url-and-text" id="ref-for-abstract-opdef-prepare-the-script-url-and-text">Prepare the script URL and text</a> algorithm upon the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement" id="ref-for-htmlscriptelement⑤">HTMLScriptElement</a></code>. If that algorithm threw an error, then return. The script is not executed. </ins>
-    <li>
-     <p>
-      Let <var>source text</var> be the element’s 
-      <del><a data-x-internal="child-text-content" href="https://dom.spec.whatwg.org/#concept-child-text-content" id="script-processing-model:child-text-content">child text content</a></del>
-      <ins><code>[[ScriptText]]</code> internal slot value</ins>
-      .
-     </p>
+     <p>If <var>parser document</var> is non-null and <var>el</var> does not have an <code id="script-processing-model:attr-script-async-4"><a href="https://html.spec.whatwg.org/#attr-script-async">async</a></code> attribute, then set <var>el</var>’s <a href="https://html.spec.whatwg.org/#script-force-async" id="script-processing-model:script-force-async-2">force async</a> to true.</p>
+     <p class="note" role="note">This is done so that if a parser-inserted <code id="script-processing-model:the-script-element-28"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element fails to
+    run when the parser tries to run it, but it is later executed after a script dynamically
+    updates it, it will execute in an async fashion even if the <code id="script-processing-model:attr-script-async-5"><a href="https://html.spec.whatwg.org/#attr-script-async">async</a></code> attribute isn’t set.</p>
     <li>
      <ins>
-      <p>Let <var>src</var> be the element’s <code>[[ScriptURL]]</code> internal slot value.</p>
+      <p>Execute the <a data-link-type="abstract-op" href="#abstract-opdef-prepare-the-script-url-and-text" id="ref-for-abstract-opdef-prepare-the-script-url-and-text">Prepare the script URL and text</a> algorithm on <var>el</var>. If that algorithm threw an error, then return.</p>
      </ins>
-    <li id="script-processing-empty">
-     <a class="self-link" href="#script-processing-empty"></a> 
+    <li>
      <p>
-      If 
-      <del>the element has no <code id="script-processing-model:attr-script-src-3"><a href="https://html.spec.whatwg.org/#attr-script-src">src</a></code> attribute</del>
-      <ins><var>src</var> is null</ins>
-      , and <var>source
-    text</var> is the empty string, then return. The script is not executed.
+      Let <var>source text</var> be <var>el</var>’s 
+      <del><a data-x-internal="child-text-content" href="https://dom.spec.whatwg.org/#concept-child-text-content" id="script-processing-model:child-text-content">child text content</a>.</del>
+      <ins><code>[[ScriptText]]</code> internal slot value.</ins>
      </p>
-    <li>
-     <p>If the element is not <a data-x-internal="connected" href="https://dom.spec.whatwg.org/#connected" id="script-processing-model:connected-3">connected</a>, then return. The script is not
-   executed.</p>
-    <li id="script-processing-prepare">
-     <a class="self-link" href="#script-processing-prepare"></a> 
-     <p>If either:</p>
-     <ul class="brief">
-      <li>the <code id="script-processing-model:the-script-element-21"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element has a <code id="script-processing-model:attr-script-type-2"><a href="https://html.spec.whatwg.org/#attr-script-type">type</a></code> attribute
-     and its value is the empty string, or
-      <li>the <code id="script-processing-model:the-script-element-22"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element has no <code id="script-processing-model:attr-script-type-3"><a href="https://html.spec.whatwg.org/#attr-script-type">type</a></code> attribute
-     but it has a <code id="script-processing-model:attr-script-language"><a href="https://html.spec.whatwg.org/#attr-script-language">language</a></code> attribute and <em>that</em> attribute’s value is the empty string, or
-      <li>the <code id="script-processing-model:the-script-element-23"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element has neither a <code id="script-processing-model:attr-script-type-4"><a href="https://html.spec.whatwg.org/#attr-script-type">type</a></code> attribute nor a <code id="script-processing-model:attr-script-language-2"><a href="https://html.spec.whatwg.org/#attr-script-language">language</a></code> attribute, then
-     </ul>
-     <p>...let <var>the script block’s type string</var> for this <code id="script-processing-model:the-script-element-24"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element be
-    "<code>text/javascript</code>".</p>
-     <p>Otherwise, if the <code id="script-processing-model:the-script-element-25"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element has a <code id="script-processing-model:attr-script-type-5"><a href="https://html.spec.whatwg.org/#attr-script-type">type</a></code> attribute, let <var>the script block’s type string</var> for this <code id="script-processing-model:the-script-element-26"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element be the value of that attribute with <a data-x-internal="strip-leading-and-trailing-ascii-whitespace" href="https://infra.spec.whatwg.org/#strip-leading-and-trailing-ascii-whitespace" id="script-processing-model:strip-leading-and-trailing-ascii-whitespace">leading and trailing ASCII whitespace
-    stripped</a>.</p>
-     <p>Otherwise, the element has a non-empty <code id="script-processing-model:attr-script-language-3"><a href="https://html.spec.whatwg.org/#attr-script-language">language</a></code> attribute; let <var>the script block’s type string</var> for this <code id="script-processing-model:the-script-element-27"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element
-    be the concatenation of the string "<code>text/</code>" followed by the value of the <code id="script-processing-model:attr-script-language-4"><a href="https://html.spec.whatwg.org/#attr-script-language">language</a></code> attribute.</p>
-     <p class="note" role="note">The <code id="script-processing-model:attr-script-language-5"><a href="https://html.spec.whatwg.org/#attr-script-language">language</a></code> attribute is never
-    conforming, and is always ignored if there is a <code id="script-processing-model:attr-script-type-6"><a href="https://html.spec.whatwg.org/#attr-script-type">type</a></code> attribute present.</p>
-     <p>Determine <a href="https://html.spec.whatwg.org/#concept-script-type" id="script-processing-model:concept-script-type">the script’s type</a> as follows:</p>
-     <ul>
-      <li>If <var>the script block’s type string</var> is a <a data-x-internal="javascript-mime-type-essence-match" href="https://mimesniff.spec.whatwg.org/#javascript-mime-type-essence-match" id="script-processing-model:javascript-mime-type-essence-match">JavaScript MIME type essence
-     match</a>, <a href="https://html.spec.whatwg.org/#concept-script-type" id="script-processing-model:concept-script-type-2">the script’s type</a> is "<code>classic</code>".
-      <li>If <var>the script block’s type string</var> is an <a data-x-internal="ascii-case-insensitive" href="https://infra.spec.whatwg.org/#ascii-case-insensitive" id="script-processing-model:ascii-case-insensitive">ASCII case-insensitive</a> match for the string "<code>module</code>", <a href="https://html.spec.whatwg.org/#concept-script-type" id="script-processing-model:concept-script-type-3">the
-     script’s type</a> is "<code>module</code>".
-      <li>If neither of the above conditions are true, then return. No script is executed.
-     </ul>
-    <li>
-     <p>If <var>was-parser-inserted</var> is true, then flag the element as <a href="https://html.spec.whatwg.org/#parser-inserted" id="script-processing-model:parser-inserted-5">"parser-inserted"</a> again, and set the element’s <a href="https://html.spec.whatwg.org/#non-blocking" id="script-processing-model:non-blocking-4">"non-blocking"</a> flag to
-    false.</p>
-    <li id="script-processing-start">
-     <a class="self-link" href="#script-processing-start"></a> 
-     <p>Set the element’s <a href="https://html.spec.whatwg.org/#already-started" id="script-processing-model:already-started-2">"already started"</a> flag.</p>
-    <li>
-     <p>If the element is flagged as <a href="https://html.spec.whatwg.org/#parser-inserted" id="script-processing-model:parser-inserted-6">"parser-inserted"</a>, but the element’s <a data-x-internal="node-document" href="https://dom.spec.whatwg.org/#concept-node-document" id="script-processing-model:node-document-2">node document</a> is not the <code id="script-processing-model:document"><a href="https://html.spec.whatwg.org/#document">Document</a></code> of the parser that created the
-    element, then return.</p>
-    <li id="script-processing-noscript">
-     <a class="self-link" href="#script-processing-noscript"></a> 
-     <p>If <a href="https://html.spec.whatwg.org/#concept-n-noscript" id="script-processing-model:concept-n-noscript">scripting is disabled</a> for the <code id="script-processing-model:the-script-element-28"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element, then return. The script is not executed.</p>
-     <p class="note" role="note">The definition of <a href="https://html.spec.whatwg.org/#concept-n-noscript" id="script-processing-model:concept-n-noscript-2">scripting is disabled</a> means that, amongst others, the following scripts will not execute: scripts in <code id="script-processing-model:xmlhttprequest"><a data-x-internal="xmlhttprequest" href="https://xhr.spec.whatwg.org/#xmlhttprequest">XMLHttpRequest</a></code>’s <code id="script-processing-model:dom-xmlhttprequest-responsexml"><a data-x-internal="dom-xmlhttprequest-responsexml" href="https://xhr.spec.whatwg.org/#dom-xmlhttprequest-responsexml">responseXML</a></code> documents, scripts in <code id="script-processing-model:domparser"><a data-x-internal="domparser" href="https://w3c.github.io/DOM-Parsing/#the-domparser-interface">DOMParser</a></code>-created documents, scripts in documents created by <code id="script-processing-model:xsltprocessor"><a href="https://html.spec.whatwg.org/#xsltprocessor">XSLTProcessor</a></code>’s <code id="script-processing-model:dom-xsltprocessor-transformtodocument"><a href="https://html.spec.whatwg.org/#dom-xsltprocessor-transformtodocument">transformToDocument</a></code> feature, and scripts
-    that are first inserted by a script into a <code id="script-processing-model:document-2"><a href="https://html.spec.whatwg.org/#document">Document</a></code> that was created using the <code id="script-processing-model:dom-domimplementation-createdocument"><a data-x-internal="dom-domimplementation-createdocument" href="https://dom.spec.whatwg.org/#dom-domimplementation-createdocument">createDocument()</a></code> API. <a href="https://html.spec.whatwg.org/#refsXHR">\[XHR\]</a> <a href="https://html.spec.whatwg.org/#refsDOMPARSING">\[DOMPARSING\]</a> <a href="https://html.spec.whatwg.org/#refsXSLTP">\[XSLTP\]</a> <a href="https://html.spec.whatwg.org/#refsDOM">\[DOM\]</a></p>
-    <li>
-     <p>If the <code id="script-processing-model:the-script-element-29"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element has a <code id="script-processing-model:attr-script-nomodule"><a href="https://html.spec.whatwg.org/#attr-script-nomodule">nomodule</a></code> content attribute and <a href="https://html.spec.whatwg.org/#concept-script-type" id="script-processing-model:concept-script-type-4">the script’s type</a> is "<code>classic</code>", then return. The script is not executed.</p>
-     <p class="note" role="note">This means specifying <code id="script-processing-model:attr-script-nomodule-2"><a href="https://html.spec.whatwg.org/#attr-script-nomodule">nomodule</a></code> on a <a href="https://html.spec.whatwg.org/#module-script" id="script-processing-model:module-script">module script</a> has no effect; the algorithm continues onward.</p>
-    <li id="script-processing-csp">
-     <a class="self-link" href="#script-processing-csp"></a>
-     <p>
-      If 
-      <del>the <code id="script-processing-model:the-script-element-30"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element does not have a <code id="script-processing-model:attr-script-src-4"><a href="https://html.spec.whatwg.org/#attr-script-src">src</a></code> content attribute</del>
-      <ins><var>src</var> is null</ins>
-      , and the <a data-x-internal="should-element’s-inline-behavior-be-blocked-by-content-security-policy" href="https://w3c.github.io/webappsec-csp/#should-block-inline" id="script-processing-model:should-element’s-inline-behavior-be-blocked-by-content-security-policy">Should element’s inline
-   behavior be blocked by Content Security Policy?</a> algorithm returns "<code>Blocked</code>" when executed upon the <code id="script-processing-model:the-script-element-31"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element, "<code>script</code>", and <var>source text</var>, then return. The script is not executed. <a href="https://html.spec.whatwg.org/#refsCSP">\[CSP\]</a>
-     </p>
-    <li id="script-processing-for">
-     <a class="self-link" href="#script-processing-for"></a> 
-     <p>If the <code id="script-processing-model:the-script-element-32"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element has an <code id="script-processing-model:attr-script-event"><a href="https://html.spec.whatwg.org/#attr-script-event">event</a></code> attribute and a <code id="script-processing-model:attr-script-for"><a href="https://html.spec.whatwg.org/#attr-script-for">for</a></code> attribute, and <a href="https://html.spec.whatwg.org/#concept-script-type" id="script-processing-model:concept-script-type-5">the script’s type</a> is "<code>classic</code>",
-    then:</p>
-     <ol>
-      <li>
-       <p>Let <var>for</var> be the value of the <code id="script-processing-model:attr-script-for-2"><a href="https://html.spec.whatwg.org/#attr-script-for">for</a></code> attribute.</p>
-      <li>
-       <p>Let <var>event</var> be the value of the <code id="script-processing-model:attr-script-event-2"><a href="https://html.spec.whatwg.org/#attr-script-event">event</a></code> attribute.</p>
-      <li>
-       <p><a data-x-internal="strip-leading-and-trailing-ascii-whitespace" href="https://infra.spec.whatwg.org/#strip-leading-and-trailing-ascii-whitespace" id="script-processing-model:strip-leading-and-trailing-ascii-whitespace-2">Strip leading and trailing ASCII whitespace</a> from <var>event</var> and <var>for</var>.</p>
-      <li>
-       <p>If <var>for</var> is not an <a data-x-internal="ascii-case-insensitive" href="https://infra.spec.whatwg.org/#ascii-case-insensitive" id="script-processing-model:ascii-case-insensitive-2">ASCII case-insensitive</a> match for the
-     string "<code>window</code>", then return. The script is not executed.</p>
-      <li>
-       <p>If <var>event</var> is not an <a data-x-internal="ascii-case-insensitive" href="https://infra.spec.whatwg.org/#ascii-case-insensitive" id="script-processing-model:ascii-case-insensitive-3">ASCII case-insensitive</a> match for
-     either the string "<code>onload</code>" or the string "<code>onload()</code>", then return. The script is not executed.</p>
-     </ol>
-    <li id="script-processing-encoding">
-     <a class="self-link" href="#script-processing-encoding"></a> 
-     <p>If the <code id="script-processing-model:the-script-element-33"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element has a <code id="script-processing-model:attr-script-charset"><a href="https://html.spec.whatwg.org/#attr-script-charset">charset</a></code> attribute, then let <var>encoding</var> be the result of <a data-x-internal="getting-an-encoding" href="https://encoding.spec.whatwg.org/#concept-encoding-get" id="script-processing-model:getting-an-encoding">getting an encoding</a> from
-    the value of the <code id="script-processing-model:attr-script-charset-2"><a href="https://html.spec.whatwg.org/#attr-script-charset">charset</a></code> attribute.</p>
-     <p>If the <code id="script-processing-model:the-script-element-34"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element does not have a <code id="script-processing-model:attr-script-charset-3"><a href="https://html.spec.whatwg.org/#attr-script-charset">charset</a></code> attribute, or if <a data-x-internal="getting-an-encoding" href="https://encoding.spec.whatwg.org/#concept-encoding-get" id="script-processing-model:getting-an-encoding-2">getting an encoding</a> failed, let <var>encoding</var> be the same as <a data-x-internal="document’s-character-encoding" href="https://dom.spec.whatwg.org/#concept-document-encoding" id="script-processing-model:document’s-character-encoding">the
-    encoding</a> of the <code id="script-processing-model:the-script-element-35"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element’s <a data-x-internal="node-document" href="https://dom.spec.whatwg.org/#concept-node-document" id="script-processing-model:node-document-3">node document</a>.</p>
-     <p class="note" role="note">If <a href="https://html.spec.whatwg.org/#concept-script-type" id="script-processing-model:concept-script-type-6">the script’s type</a> is "<code>module</code>", this encoding will be ignored.</p>
-    <li>
-     <p>Let <var>classic script CORS setting</var> be the current state of the element’s <code id="script-processing-model:attr-script-crossorigin"><a href="https://html.spec.whatwg.org/#attr-script-crossorigin">crossorigin</a></code> content attribute.</p>
-    <li>
-     <p>Let <var>module script credentials mode</var> be the <a href="https://html.spec.whatwg.org/#module-script-credentials-mode" id="script-processing-model:module-script-credentials-mode">module script credentials
-   mode</a> for the element’s <code id="script-processing-model:attr-script-crossorigin-2"><a href="https://html.spec.whatwg.org/#attr-script-crossorigin">crossorigin</a></code> content
-   attribute.</p>
-    <li>
-     <p>Let <var>cryptographic nonce</var> be the element’s <a href="https://html.spec.whatwg.org/#cryptographicnonce" id="script-processing-model:cryptographicnonce">\[\[CryptographicNonce\]\]</a> internal slot’s value.</p>
-    <li>
-     <p>If the <code id="script-processing-model:the-script-element-36"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element has an <code id="script-processing-model:attr-script-integrity"><a href="https://html.spec.whatwg.org/#attr-script-integrity">integrity</a></code> attribute, then let <var>integrity
-    metadata</var> be that attribute’s value.</p>
-     <p>Otherwise, let <var>integrity metadata</var> be the empty string.</p>
-    <li>
-     <p>Let <var>referrer policy</var> be the current state of the element’s <code id="script-processing-model:attr-script-referrerpolicy"><a href="https://html.spec.whatwg.org/#attr-script-referrerpolicy">referrerpolicy</a></code> content attribute.</p>
-    <li>
-     <p>Let <var>parser metadata</var> be "<code>parser-inserted</code>" if the <code id="script-processing-model:the-script-element-37"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element has been flagged as <a href="https://html.spec.whatwg.org/#parser-inserted" id="script-processing-model:parser-inserted-7">"parser-inserted"</a>, and
-   "<code>not-parser-inserted</code>" otherwise.</p>
-    <li>
-     <p>Let <var>options</var> be a <a href="https://html.spec.whatwg.org/#script-fetch-options" id="script-processing-model:script-fetch-options">script fetch options</a> whose <a href="https://html.spec.whatwg.org/#concept-script-fetch-options-nonce" id="script-processing-model:concept-script-fetch-options-nonce">cryptographic nonce</a> is <var>cryptographic
-   nonce</var>, <a href="https://html.spec.whatwg.org/#concept-script-fetch-options-integrity" id="script-processing-model:concept-script-fetch-options-integrity">integrity metadata</a> is <var>integrity metadata</var>, <a href="https://html.spec.whatwg.org/#concept-script-fetch-options-parser" id="script-processing-model:concept-script-fetch-options-parser">parser
-   metadata</a> is <var>parser metadata</var>, <a href="https://html.spec.whatwg.org/#concept-script-fetch-options-credentials" id="script-processing-model:concept-script-fetch-options-credentials">credentials mode</a> is <var>module script
-   credentials mode</var>, and <a href="https://html.spec.whatwg.org/#concept-script-fetch-options-referrer-policy" id="script-processing-model:concept-script-fetch-options-referrer-policy">referrer
-   policy</a> is <var>referrer policy</var>.</p>
-    <li>
-     <p>Let <var>settings object</var> be the element’s <a data-x-internal="node-document" href="https://dom.spec.whatwg.org/#concept-node-document" id="script-processing-model:node-document-4">node document</a>’s <a href="https://html.spec.whatwg.org/#relevant-settings-object" id="script-processing-model:relevant-settings-object">relevant settings object</a>.</p>
-    <li id="script-processing-src-prepare">
-     <a class="self-link" href="#script-processing-src-prepare"></a> 
-     <p>
-      If 
-      <del>the element has a <code id="script-processing-model:attr-script-src-5"><a href="https://html.spec.whatwg.org/#attr-script-src">src</a></code> content attribute</del>
-      <ins><var>src</var> is not null</ins>
-      , then:
-     </p>
-     <ol>
-      <li>
-       <del>
-        <p>Let <var>src</var> be the value of the element’s <code id="script-processing-model:attr-script-src-6"><a href="https://html.spec.whatwg.org/#attr-script-src">src</a></code> attribute.</p>
-       </del>
-      <li>
-       <p>If <var>src</var> is the empty string, <a href="https://html.spec.whatwg.org/#queue-a-task" id="script-processing-model:queue-a-task">queue a task</a> to <a data-x-internal="concept-event-fire" href="https://dom.spec.whatwg.org/#concept-event-fire" id="script-processing-model:concept-event-fire">fire an event</a> named <code id="script-processing-model:event-error"><a href="https://html.spec.whatwg.org/#event-error">error</a></code> at the element, and return.</p>
-      <li>
-       <p>Set the element’s <a href="https://html.spec.whatwg.org/#concept-script-external" id="script-processing-model:concept-script-external">from an external file</a> flag.</p>
-      <li>
-       <p><a href="https://html.spec.whatwg.org/#parse-a-url" id="script-processing-model:parse-a-url">Parse</a> <var>src</var> relative to the element’s <a data-x-internal="node-document" href="https://dom.spec.whatwg.org/#concept-node-document" id="script-processing-model:node-document-5">node document</a>.</p>
-      <li>
-       <p>If the previous step failed, <a href="https://html.spec.whatwg.org/#queue-a-task" id="script-processing-model:queue-a-task-2">queue a task</a> to <a data-x-internal="concept-event-fire" href="https://dom.spec.whatwg.org/#concept-event-fire" id="script-processing-model:concept-event-fire-2">fire an event</a> named <code id="script-processing-model:event-error-2"><a href="https://html.spec.whatwg.org/#event-error">error</a></code> at the element, and return. Otherwise, let <var>url</var> be the <a href="https://html.spec.whatwg.org/#resulting-url-record" id="script-processing-model:resulting-url-record">resulting URL
-     record</a>.</p>
-      <li>
-       <p>Switch on <a href="https://html.spec.whatwg.org/#concept-script-type" id="script-processing-model:concept-script-type-7">the script’s type</a>:</p>
-       <dl class="switch">
-        <dt>"<code>classic</code>"
-        <dd>
-         <p><a href="https://html.spec.whatwg.org/#fetch-a-classic-script" id="script-processing-model:fetch-a-classic-script">Fetch a classic script</a> given <var>url</var>, <var>settings object</var>, <var>options</var>, <var>classic script CORS setting</var>, and <var>encoding</var>.</p>
-        <dt>"<code>module</code>"
-        <dd>
-         <p><a href="https://html.spec.whatwg.org/#fetch-a-module-script-tree" id="script-processing-model:fetch-a-module-script-tree">Fetch an external module script graph</a> given <var>url</var>, <var>settings
-        object</var>, and <var>options</var>.</p>
-       </dl>
-       <p>When the chosen algorithm asynchronously completes, set <a href="https://html.spec.whatwg.org/#concept-script-script" id="script-processing-model:concept-script-script">the script’s script</a> to the result. At that time, <a href="https://html.spec.whatwg.org/#the-script-is-ready" id="script-processing-model:the-script-is-ready-2">the script is ready</a>.</p>
-       <p>For performance reasons, user agents may start fetching the classic script or module graph
-      (as defined above) as soon as the <code id="script-processing-model:attr-script-src-7"><a href="https://html.spec.whatwg.org/#attr-script-src">src</a></code> attribute is set,
-      instead, in the hope that the element will be inserted into the document (and that the <code id="script-processing-model:attr-script-crossorigin-3"><a href="https://html.spec.whatwg.org/#attr-script-crossorigin">crossorigin</a></code> attribute won’t change value in the
-      meantime). Either way, once the element is <a href="https://html.spec.whatwg.org/#insert-an-element-into-a-document" id="script-processing-model:insert-an-element-into-a-document">inserted into the document</a>, the load must have started as described in this
-      step. If the UA performs such prefetching, but the element is never inserted in the document,
-      or the <code id="script-processing-model:attr-script-src-8"><a href="https://html.spec.whatwg.org/#attr-script-src">src</a></code> attribute is dynamically changed, or the <code id="script-processing-model:attr-script-crossorigin-4"><a href="https://html.spec.whatwg.org/#attr-script-crossorigin">crossorigin</a></code> attribute is dynamically changed, then the
-      user agent will not execute the script so obtained, and the fetching process will have been
-      effectively wasted.</p>
-     </ol>
-    <li id="establish-script-block-source">
-     <a class="self-link" href="#establish-script-block-source"></a> 
-     <p>
-      If 
-      <del>the element does not have a <code id="script-processing-model:attr-script-src-9"><a href="https://html.spec.whatwg.org/#attr-script-src">src</a></code> content attribute</del>
-      <ins><var>src</var> is null</ins>
-      ,
-    run these substeps:
-     </p>
-     <ol>
-      <li>
-       <p>Let <var>base URL</var> be the <code id="script-processing-model:the-script-element-38"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element’s <a data-x-internal="node-document" href="https://dom.spec.whatwg.org/#concept-node-document" id="script-processing-model:node-document-6">node
-     document</a>’s <a href="https://html.spec.whatwg.org/#document-base-url" id="script-processing-model:document-base-url">document base URL</a>.</p>
-      <li>
-       <p>Switch on <a href="https://html.spec.whatwg.org/#concept-script-type" id="script-processing-model:concept-script-type-8">the script’s type</a>:</p>
-       <dl class="switch">
-        <dt>"<code>classic</code>"
-        <dd>
-         <ol>
-          <li>
-           <p>Let <var>script</var> be the result of <a href="https://html.spec.whatwg.org/#creating-a-classic-script" id="script-processing-model:creating-a-classic-script">creating a classic script</a> using <var>source text</var>, <var>settings object</var>, <var>base URL</var>, and <var>options</var>.</p>
-          <li>
-           <p>Set <a href="https://html.spec.whatwg.org/#concept-script-script" id="script-processing-model:concept-script-script-2">the script’s script</a> to <var>script</var>.</p>
-          <li>
-           <p><a href="https://html.spec.whatwg.org/#the-script-is-ready" id="script-processing-model:the-script-is-ready-3">The script is ready</a>.</p>
-         </ol>
-        <dt>"<code>module</code>"
-        <dd>
-         <ol>
-          <li>
-           <p><a href="https://html.spec.whatwg.org/#fetch-an-inline-module-script-graph" id="script-processing-model:fetch-an-inline-module-script-graph">Fetch an inline module script graph</a>, given <var>source text</var>, <var>base URL</var>, <var>settings object</var>, and <var>options</var>. When this
-         asynchronously completes, set <a href="https://html.spec.whatwg.org/#concept-script-script" id="script-processing-model:concept-script-script-3">the script’s
-         script</a> to the result. At that time, <a href="https://html.spec.whatwg.org/#the-script-is-ready" id="script-processing-model:the-script-is-ready-4">the script is ready</a>.</p>
-         </ol>
-       </dl>
-     </ol>
-    <li>
-     <p>Then, follow the first of the following options that describes the situation:</p>
-     <dl class="switch">
-      <dt id="script-processing-defer"><a class="self-link" href="#script-processing-defer"></a>If <a href="https://html.spec.whatwg.org/#concept-script-type" id="script-processing-model:concept-script-type-9">the script’s
-     type</a> is "<code>classic</code>", and the element has a <code id="script-processing-model:attr-script-src-10"><a href="https://html.spec.whatwg.org/#attr-script-src">src</a></code> attribute, and the element has a <code id="script-processing-model:attr-script-defer"><a href="https://html.spec.whatwg.org/#attr-script-defer">defer</a></code> attribute, and the element has been flagged as <a href="https://html.spec.whatwg.org/#parser-inserted" id="script-processing-model:parser-inserted-8">"parser-inserted"</a>, and the element does not have an <code id="script-processing-model:attr-script-async-4"><a href="https://html.spec.whatwg.org/#attr-script-async">async</a></code> attribute
-      <dt id="script-processing-module-noasync-parser-inserted"><a class="self-link" href="#script-processing-module-noasync-parser-inserted"></a>If <a href="https://html.spec.whatwg.org/#concept-script-type" id="script-processing-model:concept-script-type-10">the script’s type</a> is "<code>module</code>", and
-     the element has been flagged as <a href="https://html.spec.whatwg.org/#parser-inserted" id="script-processing-model:parser-inserted-9">"parser-inserted"</a>, and the element does not have
-     an <code id="script-processing-model:attr-script-async-5"><a href="https://html.spec.whatwg.org/#attr-script-async">async</a></code> attribute
-      <dd>
-       <p>Add the element to the end of the <dfn data-dfn-type="dfn" data-lt="list of scripts that will execute when the document has finished parsing" data-noexport id="list-of-scripts-that-will-execute-when-the-document-has-finished-parsing">list of scripts that will execute when the document
-      has finished parsing<a class="self-link" href="#list-of-scripts-that-will-execute-when-the-document-has-finished-parsing"></a></dfn> associated with the <code id="script-processing-model:document-3"><a href="https://html.spec.whatwg.org/#document">Document</a></code> of the parser that
-      created the element.</p>
-       <p>When <a href="https://html.spec.whatwg.org/#the-script-is-ready" id="script-processing-model:the-script-is-ready-5">the script is ready</a>, set the element’s <a href="https://html.spec.whatwg.org/#ready-to-be-parser-executed" id="script-processing-model:ready-to-be-parser-executed">"ready to be
-      parser-executed"</a> flag. The parser will handle executing the script.</p>
-      <dt id="script-processing-parser-inserted"><a class="self-link" href="#script-processing-parser-inserted"></a>If <a href="https://html.spec.whatwg.org/#concept-script-type" id="script-processing-model:concept-script-type-11">the script’s
-     type</a> is "<code>classic</code>", and the element has a <code id="script-processing-model:attr-script-src-11"><a href="https://html.spec.whatwg.org/#attr-script-src">src</a></code> attribute, and the element has been flagged as <a href="https://html.spec.whatwg.org/#parser-inserted" id="script-processing-model:parser-inserted-10">"parser-inserted"</a>, and the element does not have an <code id="script-processing-model:attr-script-async-6"><a href="https://html.spec.whatwg.org/#attr-script-async">async</a></code> attribute
-      <dd>
-       <p>The element is the <a href="https://html.spec.whatwg.org/#pending-parsing-blocking-script" id="script-processing-model:pending-parsing-blocking-script">pending parsing-blocking script</a> of the <code id="script-processing-model:document-4"><a href="https://html.spec.whatwg.org/#document">Document</a></code> of the parser that created the element. (There can only be one such
-      script per <code id="script-processing-model:document-5"><a href="https://html.spec.whatwg.org/#document">Document</a></code> at a time.)</p>
-       <p>When <a href="https://html.spec.whatwg.org/#the-script-is-ready" id="script-processing-model:the-script-is-ready-6">the script is ready</a>, set the element’s <a href="https://html.spec.whatwg.org/#ready-to-be-parser-executed" id="script-processing-model:ready-to-be-parser-executed-2">"ready to be
-      parser-executed"</a> flag. The parser will handle executing the script.</p>
-      <dt id="script-processing-src-sync"><a class="self-link" href="#script-processing-src-sync"></a>If <a href="https://html.spec.whatwg.org/#concept-script-type" id="script-processing-model:concept-script-type-12">the script’s
-     type</a> is "<code>classic</code>", and the element has a <code id="script-processing-model:attr-script-src-12"><a href="https://html.spec.whatwg.org/#attr-script-src">src</a></code> attribute, and the element does not have an <code id="script-processing-model:attr-script-async-7"><a href="https://html.spec.whatwg.org/#attr-script-async">async</a></code> attribute, and the element does not have the <a href="https://html.spec.whatwg.org/#non-blocking" id="script-processing-model:non-blocking-5">"non-blocking"</a> flag set
-      <dt id="script-processing-module-noasync"><a class="self-link" href="#script-processing-module-noasync"></a>If <a href="https://html.spec.whatwg.org/#concept-script-type" id="script-processing-model:concept-script-type-13">the script’s
-     type</a> is "<code>module</code>", and the element does not have an <code id="script-processing-model:attr-script-async-8"><a href="https://html.spec.whatwg.org/#attr-script-async">async</a></code> attribute, and the element does not have the <a href="https://html.spec.whatwg.org/#non-blocking" id="script-processing-model:non-blocking-6">"non-blocking"</a> flag set
-      <dd>
-       <p>Add the element to the end of the <dfn data-dfn-type="dfn" data-lt="list of scripts that will execute in order as soon as possible" data-noexport id="list-of-scripts-that-will-execute-in-order-as-soon-as-possible">list of scripts that will execute in order as soon
-      as possible<a class="self-link" href="#list-of-scripts-that-will-execute-in-order-as-soon-as-possible"></a></dfn> associated with the <a data-x-internal="node-document" href="https://dom.spec.whatwg.org/#concept-node-document" id="script-processing-model:node-document-7">node document</a> of the <code id="script-processing-model:the-script-element-39"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element at the time the <a href="https://html.spec.whatwg.org/#prepare-a-script" id="script-processing-model:prepare-a-script-5">prepare a script</a> algorithm started.</p>
-       <p>When <a href="https://html.spec.whatwg.org/#the-script-is-ready" id="script-processing-model:the-script-is-ready-7">the script is ready</a>, run the following steps:</p>
-       <ol>
-        <li>
-         <p>If the element is not now the first element in the <a href="https://html.spec.whatwg.org/#list-of-scripts-that-will-execute-in-order-as-soon-as-possible" id="script-processing-model:list-of-scripts-that-will-execute-in-order-as-soon-as-possible">list of scripts that will
-       execute in order as soon as possible</a> to which it was added above, then mark the
-       element as ready but return without executing the script yet.</p>
-        <li>
-         <p><i>Execution</i>: <a href="https://html.spec.whatwg.org/#execute-the-script-block" id="script-processing-model:execute-the-script-block">Execute the script block</a> corresponding to the first
-       script element in this <a href="https://html.spec.whatwg.org/#list-of-scripts-that-will-execute-in-order-as-soon-as-possible" id="script-processing-model:list-of-scripts-that-will-execute-in-order-as-soon-as-possible-2">list of scripts that will execute in order as soon as
-       possible</a>.</p>
-        <li>
-         <p>Remove the first element from this <a href="https://html.spec.whatwg.org/#list-of-scripts-that-will-execute-in-order-as-soon-as-possible" id="script-processing-model:list-of-scripts-that-will-execute-in-order-as-soon-as-possible-3">list of scripts that will execute in order as
-       soon as possible</a>.</p>
-        <li>
-         <p>If this <a href="https://html.spec.whatwg.org/#list-of-scripts-that-will-execute-in-order-as-soon-as-possible" id="script-processing-model:list-of-scripts-that-will-execute-in-order-as-soon-as-possible-4">list of scripts that will execute in order as soon as possible</a> is
-       still not empty and the first entry has already been marked as ready, then jump back to the
-       step labeled <i>execution</i>.</p>
-       </ol>
-      <dt id="script-processing-src"><a class="self-link" href="#script-processing-src"></a>If <a href="https://html.spec.whatwg.org/#concept-script-type" id="script-processing-model:concept-script-type-14">the script’s type</a> is "<code>classic</code>", and the element has a <code id="script-processing-model:attr-script-src-13"><a href="https://html.spec.whatwg.org/#attr-script-src">src</a></code> attribute
-      <dt id="script-processing-module-async"><a class="self-link" href="#script-processing-module-async"></a>If <a href="https://html.spec.whatwg.org/#concept-script-type" id="script-processing-model:concept-script-type-15">the script’s
-     type</a> is "<code>module</code>"
-      <dd>
-       <p>The element must be added to the <dfn data-dfn-type="dfn" data-lt="set of scripts that will execute as soon as possible" data-noexport id="set-of-scripts-that-will-execute-as-soon-as-possible">set of scripts that will execute as soon as
-      possible<a class="self-link" href="#set-of-scripts-that-will-execute-as-soon-as-possible"></a></dfn> of the <a data-x-internal="node-document" href="https://dom.spec.whatwg.org/#concept-node-document" id="script-processing-model:node-document-8">node document</a> of the <code id="script-processing-model:the-script-element-40"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element at the
-      time the <a href="https://html.spec.whatwg.org/#prepare-a-script" id="script-processing-model:prepare-a-script-6">prepare a script</a> algorithm started.</p>
-       <p>When <a href="https://html.spec.whatwg.org/#the-script-is-ready" id="script-processing-model:the-script-is-ready-8">the script is ready</a>, <a href="https://html.spec.whatwg.org/#execute-the-script-block" id="script-processing-model:execute-the-script-block-2">execute the script block</a> and then
-      remove the element from the <a href="https://html.spec.whatwg.org/#set-of-scripts-that-will-execute-as-soon-as-possible" id="script-processing-model:set-of-scripts-that-will-execute-as-soon-as-possible">set of scripts that will execute as soon as
-      possible</a>.</p>
-      <dt id="script-processing-style-delayed"><a class="self-link" href="#script-processing-style-delayed"></a>If the element does not have a <code id="script-processing-model:attr-script-src-14"><a href="https://html.spec.whatwg.org/#attr-script-src">src</a></code> attribute, and the element has been flagged as <a href="https://html.spec.whatwg.org/#parser-inserted" id="script-processing-model:parser-inserted-11">"parser-inserted"</a>, and either the parser that created the <code id="script-processing-model:the-script-element-41"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> is
-     an <a href="https://html.spec.whatwg.org/#xml-parser" id="script-processing-model:xml-parser-3">XML parser</a> or it’s an <a href="https://html.spec.whatwg.org/#html-parser" id="script-processing-model:html-parser-3">HTML parser</a> whose <a href="https://html.spec.whatwg.org/#script-nesting-level" id="script-processing-model:script-nesting-level">script nesting
-     level</a> is not greater than one, and the <code id="script-processing-model:document-6"><a href="https://html.spec.whatwg.org/#document">Document</a></code> of the <a href="https://html.spec.whatwg.org/#html-parser" id="script-processing-model:html-parser-4">HTML
-     parser</a> or <a href="https://html.spec.whatwg.org/#xml-parser" id="script-processing-model:xml-parser-4">XML parser</a> that created the <code id="script-processing-model:the-script-element-42"><a href="https://html.spec.whatwg.org/#the-script-element">script</a></code> element <a href="https://html.spec.whatwg.org/#has-a-style-sheet-that-is-blocking-scripts" id="script-processing-model:has-a-style-sheet-that-is-blocking-scripts">has
-     a style sheet that is blocking scripts</a>
-      <dd>
-       <p>The element is the <a href="https://html.spec.whatwg.org/#pending-parsing-blocking-script" id="script-processing-model:pending-parsing-blocking-script-2">pending parsing-blocking script</a> of the <code id="script-processing-model:document-7"><a href="https://html.spec.whatwg.org/#document">Document</a></code> of the parser that created the element. (There can only be one such
-      script per <code id="script-processing-model:document-8"><a href="https://html.spec.whatwg.org/#document">Document</a></code> at a time.)</p>
-       <p>Set the element’s <a href="https://html.spec.whatwg.org/#ready-to-be-parser-executed" id="script-processing-model:ready-to-be-parser-executed-3">"ready to be parser-executed"</a> flag. The parser will handle
-      executing the script.</p>
-      <dt id="script-processing-inline"><a class="self-link" href="#script-processing-inline"></a>Otherwise
-      <dd><a href="https://html.spec.whatwg.org/#immediately" id="script-processing-model:immediately-2">Immediately</a> <a href="https://html.spec.whatwg.org/#execute-the-script-block" id="script-processing-model:execute-the-script-block-3">execute the script block</a>, even if other scripts are
-     already executing.
-     </dl>
+    <li>... 
    </ol>
+   <p>In all subsequent steps, replace checks for <code>src</code> attribute existence with checks for non-null <code>[[ScriptURL]]</code> internal slot value, and replace references of <code>src</code> content attribute value with <code>[[ScriptURL]]</code> internal slot value. For example: </p>
+   <ul>
+    <li>
+     If 
+     <del><var>el</var> does not have a <code>src</code> content attribute</del>
+     <ins><var>el</var>’s <code>[[ScriptURL]]</code> internal slot value is null</ins>
+     , and the <a data-x-internal="should-element’s-inline-behavior-be-blocked-by-content-security-policy" href="https://w3c.github.io/webappsec-csp/#should-block-inline" id="script-processing-model:should-element’s-inline-behavior-be-blocked-by-content-security-policy">Should element’s inline
+   behavior be blocked by Content Security Policy?</a> algorithm returns "<code>Blocked</code>" when given <var>el</var>, "<code>script</code>", and <var>source text</var>, then return. 
+    <li>
+     If <var>el</var>
+     <ins>'s</ins>
+     <del>has a <code>src</code> content attribute</del>
+     <ins><code>[[ScriptURL]]</code> internal slot value is not null</ins>
+     , then: 
+    <li>
+     <p>
+      Let <var>src</var> be the value of <var>el</var>’s 
+      <del><code>src</code> attribute</del>
+      <ins><code>[[ScriptURL]]</code> internal slot</ins>
+      . 
+     </p>
+   </ul>
    <h4 class="heading settled" data-level="4.3.4" id="enforcement-in-sinks"><span class="secno">4.3.4. </span><span class="content">Enforcement in element attributes</span><a class="self-link" href="#enforcement-in-sinks"></a></h4>
    <p>This document modifies following IDL attributes of various DOM elements:</p>
 <pre class="idl exclude highlight def"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#htmliframeelement" id="ref-for-htmliframeelement"><c- g>HTMLIFrameElement</c-></a> {
@@ -2764,7 +2523,7 @@ instance to the <code class="idl"><a data-link-type="idl" href="#dom-range-creat
    <div class="mdn-anno wrapped after">
     <button class="mdn-anno-btn"><b class="less-than-two-engines-flag" title="This feature is in less than two current engines.">⚠</b><span>MDN</span></button>
     <div class="feature">
-     <p><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/require-trusted-types-for" title="The HTTP Content-Security-Policy (CSP) require-trusted-types-for directive instructs user agents to control the data passed to DOM XSS sink functions, like Element.innerHTML setter.">Headers/Content-Security-Policy/require-trusted-types-for</a></p>
+     <p><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/require-trusted-types-for" title="The HTTP Content-Security-Policy (CSP) require-trusted-types-for Experimental directive instructs user agents to control the data passed to DOM XSS sink functions, like Element.innerHTML setter.">Headers/Content-Security-Policy/require-trusted-types-for</a></p>
      <p class="less-than-two-engines-text">In only one current engine.</p>
      <div class="support">
       <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="safari no"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
@@ -2831,7 +2590,7 @@ directive-value = <a data-link-type="dfn" href="#trusted-types-sink-group" id="r
    <div class="mdn-anno wrapped after">
     <button class="mdn-anno-btn"><b class="less-than-two-engines-flag" title="This feature is in less than two current engines.">⚠</b><span>MDN</span></button>
     <div class="feature">
-     <p><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/trusted-types" title="The HTTP Content-Security-Policy (CSP) trusted-types directive instructs user agents to restrict the creation of Trusted Types policies - functions that build non-spoofable, typed values intended to be passed to DOM XSS sinks in place of strings.">Headers/Content-Security-Policy/trusted-types</a></p>
+     <p><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/trusted-types" title="The HTTP Content-Security-Policy (CSP) trusted-types Experimental directive instructs user agents to restrict the creation of Trusted Types policies - functions that build non-spoofable, typed values intended to be passed to DOM XSS sinks in place of strings.">Headers/Content-Security-Policy/trusted-types</a></p>
      <p class="less-than-two-engines-text">In only one current engine.</p>
      <div class="support">
       <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="safari no"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
@@ -2967,7 +2726,7 @@ assumes additional arguments are passed to this algorithm from ECMAScript.
 See also <a href="https://github.com/tc39/ecma262/issues/938">TC39/ecma262 issue #938</a>.</p>
    <div class="note" role="note">
     Note: EcmaScript code may call <code>Function()</code> and <code>eval</code> cross realm. 
-<pre class="highlight"><c- a>let</c-> f <c- o>=</c-> <c- k>new</c-> self<c- p>.</c->top<c- p>.</c->Function<c- p>(</c->source<c- p>);</c->
+<pre class="highlight"><c- a>let</c-> f <c- o>=</c-> <c- ow>new</c-> self<c- p>.</c->top<c- p>.</c->Function<c- p>(</c->source<c- p>);</c->
 </pre>
     <p>In this case, the <var>callerRealm</var>’s Window is <code>self</code> and the <var>calleeRealm</var>’s Window is <code>self.top</code>.
 The Trusted Types portion of this algorithm uses <var>calleeRealm</var> and its CSP setting for consistency with other sinks.</p>
@@ -2975,7 +2734,7 @@ The Trusted Types portion of this algorithm uses <var>calleeRealm</var> and its 
 self<c- p>.</c->top<c- p>.</c->body<c- p>.</c->innerHTML <c- o>=</c-> <c- t>'Hello, World!'</c-><c- p>;</c->
 <c- c1>// Using another Realm’s builtin Function constructor should analogously use that</c->
 <c- c1>// Realm’s default policy.</c->
-<c- k>new</c-> self<c- p>.</c->top<c- p>.</c->Function<c- p>(</c-><c- t>'alert(1)'</c-><c- p>)()</c->
+<c- ow>new</c-> self<c- p>.</c->top<c- p>.</c->Function<c- p>(</c-><c- t>'alert(1)'</c-><c- p>)()</c->
 </pre>
     <p>This is subtly different from the CSP directive enforcement portion which rejects if either
 the <var>calleeRealm</var> or <var>callerRealm</var>’s Content-Security-Policy rejects string compilation.</p>
@@ -3144,37 +2903,47 @@ extensions, or bookmarklets. These kinds of features generally advance
 the user’s priority over page authors, as espoused in <a data-link-type="biblio" href="#biblio-html-design-principles">[html-design-principles]</a>. Specifically, extensions SHOULD be able to pass strings
 to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink③⓪">injection sinks</a> without triggering <a data-link-type="dfn" href="#default-policy" id="ref-for-default-policy④">default policy</a> execution, violation generation, or the rejection of the value.</p>
   </main>
-  <h2 class="no-ref no-num heading settled" id="conformance"><span class="content">Conformance</span><a class="self-link" href="#conformance"></a></h2>
-  <h3 class="no-ref no-num heading settled" id="conventions"><span class="content">Document conventions</span><a class="self-link" href="#conventions"></a></h3>
-  <p>Conformance requirements are expressed with a combination of
-    descriptive assertions and RFC 2119 terminology. The key words “MUST”,
-    “MUST NOT”, “REQUIRED”, “SHALL”, “SHALL NOT”, “SHOULD”, “SHOULD NOT”,
-    “RECOMMENDED”, “MAY”, and “OPTIONAL” in the normative parts of this
-    document are to be interpreted as described in RFC 2119.
-    However, for readability, these words do not appear in all uppercase
-    letters in this specification. </p>
-  <p>All of the text of this specification is normative except sections
-    explicitly marked as non-normative, examples, and notes. <a data-link-type="biblio" href="#biblio-rfc2119">[RFC2119]</a></p>
-  <p>Examples in this specification are introduced with the words “for example”
-    or are set apart from the normative text with <code>class="example"</code>,
+  <div data-fill-with="conformance">
+   <h2 class="no-ref no-num heading settled" id="w3c-conformance"><span class="content">Conformance</span><a class="self-link" href="#w3c-conformance"></a></h2>
+   <h3 class="no-ref no-num heading settled" id="w3c-conventions"><span class="content">Document conventions</span><a class="self-link" href="#w3c-conventions"></a></h3>
+   <p>Conformance requirements are expressed
+    with a combination of descriptive assertions
+    and RFC 2119 terminology.
+    The key words “MUST”, “MUST NOT”, “REQUIRED”, “SHALL”, “SHALL NOT”, “SHOULD”, “SHOULD NOT”, “RECOMMENDED”, “MAY”, and “OPTIONAL”
+    in the normative parts of this document
+    are to be interpreted as described in RFC 2119.
+    However, for readability,
+    these words do not appear in all uppercase letters in this specification. </p>
+   <p>All of the text of this specification is normative
+    except sections explicitly marked as non-normative, examples, and notes. <a data-link-type="biblio" href="#biblio-rfc2119">[RFC2119]</a> </p>
+   <p>Examples in this specification are introduced with the words “for example”
+    or are set apart from the normative text
+    with <code>class="example"</code>,
     like this: </p>
-  <div class="example" id="example-ae2b6bc0">
-   <a class="self-link" href="#example-ae2b6bc0"></a> 
-   <p>This is an example of an informative example.</p>
+   <div class="example" id="w3c-example">
+    <a class="self-link" href="#w3c-example"></a> 
+    <p>This is an example of an informative example. </p>
+   </div>
+   <p>Informative notes begin with the word “Note”
+    and are set apart from the normative text
+    with <code>class="note"</code>,
+    like this: </p>
+   <p class="note" role="note">Note, this is an informative note. </p>
+   <h3 class="no-ref no-num heading settled" id="w3c-conformant-algorithms"><span class="content">Conformant Algorithms</span><a class="self-link" href="#w3c-conformant-algorithms"></a></h3>
+   <p>Requirements phrased in the imperative as part of algorithms
+    (such as "strip any leading space characters"
+    or "return false and abort these steps")
+    are to be interpreted with the meaning of the key word
+    ("must", "should", "may", etc)
+    used in introducing the algorithm. </p>
+   <p>Conformance requirements phrased as algorithms or specific steps
+    can be implemented in any manner,
+    so long as the end result is equivalent.
+    In particular, the algorithms defined in this specification
+    are intended to be easy to understand
+    and are not intended to be performant.
+    Implementers are encouraged to optimize. </p>
   </div>
-  <p>Informative notes begin with the word “Note” and are set apart from the
-    normative text with <code>class="note"</code>, like this: </p>
-  <p class="note" role="note">Note, this is an informative note.</p>
-  <h3 class="no-ref no-num heading settled" id="conformant-algorithms"><span class="content">Conformant Algorithms</span><a class="self-link" href="#conformant-algorithms"></a></h3>
-  <p>Requirements phrased in the imperative as part of algorithms (such as
-    "strip any leading space characters" or "return false and abort these
-    steps") are to be interpreted with the meaning of the key word ("must",
-    "should", "may", etc) used in introducing the algorithm.</p>
-  <p>Conformance requirements phrased as algorithms or specific steps can be
-    implemented in any manner, so long as the end result is equivalent. In
-    particular, the algorithms defined in this specification are intended to
-    be easy to understand and are not intended to be performant. Implementers
-    are encouraged to optimize.</p>
 <script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script>
   <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
   <h3 class="no-num no-ref heading settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
@@ -3250,8 +3019,6 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <li><a href="#dom-trustedtypepolicyfactory-ishtml">isHTML(value)</a><span>, in § 2.3.1</span>
    <li><a href="#dom-trustedtypepolicyfactory-isscripturl">isScriptURL(value)</a><span>, in § 2.3.1</span>
    <li><a href="#dom-trustedtypepolicyfactory-isscript">isScript(value)</a><span>, in § 2.3.1</span>
-   <li><a href="#list-of-scripts-that-will-execute-in-order-as-soon-as-possible">list of scripts that will execute in order as soon as possible</a><span>, in § 4.3.3.3</span>
-   <li><a href="#list-of-scripts-that-will-execute-when-the-document-has-finished-parsing">list of scripts that will execute when the document has finished parsing</a><span>, in § 4.3.3.3</span>
    <li>
     name
     <ul>
@@ -3275,7 +3042,6 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <li><a href="#dom-windoworworkerglobalscope-setinterval">setInterval(handler)</a><span>, in § 4.3.5</span>
    <li><a href="#dom-windoworworkerglobalscope-setinterval">setInterval(handler, timeout)</a><span>, in § 4.3.5</span>
    <li><a href="#dom-windoworworkerglobalscope-setinterval">setInterval(handler, timeout, ...arguments)</a><span>, in § 4.3.5</span>
-   <li><a href="#set-of-scripts-that-will-execute-as-soon-as-possible">set of scripts that will execute as soon as possible</a><span>, in § 4.3.3.3</span>
    <li><a href="#dom-windoworworkerglobalscope-settimeout">setTimeout(handler)</a><span>, in § 4.3.5</span>
    <li><a href="#dom-windoworworkerglobalscope-settimeout">setTimeout(handler, timeout)</a><span>, in § 4.3.5</span>
    <li><a href="#dom-windoworworkerglobalscope-settimeout">setTimeout(handler, timeout, ...arguments)</a><span>, in § 4.3.5</span>
@@ -3693,7 +3459,6 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
     <li><a href="#ref-for-htmlscriptelement">3.7. Prepare the script URL and text</a>
     <li><a href="#ref-for-htmlscriptelement①">4.3.3.1. Slots with trusted values</a>
     <li><a href="#ref-for-htmlscriptelement②">4.3.3.2. Setting slot values</a> <a href="#ref-for-htmlscriptelement③">(2)</a> <a href="#ref-for-htmlscriptelement④">(3)</a>
-    <li><a href="#ref-for-htmlscriptelement⑤">4.3.3.3. Slot value verification</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-htmltemplateelement">
@@ -3770,10 +3535,10 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
     <li><a href="#ref-for-dom-innertext">4.3.3.2. Setting slot values</a> <a href="#ref-for-dom-innertext①">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-prepare-a-script">
-   <a href="https://html.spec.whatwg.org/multipage/scripting.html#prepare-a-script">https://html.spec.whatwg.org/multipage/scripting.html#prepare-a-script</a><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="term-for-prepare-the-script-element">
+   <a href="https://html.spec.whatwg.org/#prepare-the-script-element">https://html.spec.whatwg.org/#prepare-the-script-element</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-prepare-a-script">4.3.3.3. Slot value verification</a>
+    <li><a href="#ref-for-prepare-the-script-element">4.3.3.3. Slot value verification</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-global-object-realm">
@@ -3817,7 +3582,6 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
   <aside class="dfn-panel" data-for="term-for-ascii-case-insensitive">
    <a href="https://infra.spec.whatwg.org/#ascii-case-insensitive">https://infra.spec.whatwg.org/#ascii-case-insensitive</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#script-processing-model:ascii-case-insensitive">4.3.3.3. Slot value verification</a> <a href="#script-processing-model:ascii-case-insensitive-2">(2)</a> <a href="#script-processing-model:ascii-case-insensitive-3">(3)</a>
     <li><a href="#ref-for-ascii-case-insensitive">4.9.6. Support for dynamic code compilation</a>
    </ul>
   </aside>
@@ -3870,18 +3634,6 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <a href="https://w3c.github.io/ServiceWorker/#serviceworkerregistration">https://w3c.github.io/ServiceWorker/#serviceworkerregistration</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-serviceworkerregistration">4.4. Integration with Service Workers</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-InterfaceSVGAnimatedString">
-   <a href="https://svgwg.org/svg2-draft/types.html#InterfaceSVGAnimatedString">https://svgwg.org/svg2-draft/types.html#InterfaceSVGAnimatedString</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-InterfaceSVGAnimatedString">4.5. Integration with SVG</a> <a href="#ref-for-InterfaceSVGAnimatedString①">(2)</a> <a href="#ref-for-InterfaceSVGAnimatedString②">(3)</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-InterfaceSVGScriptElement">
-   <a href="https://svgwg.org/svg2-draft/interact.html#InterfaceSVGScriptElement">https://svgwg.org/svg2-draft/interact.html#InterfaceSVGScriptElement</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-InterfaceSVGScriptElement">4.5. Integration with SVG</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-url-scheme">
@@ -4144,7 +3896,7 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
   <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
   <ul class="index">
    <li>
-    <a data-link-type="biblio">[CSP3]</a> defines the following terms:
+    <a data-link-type="biblio">[csp3]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-grammardef-report-sample">'report-sample'</span>
      <li><span class="dfn-paneled" id="term-for-grammardef-unsafe-eval">'unsafe-eval'</span>
@@ -4216,7 +3968,7 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
      <li><span class="dfn-paneled" id="term-for-dfn-Blob">Blob</span>
     </ul>
    <li>
-    <a data-link-type="biblio">[HTML]</a> defines the following terms:
+    <a data-link-type="biblio">[html]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-cereactions">CEReactions</span>
      <li><span class="dfn-paneled" id="term-for-htmlembedelement">HTMLEmbedElement</span>
@@ -4235,7 +3987,7 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
      <li><span class="dfn-paneled" id="term-for-concept-settings-object-global">global object <small>(for environment settings object)</small></span>
      <li><span class="dfn-paneled" id="term-for-html-fragment-serialisation-algorithm">html fragment serialization algorithm</span>
      <li><span class="dfn-paneled" id="term-for-dom-innertext">innerText</span>
-     <li><span class="dfn-paneled" id="term-for-prepare-a-script">prepare a script</span>
+     <li><span class="dfn-paneled" id="term-for-prepare-the-script-element">prepare the script element</span>
      <li><span class="dfn-paneled" id="term-for-concept-global-object-realm">realm</span>
      <li><span class="dfn-paneled" id="term-for-reflect">reflect</span>
      <li><span class="dfn-paneled" id="term-for-concept-relevant-global">relevant global object</span>
@@ -4260,12 +4012,6 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
      <li><span class="dfn-paneled" id="term-for-serviceworkerregistration">ServiceWorkerRegistration</span>
     </ul>
    <li>
-    <a data-link-type="biblio">[SVG2]</a> defines the following terms:
-    <ul>
-     <li><span class="dfn-paneled" id="term-for-InterfaceSVGAnimatedString">SVGAnimatedString</span>
-     <li><span class="dfn-paneled" id="term-for-InterfaceSVGScriptElement">SVGScriptElement</span>
-    </ul>
-   <li>
     <a data-link-type="biblio">[URL]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-concept-url-scheme">scheme</span>
@@ -4273,7 +4019,7 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
      <li><span class="dfn-paneled" id="term-for-concept-url-serializer">url serializer</span>
     </ul>
    <li>
-    <a data-link-type="biblio">[WEBIDL]</a> defines the following terms:
+    <a data-link-type="biblio">[webidl]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-AllowShared">AllowShared</span>
      <li><span class="dfn-paneled" id="term-for-Clamp">Clamp</span>
@@ -4326,7 +4072,9 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <dt id="biblio-fileapi">[FileAPI]
    <dd>Marijn Kruisselbrink; Arun Ranganathan. <a href="https://www.w3.org/TR/FileAPI/"><cite>File API</cite></a>. 4 June 2021. WD. URL: <a href="https://www.w3.org/TR/FileAPI/">https://www.w3.org/TR/FileAPI/</a>
    <dt id="biblio-html">[HTML]
-   <dd>Anne van Kesteren; et al. <a href="https://html.spec.whatwg.org/multipage/"><cite>HTML Standard</cite></a>. Living Standard. URL: <a href="https://html.spec.whatwg.org/multipage/">https://html.spec.whatwg.org/multipage/</a>
+   <dd>A vocabulary and associated APIs for HTML and XHTML URL: <a href="https://html.spec.whatwg.org/multipage/">https://html.spec.whatwg.org/multipage/</a>
+   <dt id="biblio-html5">[HTML5]
+   <dd>Ian Hickson; et al. <a href="https://www.w3.org/TR/html5/"><cite>HTML5</cite></a>. 27 March 2018. REC. URL: <a href="https://www.w3.org/TR/html5/">https://www.w3.org/TR/html5/</a>
    <dt id="biblio-infra">[INFRA]
    <dd>Anne van Kesteren; Domenic Denicola. <a href="https://infra.spec.whatwg.org/"><cite>Infra Standard</cite></a>. Living Standard. URL: <a href="https://infra.spec.whatwg.org/">https://infra.spec.whatwg.org/</a>
    <dt id="biblio-rfc2119">[RFC2119]
@@ -4344,8 +4092,6 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
   <dl>
    <dt id="biblio-html-design-principles">[HTML-DESIGN-PRINCIPLES]
    <dd>Anne van Kesteren; Maciej Stachowiak. <a href="https://www.w3.org/TR/html-design-principles/"><cite>HTML Design Principles</cite></a>. 26 November 2007. WD. URL: <a href="https://www.w3.org/TR/html-design-principles/">https://www.w3.org/TR/html-design-principles/</a>
-   <dt id="biblio-html5">[HTML5]
-   <dd>Ian Hickson; et al. <a href="https://www.w3.org/TR/html5/"><cite>HTML5</cite></a>. 27 March 2018. REC. URL: <a href="https://www.w3.org/TR/html5/">https://www.w3.org/TR/html5/</a>
   </dl>
   <h2 class="no-num no-ref heading settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
   <div style="counter-reset:issue">
