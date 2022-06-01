@@ -1945,7 +1945,7 @@ The Trusted Types portion of this algorithm uses |calleeRealm| and its CSP setti
 </pre>
 </div>
 
-Given a [[ECMASCRIPT#realm|realms]] (|calleeRealm|), a string
+Given a [[ECMASCRIPT#realm|realm]] (|calleeRealm|), a string
 (|source|) <ins>, a boolean |wasCodeLike| and a string |compilationSink|</ins>, this algorithm returns <del>normally</del><ins>the
 source string to compile</ins> if compilation is allowed, and
 throws an "`EvalError`" if not:
