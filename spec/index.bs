@@ -1189,9 +1189,18 @@ partial interface HTMLScriptElement {
 };
 </pre>
 
-On setting, the {{HTMLElement/innerText}}, {{Node/textContent}} and {{HTMLScriptElement/text}} IDL attributes perform the regular steps, and then set {{HTMLScriptElement/[[ScriptText]]}} internal slot value with the stringified value.
+On setting, the {{HTMLElement/innerText}}, {{Node/textContent}} and {{HTMLScriptElement/text}} IDL attributes execute the following algorithm:
 
-On setting, the {{HTMLScriptElement/src}} IDL attribute performs the usual steps, and then sets {{HTMLScriptElement/[[ScriptURL]]}} internal slot value to its <{script/src}> content attribute value.
+1. Set <var>previousValue</var> to {{HTMLScriptElement/[[ScriptText]]}} internal slot value.
+1. Set {{HTMLScriptElement/[[ScriptText]]}} internal slot value to the stringified attribute value.
+1. Perform the usual attribute setter steps. If the algorithm threw an error, set {{HTMLScriptElement/[[ScriptText]]}} internal slot value to <var>previousValue</var>.
+
+
+On setting, the {{HTMLScriptElement/src}} IDL attribute, execute the following algorithm:
+
+1. Set <var>previousValue</var> to {{HTMLScriptElement/[[ScriptURL]]}} internal slot value.
+1. Set {{HTMLScriptElement/[[ScriptURL]]}} internal slot value to the stringified attribute value.
+1. Perform the usual attribute setter steps.  If the algorithm threw an error, set {{HTMLScriptElement/[[ScriptURL]]}} internal slot value to <var>previousValue</var>.
 
 #### Slot value verification #### {#slot-value-verification}
 
