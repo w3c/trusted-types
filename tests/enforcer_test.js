@@ -102,7 +102,7 @@ describe('TrustedTypesEnforcer', function() {
     s.appendChild(p);
 
     // TODO: enable once
-    // https://github.com/w3c/webappsec-trusted-types/issues/133#issuecomment-727900669
+    // https://github.com/w3c/trusted-types/issues/133#issuecomment-727900669
     // is fixed.
     // expect(() => {
     //   s.insertAdjacentText(
