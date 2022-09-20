@@ -1,7 +1,6 @@
-[![Build Status](https://travis-ci.org/w3c/webappsec-trusted-types.svg)](https://travis-ci.org/w3c/webappsec-trusted-types)
 ![npm bundle size](https://img.shields.io/bundlephobia/minzip/trusted-types.svg)
 ![Libraries.io dependency status for latest release](https://img.shields.io/librariesio/release/npm/trusted-types.svg)
-![GitHub issues](https://img.shields.io/github/issues/w3c/webappsec-trusted-types.svg)
+![GitHub issues](https://img.shields.io/github/issues/w3c/trusted-types.svg)
 ![npm](https://img.shields.io/npm/v/trusted-types.svg)
 [![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=eGZQNXU1U09vZjkrZzYzU3YrQ2FsbUpheGczR0VmMTZUSjBydnNjd1pKTT0tLTZPMWVJTnU1UHJvYjFCb0pHQmlsaXc9PQ%3d%3d--295829245abf0dd0cd150f9ca4fe3198da38747b)](https://www.browserstack.com/automate/public-build/eGZQNXU1U09vZjkrZzYzU3YrQ2FsbUpheGczR0VmMTZUSjBydnNjd1pKTT0tLTZPMWVJTnU1UHJvYjFCb0pHQmlsaXc9PQ%3d%3d--295829245abf0dd0cd150f9ca4fe3198da38747b)
 
@@ -11,7 +10,7 @@ First time here? This is a repository hosting the Trusted Types specification dr
 
  * [Introduction for web developers](https://web.dev/trusted-types/) - API description with examples.
  * [Explainer](explainer.md) - introductory explainer (what problem is the API solving?).
- * [Specification draft](https://w3c.github.io/webappsec-trusted-types/dist/spec/) - a more comprehensive and formalized description of the Trusted Types API.
+ * [Specification draft](https://w3c.github.io/trusted-types/dist/spec/) - a more comprehensive and formalized description of the Trusted Types API.
  * [Browser Support](https://caniuse.com/trusted-types) - The API is available natively in browsers based on Chromium version 83 and up. 
 
 ## Polyfill
@@ -83,7 +82,7 @@ $ npm run build
 ```
 
 ## Demo
-To see the polyfill in action, visit the [demo page](https://w3c.github.io/webappsec-trusted-types/demo/).
+To see the polyfill in action, visit the [demo page](https://w3c.github.io/trusted-types/demo/).
 
 ## Testing
 It can be tested by running:
@@ -104,5 +103,5 @@ See [CONTRIBUTING](CONTRIBUTING.md).
 
 # Questions?
 
-Our [wiki](https://github.com/w3c/webappsec-trusted-types/wiki) or the [specification](https://w3c.github.io/webappsec-trusted-types/dist/spec/) may already contain an answer
-to your question. If not, please [contact us](https://github.com/w3c/webappsec-trusted-types/wiki/Contact)!
+Our [wiki](https://github.com/w3c/trusted-types/wiki) or the [specification](https://w3c.github.io/trusted-types/dist/spec/) may already contain an answer
+to your question. If not, please [contact us](https://github.com/w3c/trusted-types/wiki/Contact)!
