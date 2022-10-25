@@ -225,12 +225,14 @@ in a way that cannot be spoofed at runtime:
 const value = TrustedHTML.fromLiteral`<b>Hello there.</b>`;
 ```
 
-Note that template literals are passed as arrays of strings to the tag functions.
-`fromLiteral` checks that a passed-in value is actually a template literal
-and not dynamically constructed.
+Note that template literals are passed as arrays of strings to the tag
+functions. `fromLiteral` checks that a passed-in value is actually a template
+literal and not dynamically constructed, and that it does not have dynamic
+components.
 
 ``` javascript
-TrustedHTML.fromLiteral(["<b>Hello there.</b>"]);  // Throws.
+TrustedHTML.fromLiteral(["<b>Hello there.</b>"]);  // Throws. Not a literal.
+TrustedHTML.fromLiteral`Hello ${value} world`;  // Throws. Literal with parameter.
 ```
 
 ### DOM Sinks
