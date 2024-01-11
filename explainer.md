@@ -213,26 +213,6 @@ trustedTypes.createPolicy('default', {
 This mechanism complements CSP's `'unsafe-inline'`, allowing the authors to enable strong security 
 controls in their application even if it occasionally uses `javascript:` URLs for legitimate purposes. 
 
-### Source Literals
-
-XSS is an unintended modification of a site's source code. Wrapping literals
-from the original JavaScript resource - which by definition aren't XSS - can be
-cumbersome. Trusted Types provides a way to easily wrap source literals in
-Trusted Types by using the tagged template syntax and the `fromLiteral` methods,
-in a way that cannot be spoofed at runtime:
-
-``` javascript
-const value = TrustedHTML.fromLiteral`<b>Hello there.</b>`;
-```
-
-Note that template literals are passed as arrays of strings to the tag functions.
-`fromLiteral` checks that a passed-in value is actually a template literal
-and not dynamically constructed.
-
-``` javascript
-TrustedHTML.fromLiteral(["<b>Hello there.</b>"]);  // Throws.
-```
-
 ### DOM Sinks
 
 *   **HTML Contexts**: Given something like `typedef (DOMString or TrustedHTML) HTMLString`, we'd

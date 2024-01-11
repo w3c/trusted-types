@@ -21,6 +21,7 @@ WPT Path Prefix: /trusted-types/
 block-Document-execCommand.html
 block-Node-multiple-arguments.html
 block-string-assignment-to-attribute-via-attribute-node.html
+block-string-assignment-to-Document-parseHTMLUnsafe.html
 block-string-assignment-to-Document-write.html
 block-string-assignment-to-DOMParser-parseFromString.html
 block-string-assignment-to-DOMWindowTimers-setTimeout-setInterval.html
@@ -28,8 +29,10 @@ block-string-assignment-to-Element-insertAdjacentHTML.html
 block-string-assignment-to-Element-outerHTML.html
 block-string-assignment-to-Element-setAttribute.html
 block-string-assignment-to-Element-setAttributeNS.html
+block-string-assignment-to-Element-setHTMLUnsafe.html
 block-string-assignment-to-HTMLElement-generic.html
 block-string-assignment-to-Range-createContextualFragment.html
+block-string-assignment-to-ShadowRoot-setHTMLUnsafe.html
 block-text-node-insertion-into-script-element.html
 csp-block-eval.html
 default-policy-callback-arguments.html
@@ -73,7 +76,6 @@ trusted-types-eval-reporting-no-unsafe-eval.html
 trusted-types-eval-reporting-report-only.html
 trusted-types-eval-reporting.html
 trusted-types-event-handlers.html
-trusted-types-from-literal.html
 trusted-types-navigation.html
 trusted-types-report-only.html
 trusted-types-reporting-check-report.html
@@ -85,7 +87,6 @@ TrustedType-AttributeNodes.html
 TrustedTypePolicy-createXXX.html
 TrustedTypePolicy-CSP-no-name.html
 TrustedTypePolicy-CSP-wildcard.html
-TrustedTypePolicyFactory-blocking.html
 TrustedTypePolicyFactory-constants.html
 TrustedTypePolicyFactory-createPolicy-createXYZTests.html
 TrustedTypePolicyFactory-createPolicy-cspTests-noNamesGiven.html
@@ -380,7 +381,6 @@ wrappers around a string, constructed via a {{TrustedTypePolicy}}'s
 interface TrustedHTML {
   stringifier;
   DOMString toJSON();
-  static TrustedHTML fromLiteral(object templateStringsArray);
 };
 </pre>
 
@@ -392,9 +392,6 @@ will never change during its lifetime.
 <dfn for="TrustedHTML">stringification behavior</dfn> steps of a
 TrustedHTML object are to return the value from its
 `[[Data]]` internal slot.
-
-The <dfn method for="TrustedHTML">fromLiteral(object templateStringsArray)</dfn> method, when invoked, returns the result of executing a [$Create a Trusted Type from literal$] algorithm,
-with {{TrustedHTML}} as |type| and |templateStringsArray| as |template|.
 
 ### <dfn interface>TrustedScript</dfn> ### {#trusted-script}
 
@@ -410,7 +407,6 @@ around a string, constructed via a {{TrustedTypePolicy}}'s
 interface TrustedScript {
   stringifier;
   DOMString toJSON();
-  static TrustedScript fromLiteral(object templateStringsArray);
 };
 </pre>
 
@@ -422,9 +418,6 @@ will never change during its lifetime.
 <dfn for="TrustedScript">stringification behavior</dfn> steps of a
 TrustedScript object are to return the value from its
 `[[Data]]` internal slot.
-
-The <dfn method for="TrustedScript">fromLiteral(object templateStringsArray)</dfn> method, when invoked, returns the result of executing a [$Create a Trusted Type from literal$] algorithm,
-with {{TrustedScript}} as |type| and |templateStringsArray| as |template|.
 
 ### <dfn interface>TrustedScriptURL</dfn> ### {#trused-script-url}
 
@@ -440,7 +433,6 @@ string, constructed via a {{TrustedTypePolicy}}'s
 interface TrustedScriptURL {
   stringifier;
   USVString toJSON();
-  static TrustedScriptURL fromLiteral(object templateStringsArray);
 };
 </pre>
 
@@ -452,9 +444,6 @@ will never change during its lifetime.
 <dfn for="TrustedScriptURL">stringification behavior</dfn> steps of a
 TrustedScriptURL object are to return the value from its
 `[[Data]]` internal slot.
-
-The <dfn method for="TrustedScriptURL">fromLiteral(object templateStringsArray)</dfn> method, when invoked, returns the result of executing a [$Create a Trusted Type from literal$] algorithm,
-with {{TrustedScriptURL}} as |type| and |templateStringsArray| as |template|.
 
 ## <dfn>Policies</dfn> ## {#policies-hdr}
 
@@ -1025,29 +1014,6 @@ a string |value|, a list |arguments|, and a boolean |throwIfMissing|, execute th
     |value| as a first argument, items of |arguments| as subsequent arguments,
     and [[ECMASCRIPT#sec-method|callback **this** value]] set to `null`, rethrowing any exceptions.
 1.  Return |policyValue|.
-
-## <dfn abstract-op>Create a Trusted Type from literal</dfn> ## {#create-a-trusted-type-from-literal-algorithm}
-
-Given a {{TrustedType}} type |type| and an object |template|, execute the following steps:
-
-1.  If [$check templatedness$] of |template| returns false, throw a {{TypeError}}.
-1.  If [$Get$](|template|, "length") is not equal to 1, throw a {{TypeError}}.
-1.  Let |templatedValue| be the result of [$Get$](|template|, 0).
-1.  If |type| is {{TrustedHTML}}, perform the following steps:
-    1.  Let |templateNode| be the results of [=create an element|creating an element=] given "template", the [=HTML namespace=] and [=current global object=]'s [=associated Document=].
-    1.  Assert: |templateNode| is {{HTMLTemplateElement}}.
-    1.  Let |fragment| be the result of invoking [$fragment parsing algorithm$], with |templatedValue| as <var ignore>markup</var>, and |templateNode| as a <var ignore>context element</var>.
-    1.  Set |templatedValue| to be the result of invoking [=HTML fragment serialization algorithm=], with |fragment| as <var ignore>the node</var>.
-
-1. Return a new instance of an interface |type|, with its `[[Data]]` internal slot value set to |templatedValue|.
-
-## Check templatedness of an object ## {#check-templatedness-algorithm}
-
-To <dfn abstract-op>check templatedness</dfn> of an object |value|, perform the following steps. They return a boolean value:
-
-1. Let |realm| be the <a>current Realm Record</a>.
-1. For each |item| of |realm|.\[[TemplateMap]], if |item|.\[[Array]] is |value|, return true.
-1. Return false.
 
 ## <dfn abstract-op>Get Trusted Type compliant string</dfn> ## {#get-trusted-type-compliant-string-algorithm}
 
@@ -1643,8 +1609,8 @@ Content-Security-Policy: require-trusted-types-for 'script'; trusted-types one t
 
 <div class="example" id="header-that-allows-no-policy-names">
 An empty [=directive=] [=directive/value=] indicates policies may not be created,
-and sinks expect Trusted Type values, i.e. DOM XSS [=injection sinks=] cannot be used
-with dynamic values. Values for those sinks can only be created by <code>fromLiteral</code> tag functions.
+and sinks expect Trusted Type values, i.e. no DOM XSS [=injection sinks=] can be used
+at all.
 <pre class="http">
 Content-Security-Policy: trusted-types; require-trusted-types-for 'script'
 </pre>

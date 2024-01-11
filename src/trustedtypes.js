@@ -203,30 +203,6 @@ export const trustedTypesBuilderTestOnly = function() {
   }
 
   /**
-   * @template T
-   * @this {T}
-   * @param {!ITemplateArray} template
-   * @return {T}
-   */
-  function fromLiteral(template) {
-    if (!isFrozen(template)
-        || !isFrozen(template.raw)
-        || template.length !== 1) {
-      // Not a template object.
-      throw new TypeError('Invalid input');
-    }
-    let allowedValue = raw(template);
-    if (this === TrustedHTML) {
-      const tplEl = createElement.call(null, 'template');
-      tplEl.innerHTML = allowedValue;
-      allowedValue = tplEl.innerHTML;
-    }
-    const o = freeze((new this(creatorSymbol, 'fromLiteral')));
-    privates(o)['v'] = allowedValue;
-    return o;
-  }
-
-  /**
    * @param {function(new:TrustedType, symbol, string)} SubClass
    * @param {string} canonName The class name which should be independent of
    *     any renaming pass and which is relied upon by the enforcer and for
@@ -235,9 +211,6 @@ export const trustedTypesBuilderTestOnly = function() {
   function lockdownTrustedType(SubClass, canonName) {
     freeze(SubClass.prototype);
     delete SubClass.name;
-    defineProperty(SubClass, 'fromLiteral', {value:
-      fromLiteral.bind(SubClass),
-    });
     defineProperty(SubClass, 'name', {value: canonName});
   }
 
