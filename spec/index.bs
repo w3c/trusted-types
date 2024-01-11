@@ -1616,6 +1616,13 @@ Content-Security-Policy: trusted-types; require-trusted-types-for 'script'
 </pre>
 </div>
 
+The keyword `'none'` may be used to explicitly express the above:
+<div class="example" id="header-with-none-that-allows-no-policy-names">
+<pre class="http">
+Content-Security-Policy: trusted-types 'none'; require-trusted-types-for 'script'
+</pre>
+</div>
+
 Keyword `'allow-duplicates'` allows for creating policies with a name that was already used.
 
 <div class="example" id="allow-duplicates-in-header">
