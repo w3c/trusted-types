@@ -1070,7 +1070,7 @@ for the specific requirements that the use of [{{StringContext}}] entails.
 
     <pre highlight="webidl">
         interface Document {
-          undefined write([StringContext=html] DOMString... text);
+          undefined write([StringContext=TrustedHTML] DOMString... text);
         };
     </pre>
 </div>
