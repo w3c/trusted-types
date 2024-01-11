@@ -18,7 +18,6 @@ Markup Shorthands: algorithm yes, biblio yes, css no, dfn yes, markdown yes, mar
 Ignored Terms: h1, h2, h3, h4, h5, h6, xmp, EmptyString
 Complain About: missing-example-ids yes
 Boilerplate: idl-index no
-<!-- WPT Path Prefix: /trusted-types/ # Cannot add this, as it requires all the tests to be referenced in the spec -->
 </pre>
 
 <pre class="anchors">
