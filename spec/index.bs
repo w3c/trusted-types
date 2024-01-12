@@ -18,7 +18,6 @@ Markup Shorthands: algorithm yes, biblio yes, css no, dfn yes, markdown yes, mar
 Ignored Terms: h1, h2, h3, h4, h5, h6, xmp, EmptyString
 Complain About: missing-example-ids yes
 Boilerplate: idl-index no
-<!-- WPT Path Prefix: /trusted-types/ # Cannot add this, as it requires all the tests to be referenced in the spec -->
 </pre>
 
 <pre class="anchors">
@@ -223,8 +222,8 @@ enforcing types for HTML injection sinks.
 Examples of HTML injection sinks include:
 
   * Functions that parse & insert HTML strings into the document like
-    [[DOM-Parsing#widl-Element-innerHTML|Element.innerHTML]],
-    [[DOM-Parsing#widl-Element-outerHTML|Element.outerHTML]] setter, or {{Document/write|Document.write}}.
+    {{InnerHTML/innerHTML|Element.innerHTML}},
+    {{Element/outerHTML|Element.outerHTML}} setter, or {{Document/write|Document.write}}.
   * Functions that create a new same-origin {{Document}} with caller-controlled
     markup like {{DOMParser/parseFromString()}},
 
@@ -858,7 +857,7 @@ algorithms in other specifications, see [[#integrations]].
 
 To create a {{TrustedTypePolicy}}, given a {{TrustedTypePolicyFactory}} (|factory|),
 a string (|policyName|), {{TrustedTypePolicyOptions}} dictionary (|options|), and a
-[=Realm/global object=] (|global|) run these steps:
+[=realm/global object=] (|global|) run these steps:
 
 1.  Let |allowedByCSP| be the result of executing [$Should Trusted Type policy
     creation be blocked by Content Security Policy?$] algorithm with |global|,
@@ -960,7 +959,7 @@ This algorithm will return a string that can be used with an
 [=injection sink=], optionally unwrapping it from a matching [=Trusted Type=].
 It will ensure that the Trusted Type [=enforcement=] rules were respected.
 
-Given a {{TrustedType}} type (|expectedType|), a [=Realm/global object=] (|global|),
+Given a {{TrustedType}} type (|expectedType|), a [=realm/global object=] (|global|),
 {{TrustedType}} or a string (|input|), a string (|sink|) and a string (|sinkGroup|), run these steps:
 
 1.  Let |cspList| be the |global|'s <a>CSP list</a>.
@@ -986,7 +985,7 @@ Given a {{TrustedType}} type (|expectedType|), a [=Realm/global object=] (|globa
 
 This algorithm routes a value to be assigned to an [=injection sink=]  through a default policy, should one exist.
 
-Given a {{TrustedType}} type (|expectedType|), a [=Realm/global object=] (|global|),
+Given a {{TrustedType}} type (|expectedType|), a [=realm/global object=] (|global|),
 {{TrustedType}} or a string (|input|), and a string (|sink|), run these steps:
 
 1.  Let |defaultPolicy| be the value of |global|'s [=Window/trusted type policy factory=]'s `[[DefaultPolicy]]` slot. If the slot is empty, return `null`.
@@ -1058,7 +1057,7 @@ attribute appears in is its <dfn>related construct</dfn>.
 
 A type that is not {{DOMString}} or {{USVString}} must not be associated with the [{{StringContext}}] extended attribute.
 
-See the rules for converting ECMAScript values to the IDL types in [[webidl#es-DOMString]]
+See the rules for converting ECMAScript values to the IDL types in [[webidl#js-DOMString]]
 for the specific requirements that the use of [{{StringContext}}] entails.
 
 <div class="example" id="webidl-stringcontext-example">
@@ -1086,7 +1085,7 @@ The following extended attributes are <dfn for="extended attributes" noexport>ap
 
 ### Type conversion ### {#webidl-type-conversion}
 
-This specification modifies the algorithm implementing the conversion to DOMString in [[webidl#es-DOMString]]:
+This specification modifies the algorithm implementing the conversion to DOMString in [[webidl#js-DOMString]]:
 
 An ECMAScript value |V| is [=converted to an IDL value|converted=]
 to an IDL {{DOMString}} value by running the following algorithm:
@@ -1106,9 +1105,9 @@ to an IDL {{DOMString}} value by running the following algorithm:
 
 ### Validate the string in context ### {#webidl-validate-the-string-in-context}
 
-This specification adds a following section to [[webidl#es-security]].
+This specification adds a following section to [[webidl#js-security]].
 
-Certain algorithms in [[webidl#es-type-mapping]] are defined to
+Certain algorithms in [[webidl#js-type-mapping]] are defined to
 <dfn id="dfn-validate-the-string-in-context" export>validate the string in context</dfn> on a given
 value. This check is used to determine whether a given value
 is appropriate for its {{StringContext}}. This validation takes the following four inputs:
@@ -1412,7 +1411,7 @@ This document modifies the {{Element}} interface, adding <a>attribute validation
 
 <p><ins>This and <a lt="other applicable specifications">other specifications</a> may define
 <dfn export id=concept-element-attributes-validation-ext>attribute validation steps</dfn> for
-<a for=/>elements</a>. The algorithm is passed <var>element</var>, <var>localName</var>,
+<a for=/ spec=dom>elements</a>. The algorithm is passed <var>element</var>, <var>localName</var>,
 <var>value</var>, and <var ignore>namespace</var>.</ins>
 
 This document changes the  <a spec="dom">handle attribute changes</a> algorithm, adding the following step at the beginning:
@@ -1426,7 +1425,7 @@ This document changes the  <a spec="dom">handle attribute changes</a> algorithm,
 Additionally, this document changes the <a spec=dom>append</a> an attribute algorithm:
 
 <p>To <dfn export id=concept-element-attributes-append lt="append an attribute">append</dfn> an
-<a spec=dom>attribute</a> <var>attribute</var> to an <a for="/">element</a> <var>element</var>
+<a spec=dom>attribute</a> <var>attribute</var> to an <a spec=dom for="/">element</a> <var>element</var>
 <ins>with a <var>value</var></ins>, run these steps:
 
 <ol>
@@ -1598,7 +1597,7 @@ Content-Security-Policy: trusted-types one two default
 
 ### <dfn abstract-op>Should sink type mismatch violation be blocked by Content Security Policy?</dfn> ### {#should-block-sink-type-mismatch}
 
-Given a [=Realm/global object=] (|global|), a string (|sink|), a string (|sinkGroup|) and a string (|source|) this algorithm
+Given a [=realm/global object=] (|global|), a string (|sink|), a string (|sinkGroup|) and a string (|source|) this algorithm
 returns `"Blocked"` if the [=injection sink=] requires a [=Trusted Type=], and
 `"Allowed"` otherwise.
 
@@ -1623,7 +1622,7 @@ returns `"Blocked"` if the [=injection sink=] requires a [=Trusted Type=], and
 
 ### <dfn abstract-op>Should Trusted Type policy creation be blocked by Content Security Policy?</dfn> ### {#should-block-create-policy}
 
-Given a [=Realm/global object=] (|global|), a string (|policyName|) and a list of
+Given a [=realm/global object=] (|global|), a string (|policyName|) and a list of
 strings (|createdPolicyNames|), this algorithm returns `"Blocked"` if the
 {{TrustedTypePolicy}} should not be created, and `"Allowed"` otherwise.
 
@@ -1678,7 +1677,7 @@ See also <a href="https://github.com/tc39/ecma262/issues/938">TC39/ecma262 issue
 <pre highlight="js">
   let f = new self.top.Function(source);
 </pre>
-In this case, the |callerRealm|'s Window is `self` and the |calleeRealm|'s Window is `self.top`.
+In this case, the <var ignore="">callerRealm</var>'s Window is `self` and the |calleeRealm|'s Window is `self.top`.
 The Trusted Types portion of this algorithm uses |calleeRealm| and its CSP setting for consistency with other sinks.
 <pre highlight="js">
   // Assigning a string to another Realm's DOM sink uses that Realm's default policy.
@@ -1689,7 +1688,7 @@ The Trusted Types portion of this algorithm uses |calleeRealm| and its CSP setti
 </pre>
 </div>
 
-Given a [[ECMASCRIPT#realm|realm]] (|calleeRealm|), a string
+Given a [[ECMA-262#realm|realm]] (|calleeRealm|), a string
 (|source|) <ins>, a boolean |wasCodeLike| and a string |compilationSink|</ins>, this algorithm returns <del>normally</del><ins>the
 source string to compile</ins> if compilation is allowed, and
 throws an "`EvalError`" if not:
@@ -1708,7 +1707,7 @@ throws an "`EvalError`" if not:
 
 2.  <ins>If the algorithm throws an error, throw an {{EvalError}}.</ins>
 
-3.  Let |global| be a |calleeRealm|'s [=Realm/global object=].
+3.  Let |global| be a |calleeRealm|'s [=realm/global object=].
 
 4.  Let |result| be "`Allowed`".
 
