@@ -762,9 +762,9 @@ dictionary TrustedTypePolicyOptions {
    CreateScriptCallback? createScript;
    CreateScriptURLCallback? createScriptURL;
 };
-callback CreateHTMLCallback = DOMString (DOMString input, any... arguments);
-callback CreateScriptCallback = DOMString (DOMString input, any... arguments);
-callback CreateScriptURLCallback = USVString (DOMString input, any... arguments);
+callback CreateHTMLCallback = DOMString? (DOMString input, any... arguments);
+callback CreateScriptCallback = DOMString? (DOMString input, any... arguments);
+callback CreateScriptURLCallback = USVString? (DOMString input, any... arguments);
 </pre>
 
 ### <dfn>Default policy</dfn> ### {#default-policy-hdr}
