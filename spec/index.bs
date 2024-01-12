@@ -758,9 +758,9 @@ object instances directly - this behavior is provided by
 
 <pre class="idl">
 dictionary TrustedTypePolicyOptions {
-   CreateHTMLCallback? createHTML;
-   CreateScriptCallback? createScript;
-   CreateScriptURLCallback? createScriptURL;
+   CreateHTMLCallback createHTML;
+   CreateScriptCallback createScript;
+   CreateScriptURLCallback createScriptURL;
 };
 callback CreateHTMLCallback = DOMString? (DOMString input, any... arguments);
 callback CreateScriptCallback = DOMString? (DOMString input, any... arguments);
