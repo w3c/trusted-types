@@ -20,4 +20,5 @@ jobs:
           SOURCE: spec/index.bs
           DESTINATION: dist/spec
           BUILD_FAIL_ON: link-error
+          VALIDATE_WEBIDL: false # reffy v4 cannot correctly parse current bikeshed generated IDL. https://github.com/w3c/spec-prod/pull/155 would fix it.
           GH_PAGES_BRANCH: gh-pages # deploy only happens on push trigger.
