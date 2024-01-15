@@ -67,10 +67,10 @@ if `aString` contains untrusted data, `foo[bar] = aString` is a statement
 that potentially can trigger a vulnerability, depending on a value
 of `foo` and `bar`.
 
-This document focuses on preventing DOM-Based Cross-Site Scripting
+This document focuses on preventing Cross-Site Scripting
 that occurs when attacker-controlled data reaches
-[[#dom-xss-injection-sinks]], as that eventually causes execution of the
-script payload controlled by the attacker. DOM XSS is prevalent in the
+[[#xss-injection-sinks]], as that eventually causes execution of the
+script payload controlled by the attacker. XSS is prevalent in the
 web applications as there are over 60 different
 injection sinks (e.g. `Element.innerHTML`, or `Location.href` setters).
 
@@ -127,9 +127,9 @@ monitor and review.
     that uses a secure templating system to generate the UI
     components. The application also depends on 3rd party client-side
     libraries that perform auxiliary tasks (e.g. analytics, performance
-    monitoring). To ensure that none of these components introduce DOM
+    monitoring). To ensure that none of these components introduce
     XSS vulnerabilities, author defines a Trusted Type policy in the
-    templating library and enables the enforcement for the [[#dom-xss-injection-sinks]].
+    templating library and enables the enforcement for the [[#xss-injection-sinks]].
 
 *   A large team maintains a complex client-side application.
     They create a number of Trusted Types policies that satisfy the security
@@ -141,15 +141,15 @@ monitor and review.
     The need to create trusted values to affect [=injection sinks=],
     combined with additional scrutiny on changes that affect policy
     code, incents developers to use safe abstractions instead of writing ad-hoc
-    string composition code when interacting with [[#dom-xss-injection-sinks]].
+    string composition code when interacting with [[#xss-injection-sinks]].
 
-    When considering the risk of DOM XSS, security auditors find a
+    When considering the risk of XSS, security auditors find a
     small attack surface; they focus on the small amount of code that
     crafts the CSP header and provides the safe abstractions, and ignore the
     bulk of client-side application code.
 
 *   An existing web application interacts with the DOM mostly using XSS-safe
-    patterns (i.e. without using [[#dom-xss-injection-sinks]]). In a few places,
+    patterns (i.e. without using [[#xss-injection-sinks]]). In a few places,
     however, it resorts to using risky patterns like loading additional script using
     JSONP, calling into `innerHTML` or `eval`.
 
@@ -159,7 +159,7 @@ monitor and review.
 
     As such, CSP cannot be enforced on this application (without resorting to
     an unsafe version using `'unsafe-eval' 'unsafe-inline'`). Additionally,
-    it's possible some codebase with DOM XSS flaws was not included in a review,
+    it's possible some codebase with XSS flaws was not included in a review,
     or will be introduced in the future.
 
     To address this risk, the author converts the reviewed parts to using
@@ -177,7 +177,7 @@ monitor and review.
 
     Any additional code, including the code of often-changing dependencies,
     can be excluded from the review, unless it creates a Trusted Type policy.
-    Without it, the code cannot cause a DOM XSS.
+    Without it, the code cannot cause XSS.
 
 # Framework # {#framework}
 
@@ -205,14 +205,17 @@ it's not easy to distinguish one from the other.
 This document organizes the injection sinks into groups, based on the
 capabilities that sinks in a given group have. [=Enforcement=] for groups is controlled via <a>trusted-types-sink-group</a> values.
 
-### HTML injection sinks ### {#html-injection-sinks}
+### Cross-Site Scripting (XSS) injection sinks ### {#xss-injection-sinks}
+*This section is not normative.*
+
+Guarding XSS injection sinks is controlled by the <a>trusted-types-sink-group</a> named 'script'.
+
+#### HTML injection sinks #### {#html-injection-sinks}
 
 *This section is not normative.*
 
-HTML <a>injection sinks</a> parse input strings into a DOM tree. Since HTML parsers
-can create arbitrary elements, including scripts, and set arbitrary attributes,
-enabling the [=enforcement=] of any <a>trusted-types-sink-group</a> also implies
-enforcing types for HTML injection sinks.
+HTML <a>injection sinks</a> parse input strings into a DOM tree. HTML parsers
+can create arbitrary elements, including scripts, and set arbitrary attributes.
 
 Examples of HTML injection sinks include:
 
@@ -222,7 +225,7 @@ Examples of HTML injection sinks include:
   * Functions that create a new same-origin {{Document}} with caller-controlled
     markup like {{DOMParser/parseFromString()}},
 
-### DOM XSS injection sinks ### {#dom-xss-injection-sinks}
+#### DOM XSS injection sinks #### {#dom-xss-injection-sinks}
 
 *This section is not normative.*
 
@@ -237,8 +240,6 @@ Examples of include:
     {{HTMLScriptElement/text!!attribute|HTMLScriptElement.text}},
   * Functions that execute code directly like `eval`,
   * Navigation to 'javascript:' URLs.
-
-Guarding DOM XSS injection sinks is controlled by the <a>trusted-types-sink-group</a> named 'script'.
 
 ## Trusted Types ## {#trusted-types}
 
@@ -1488,7 +1489,7 @@ Types framework for all the [=injection sinks=] of certain groups in a current [
 Specifically, it defines what should be the behavior when a string value is passed to an [=injection sink=]
 of a given group (i.e. should the type-based enforcement be enabled for such sinks).
 
-Note: Currently, only the enforcement for [[#dom-xss-injection-sinks]] is specified.
+Note: Currently, only the enforcement for [[#xss-injection-sinks]] is specified.
 
 The syntax for the directive's [=directive/name=] and [=directive/value=] is described by the following
 ABNF:
@@ -1500,7 +1501,7 @@ directive-value = <a>trusted-types-sink-group</a> *( <a href="https://w3c.github
 </pre>
 
 <div class="example" id="require-tt-for-script-header">
-Enforce Trusted Types at the DOM XSS injection sinks.
+Enforce Trusted Types at the XSS injection sinks.
 
 <pre class="http">
 Content-Security-Policy: require-trusted-types-for 'script'
@@ -1563,7 +1564,7 @@ Content-Security-Policy: require-trusted-types-for 'script'; trusted-types one t
 
 <div class="example" id="header-that-allows-no-policy-names">
 An empty [=directive=] [=directive/value=] indicates policies may not be created,
-and sinks expect Trusted Type values, i.e. no DOM XSS [=injection sinks=] can be used
+and sinks expect Trusted Type values, i.e. no XSS [=injection sinks=] can be used
 at all.
 
 <pre class="http">
