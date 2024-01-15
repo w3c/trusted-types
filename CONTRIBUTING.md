@@ -3,6 +3,14 @@ Contributions to this repository are intended to become part of Recommendation-t
 [Software and Document License](https://www.w3.org/Consortium/Legal/copyright-software). To make substantive contributions to specifications, you must either participate
 in the relevant W3C Working Group or make a non-member patent licensing commitment.
 
+# Locally translating spec changes from bikeshed to HTML
+
+1. [Install bikeshed](https://speced.github.io/bikeshed/#install-final).
+2. `cd spec && bikeshed serve`
+3. Open `http://localhost:8000/` in a browser to view the translated HTML.
+
+# Other
+
 If you are not the sole contributor to a contribution (pull request), please identify all
 contributors in the pull request comment.
 
