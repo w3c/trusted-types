@@ -205,23 +205,6 @@ it's not easy to distinguish one from the other.
 This document organizes the injection sinks into groups, based on the
 capabilities that sinks in a given group have. [=Enforcement=] for groups is controlled via <a>trusted-types-sink-group</a> values.
 
-### HTML injection sinks ### {#html-injection-sinks}
-
-*This section is not normative.*
-
-HTML <a>injection sinks</a> parse input strings into a DOM tree. Since HTML parsers
-can create arbitrary elements, including scripts, and set arbitrary attributes,
-enabling the [=enforcement=] of any <a>trusted-types-sink-group</a> also implies
-enforcing types for HTML injection sinks.
-
-Examples of HTML injection sinks include:
-
-  * Functions that parse & insert HTML strings into the document like
-    {{InnerHTML/innerHTML|Element.innerHTML}},
-    {{Element/outerHTML|Element.outerHTML}} setter, or {{Document/write|Document.write}}.
-  * Functions that create a new same-origin {{Document}} with caller-controlled
-    markup like {{DOMParser/parseFromString()}},
-
 ### DOM XSS injection sinks ### {#dom-xss-injection-sinks}
 
 *This section is not normative.*
@@ -229,7 +212,7 @@ Examples of HTML injection sinks include:
 DOM XSS <a>injection sinks</a>  evaluate an input string value in a way that could
 result in DOM XSS if that value is untrusted.
 
-Examples of include:
+Examples include:
 
   * Setters for {{Element}} attributes that accept a URL of the code to load
     like {{HTMLScriptElement/src!!attribute|HTMLScriptElement.src}},
@@ -237,6 +220,15 @@ Examples of include:
     {{HTMLScriptElement/text!!attribute|HTMLScriptElement.text}},
   * Functions that execute code directly like `eval`,
   * Navigation to 'javascript:' URLs.
+
+Since HTML parsers can create arbitrary elements, including scripts, and set arbitrary attributes,
+DOM XSS <a>injection sinks</a> also include HTML parsing sinks:
+
+  * Functions that parse & insert HTML strings into the document like
+    {{InnerHTML/innerHTML|Element.innerHTML}},
+    {{Element/outerHTML|Element.outerHTML}} setter, or {{Document/write|Document.write}}.
+  * Functions that create a new same-origin {{Document}} with caller-controlled
+    markup like {{DOMParser/parseFromString()}}.
 
 Guarding DOM XSS injection sinks is controlled by the <a>trusted-types-sink-group</a> named 'script'.
 
