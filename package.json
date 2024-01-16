@@ -32,7 +32,7 @@
   "license": "W3C-20150513",
   "repository": {
     "type": "git",
-    "url": "https://github.com/w3c/webappsec-trusted-types.git"
+    "url": "https://github.com/w3c/trusted-types.git"
   }
   "devDependencies": {
     "@babel/core": "^7.5.5",
