@@ -1439,6 +1439,7 @@ This document modifies the following interfaces defined by [[DOM-Parsing]]:
 partial interface Element {
   [CEReactions, LegacyNullToEmptyString] attribute HTMLString outerHTML;
   [CEReactions] undefined insertAdjacentHTML(DOMString position, HTMLString text);
+  [CEReactions] undefined setHTMLUnsafe(HTMLString html);
 };
 
 partial interface mixin InnerHTML { // specified in a draft version at https://w3c.github.io/DOM-Parsing/#the-innerhtml-mixin
@@ -1449,10 +1450,18 @@ partial interface Range {
   [CEReactions, NewObject] DocumentFragment createContextualFragment(HTMLString fragment);
 };
 
+partial interface ShadowRoot {
+  [CEReactions] undefined setHTMLUnsafe(HTMLString html);
+};
+
 [Exposed=Window]
 interface DOMParser {
   constructor();
   [NewObject] Document parseFromString(HTMLString str, SupportedType type);
+};
+
+partial interface Document {
+  static Document parseHTMLUnsafe(HTMLString html);
 };
 </pre>
 
