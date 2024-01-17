@@ -95,6 +95,11 @@ monitor and review.
 *   Encourage a design in which security decisions are
     encapsulated within a small part of the application.
 
+*   Enable transitioning existing websites to call alternative save methods to
+    [[#dom-xss-injection-sinks]]. Potentially with support of the <a
+    http-header>Content-Security-Policy-Report-Only</a> HTTP response header
+    field.
+
 *   Reduce security review surface for complex web application
     codebases.
 
