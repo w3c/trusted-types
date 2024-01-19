@@ -1564,9 +1564,8 @@ Content-Security-Policy: require-trusted-types-for 'script'; trusted-types one t
 
 <div class="example" id="header-that-allows-no-policy-names">
 An empty [=directive=] [=directive/value=] indicates policies may not be created,
-and sinks expect Trusted Type values, i.e. no DOM XSS [=injection sinks=] can be used
-at all.
-
+and sinks expect Trusted Type values, i.e. DOM XSS [=injection sinks=] cannot be used
+with dynamic values. Values for those sinks can only be created by <code>fromLiteral</code> tag functions.
 <pre class="http">
 Content-Security-Policy: trusted-types; require-trusted-types-for 'script'
 </pre>
