@@ -901,8 +901,7 @@ a string |value| and a list |arguments|, execute the following steps:
 1.  If |function| is `null`, throw a TypeError.
 1.  Let |policyValue| be the result of invoking |function| with
     |value| as a first argument, items of |arguments| as subsequent arguments,
-    and [[ECMASCRIPT#sec-method|callback **this** value]] set to `null`.
-1.  If |policyValue| is an error, return |policyValue| and abort the following steps.
+    and [[ECMASCRIPT#sec-method|callback **this** value]] set to `null`, rethrowing any exceptions.
 1.  If |policy|'s [=TrustedTypePolicy/name=] is `"default"` and the |policyValue|
     is null or undefined, return |policyValue|.
 
