@@ -7,7 +7,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/W3C-ED" rel="stylesheet">
   <meta content="Bikeshed version 82ce88815, updated Thu Sep 7 16:33:55 2023 -0700" name="generator">
   <link href="https://w3c.github.io/trusted-types/dist/spec/" rel="canonical">
-  <meta content="6676495f3ab468ab003ee86a6d475936a584d54c" name="document-revision">
+  <meta content="4ae79170c9f79f2fa73871131580f2bff1de11f9" name="document-revision">
 <style>/* Boilerplate: style-autolinks */
 .css.css, .property.property, .descriptor.descriptor {
     color: var(--a-normal-text);
@@ -868,7 +868,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Trusted Types</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2024-01-17">17 January 2024</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2024-01-19">19 January 2024</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -2451,8 +2451,8 @@ directive-value = <a data-link-type="dfn" href="#serialized-tt-configuration" id
    </div>
    <div class="example" id="header-that-allows-no-policy-names">
     <a class="self-link" href="#header-that-allows-no-policy-names"></a> An empty <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives③">directive</a> <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-value" id="ref-for-directive-value②">value</a> indicates policies may not be created,
-and sinks expect Trusted Type values, i.e. no DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②③">injection sinks</a> can be used
-at all. 
+and sinks expect Trusted Type values, i.e. DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②③">injection sinks</a> cannot be used
+with dynamic values. Values for those sinks can only be created by <code>fromLiteral</code> tag functions. 
 <pre class="http">Content-Security-Policy: trusted-types; require-trusted-types-for 'script'
 </pre>
    </div>
