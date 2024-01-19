@@ -7,7 +7,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/W3C-ED" rel="stylesheet">
   <meta content="Bikeshed version 82ce88815, updated Thu Sep 7 16:33:55 2023 -0700" name="generator">
   <link href="https://w3c.github.io/trusted-types/dist/spec/" rel="canonical">
-  <meta content="4ae79170c9f79f2fa73871131580f2bff1de11f9" name="document-revision">
+  <meta content="018b9a060fe8bbdafd16ad54a1a5ecc3299d2402" name="document-revision">
 <style>/* Boilerplate: style-autolinks */
 .css.css, .property.property, .descriptor.descriptor {
     color: var(--a-normal-text);
@@ -1787,9 +1787,7 @@ based on the following table:</p>
      <p>If <var>function</var> is <code>null</code>, throw a TypeError.</p>
     <li data-md>
      <p>Let <var>policyValue</var> be the result of invoking <var>function</var> with <var>value</var> as a first argument, items of <var>arguments</var> as subsequent arguments,
-and <a href="https://tc39.es/ecma262/multipage/overview.html#sec-method">callback **this** value</a> set to <code>null</code>.</p>
-    <li data-md>
-     <p>If <var>policyValue</var> is an error, return <var>policyValue</var> and abort the following steps.</p>
+and <a href="https://tc39.es/ecma262/multipage/overview.html#sec-method">callback **this** value</a> set to <code>null</code>, rethrowing any exceptions.</p>
     <li data-md>
      <p>If <var>policy</var>’s <a data-link-type="dfn" href="#trustedtypepolicy-name" id="ref-for-trustedtypepolicy-name①">name</a> is <code>"default"</code> and the <var>policyValue</var> is null or undefined, return <var>policyValue</var>.</p>
      <p class="note" role="note"><span class="marker">Note:</span> This is used in a <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string">Get Trusted Type compliant string</a> algorithm to signal that
