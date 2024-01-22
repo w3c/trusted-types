@@ -98,7 +98,7 @@ monitor and review.
 *   Reduce security review surface for complex web application
     codebases.
 
-*   Allow the detection of vulnerabilities similar to how regular
+*   Allow the usability-preserving detection of vulnerabilities similar to how regular
     programming errors are detected and surfaced to the developers, with the
     assist of dynamic and static analysis tools.
 
@@ -130,6 +130,18 @@ monitor and review.
     monitoring). To ensure that none of these components introduce DOM
     XSS vulnerabilities, author defines a Trusted Type policy in the
     templating library and enables the enforcement for the [[#dom-xss-injection-sinks]].
+
+*   A website uses [[#dom-xss-injection-sinks]]. The website-developer adds trusted
+    types to it and monitors violations by using the
+    <a http-header>Content-Security-Policy-Report-Only</a> header field.
+    Violations are iteratively fixed by refactoring the code to use only safe
+    methods. Afterwards, no [[#dom-xss-injection-sinks]] are called anymore.
+    Hence, no trusted types are required anymore. The developer switches the
+    report-only mode off and disables trusted type policies with the
+    [=trusted-types-directive|trusted-types=] and the
+    [=require-trusted-types-for-directive|require-trusted-types-for=]
+    directives.
+    The website's functionality was never impaired during the refactorings.
 
 *   A large team maintains a complex client-side application.
     They create a number of Trusted Types policies that satisfy the security
