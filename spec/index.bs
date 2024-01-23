@@ -1110,7 +1110,7 @@ To <dfn abstract-op export>get Trusted Types-compliant attribute value</dfn> on 
      * {{StringContext}} identifier as |expectedType|
      * |newValue| as |input|
      * |element|'s <a>relevant global object</a> as |global|
-     * the result of [=concatenating=] « |element|'s [=Element/local name=], |attribute|'s |localName| » with `"."` as a |separator| as |sink|
+     * the result of [=concatenating=] « |element|'s [=Element/local name=], |attribute|'s [=Attr/local name=] » with `"."` as a |separator| as |sink|
      * 'script' as |sinkGroup|
 
    If the algorithm threw an error, rethrow the error.
