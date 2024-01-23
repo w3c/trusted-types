@@ -1101,8 +1101,8 @@ Given an {{HTMLScriptElement}} (|script|), this algorithm performs the following
 
     If the algorithm threw an error, rethrow the error.
 
-## <dfn-abstract-op export>Validate attribute mutation</dfn> ## {#validate-attribute-mutation}
-Given {{Attr}} |attribute|, {{Element}} |element| and {{TrustedType}} or a string |newValue|, this algorithm performs the following steps:
+## Get Trusted Types-compliant attribute value ## {#validate-attribute-mutation}
+To <dfn abstract-op export>get Trusted Types-compliant attribute value</dfn> on {{Attr}} |attribute| with {{Element}} |element| and {{TrustedType}} or a string |newValue|, perform the following steps:
 
 1. If |element| has an <a spec="webidl" lt="attribute">IDL attribute</a> that [=reflects=] a content attribute with |attribute|'s [=Attr/local name=], let |idlAttribute| be that IDL attribute. Otherwise, return stringified |newValue|.
 1. If {{StringContext}} IDL extended attribute does not appears on |idlAttribute|, return stringified |newValue|.
