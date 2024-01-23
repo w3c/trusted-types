@@ -1082,7 +1082,7 @@ Given a {{TrustedType}} type (|expectedType|), a [=realm/global object=] (|globa
 1.  Let |convertedInput| be the result of executing [$Create a
     Trusted Type$] algorithm, with the following arguments:
     *  |defaultPolicy| as |policy|
-    *  |input| as |value|
+    *  stringified |input| as |value|
     *  |expectedType|’s type name as |trustedTypeName|
     *  &laquo; |trustedTypeName|, |sink| &raquo; as |arguments|
 1. If the algorithm threw an error, rethrow it. Otherwise, return |convertedInput|.
