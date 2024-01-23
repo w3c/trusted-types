@@ -7,7 +7,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/W3C-ED" rel="stylesheet">
   <meta content="Bikeshed version 82ce88815, updated Thu Sep 7 16:33:55 2023 -0700" name="generator">
   <link href="https://w3c.github.io/trusted-types/dist/spec/" rel="canonical">
-  <meta content="18f4278474908a4dae229330dc6ca6c9af8c1a52" name="document-revision">
+  <meta content="10469d3190a88e33fd976a0c1cc77aac624e1965" name="document-revision">
 <style>/* Boilerplate: style-autolinks */
 .css.css, .property.property, .descriptor.descriptor {
     color: var(--a-normal-text);
@@ -864,11 +864,148 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
     c-[il] { color: #657b83 } /* Literal.Number.Integer.Long */
 }
 </style>
+<style>/* Boilerplate: style-wpt */
+:root {
+    --wpt-border: hsl(0, 0%, 60%);
+    --wpt-bg: hsl(0, 0%, 95%);
+    --wpt-text: var(--text);
+    --wptheading-text: hsl(0, 0%, 30%);
+}
+@media (prefers-color-scheme: dark) {
+    :root {
+        --wpt-border: hsl(0, 0%, 30%);
+        --wpt-bg: var(--borderedblock-bg);
+        --wpt-text: var(--text);
+        --wptheading-text: hsl(0, 0%, 60%);
+    }
+}
+.wpt-tests-block {
+    list-style: none;
+    border-left: .5em solid var(--wpt-border);
+    background: var(--wpt-bg);
+    color: var(--wpt-text);
+    margin: 1em auto;
+    padding: .5em;
+}
+.wpt-tests-block summary {
+    color: var(--wptheading-text);
+    font-weight: normal;
+    text-transform: uppercase;
+}
+.wpt-tests-block summary::marker{
+    color: var(--wpt-border);
+}
+.wpt-tests-block summary:hover::marker{
+    color: var(--wpt-text);
+}
+/*
+   The only content  of a wpt test block in its closed state is the <summary>,
+   which contains the word TESTS,
+   and that is absolutely positioned.
+   In that closed state, wpt test blocks are styled
+   to have a top margin whose height is exactly equal
+   to the height of the absolutely positioned <summary>,
+   and no other background/padding/margin/border.
+   The wpt test block elements will therefore allow the maring
+   of the previous/next block elements
+   to collapse through them;
+   if this combined margin would be larger than its own top margin,
+   it stays as is,
+   and therefore the pre-existing vertical rhythm of the document is undisturbed.
+   If that combined margin would be smaller, it is grown to that size.
+   This means that the wpt test block ensures
+   that there's always enough vertical space to insert the summary,
+   without adding more than is needed.
+*/
+.wpt-tests-block:not([open]){
+    padding: 0;
+    border: none;
+    background: none;
+    font-size: 0.75em;
+    line-height: 1;
+    position: relative;
+    margin: 1em 0 0;
+}
+.wpt-tests-block:not([open]) summary {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}
+/*
+   It is possible that both the last child of a block element
+   and the block element itself
+   would be annotated with a <wpt> block each.
+   If the block element has a padding or a border,
+   that's fine, but otherwise
+   the bottom margin of the block and of its last child would collapse
+   and both <wpt> elements would overlap, being both placed there.
+   To avoid that, add 1px of padding to the <wpt> element annotating the last child
+   to prevent the bottom margin of the block and of its last child from collapsing
+   (and as much negative margin,
+   as wel only want to prevent margin collapsing,
+   but are not trying to actually take more space).
+*/
+.wpt-tests-block:not([open]):last-child {
+    padding-bottom: 1px;
+    margin-bottom: -1px;
+}
+/*
+   Exception to the previous rule:
+   don't do that in non-last list items,
+   because it's not necessary,
+   and would therefore consume more space than strictly needed.
+   Lists must have list items as children, not <wpt> elements,
+   so a <wpt> element cannot be a sibling of a list item,
+   and the collision that the previous rule avoids cannot happen.
+*/
+li:not(:last-child) > .wpt-tests-block:not([open]):last-child,
+dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+.wpt-tests-block:not([open]):not(:hover){
+    opacity: 0.5;
+}
+.wpt-tests-list {
+    list-style: none;
+    display: grid;
+    margin: 0;
+    padding: 0;
+    grid-template-columns: 1fr max-content auto auto;
+    grid-column-gap: .5em;
+}
+.wpt-tests-block hr:last-child {
+    display: none;
+}
+.wpt-test {
+    display: contents;
+}
+.wpt-test > a {
+    text-decoration: underline;
+    border: none;
+}
+.wpt-test > .wpt-name { grid-column: 1; }
+.wpt-test > .wpt-results { grid-column: 2; }
+.wpt-test > .wpt-live { grid-column: 3; }
+.wpt-test > .wpt-source { grid-column: 4; }
+
+.wpt-test > .wpt-results {
+    display: flex;
+    gap: .1em;
+}
+.wpt-test .wpt-result {
+    display: inline-block;
+    height: 1em;
+    width: 1em;
+    border-radius: 50%;
+    position: relative;
+}
+</style>
  <body class="h-entry">
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Trusted Types</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2024-01-22">22 January 2024</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2024-01-23">23 January 2024</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -884,6 +1021,8 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
       <dd class="editor p-author h-card vcard"><a class="p-name fn u-email email" href="mailto:koto@google.com">Krzysztof Kotowicz</a> (<a class="p-org org" href="https://google.com">Google LLC</a>)
       <dt class="editor">Former Editor:
       <dd class="editor p-author h-card vcard"><a class="p-name fn u-email email" href="mailto:mkwst@google.com">Mike West</a> (<a class="p-org org" href="https://google.com">Google LLC</a>)
+      <dt>Test Suite:
+      <dd class="wpt-overview"><a href="https://wpt.fyi/results/trusted-types/">https://wpt.fyi/results/trusted-types/</a>
      </dl>
     </div>
    </details>
@@ -1054,6 +1193,98 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
    </ol>
   </nav>
   <main>
+   <details class="wpt-tests-block" dir="ltr" lang="en">
+    <summary>Tests</summary>
+    <ul class="wpt-tests-list">
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/block-Document-execCommand.html" title="trusted-types/block-Document-execCommand.html">block-Document-execCommand.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/block-Document-execCommand.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/block-Document-execCommand.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/block-Node-multiple-arguments.html" title="trusted-types/block-Node-multiple-arguments.html">block-Node-multiple-arguments.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/block-Node-multiple-arguments.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/block-Node-multiple-arguments.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/block-string-assignment-to-attribute-via-attribute-node.html" title="trusted-types/block-string-assignment-to-attribute-via-attribute-node.html">block-string-assignment-to-attribute-via-attribute-node.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/block-string-assignment-to-attribute-via-attribute-node.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/block-string-assignment-to-attribute-via-attribute-node.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/block-string-assignment-to-Document-write.html" title="trusted-types/block-string-assignment-to-Document-write.html">block-string-assignment-to-Document-write.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/block-string-assignment-to-Document-write.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/block-string-assignment-to-Document-write.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/block-string-assignment-to-DOMParser-parseFromString.html" title="trusted-types/block-string-assignment-to-DOMParser-parseFromString.html">block-string-assignment-to-DOMParser-parseFromString.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/block-string-assignment-to-DOMParser-parseFromString.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/block-string-assignment-to-DOMParser-parseFromString.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/block-string-assignment-to-DOMWindowTimers-setTimeout-setInterval.html" title="trusted-types/block-string-assignment-to-DOMWindowTimers-setTimeout-setInterval.html">block-string-assignment-to-DOMWindowTimers-setTimeout-setInterval.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/block-string-assignment-to-DOMWindowTimers-setTimeout-setInterval.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/block-string-assignment-to-DOMWindowTimers-setTimeout-setInterval.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/block-string-assignment-to-Element-insertAdjacentHTML.html" title="trusted-types/block-string-assignment-to-Element-insertAdjacentHTML.html">block-string-assignment-to-Element-insertAdjacentHTML.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/block-string-assignment-to-Element-insertAdjacentHTML.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/block-string-assignment-to-Element-insertAdjacentHTML.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/block-string-assignment-to-Element-outerHTML.html" title="trusted-types/block-string-assignment-to-Element-outerHTML.html">block-string-assignment-to-Element-outerHTML.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/block-string-assignment-to-Element-outerHTML.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/block-string-assignment-to-Element-outerHTML.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/block-string-assignment-to-Element-setAttribute.html" title="trusted-types/block-string-assignment-to-Element-setAttribute.html">block-string-assignment-to-Element-setAttribute.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/block-string-assignment-to-Element-setAttribute.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/block-string-assignment-to-Element-setAttribute.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/block-string-assignment-to-Element-setAttributeNS.html" title="trusted-types/block-string-assignment-to-Element-setAttributeNS.html">block-string-assignment-to-Element-setAttributeNS.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/block-string-assignment-to-Element-setAttributeNS.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/block-string-assignment-to-Element-setAttributeNS.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/block-string-assignment-to-HTMLElement-generic.html" title="trusted-types/block-string-assignment-to-HTMLElement-generic.html">block-string-assignment-to-HTMLElement-generic.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/block-string-assignment-to-HTMLElement-generic.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/block-string-assignment-to-HTMLElement-generic.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/block-string-assignment-to-Range-createContextualFragment.html" title="trusted-types/block-string-assignment-to-Range-createContextualFragment.html">block-string-assignment-to-Range-createContextualFragment.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/block-string-assignment-to-Range-createContextualFragment.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/block-string-assignment-to-Range-createContextualFragment.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/block-text-node-insertion-into-script-element.html" title="trusted-types/block-text-node-insertion-into-script-element.html">block-text-node-insertion-into-script-element.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/block-text-node-insertion-into-script-element.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/block-text-node-insertion-into-script-element.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/csp-block-eval.html" title="trusted-types/csp-block-eval.html">csp-block-eval.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/csp-block-eval.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/csp-block-eval.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/default-policy-callback-arguments.html" title="trusted-types/default-policy-callback-arguments.html">default-policy-callback-arguments.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/default-policy-callback-arguments.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/default-policy-callback-arguments.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/default-policy-report-only.html" title="trusted-types/default-policy-report-only.html">default-policy-report-only.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/default-policy-report-only.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/default-policy-report-only.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/default-policy.html" title="trusted-types/default-policy.html">default-policy.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/default-policy.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/default-policy.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/Document-execCommand.html" title="trusted-types/Document-execCommand.html">Document-execCommand.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/Document-execCommand.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/Document-execCommand.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/Document-write.html" title="trusted-types/Document-write.html">Document-write.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/Document-write.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/Document-write.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/DOMParser-parseFromString-regression.html" title="trusted-types/DOMParser-parseFromString-regression.html">DOMParser-parseFromString-regression.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/DOMParser-parseFromString-regression.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/DOMParser-parseFromString-regression.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/DOMParser-parseFromString.html" title="trusted-types/DOMParser-parseFromString.html">DOMParser-parseFromString.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/DOMParser-parseFromString.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/DOMParser-parseFromString.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/DOMWindowTimers-setTimeout-setInterval.html" title="trusted-types/DOMWindowTimers-setTimeout-setInterval.html">DOMWindowTimers-setTimeout-setInterval.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/DOMWindowTimers-setTimeout-setInterval.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/DOMWindowTimers-setTimeout-setInterval.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/Element-insertAdjacentHTML.html" title="trusted-types/Element-insertAdjacentHTML.html">Element-insertAdjacentHTML.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/Element-insertAdjacentHTML.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/Element-insertAdjacentHTML.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/Element-insertAdjacentText.html" title="trusted-types/Element-insertAdjacentText.html">Element-insertAdjacentText.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/Element-insertAdjacentText.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/Element-insertAdjacentText.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/Element-outerHTML.html" title="trusted-types/Element-outerHTML.html">Element-outerHTML.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/Element-outerHTML.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/Element-outerHTML.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/Element-setAttribute.html" title="trusted-types/Element-setAttribute.html">Element-setAttribute.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/Element-setAttribute.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/Element-setAttribute.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/Element-setAttributeNS.html" title="trusted-types/Element-setAttributeNS.html">Element-setAttributeNS.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/Element-setAttributeNS.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/Element-setAttributeNS.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/empty-default-policy-report-only.html" title="trusted-types/empty-default-policy-report-only.html">empty-default-policy-report-only.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/empty-default-policy-report-only.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/empty-default-policy-report-only.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/empty-default-policy.html" title="trusted-types/empty-default-policy.html">empty-default-policy.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/empty-default-policy.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/empty-default-policy.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/eval-csp-no-tt.html" title="trusted-types/eval-csp-no-tt.html">eval-csp-no-tt.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/eval-csp-no-tt.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/eval-csp-no-tt.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/eval-csp-tt-default-policy.html" title="trusted-types/eval-csp-tt-default-policy.html">eval-csp-tt-default-policy.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/eval-csp-tt-default-policy.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/eval-csp-tt-default-policy.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/eval-csp-tt-no-default-policy.html" title="trusted-types/eval-csp-tt-no-default-policy.html">eval-csp-tt-no-default-policy.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/eval-csp-tt-no-default-policy.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/eval-csp-tt-no-default-policy.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/eval-function-constructor.html" title="trusted-types/eval-function-constructor.html">eval-function-constructor.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/eval-function-constructor.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/eval-function-constructor.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/eval-no-csp-no-tt-default-policy.html" title="trusted-types/eval-no-csp-no-tt-default-policy.html">eval-no-csp-no-tt-default-policy.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/eval-no-csp-no-tt-default-policy.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/eval-no-csp-no-tt-default-policy.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/eval-no-csp-no-tt.html" title="trusted-types/eval-no-csp-no-tt.html">eval-no-csp-no-tt.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/eval-no-csp-no-tt.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/eval-no-csp-no-tt.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/eval-with-permissive-csp.html" title="trusted-types/eval-with-permissive-csp.html">eval-with-permissive-csp.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/eval-with-permissive-csp.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/eval-with-permissive-csp.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/GlobalEventHandlers-onclick.html" title="trusted-types/GlobalEventHandlers-onclick.html">GlobalEventHandlers-onclick.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/GlobalEventHandlers-onclick.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/GlobalEventHandlers-onclick.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/HTMLElement-generic.html" title="trusted-types/HTMLElement-generic.html">HTMLElement-generic.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/HTMLElement-generic.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/HTMLElement-generic.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/HTMLScriptElement-in-xhtml-document.tentative.https.xhtml" title="trusted-types/HTMLScriptElement-in-xhtml-document.tentative.https.xhtml">HTMLScriptElement-in-xhtml-document.tentative.https.xhtml</a> <a class="wpt-live" href="https://wpt.live/trusted-types/HTMLScriptElement-in-xhtml-document.tentative.https.xhtml"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/HTMLScriptElement-in-xhtml-document.tentative.https.xhtml"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/HTMLScriptElement-internal-slot.html" title="trusted-types/HTMLScriptElement-internal-slot.html">HTMLScriptElement-internal-slot.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/HTMLScriptElement-internal-slot.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/HTMLScriptElement-internal-slot.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/no-require-trusted-types-for-report-only.html" title="trusted-types/no-require-trusted-types-for-report-only.html">no-require-trusted-types-for-report-only.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/no-require-trusted-types-for-report-only.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/no-require-trusted-types-for-report-only.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/no-require-trusted-types-for.html" title="trusted-types/no-require-trusted-types-for.html">no-require-trusted-types-for.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/no-require-trusted-types-for.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/no-require-trusted-types-for.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/Node-multiple-arguments.html" title="trusted-types/Node-multiple-arguments.html">Node-multiple-arguments.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/Node-multiple-arguments.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/Node-multiple-arguments.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/Range-createContextualFragment.html" title="trusted-types/Range-createContextualFragment.html">Range-createContextualFragment.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/Range-createContextualFragment.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/Range-createContextualFragment.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/require-trusted-types-for-report-only.html" title="trusted-types/require-trusted-types-for-report-only.html">require-trusted-types-for-report-only.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/require-trusted-types-for-report-only.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/require-trusted-types-for-report-only.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/require-trusted-types-for.html" title="trusted-types/require-trusted-types-for.html">require-trusted-types-for.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/require-trusted-types-for.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/require-trusted-types-for.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/trusted-types-createHTMLDocument.html" title="trusted-types/trusted-types-createHTMLDocument.html">trusted-types-createHTMLDocument.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/trusted-types-createHTMLDocument.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/trusted-types-createHTMLDocument.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/trusted-types-duplicate-names-list-report-only.html" title="trusted-types/trusted-types-duplicate-names-list-report-only.html">trusted-types-duplicate-names-list-report-only.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/trusted-types-duplicate-names-list-report-only.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/trusted-types-duplicate-names-list-report-only.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/trusted-types-duplicate-names-list.html" title="trusted-types/trusted-types-duplicate-names-list.html">trusted-types-duplicate-names-list.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/trusted-types-duplicate-names-list.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/trusted-types-duplicate-names-list.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/trusted-types-duplicate-names-without-enforcement.html" title="trusted-types/trusted-types-duplicate-names-without-enforcement.html">trusted-types-duplicate-names-without-enforcement.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/trusted-types-duplicate-names-without-enforcement.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/trusted-types-duplicate-names-without-enforcement.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/trusted-types-duplicate-names.html" title="trusted-types/trusted-types-duplicate-names.html">trusted-types-duplicate-names.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/trusted-types-duplicate-names.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/trusted-types-duplicate-names.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/trusted-types-eval-reporting-no-unsafe-eval.html" title="trusted-types/trusted-types-eval-reporting-no-unsafe-eval.html">trusted-types-eval-reporting-no-unsafe-eval.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/trusted-types-eval-reporting-no-unsafe-eval.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/trusted-types-eval-reporting-no-unsafe-eval.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/trusted-types-eval-reporting-report-only.html" title="trusted-types/trusted-types-eval-reporting-report-only.html">trusted-types-eval-reporting-report-only.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/trusted-types-eval-reporting-report-only.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/trusted-types-eval-reporting-report-only.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/trusted-types-eval-reporting.html" title="trusted-types/trusted-types-eval-reporting.html">trusted-types-eval-reporting.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/trusted-types-eval-reporting.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/trusted-types-eval-reporting.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/trusted-types-event-handlers.html" title="trusted-types/trusted-types-event-handlers.html">trusted-types-event-handlers.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/trusted-types-event-handlers.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/trusted-types-event-handlers.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/trusted-types-from-literal.html" title="trusted-types/trusted-types-from-literal.html">trusted-types-from-literal.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/trusted-types-from-literal.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/trusted-types-from-literal.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/trusted-types-navigation.html" title="trusted-types/trusted-types-navigation.html">trusted-types-navigation.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/trusted-types-navigation.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/trusted-types-navigation.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/trusted-types-report-only.html" title="trusted-types/trusted-types-report-only.html">trusted-types-report-only.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/trusted-types-report-only.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/trusted-types-report-only.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/trusted-types-reporting-check-report.html" title="trusted-types/trusted-types-reporting-check-report.html">trusted-types-reporting-check-report.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/trusted-types-reporting-check-report.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/trusted-types-reporting-check-report.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/trusted-types-reporting.html" title="trusted-types/trusted-types-reporting.html">trusted-types-reporting.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/trusted-types-reporting.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/trusted-types-reporting.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/trusted-types-source-file-path.html" title="trusted-types/trusted-types-source-file-path.html">trusted-types-source-file-path.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/trusted-types-source-file-path.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/trusted-types-source-file-path.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/trusted-types-svg-script.html" title="trusted-types/trusted-types-svg-script.html">trusted-types-svg-script.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/trusted-types-svg-script.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/trusted-types-svg-script.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/trusted-types-tojson.html" title="trusted-types/trusted-types-tojson.html">trusted-types-tojson.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/trusted-types-tojson.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/trusted-types-tojson.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/TrustedType-AttributeNodes.html" title="trusted-types/TrustedType-AttributeNodes.html">TrustedType-AttributeNodes.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/TrustedType-AttributeNodes.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/TrustedType-AttributeNodes.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/TrustedTypePolicy-createXXX.html" title="trusted-types/TrustedTypePolicy-createXXX.html">TrustedTypePolicy-createXXX.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/TrustedTypePolicy-createXXX.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/TrustedTypePolicy-createXXX.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/TrustedTypePolicy-CSP-no-name.html" title="trusted-types/TrustedTypePolicy-CSP-no-name.html">TrustedTypePolicy-CSP-no-name.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/TrustedTypePolicy-CSP-no-name.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/TrustedTypePolicy-CSP-no-name.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/TrustedTypePolicy-CSP-wildcard.html" title="trusted-types/TrustedTypePolicy-CSP-wildcard.html">TrustedTypePolicy-CSP-wildcard.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/TrustedTypePolicy-CSP-wildcard.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/TrustedTypePolicy-CSP-wildcard.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/TrustedTypePolicyFactory-blocking.html" title="trusted-types/TrustedTypePolicyFactory-blocking.html">TrustedTypePolicyFactory-blocking.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/TrustedTypePolicyFactory-blocking.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/TrustedTypePolicyFactory-blocking.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/TrustedTypePolicyFactory-constants.html" title="trusted-types/TrustedTypePolicyFactory-constants.html">TrustedTypePolicyFactory-constants.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/TrustedTypePolicyFactory-constants.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/TrustedTypePolicyFactory-constants.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/TrustedTypePolicyFactory-createPolicy-createXYZTests.html" title="trusted-types/TrustedTypePolicyFactory-createPolicy-createXYZTests.html">TrustedTypePolicyFactory-createPolicy-createXYZTests.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/TrustedTypePolicyFactory-createPolicy-createXYZTests.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/TrustedTypePolicyFactory-createPolicy-createXYZTests.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/TrustedTypePolicyFactory-createPolicy-cspTests-noNamesGiven.html" title="trusted-types/TrustedTypePolicyFactory-createPolicy-cspTests-noNamesGiven.html">TrustedTypePolicyFactory-createPolicy-cspTests-noNamesGiven.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/TrustedTypePolicyFactory-createPolicy-cspTests-noNamesGiven.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/TrustedTypePolicyFactory-createPolicy-cspTests-noNamesGiven.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/TrustedTypePolicyFactory-createPolicy-cspTests-none-skip.html" title="trusted-types/TrustedTypePolicyFactory-createPolicy-cspTests-none-skip.html">TrustedTypePolicyFactory-createPolicy-cspTests-none-skip.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/TrustedTypePolicyFactory-createPolicy-cspTests-none-skip.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/TrustedTypePolicyFactory-createPolicy-cspTests-none-skip.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/TrustedTypePolicyFactory-createPolicy-cspTests-none.html" title="trusted-types/TrustedTypePolicyFactory-createPolicy-cspTests-none.html">TrustedTypePolicyFactory-createPolicy-cspTests-none.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/TrustedTypePolicyFactory-createPolicy-cspTests-none.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/TrustedTypePolicyFactory-createPolicy-cspTests-none.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/TrustedTypePolicyFactory-createPolicy-cspTests-wildcard.html" title="trusted-types/TrustedTypePolicyFactory-createPolicy-cspTests-wildcard.html">TrustedTypePolicyFactory-createPolicy-cspTests-wildcard.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/TrustedTypePolicyFactory-createPolicy-cspTests-wildcard.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/TrustedTypePolicyFactory-createPolicy-cspTests-wildcard.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/TrustedTypePolicyFactory-createPolicy-cspTests.html" title="trusted-types/TrustedTypePolicyFactory-createPolicy-cspTests.html">TrustedTypePolicyFactory-createPolicy-cspTests.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/TrustedTypePolicyFactory-createPolicy-cspTests.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/TrustedTypePolicyFactory-createPolicy-cspTests.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/TrustedTypePolicyFactory-createPolicy-nameTests.html" title="trusted-types/TrustedTypePolicyFactory-createPolicy-nameTests.html">TrustedTypePolicyFactory-createPolicy-nameTests.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/TrustedTypePolicyFactory-createPolicy-nameTests.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/TrustedTypePolicyFactory-createPolicy-nameTests.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/TrustedTypePolicyFactory-createPolicy-unenforced.html" title="trusted-types/TrustedTypePolicyFactory-createPolicy-unenforced.html">TrustedTypePolicyFactory-createPolicy-unenforced.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/TrustedTypePolicyFactory-createPolicy-unenforced.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/TrustedTypePolicyFactory-createPolicy-unenforced.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/TrustedTypePolicyFactory-defaultPolicy.html" title="trusted-types/TrustedTypePolicyFactory-defaultPolicy.html">TrustedTypePolicyFactory-defaultPolicy.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/TrustedTypePolicyFactory-defaultPolicy.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/TrustedTypePolicyFactory-defaultPolicy.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/TrustedTypePolicyFactory-getAttributeType-namespace.html" title="trusted-types/TrustedTypePolicyFactory-getAttributeType-namespace.html">TrustedTypePolicyFactory-getAttributeType-namespace.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/TrustedTypePolicyFactory-getAttributeType-namespace.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/TrustedTypePolicyFactory-getAttributeType-namespace.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/TrustedTypePolicyFactory-getPropertyType.html" title="trusted-types/TrustedTypePolicyFactory-getPropertyType.html">TrustedTypePolicyFactory-getPropertyType.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/TrustedTypePolicyFactory-getPropertyType.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/TrustedTypePolicyFactory-getPropertyType.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/TrustedTypePolicyFactory-isXXX.html" title="trusted-types/TrustedTypePolicyFactory-isXXX.html">TrustedTypePolicyFactory-isXXX.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/TrustedTypePolicyFactory-isXXX.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/TrustedTypePolicyFactory-isXXX.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/TrustedTypePolicyFactory-metadata.html" title="trusted-types/TrustedTypePolicyFactory-metadata.html">TrustedTypePolicyFactory-metadata.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/TrustedTypePolicyFactory-metadata.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/TrustedTypePolicyFactory-metadata.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/tt-block-eval.html" title="trusted-types/tt-block-eval.html">tt-block-eval.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/tt-block-eval.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/tt-block-eval.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/Window-TrustedTypes.html" title="trusted-types/Window-TrustedTypes.html">Window-TrustedTypes.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/Window-TrustedTypes.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/Window-TrustedTypes.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/worker-constructor.https.html" title="trusted-types/worker-constructor.https.html">worker-constructor.https.html</a> <a class="wpt-live" href="https://wpt.live/trusted-types/worker-constructor.https.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/worker-constructor.https.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/WorkerGlobalScope-eval.html" title="trusted-types/WorkerGlobalScope-eval.html">WorkerGlobalScope-eval.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/WorkerGlobalScope-eval.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/WorkerGlobalScope-eval.html"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/WorkerGlobalScope-importScripts.html" title="trusted-types/WorkerGlobalScope-importScripts.html">WorkerGlobalScope-importScripts.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/WorkerGlobalScope-importScripts.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/WorkerGlobalScope-importScripts.html"><small>(source)</small></a>
+    </ul>
+   </details>
    <h2 class="heading settled" data-level="1" id="introduction"><span class="secno">1. </span><span class="content">Introduction</span><a class="self-link" href="#introduction"></a></h2>
    <p><em>This section is not normative.</em></p>
    <p>Certain classes of vulnerabilities occur when a web application
@@ -2759,6 +2990,14 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
     with <code>class="note"</code>,
     like this: </p>
    <p class="note" role="note">Note, this is an informative note.</p>
+   <details class="wpt-tests-block" dir="ltr" lang="en" open>
+    <summary>Tests</summary>
+    <p>Tests relating to the content of this specification
+                     may be documented in “Tests” blocks like this one.
+                     Any such block is non-normative.</p>
+    <ul class="wpt-tests-list"></ul>
+    <hr>
+   </details>
    <section>
     <h3 class="no-ref no-num heading settled" id="w3c-conformant-algorithms"><span class="content">Conformant Algorithms</span><a class="self-link" href="#w3c-conformant-algorithms"></a></h3>
     <p>Requirements phrased in the imperative as part of algorithms
@@ -4319,5 +4558,123 @@ function cmpTops(a,b) {
 
 window.addEventListener("load", repositionAnnoPanels);
 window.addEventListener("resize", repositionAnnoPanels);
+}
+</script>
+<script>/* Boilerplate: script-wpt */
+let wptPath = "/trusted-types/";
+"use strict";
+
+document.addEventListener("DOMContentLoaded", async ()=>{
+    if(wptPath == "/") return;
+
+    const runsUrl = "https://wpt.fyi/api/runs?label=master&label=stable&max-count=1&product=chrome&product=firefox&product=safari&product=edge";
+    const runs = await (await fetch(runsUrl)).json();
+
+    const testResults = await (await fetch("https://wpt.fyi/api/search", {
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json",
+        },
+        body: JSON.stringify({
+            "run_ids": runs.map(x=>x.id),
+            "query": {"path": wptPath},
+        })
+    })).json();
+
+    const browsers = runs.map(x=>({name:x.browser_name, version:x.browser_version, passes:0, total: 0}));
+    const resultsFromPath = new Map(testResults.results.map(result=>{
+        const testPath = result.test;
+        const passes = result.legacy_status.map(x=>[x.passes, x.total]);
+        return [testPath, passes];
+    }));
+    const seenTests = new Set();
+    document.querySelectorAll(".wpt-name").forEach(nameEl=>{
+        const passData = resultsFromPath.get("/" + nameEl.getAttribute("title"));
+        if(!passData) {
+            console.log("Couldn't find test in results:", nameEl);
+            return
+        }
+        const numTests = passData[0][1];
+        if(numTests > 1) {
+            nameEl.insertAdjacentElement("beforeend",
+                el("small", {}, ` (${numTests} tests)`));
+        }
+        if(passData == undefined) return;
+        const resultsEl = el("span",{"class":"wpt-results"},
+            ...passData.map((p,i) => el("span",
+            {
+                "title": `${browsers[i].name} ${p[0]}/${p[1]}`,
+                "class": "wpt-result",
+                "style": `background: conic-gradient(forestgreen ${p[0]/p[1]*360}deg, darkred 0deg);`,
+            })),
+        );
+        nameEl.insertAdjacentElement("afterend", resultsEl);
+
+        // Only update the summary pass/total count if we haven't seen this
+        // test before, to support authors listing the same test multiple times
+        // in a spec.
+        if (!seenTests.has(nameEl.getAttribute("title"))) {
+            seenTests.add(nameEl.getAttribute("title"));
+            passData.forEach((p,i) => {
+                browsers[i].passes += p[0];
+                browsers[i].total += p[1];
+            });
+        }
+    });
+    const overview = document.querySelector(".wpt-overview");
+    if(overview) {
+        overview.appendChild(el('ul',{}, ...browsers.map(formatWptResult)));
+        document.head.appendChild(el('style', {},
+            `.wpt-overview ul { display: flex; flex-flow: row wrap; gap: .2em; justify-content: start; list-style: none; padding: 0; margin: 0;}
+             .wpt-overview li { padding: .25em 1em; color: black; text-align: center; }
+             .wpt-overview img { height: 1.5em; height: max(1.5em, 32px); background: transparent; }
+             .wpt-overview .browser { font-weight: bold; }
+             .wpt-overview .passes-none { background: #e57373; }
+             .wpt-overview .passes-hardly { background: #ffb74d; }
+             .wpt-overview .passes-a-few { background: #ffd54f; }
+             .wpt-overview .passes-half { background: #fff176; }
+             .wpt-overview .passes-lots { background: #dce775; }
+             .wpt-overview .passes-most { background: #aed581; }
+             .wpt-overview .passes-all { background: #81c784; }`));
+    }
+});
+function el(name, attrs, ...content) {
+    const x = document.createElement(name);
+    for(const [k,v] of Object.entries(attrs)) {
+        x.setAttribute(k, v);
+    }
+    for(let child of content) {
+        if(typeof child == "string") child = document.createTextNode(child);
+        try {
+        x.appendChild(child);
+        } catch(e) { console.log({x, child}); }
+    }
+    return x;
+}
+function formatWptResult({name, version, passes, total}) {
+    const passRate = passes/total;
+    let passClass = "";
+    if(passRate == 0)      passClass = "passes-none";
+    else if(passRate < .2) passClass = "passes-hardly";
+    else if(passRate < .4) passClass = "passes-a-few";
+    else if(passRate < .6) passClass = "passes-half";
+    else if(passRate < .8) passClass = "passes-lots";
+    else if(passRate < 1)  passClass = "passes-most";
+    else                   passClass = "passes-all";
+
+    name = name[0].toUpperCase() + name.slice(1);
+    const shortVersion = /^\d+/.exec(version);
+    const icon = []
+
+    if(name == "Chrome") icon.push(el('img', {alt:"", src:"https://wpt.fyi/static/chrome_64x64.png"}));
+    if(name == "Edge") icon.push(el('img', {alt:"", src:"https://wpt.fyi/static/edge_64x64.png"}));
+    if(name == "Safari") icon.push(el('img', {alt:"", src:"https://wpt.fyi/static/safari_64x64.png"}));
+    if(name == "Firefox") icon.push(el('img', {alt:"", src:"https://wpt.fyi/static/firefox_64x64.png"}));
+
+    return el('li', {"class":passClass},
+        el('nobr', {'class':'browser'}, ...icon, ` ${name} ${shortVersion}`),
+        el('br', {}),
+        el('nobr', {'class':'pass-rate'}, `${passes}/${total}`)
+    );
 }
 </script>
