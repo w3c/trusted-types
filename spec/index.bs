@@ -978,6 +978,22 @@ a string (|policyName|), {{TrustedTypePolicyOptions}} dictionary (|options|), an
 Given a {{TrustedTypePolicy}} |policy|, a type name |trustedTypeName|,
 a string |value| and a list |arguments|, execute the following steps:
 
+1.  Let |policyValue| be the result of executing [$Get Trusted Type policy value$] with the same arguments as this algorithm.
+1.  If the algorithm threw an error, rethrow the error and abort the following steps.
+1.  Let |dataString| be the result of stringifying |policyValue|.
+1.  Let |trustedObject| be a new instance of an interface with a type
+    name |trustedTypeName|, with its `[[Data]]` internal slot value
+    set to |dataString|.
+1.  If |trustedObject| is a {{TrustedScript}}, set its `[[HostDefinedCodeLike]]` internal slot value to the value in its `[[Data]]` slot.
+
+    Note: This adds an integration point with [dynamic-code-brand-checks proposal](https://tc39.es/proposal-dynamic-code-brand-checks/).
+1.  Return |trustedObject|.
+
+## <dfn abstract-op>Get Trusted Type policy value</dfn> ## {#get-trusted-type-policy-value-algorithm}
+
+Given a {{TrustedTypePolicy}} |policy|, a type name |trustedTypeName|,
+a string |value| and a list |arguments|, execute the following steps:
+
 1.  Let |functionName| be a function name for the given |trustedTypeName|,
     based on the following table:
 
@@ -1006,19 +1022,7 @@ a string |value| and a list |arguments|, execute the following steps:
 1.  Let |policyValue| be the result of invoking |function| with
     |value| as a first argument, items of |arguments| as subsequent arguments,
     and [[ECMASCRIPT#sec-method|callback **this** value]] set to `null`, rethrowing any exceptions.
-1.  If |policy|'s [=TrustedTypePolicy/name=] is `"default"` and the |policyValue|
-    is null or undefined, return |policyValue|.
-
-    Note: This is used in a [$Get Trusted Type compliant string$] algorithm to signal that
-    a value was rejected.
-1.  Let |dataString| be the result of stringifying |policyValue|.
-1.  Let |trustedObject| be a new instance of an interface with a type
-    name |trustedTypeName|, with its `[[Data]]` internal slot value
-    set to |dataString|.
-1.  If |trustedObject| is a {{TrustedScript}}, set its `[[HostDefinedCodeLike]]` internal slot value to the value in its `[[Data]]` slot.
-
-    Note: This adds an integration point with [dynamic-code-brand-checks proposal](https://tc39.es/proposal-dynamic-code-brand-checks/).
-1.  Return |trustedObject|.
+1.  Return |policyValue|.
 
 ## <dfn abstract-op>Create a Trusted Type from literal</dfn> ## {#create-a-trusted-type-from-literal-algorithm}
 
@@ -1079,13 +1083,21 @@ Given a {{TrustedType}} type (|expectedType|), a [=realm/global object=] (|globa
 {{TrustedType}} or a string (|input|), and a string (|sink|), run these steps:
 
 1.  Let |defaultPolicy| be the value of |global|'s [=Window/trusted type policy factory=]'s `[[DefaultPolicy]]` slot. If the slot is empty, return `null`.
-1.  Let |convertedInput| be the result of executing [$Create a
-    Trusted Type$] algorithm, with the following arguments:
-    *  |defaultPolicy| as |policy|
-    *  stringified |input| as |value|
-    *  |expectedType|’s type name as |trustedTypeName|
-    *  &laquo; |trustedTypeName|, |sink| &raquo; as |arguments|
-1. If the algorithm threw an error, rethrow it. Otherwise, return |convertedInput|.
+1.  Let |policyValue| be the result of executing [$Get Trusted Type policy value$], with the following arguments:
+     *  |defaultPolicy| as |policy|
+     *  stringified |input| as |value|
+     *  |expectedType|’s type name as |trustedTypeName|
+     *  &laquo; |trustedTypeName|, |sink| &raquo; as |arguments|
+1.  If the algorithm threw an error, rethrow the error and abort the following steps.
+1.  If |policyValue| is null or undefined, return |policyValue|.
+1.  Let |dataString| be the result of stringifying |policyValue|.
+1.  Let |trustedObject| be a new instance of an interface with a type
+    name |trustedTypeName|, with its `[[Data]]` internal slot value
+    set to |dataString|.
+1.  If |trustedObject| is a {{TrustedScript}}, set its `[[HostDefinedCodeLike]]` internal slot value to the value in its `[[Data]]` slot.
+
+    Note: This adds an integration point with [dynamic-code-brand-checks proposal](https://tc39.es/proposal-dynamic-code-brand-checks/).
+1.  Return |trustedObject|.
 
 ## <dfn abstract-op>Prepare the script URL and text</dfn> ## {#prepare-script-url-and-text}
 
