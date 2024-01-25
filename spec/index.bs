@@ -1105,18 +1105,19 @@ Given an {{HTMLScriptElement}} (|script|), this algorithm performs the following
 To <dfn abstract-op export>get Trusted Types-compliant attribute value</dfn> on {{Attr}} |attribute| with {{Element}} |element| and {{TrustedType}} or a string |newValue|, perform the following steps:
 
 1. Let |expectedType| be null.
-1. If |attribute|'s <a for="Attr">namespace</a> is null or is a <a>HTML namespace</a>, find the row in the following table, where |element| is in the first column and |attribute|'s <a for="Attr">local name</a> is an <a>ASCII case-insensitive</a> match for any the string in the
-      second column. If a matching row is found, set |expectedType| to the value of the third column in that row.
+1. Find the row in the following table, where |element| is in the first column, and |attribute|'s <a for="Attr">namespace</a> and <a for="Attr">local name</a> match the values in the second and third column, respectively.
+   If a matching row is found, set |expectedType| to the value of the fourth column in that row.
 
     <table>
       <thead>
-        <tr><th>Element<th>Attribute local name</th><th>TrustedType<th>
+        <tr><th>Element<th>Attribute namespace<th>Attribute local name<th>TrustedType<th>
       <tbody>
-        <tr><td>{{HTMLIFrameElement}}<td>"srcdoc"<td>{{TrustedHTML}}
-        <tr><td>{{HTMLEmbedElement}}<td>"src"<td>{{TrustedScriptURL}}
-        <tr><td>{{HTMLScriptElement}}<td>"src"<td>{{TrustedScriptURL}}
-        <tr><td>{{HTMLObjectElement}}<td>"data"<td>{{TrustedScriptURL}}
-        <tr><td>{{HTMLObjectElement}}<td>"codebase"<td>{{TrustedScriptURL}}
+        <tr><td>{{HTMLIFrameElement}}<td>null<td>"srcdoc"<td>{{TrustedHTML}}
+        <tr><td>{{HTMLEmbedElement}}<td>null<td>"src"<td>{{TrustedScriptURL}}
+        <tr><td>{{HTMLScriptElement}}<td>null<td>"src"<td>{{TrustedScriptURL}}
+        <tr><td>{{HTMLObjectElement}}<td>null<td>"data"<td>{{TrustedScriptURL}}
+        <tr><td>{{HTMLObjectElement}}<td>null<td>"codebase"<td>{{TrustedScriptURL}}
+        <tr><td>{{SVGScriptElement}}<td><a>XLink namespace</a><td>"href"<td>{{TrustedScriptURL}}
       </tbody>
     </table>
 
