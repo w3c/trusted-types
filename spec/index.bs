@@ -1106,7 +1106,7 @@ To <dfn abstract-op export>get Trusted Types-compliant attribute value</dfn> on 
 
 1. Let |expectedType| be null.
 1. Find the row in the following table, where |element| is in the first column, and |attribute|'s <a for="Attr">namespace</a> and <a for="Attr">local name</a> match the values in the second and third column, respectively.
-   If a matching row is found, set |expectedType| to the value of the fourth column in that row.
+    If a matching row is found, set |expectedType| to the value of the fourth column in that row.
 
     <table>
       <thead>
