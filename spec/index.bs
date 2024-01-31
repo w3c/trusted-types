@@ -1056,13 +1056,13 @@ It will ensure that the Trusted Type [=enforcement=] rules were respected.
 Given a {{TrustedType}} type (|expectedType|), a [=realm/global object=] (|global|),
 {{TrustedType}} or a string (|input|), a string (|sink|) and a string (|sinkGroup|), run these steps:
 
+1.  If |input| has type |expectedType|, return stringified
+    |input| and abort these steps.
 1.  Let |cspList| be the |global|'s <a>CSP list</a>.
 1.  If |cspList| is `null` or does not contain a [=content security policy object|policy=]
     which [=directive set=] containing a [=directive=] with a name `"require-trusted-types-for"`,
     or that directive does not contain a <a>trusted-types-sink-group</a> which is a match for a value |sinkGroup|,
     return stringified |input| and abort these steps.
-1.  If |input| has type |expectedType|, return stringified
-    |input| and abort these steps.
 1.  Let |convertedInput| be the result of executing [$Process value with a default policy$] with the same arguments as this algorithm.
 1.  If the algorithm threw an error, rethrow the error and abort the following steps.
 1.  If |convertedInput| is `null` or `undefined`, execute the following steps:
