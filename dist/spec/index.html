@@ -7,7 +7,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/W3C-ED" rel="stylesheet">
   <meta content="Bikeshed version 82ce88815, updated Thu Sep 7 16:33:55 2023 -0700" name="generator">
   <link href="https://w3c.github.io/trusted-types/dist/spec/" rel="canonical">
-  <meta content="2057d729080483a4ff412699bf2117d1c6af7bc2" name="document-revision">
+  <meta content="453170f6184dd5ea74c8dbd2c0adc2ef8ed6072a" name="document-revision">
 <style>/* Boilerplate: style-autolinks */
 .css.css, .property.property, .descriptor.descriptor {
     color: var(--a-normal-text);
@@ -1005,7 +1005,7 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Trusted Types</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2024-01-24">24 January 2024</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2024-01-31">31 January 2024</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -2091,13 +2091,13 @@ It will ensure that the Trusted Type <a data-link-type="dfn" href="#enforcement"
    <p>Given a <code class="idl"><a data-link-type="idl" href="#typedefdef-trustedtype" id="ref-for-typedefdef-trustedtype①">TrustedType</a></code> type (<var>expectedType</var>), a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global①">global object</a> (<var>global</var>), <code class="idl"><a data-link-type="idl" href="#typedefdef-trustedtype" id="ref-for-typedefdef-trustedtype②">TrustedType</a></code> or a string (<var>input</var>), a string (<var>sink</var>) and a string (<var>sinkGroup</var>), run these steps:</p>
    <ol>
     <li data-md>
+     <p>If <var>input</var> has type <var>expectedType</var>, return stringified <var>input</var> and abort these steps.</p>
+    <li data-md>
      <p>Let <var>cspList</var> be the <var>global</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#global-object-csp-list" id="ref-for-global-object-csp-list">CSP list</a>.</p>
     <li data-md>
      <p>If <var>cspList</var> is <code>null</code> or does not contain a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#content-security-policy-object" id="ref-for-content-security-policy-object">policy</a> which <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#policy-directive-set" id="ref-for-policy-directive-set">directive set</a> containing a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives">directive</a> with a name <code>"require-trusted-types-for"</code>,
 or that directive does not contain a <a data-link-type="dfn" href="#trusted-types-sink-group" id="ref-for-trusted-types-sink-group②">trusted-types-sink-group</a> which is a match for a value <var>sinkGroup</var>,
 return stringified <var>input</var> and abort these steps.</p>
-    <li data-md>
-     <p>If <var>input</var> has type <var>expectedType</var>, return stringified <var>input</var> and abort these steps.</p>
     <li data-md>
      <p>Let <var>convertedInput</var> be the result of executing <a data-link-type="abstract-op" href="#abstract-opdef-process-value-with-a-default-policy" id="ref-for-abstract-opdef-process-value-with-a-default-policy">Process value with a default policy</a> with the same arguments as this algorithm.</p>
     <li data-md>
