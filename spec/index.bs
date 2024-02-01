@@ -1067,7 +1067,7 @@ Given a {{TrustedType}} type (|expectedType|), a [=realm/global object=] (|globa
 1.  If the algorithm threw an error, rethrow the error and abort the following steps.
 1.  If |convertedInput| is `null` or `undefined`, execute the following steps:
     1.  Let |disposition| be the result of executing [$Should sink type mismatch violation be blocked by Content Security Policy?$] algorithm,
-        passing |global|, |input| as |source|, |sinkGroup| and |sink|.
+        passing |global|, stringified |input| as |source|, |sinkGroup| and |sink|.
     1.  If |disposition| is `“Allowed”`, return stringified |input| and abort further steps.
 
         Note: This step assures that the default policy rejection will be reported, but ignored in a report-only mode.
