@@ -7,7 +7,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/W3C-ED" rel="stylesheet">
   <meta content="Bikeshed version 82ce88815, updated Thu Sep 7 16:33:55 2023 -0700" name="generator">
   <link href="https://w3c.github.io/trusted-types/dist/spec/" rel="canonical">
-  <meta content="d5d9ee9fceb1bf2c2d75514f2c2d1defb82475fb" name="document-revision">
+  <meta content="999be7edbe152c16974b6ec54428ada3e2f38a6d" name="document-revision">
 <style>/* Boilerplate: style-autolinks */
 .css.css, .property.property, .descriptor.descriptor {
     color: var(--a-normal-text);
@@ -1005,7 +1005,7 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Trusted Types</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2024-02-01">1 February 2024</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2024-02-06">6 February 2024</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -2372,7 +2372,6 @@ through a <code class="idl"><a data-link-type="idl" href="#StringContext" id="re
 adding the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/dom.html#dom-innertext" id="ref-for-dom-innertext">innerText</a></code> and <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#dom-node-textcontent" id="ref-for-dom-node-textcontent">textContent</a></code> attributes directly on <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement" id="ref-for-htmlscriptelement④">HTMLScriptElement</a></code>. The behavior of the attributes remains the same
 as in their original counterparts, apart from additional behavior triggered by the <code class="idl"><a data-link-type="idl" href="#StringContext" id="ref-for-StringContext②③">StringContext</a></code> extended attribute presence.</p>
    <p class="note" role="note"><span class="marker">Note:</span> Using these IDL attributes is the recommended way of dynamically setting URL or a text of a script. Manipulating attribute nodes or text nodes directly will call a default policy on the final value when the script is prepared.</p>
-   <p class="issue" id="issue-62c0f2c6"><a class="self-link" href="#issue-62c0f2c6"></a> Figure out what to do with script.setAttribute('src'). See <a href="https://github.com/whatwg/dom/issues/789">DOM#789</a>.</p>
 <pre class="exclude idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement" id="ref-for-htmlscriptelement⑤"><c- g>HTMLScriptElement</c-></a> {
  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions②"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#LegacyNullToEmptyString" id="ref-for-LegacyNullToEmptyString②"><c- g>LegacyNullToEmptyString</c-></a>] <a data-link-type="idl-name" href="#typedefdef-scriptstring" id="ref-for-typedefdef-scriptstring"><c- n>ScriptString</c-></a> <dfn class="idl-code" data-dfn-for="HTMLScriptElement" data-dfn-type="attribute" data-export data-type="[LegacyNullToEmptyString] ScriptString" id="dom-htmlscriptelement-innertext"><code><c- g>innerText</c-></code><a class="self-link" href="#dom-htmlscriptelement-innertext"></a></dfn>;
  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions③"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> <a data-link-type="idl-name" href="#typedefdef-scriptstring" id="ref-for-typedefdef-scriptstring①"><c- n>ScriptString</c-></a>? <dfn class="idl-code" data-dfn-for="HTMLScriptElement" data-dfn-type="attribute" data-export data-type="ScriptString?" id="dom-htmlscriptelement-textcontent"><code><c- g>textContent</c-></code><a class="self-link" href="#dom-htmlscriptelement-textcontent"></a></dfn>;
@@ -3402,7 +3401,6 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
   <div style="counter-reset:issue">
    <div class="issue"> Keep in sync with https://github.com/heycam/webidl/pull/841. <a class="issue-return" href="#issue-68115cf6" title="Jump to section">↵</a></div>
    <div class="issue"> Make sure this is OK, otherwise use strings and convert them to TrustedXYZ in this spec only. <a class="issue-return" href="#issue-679ee1ba" title="Jump to section">↵</a></div>
-   <div class="issue"> Figure out what to do with script.setAttribute('src'). See <a href="https://github.com/whatwg/dom/issues/789">DOM#789</a>. <a class="issue-return" href="#issue-62c0f2c6" title="Jump to section">↵</a></div>
    <div class="issue"> Remove hardcoding 'script' when new sink groups are specified. <a class="issue-return" href="#issue-adaa63a4" title="Jump to section">↵</a></div>
    <div class="issue"> Refer to the external document on secure policy design. <a class="issue-return" href="#issue-2eb927d2" title="Jump to section">↵</a></div>
   </div>
