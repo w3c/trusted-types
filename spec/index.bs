@@ -978,7 +978,7 @@ a string (|policyName|), {{TrustedTypePolicyOptions}} dictionary (|options|), an
 Given a {{TrustedTypePolicy}} |policy|, a type name |trustedTypeName|,
 a string |value| and a list |arguments|, execute the following steps:
 
-1.  Let |policyValue| be the result of executing [$Get Trusted Type policy value$] with the same arguments as this algorithm.
+1.  Let |policyValue| be the result of executing [$Get Trusted Type policy value$] with the same arguments as this algorithm and additionally true as |throwIfMissing|.
 1.  If the algorithm threw an error, rethrow the error and abort the following steps.
 1.  Let |dataString| be the result of stringifying |policyValue|.
 1.  Let |trustedObject| be a new instance of an interface with a type
@@ -992,7 +992,7 @@ a string |value| and a list |arguments|, execute the following steps:
 ## <dfn abstract-op>Get Trusted Type policy value</dfn> ## {#get-trusted-type-policy-value-algorithm}
 
 Given a {{TrustedTypePolicy}} |policy|, a type name |trustedTypeName|,
-a string |value| and a list |arguments|, execute the following steps:
+a string |value|, a list |arguments|, and a boolean |throwIfMissing|, execute the following steps:
 
 1.  Let |functionName| be a function name for the given |trustedTypeName|,
     based on the following table:
@@ -1018,7 +1018,9 @@ a string |value| and a list |arguments|, execute the following steps:
 
 1.  Let |options| be the value of |policy|'s `[[options]]` slot.
 1.  Let |function| be the value of the property in |options| named |functionName|.
-1.  If |function| is `null`, throw a TypeError.
+1.  If |function| is `null`, then:
+    1. If |throwIfMissing| throw a TypeError.
+    1. Else return `null`.
 1.  Let |policyValue| be the result of invoking |function| with
     |value| as a first argument, items of |arguments| as subsequent arguments,
     and [[ECMASCRIPT#sec-method|callback **this** value]] set to `null`, rethrowing any exceptions.
@@ -1088,6 +1090,7 @@ Given a {{TrustedType}} type (|expectedType|), a [=realm/global object=] (|globa
      *  stringified |input| as |value|
      *  |expectedType|’s type name as |trustedTypeName|
      *  &laquo; |trustedTypeName|, |sink| &raquo; as |arguments|
+     *  false as |throwIfMissing|
 1.  If the algorithm threw an error, rethrow the error and abort the following steps.
 1.  If |policyValue| is null or undefined, return |policyValue|.
 1.  Let |dataString| be the result of stringifying |policyValue|.
