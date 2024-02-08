@@ -7,7 +7,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/W3C-ED" rel="stylesheet">
   <meta content="Bikeshed version 82ce88815, updated Thu Sep 7 16:33:55 2023 -0700" name="generator">
   <link href="https://w3c.github.io/trusted-types/dist/spec/" rel="canonical">
-  <meta content="999be7edbe152c16974b6ec54428ada3e2f38a6d" name="document-revision">
+  <meta content="c8aae121e30da9a2faa9ec2a63a0b10b775449b5" name="document-revision">
 <style>/* Boilerplate: style-autolinks */
 .css.css, .property.property, .descriptor.descriptor {
     color: var(--a-normal-text);
@@ -1005,7 +1005,7 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Trusted Types</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2024-02-06">6 February 2024</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2024-02-08">8 February 2024</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -2001,7 +2001,7 @@ value is not empty, throw a TypeError and abort further steps.</p>
 a string <var>value</var> and a list <var>arguments</var>, execute the following steps:</p>
    <ol>
     <li data-md>
-     <p>Let <var>policyValue</var> be the result of executing <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-policy-value" id="ref-for-abstract-opdef-get-trusted-type-policy-value">Get Trusted Type policy value</a> with the same arguments as this algorithm.</p>
+     <p>Let <var>policyValue</var> be the result of executing <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-policy-value" id="ref-for-abstract-opdef-get-trusted-type-policy-value">Get Trusted Type policy value</a> with the same arguments as this algorithm and additionally true as <var>throwIfMissing</var>.</p>
     <li data-md>
      <p>If the algorithm threw an error, rethrow the error and abort the following steps.</p>
     <li data-md>
@@ -2018,7 +2018,7 @@ set to <var>dataString</var>.</p>
    </ol>
    <h3 class="heading settled" data-level="3.3" id="get-trusted-type-policy-value-algorithm"><span class="secno">3.3. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-get-trusted-type-policy-value">Get Trusted Type policy value</dfn></span><a class="self-link" href="#get-trusted-type-policy-value-algorithm"></a></h3>
    <p>Given a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy①③">TrustedTypePolicy</a></code> <var>policy</var>, a type name <var>trustedTypeName</var>,
-a string <var>value</var> and a list <var>arguments</var>, execute the following steps:</p>
+a string <var>value</var>, a list <var>arguments</var>, and a boolean <var>throwIfMissing</var>, execute the following steps:</p>
    <ol>
     <li data-md>
      <p>Let <var>functionName</var> be a function name for the given <var>trustedTypeName</var>,
@@ -2043,7 +2043,13 @@ based on the following table:</p>
     <li data-md>
      <p>Let <var>function</var> be the value of the property in <var>options</var> named <var>functionName</var>.</p>
     <li data-md>
-     <p>If <var>function</var> is <code>null</code>, throw a TypeError.</p>
+     <p>If <var>function</var> is <code>null</code>, then:</p>
+     <ol>
+      <li data-md>
+       <p>If <var>throwIfMissing</var> throw a TypeError.</p>
+      <li data-md>
+       <p>Else return <code>null</code>.</p>
+     </ol>
     <li data-md>
      <p>Let <var>policyValue</var> be the result of invoking <var>function</var> with <var>value</var> as a first argument, items of <var>arguments</var> as subsequent arguments,
 and <a href="https://tc39.es/ecma262/multipage/overview.html#sec-method">callback **this** value</a> set to <code>null</code>, rethrowing any exceptions.</p>
@@ -2135,6 +2141,8 @@ passing <var>global</var>, stringified <var>input</var> as <var>source</var>, <v
        <p><var>expectedType</var>’s type name as <var>trustedTypeName</var></p>
       <li data-md>
        <p>« <var>trustedTypeName</var>, <var>sink</var> » as <var>arguments</var></p>
+      <li data-md>
+       <p>false as <var>throwIfMissing</var></p>
      </ul>
     <li data-md>
      <p>If the algorithm threw an error, rethrow the error and abort the following steps.</p>
