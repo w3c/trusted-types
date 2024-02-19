@@ -1068,7 +1068,7 @@ Given a {{TrustedType}} type (|expectedType|), a [=realm/global object=] (|globa
     Note: This adds an integration point with [dynamic-code-brand-checks proposal](https://tc39.es/proposal-dynamic-code-brand-checks/).
 1.  Return |trustedObject|.
 
-## <dfn abstract-op>Prepare the script URL and text</dfn> ## {#prepare-script-url-and-text}
+## <dfn abstract-op>Prepare the script text</dfn> ## {#prepare-script-text}
 
 Given an {{HTMLScriptElement}} (|script|), this algorithm performs the following steps:
 
@@ -1297,7 +1297,7 @@ The first few steps of the [=prepare the script element=] algorithm are modified
     <p class=note>This is done so that if a parser-inserted <code id=script-processing-model:the-script-element-28><a href=https://html.spec.whatwg.org/#the-script-element>script</a></code> element fails to
     run when the parser tries to run it, but it is later executed after a script dynamically
     updates it, it will execute in an async fashion even if the <code id=script-processing-model:attr-script-async-5><a href=https://html.spec.whatwg.org/#attr-script-async>async</a></code> attribute isn't set.</p>
-  <li><ins><p>Execute the [$Prepare the script URL and text$] algorithm on <var>el</var>. If that algorithm threw an error, then return.</p></ins></li>
+  <li><ins><p>Execute the [$Prepare the script text$] algorithm on <var>el</var>. If that algorithm threw an error, then return.</p></ins></li>
   <li><p>Let <var>source text</var> be <var>el</var>'s <del><a id=script-processing-model:child-text-content href=https://dom.spec.whatwg.org/#concept-child-text-content data-x-internal=child-text-content>child text content</a>.</del> <ins>`[[ScriptText]]` internal slot value.</ins>
   <li>...
   </ol>
