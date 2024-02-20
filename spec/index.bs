@@ -1337,7 +1337,7 @@ partial interface mixin WindowOrWorkerGlobalScope {
 To the [[HTML5#timer-initialisation-steps|timer initialization steps algorithm]],
 add this step between 7.1 and 7.2:
 
-1.  If the first operation argument is not a {{Function}}, or if the first operation argument is a {{TrustedType}}, set the first operation argument to the result of executing
+1.  If the first operation argument is not a {{Function}}, set the first operation argument to the result of executing
     the [$Get Trusted Type compliant string$] algorithm, with
     *   |global| set to the [=this=] value's [=relevant global object=].
     *   |input| set to the first method argument, and
