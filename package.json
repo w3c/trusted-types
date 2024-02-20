@@ -62,12 +62,6 @@
     "watchify": "^3.11.1"
   },
   "dependencies": {},
-  "pre-commit": [
-    "lint",
-    "test",
-    "build",
-    "add_build"
-  ],
   "files": [
     "build",
     "dist",
