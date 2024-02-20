@@ -1728,8 +1728,7 @@ The Trusted Types portion of this algorithm uses |calleeRealm| and its CSP setti
 </pre>
 </div>
 
-Given a [[ECMA-262#realm|realm]] (|calleeRealm|), a string
-(|source|) <ins>, a boolean |wasCodeLike| and a string |compilationSink|</ins>, this algorithm returns <del>normally</del><ins>the
+Given a [[ECMA-262#realm|realm]] (|calleeRealm|), a list of strings (|parameterStrings|), a string (|bodyString|), <ins> a string (|source|), an enum (|compilationType|), and a boolean |wasCodeLike|</ins>, this algorithm returns <del>normally</del><ins>the
 source string to compile</ins> if compilation is allowed, and
 throws an "`EvalError`" if not:
 
@@ -1737,6 +1736,7 @@ throws an "`EvalError`" if not:
     the {{TrustedScript}} interface, with its `[[Data]]` internal slot value
     set to |source|. Otherwise, let |sourceToValidate| be |source|.</ins>
 
+1. <ins>Let |compilationSink| be `"Function"` if |compilationType| is `*FUNCTION*`, otherwise `"Eval"`.</ins>
 1. <ins>Let |sourceString| be the result of executing the
     [$Get Trusted Type compliant string$] algorithm, with:
     *   |calleeRealm| as |global|,
