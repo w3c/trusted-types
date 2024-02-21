@@ -1026,11 +1026,9 @@ Given a {{TrustedType}} type (|expectedType|), a [=realm/global object=] (|globa
 
 1.  If |input| has type |expectedType|, return stringified
     |input| and abort these steps.
-1.  Let |cspList| be the |global|'s <a>CSP list</a>.
-1.  If |cspList| is `null` or does not contain a [=content security policy object|policy=]
-    which [=directive set=] containing a [=directive=] with a name `"require-trusted-types-for"`,
-    or that directive does not contain a <a>trusted-types-sink-group</a> which is a match for a value |sinkGroup|,
-    return stringified |input| and abort these steps.
+1.  Let |requireTrustedTypes| be the result of executing [$Does sink type require trusted types?$] algorithm,
+    passing |global|, and |sinkGroup|.
+1.  If |requireTrustedTypes| is `false`, return stringified |input| and abort these steps.
 1.  Let |convertedInput| be the result of executing [$Process value with a default policy$] with the same arguments as this algorithm.
 1.  If the algorithm threw an error, rethrow the error and abort the following steps.
 1.  If |convertedInput| is `null` or `undefined`, execute the following steps:
@@ -1634,6 +1632,22 @@ Content-Security-Policy: trusted-types one two default
 </pre>
 </div>
 
+### <dfn abstract-op>Does sink type require trusted types?</dfn> ### {#does-sink-require-trusted-types}
+
+Given a [=realm/global object=] (|global|), a string (|sinkGroup|) this algorithm
+returns `true` if the [=injection sink=] requires a [=Trusted Type=], and
+`false` otherwise.
+
+1.  Let |result| be `false`.
+1.  For each |policy| in |global|'s <a>CSP list</a>:
+    1.  If |policy|'s <a>directive set</a> does not contain a <a>directive</a>
+        whose [=directive/name=] is `"require-trusted-types-for"`, skip to the next |policy|.
+    1.  Let |directive| be the |policy|'s |directive set|'s [=directive=] whose name
+        is `"require-trusted-types-for"`
+    1.  If |directive|'s [=directive/value=] does not contain a <a>trusted-types-sink-group</a> which is a match
+        for |sinkGroup|, skip to the next |policy|.
+    1.  Set |result| to `true`.
+1. Return |result|.
 
 ### <dfn abstract-op>Should sink type mismatch violation be blocked by Content Security Policy?</dfn> ### {#should-block-sink-type-mismatch}
 
@@ -1644,11 +1658,11 @@ returns `"Blocked"` if the [=injection sink=] requires a [=Trusted Type=], and
 1.  Let |result| be `"Allowed"`.
 1.  For each |policy| in |global|'s <a>CSP list</a>:
     1.  If |policy|'s <a>directive set</a> does not contain a <a>directive</a>
-        which [=directive/name=] is `"require-trusted-types-for"`, skip to the next |policy|.
-    1.  Let |directive| be the |policy|'s |directive set|'s [=directive=] which name
+        whose [=directive/name=] is `"require-trusted-types-for"`, skip to the next |policy|.
+    1.  Let |directive| be the |policy|'s |directive set|'s [=directive=] whose name
         is `"require-trusted-types-for"`
     1.  If |directive|'s [=directive/value=] does not contain a <a>trusted-types-sink-group</a> which is a match
-        for a value |sinkGroup|, skip to the next |policy|.
+        for |sinkGroup|, skip to the next |policy|.
     1.  Let |violation| be the result of executing
         [[CSP#create-violation-for-global|Create a violation object for global, policy, and directive]]
         on |global|, |policy| and `"require-trusted-types-for"`
