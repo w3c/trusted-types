@@ -1496,53 +1496,7 @@ partial interface mixin ChildNode {
 };
 </pre>
 
-### Node value verification ### {#node-value-verification}
-
-The [=converting nodes into a node=] algorithm is modified as follows:
-
-Given <ins>|parent|,</ins> |nodes| and |document|, run these steps:
-
-1. <ins>Let |isScriptElement| be |parent| is a {{HTMLScriptElement}}.</ins>
-1. <ins>For each |value| in |nodes|:</ins>
-    1. <ins>If |value| is a <a for=/>node</a>, then:</ins>
-        1. <ins>If |isScriptElement| is false, skip to the next |value|.</ins>
-        1. <ins>If |value|'s {{nodeType}} is not {{TEXT_NODE}}, skip to the next |value|.</ins>
-        1. <ins>Let |text| be the result of executing the [$Get Trusted Type compliant string$] algorithm, with the following arguments:</ins>
-            * <ins>{{TrustedScript}} as |expectedType|,</ins>
-            * <ins>|document|'s [=relevant global object=] as |global|,</ins>
-            * <ins>|value|'s <a for=CharacterData>data</a> as |input|,</ins>
-            * <ins>`HTMLScriptElement text` as |sink|,</ins>
-            * <ins>`'script'` as |sinkGroup|.</ins>
-
-            <ins>If the algorithm threw an error, rethrow the error.</ins>
-        1. <ins>Set |value|'s <a for=CharacterData>data</a> to |text|.</ins>
-    1. <ins>If |value| is a string, then:</ins>
-        1. <ins>Let |text| be |value|.</ins>
-        1. <ins>If |isScriptElement| is true:</ins>
-            1. <ins>Let |text| be the result of executing the [$Get Trusted Type compliant string$] algorithm, with the following arguments:</ins>
-                * <ins>{{TrustedScript}} as |expectedType|,</ins>
-                * <ins>|document|'s [=relevant global object=] as |global|,</ins>
-                * <ins>|value| as |input|,</ins>
-                * <ins>`HTMLScriptElement text` as |sink|,</ins>
-                * <ins>`'script'` as |sinkGroup|.</ins>
-
-                <ins>If the algorithm threw an error, rethrow the error.</ins>
-        1. <ins>Let |newValue| be a new {{Text}} <a for=/>node</a> whose
-            <a for=CharacterData>data</a> is |text| and <a for=Node>node document</a> is |document|.</ins>
-        1. <ins>Replace |value| with |newValue|.</ins>
-    1. <ins>If |value| is a {{TrustedScript}}, then:</ins>
-        1. <ins>Let |text| be |value|'s `[[Data]]` internal slot value.</ins>
-        1. <ins>Let |newValue| be a new {{Text}} <a for=/>node</a> whose
-            <a for=CharacterData>data</a> is |text| and <a for=Node>node document</a> is |document|.</ins>
-        1. <ins>Replace |value| with |newValue|.</ins>
-1. Let |node| be null.
-1. <del>Replace each string in |nodes| with a new {{Text}} <a for=/>node</a> whose
-    <a for=CharacterData>data</a> is the string and <a for=Node>node document</a> is |document|.</del>
-1. If |nodes| contains one <a for=/>node</a>, then set |node| to |nodes|[0].
-1. Otherwise, set |node| to a new {{DocumentFragment}} <a for=/>node</a> whose
-    <a for=Node>node document</a> is |document|, and then <a>append</a> each <a for=/>node</a>
-    in |nodes|, if any, to it.
-1. Return |node|.
+Issue: Keep in sync with https://github.com/whatwg/dom/pull/1258.
 
 ## Integration with DOM Parsing ## {#integration-with-dom-parsing}
 
