@@ -7,7 +7,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/W3C-ED" rel="stylesheet">
   <meta content="Bikeshed version 82ce88815, updated Thu Sep 7 16:33:55 2023 -0700" name="generator">
   <link href="https://w3c.github.io/trusted-types/dist/spec/" rel="canonical">
-  <meta content="51d9e371eb7b6c52b106cd4bd83c520ad19c24e4" name="document-revision">
+  <meta content="d32bb5064769f7b4da1f3d41da15be7986163bd1" name="document-revision">
 <style>/* Boilerplate: style-autolinks */
 .css.css, .property.property, .descriptor.descriptor {
     color: var(--a-normal-text);
@@ -2815,9 +2815,8 @@ self<c- p>.</c->top<c- p>.</c->body<c- p>.</c->innerHTML <c- o>=</c-> <c- t>'Hel
 </pre>
    </div>
    <p>
-    Given a <a href="https://tc39.es/ecma262/multipage/#realm">realm</a> (<var>calleeRealm</var>), a string
-(<var>source</var>) 
-    <ins>, a boolean <var>wasCodeLike</var> and a string <var>compilationSink</var></ins>
+    Given a <a href="https://tc39.es/ecma262/multipage/#realm">realm</a> (<var>calleeRealm</var>), a list of strings (<var>parameterStrings</var>), a string (<var>bodyString</var>), 
+    <ins> a string (<var>source</var>), an enum (<var>compilationType</var>), and a boolean <var>wasCodeLike</var></ins>
     , this algorithm returns 
     <del>normally</del>
     <ins>the
@@ -2830,6 +2829,8 @@ throws an "<code>EvalError</code>" if not:
      <ins>If <var>wasCodeLike</var> is true, let <var>sourceToValidate</var> be a new instance of
 the <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①⑦">TrustedScript</a></code> interface, with its <code>[[Data]]</code> internal slot value
 set to <var>source</var>. Otherwise, let <var>sourceToValidate</var> be <var>source</var>.</ins>
+    <li data-md>
+     <ins>Let <var>compilationSink</var> be <code>"Function"</code> if <var>compilationType</var> is <code>*FUNCTION*</code>, otherwise <code>"Eval"</code>.</ins>
     <li data-md>
      <ins>
       Let <var>sourceString</var> be the result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string⑥">Get Trusted Type compliant string</a> algorithm, with: 
