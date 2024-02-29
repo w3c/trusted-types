@@ -1749,8 +1749,7 @@ The Trusted Types portion of this algorithm uses |calleeRealm| and its CSP setti
 </pre>
 </div>
 
-Given a [[ECMA-262#realm|realm]] (|calleeRealm|), a list of strings (|parameterStrings|), a string (|bodyString|), <ins> a string (|source|), an enum (|compilationType|), and a boolean |wasCodeLike|</ins>, this algorithm returns <del>normally</del><ins>the
-source string to compile</ins> if compilation is allowed, and
+Given a [[ECMA-262#realm|realm]] (|calleeRealm|), a list of strings (|parameterStrings|), a string (|bodyString|), <ins> a string (|source|), an enum (|compilationType|), and a boolean |wasCodeLike|</ins>, this algorithm returns normally if compilation is allowed, and
 throws an "`EvalError`" if not:
 
 1.  <ins>If |wasCodeLike| is true, let |sourceToValidate| be a new instance of
@@ -1766,13 +1765,15 @@ throws an "`EvalError`" if not:
     *   `'script'` as |sinkGroup|,
     *   {{TrustedScript}} as |expectedType|.</ins>
 
-2.  <ins>If the algorithm throws an error, throw an {{EvalError}}.</ins>
+1.  <ins>If the algorithm throws an error, throw an {{EvalError}}.</ins>
 
-3.  Let |global| be a |calleeRealm|'s [=realm/global object=].
+1.  <ins>If |sourceString| is not equal to |source|, throw an {{EvalError}}.</ins>
 
-4.  Let |result| be "`Allowed`".
+1.  Let |global| be a |calleeRealm|'s [=realm/global object=].
 
-5.  For each |policy| in |global|'s <a for="global object" spec="CSP3">CSP list</a>:
+1.  Let |result| be "`Allowed`".
+
+1.  For each |policy| in |global|'s <a for="global object" spec="CSP3">CSP list</a>:
 
     1.  Let |source-list| be `null`.
 
@@ -1800,13 +1801,7 @@ throws an "`EvalError`" if not:
         5.  If |policy|'s [=policy/disposition=] is "`enforce`", then set |result| to
             "`Blocked`".
 
-6.  If |result| is "`Blocked`", throw an `EvalError` exception.
-
-7. <ins>Return |sourceString|.</ins>
-
-Note: returning |sourceString| means that the string that gets
-compiled is that returned by any [=default policy=] in the course of
-executing [$Get Trusted Type compliant string$].
+1.  If |result| is "`Blocked`", throw an `EvalError` exception.
 
 # Security Considerations # {#security-considerations}
 
