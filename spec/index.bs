@@ -973,7 +973,7 @@ a string |value| and a list |arguments|, execute the following steps:
 1.  Let |trustedObject| be a new instance of an interface with a type
     name |trustedTypeName|, with its `[[Data]]` internal slot value
     set to |dataString|.
-1.  If |trustedObject| is a {{TrustedScript}}, set its `[[HostDefinedCodeLike]]` internal slot value to the value in its `[[Data]]` slot.
+1.  If |trustedObject| is a {{TrustedScript}}, set its `[[HostDefinedIsCodeLike]]` internal slot value to `true`.
 
     Note: This adds an integration point with [dynamic-code-brand-checks proposal](https://tc39.es/proposal-dynamic-code-brand-checks/).
 1.  Return |trustedObject|.
@@ -1061,7 +1061,7 @@ Given a {{TrustedType}} type (|expectedType|), a [=realm/global object=] (|globa
 1.  Let |trustedObject| be a new instance of an interface with a type
     name |trustedTypeName|, with its `[[Data]]` internal slot value
     set to |dataString|.
-1.  If |trustedObject| is a {{TrustedScript}}, set its `[[HostDefinedCodeLike]]` internal slot value to the value in its `[[Data]]` slot.
+1.  If |trustedObject| is a {{TrustedScript}}, set its `[[HostDefinedIsCodeLike]]` internal slot value to `true`.
 
     Note: This adds an integration point with [dynamic-code-brand-checks proposal](https://tc39.es/proposal-dynamic-code-brand-checks/).
 1.  Return |trustedObject|.
@@ -1749,14 +1749,24 @@ The Trusted Types portion of this algorithm uses |calleeRealm| and its CSP setti
 </pre>
 </div>
 
-Given a [[ECMA-262#realm|realm]] (|calleeRealm|), a list of strings (|parameterStrings|), a string (|bodyString|), <ins> a string (|source|), an enum (|compilationType|), and a boolean |wasCodeLike|</ins>, this algorithm returns normally if compilation is allowed, and
+Given a [[ECMA-262#realm|realm]] (|calleeRealm|), a list of strings (|parameterStrings|), a string (|bodyString|), <ins> a string (|source|), an enum (|compilationType|), a list of ECMAScript language values (|parameterArgs|), and an ECMAScript language value (|bodyArg|), this algorithm returns normally if compilation is allowed, and
 throws an "`EvalError`" if not:
 
-1.  <ins>If |wasCodeLike| is true, let |sourceToValidate| be a new instance of
+1.  <ins>Let |compilationSink| be `"Function"` if |compilationType| is `*FUNCTION*`, otherwise `"Eval"`.</ins>
+1.  <ins>Let |isTrusted| be `true`.</ins>
+1.  <ins>If |bodyArg| is not a {{TrustedScript}} object, set |isTrusted| to `false`.</ins>
+1.  <ins>If |isTrusted| is `true` then:
+    1. <ins>If |bodyString| is not equal to |bodyArg|'s `[[Data]]` internal slot, set |isTrusted| to `false`.</ins>
+1.  <ins>If |isTrusted| is `true`, then:</ins>
+    1. <ins> For each |arg| in |parameterArgs|:</ins>
+        1. <ins>Let |index| be the index of |arg| in |parameterArgs|.</ins>
+        1. <ins>If |arg| is not a {{TrustedScript}} object, set |isTrusted| to `false`.</ins>
+        1. <ins>If |isTrusted| is `true`, then:</ins>
+            1. <ins>if |parameterStrings|[|index|] is not equal to |arg|'s `[[Data]]` internal slot, set |isTrusted| to `false`.</ins>
+1.  <ins>If |isTrusted| is `true`, let |sourceToValidate| be a new instance of
     the {{TrustedScript}} interface, with its `[[Data]]` internal slot value
     set to |source|. Otherwise, let |sourceToValidate| be |source|.</ins>
 
-1. <ins>Let |compilationSink| be `"Function"` if |compilationType| is `*FUNCTION*`, otherwise `"Eval"`.</ins>
 1. <ins>Let |sourceString| be the result of executing the
     [$Get Trusted Type compliant string$] algorithm, with:
     *   |calleeRealm| as |global|,
