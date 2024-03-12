@@ -1639,6 +1639,29 @@ Content-Security-Policy: trusted-types one two default
 </pre>
 </div>
 
+### <dfn lt="trusted-eval-source">trusted-eval</dfn> source ### {#trusted-eval-csp-source}
+
+This document defines *trusted-eval* - a new [=source expression=]. The [=trusted-eval-source|trusted-eval=] source can be used to allow evaluation of trusted code. Without
+the use of "<a grammar>`'unsafe-eval'`</a>".
+
+Note: This source expression is used to allow usage of eval in environments protected by trusted types, without allowing the uncontrolled use of eval
+in environments that don't have trusted types supported and enabled.
+
+<pre dfn-type="grammar" link-type="grammar">
+keyword-source = "'self'" / "'unsafe-inline'" / "'unsafe-eval'"
+                 / "'strict-dynamic'" / "'unsafe-hashes'" /
+                 / "'report-sample'" / "'unsafe-allow-redirects'"
+                 / "'wasm-unsafe-eval'"<ins> / "<dfn>'trusted-eval'</dfn>"</ins>
+</pre>
+
+<div class="example" id="trusted-eval-script-src">
+To use trusted-eval, the following header is required:
+
+<pre class="http">
+Content-Security-Policy: require-trusted-types-for 'script'; script-src 'trusted-eval'
+</pre>
+</div>
+
 ### <dfn abstract-op>Does sink type require trusted types?</dfn> ### {#does-sink-require-trusted-types}
 
 Given a [=realm/global object=] (|global|), a string (|sinkGroup|) this algorithm
@@ -1779,6 +1802,9 @@ throws an "`EvalError`" if not:
 
 1.  <ins>If |sourceString| is not equal to |source|, throw an {{EvalError}}.</ins>
 
+1.  <ins>Let |requireTrustedTypes| be the result of executing [$Does sink type require trusted types?$] algorithm,
+    passing |calleeRealm|, and `'script'`.</ins>
+
 1.  Let |global| be a |calleeRealm|'s [=realm/global object=].
 
 1.  Let |result| be "`Allowed`".
@@ -1787,28 +1813,32 @@ throws an "`EvalError`" if not:
 
     1.  Let |source-list| be `null`.
 
-    2.  If |policy| contains a [=directive=] whose [=directive/name=] is "`script-src`", then
+    1.  If |policy| contains a [=directive=] whose [=directive/name=] is "`script-src`", then
         set |source-list| to that [=directive=]'s [=directive/value=].
 
         Otherwise if |policy| contains a [=directive=] whose [=directive/name=] is
         "`default-src`", then set |source-list| to that directive's [=directive/value=].
 
-    3.  If |source-list| is not `null`, and does not contain a [=source expression=] which is
-        an [=ASCII case-insensitive=] match for the string "<a grammar>`'unsafe-eval'`</a>" then:
+    1.  If |source-list| is not `null`, then:
+        1.  <ins>If |requireTrustedTypes| and |source-list| contains a [=source expression=] which is
+            an [=ASCII case-insensitive=] match for the string "<a grammar>`'trusted-eval'`</a>", then skip the following steps.</ins>
+
+        1.  If |source-list| contains a [=source expression=] which is
+            an [=ASCII case-insensitive=] match for the string "<a grammar>`'unsafe-eval'`</a>", then skip the following steps.
 
         1.  Let |violation| be the result of executing [[CSP3#create-violation-for-global]] on
             |global|, |policy|, and "`script-src`".
 
-        2.  Set |violation|'s [=violation/resource=] to "`inline`".
+        1.  Set |violation|'s [=violation/resource=] to "`inline`".
 
-        3.  If |source-list| [=list/contains=] the expression
+        1.  If |source-list| [=list/contains=] the expression
             "<a grammar>`'report-sample'`</a>", then set |violation|'s [=violation/sample=] to
             the substring of <del>|source|</del> <ins>|sourceString|</ins> containing its first
             40 characters.
 
-        4.  Execute [[CSP3#report-violation]] on |violation|.
+        1.  Execute [[CSP3#report-violation]] on |violation|.
 
-        5.  If |policy|'s [=policy/disposition=] is "`enforce`", then set |result| to
+        1.  If |policy|'s [=policy/disposition=] is "`enforce`", then set |result| to
             "`Blocked`".
 
 1.  If |result| is "`Blocked`", throw an `EvalError` exception.
