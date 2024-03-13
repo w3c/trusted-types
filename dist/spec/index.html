@@ -7,7 +7,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/W3C-ED" rel="stylesheet">
   <meta content="Bikeshed version 82ce88815, updated Thu Sep 7 16:33:55 2023 -0700" name="generator">
   <link href="https://w3c.github.io/trusted-types/dist/spec/" rel="canonical">
-  <meta content="2f7de8e5f983da9be957fde80c3a5fd3cc8acb88" name="document-revision">
+  <meta content="d1b143be2d85fa0694a2c538cc8f355a11b68bf3" name="document-revision">
 <style>/* Boilerplate: style-autolinks */
 .css.css, .property.property, .descriptor.descriptor {
     color: var(--a-normal-text);
@@ -1005,7 +1005,7 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Trusted Types</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2024-03-07">7 March 2024</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2024-03-13">13 March 2024</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -1493,11 +1493,11 @@ wrappers around a string, constructed via a <code class="idl"><a data-link-type=
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString"><c- b>DOMString</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedhtml-tojson" id="ref-for-dom-trustedhtml-tojson"><c- g>toJSON</c-></a>();
 };
 </pre>
-   <p>TrustedHTML objects have a <code>[[Data]]</code> internal slot which holds a
+   <p>TrustedHTML objects have a <dfn class="dfn-paneled" data-dfn-for="TrustedHTML" data-dfn-type="dfn" data-noexport id="trustedhtml-data">[[Data]]</dfn> internal slot which holds a
 DOMString. The slot’s value is set when the object is created, and
 will never change during its lifetime.</p>
    <p><dfn class="dfn-paneled idl-code" data-dfn-for="TrustedHTML" data-dfn-type="method" data-export id="dom-trustedhtml-tojson"><code>toJSON()</code></dfn> method steps and the <dfn class="dfn-paneled" data-dfn-for="TrustedHTML" data-dfn-type="dfn" data-lt="stringificationbehavior" data-noexport id="trustedhtml-stringification-behavior">stringification behavior</dfn> steps of a
-TrustedHTML object are to return the value from its <code>[[Data]]</code> internal slot.</p>
+TrustedHTML object are to return the value from its <a data-link-type="dfn" href="#trustedhtml-data" id="ref-for-trustedhtml-data">[[Data]]</a> internal slot.</p>
    <h4 class="heading settled" data-level="2.2.2" id="trusted-script"><span class="secno">2.2.2. </span><span class="content"><dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="trustedscript"><code>TrustedScript</code></dfn></span><a class="self-link" href="#trusted-script"></a></h4>
    <p>The TrustedScript interface represents a string with an uncompiled
 script body that a developer can confidently pass into an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink⑦">injection sink</a> that might lead to executing that script.
@@ -1509,11 +1509,11 @@ around a string, constructed via a <code class="idl"><a data-link-type="idl" hre
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString①"><c- b>DOMString</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedscript-tojson" id="ref-for-dom-trustedscript-tojson"><c- g>toJSON</c-></a>();
 };
 </pre>
-   <p>TrustedScript objects have a <code>[[Data]]</code> internal slot which holds a
+   <p>TrustedScript objects have a <dfn class="dfn-paneled" data-dfn-for="TrustedScript" data-dfn-type="dfn" data-noexport id="trustedscript-data">[[Data]]</dfn> internal slot which holds a
 DOMString. The slot’s value is set when the object is created, and
 will never change during its lifetime.</p>
    <p><dfn class="dfn-paneled idl-code" data-dfn-for="TrustedScript" data-dfn-type="method" data-export id="dom-trustedscript-tojson"><code>toJSON()</code></dfn> method steps and the <dfn class="dfn-paneled" data-dfn-for="TrustedScript" data-dfn-type="dfn" data-lt="stringificationbehavior" data-noexport id="trustedscript-stringification-behavior">stringification behavior</dfn> steps of a
-TrustedScript object are to return the value from its <code>[[Data]]</code> internal slot.</p>
+TrustedScript object are to return the value from its <a data-link-type="dfn" href="#trustedscript-data" id="ref-for-trustedscript-data">[[Data]]</a> internal slot.</p>
    <h4 class="heading settled" data-level="2.2.3" id="trused-script-url"><span class="secno">2.2.3. </span><span class="content"><dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="trustedscripturl"><code>TrustedScriptURL</code></dfn></span><a class="self-link" href="#trused-script-url"></a></h4>
    <p>The TrustedScriptURL interface represents a string that a developer
 can confidently pass into an <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink⑧">injection sink</a> that will parse it as a URL of
@@ -1526,11 +1526,11 @@ string, constructed via a <code class="idl"><a data-link-type="idl" href="#trust
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString" id="ref-for-idl-USVString"><c- b>USVString</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedscripturl-tojson" id="ref-for-dom-trustedscripturl-tojson"><c- g>toJSON</c-></a>();
 };
 </pre>
-   <p>TrustedScriptURL objects have a <code>[[Data]]</code> internal slot which holds a
+   <p>TrustedScriptURL objects have a <dfn class="dfn-paneled" data-dfn-for="TrustedScriptURL" data-dfn-type="dfn" data-noexport id="trustedscripturl-data">[[Data]]</dfn> internal slot which holds a
 USVString. The slot’s value is set when the object is created, and
 will never change during its lifetime.</p>
    <p><dfn class="dfn-paneled idl-code" data-dfn-for="TrustedScriptURL" data-dfn-type="method" data-export id="dom-trustedscripturl-tojson"><code>toJSON()</code></dfn> method steps and the <dfn class="dfn-paneled" data-dfn-for="TrustedScriptURL" data-dfn-type="dfn" data-lt="stringificationbehavior" data-noexport id="trustedscripturl-stringification-behavior">stringification behavior</dfn> steps of a
-TrustedScriptURL object are to return the value from its <code>[[Data]]</code> internal slot.</p>
+TrustedScriptURL object are to return the value from its <a data-link-type="dfn" href="#trustedscripturl-data" id="ref-for-trustedscripturl-data">[[Data]]</a> internal slot.</p>
    <h3 class="heading settled" data-level="2.3" id="policies-hdr"><span class="secno">2.3. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="policies">Policies</dfn></span><a class="self-link" href="#policies-hdr"></a></h3>
    <p>Trusted Types can only be created via user-defined
 and immutable policies that define rules for converting a string into
@@ -1693,7 +1693,7 @@ scriptElement<c- p>.</c->src <c- o>=</c-> myPolicy<c- p>.</c->createScriptURL<c-
       </div>
      <dt data-md><dfn class="dfn-paneled idl-code" data-dfn-for="TrustedTypePolicyFactory" data-dfn-type="method" data-export id="dom-trustedtypepolicyfactory-ishtml"><code>isHTML(value)</code></dfn>
      <dd data-md>
-      <p>Returns true if value is an instance of <code class="idl"><a data-link-type="idl" href="#trustedhtml" id="ref-for-trustedhtml③">TrustedHTML</a></code> and has its <code>[[Data]]</code> internal slot set, false otherwise.</p>
+      <p>Returns true if value is an instance of <code class="idl"><a data-link-type="idl" href="#trustedhtml" id="ref-for-trustedhtml③">TrustedHTML</a></code> and has its <a data-link-type="dfn" href="#trustedhtml-data" id="ref-for-trustedhtml-data①">[[Data]]</a> internal slot set, false otherwise.</p>
       <p class="note" role="note"><span class="marker">Note:</span> <code>is*</code> functions are used to check if a given object is truly a legitimate <a data-link-type="dfn" href="#trusted-type" id="ref-for-trusted-type①">Trusted Type</a> object (i.e. it was created via one of the configured
 policies). This is to be able to detect a forgery of the objects via
 e.g. <a href="https://tc39.es/ecma262/multipage/fundamental-objects.html#sec-object.create">Object.create</a> or prototype chains manipulation.</p>
@@ -1710,10 +1710,10 @@ trustedTypes<c- p>.</c->isHTML<c- p>(</c-><c- u>"&lt;div>plain string&lt;/div>"<
       </div>
      <dt data-md><dfn class="dfn-paneled idl-code" data-dfn-for="TrustedTypePolicyFactory" data-dfn-type="method" data-export id="dom-trustedtypepolicyfactory-isscript"><code>isScript(value)</code></dfn>
      <dd data-md>
-      <p>Returns true if value is an instance of <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript②">TrustedScript</a></code> and has its <code>[[Data]]</code> internal slot set, false otherwise.</p>
+      <p>Returns true if value is an instance of <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript②">TrustedScript</a></code> and has its <a data-link-type="dfn" href="#trustedscript-data" id="ref-for-trustedscript-data①">[[Data]]</a> internal slot set, false otherwise.</p>
      <dt data-md><dfn class="dfn-paneled idl-code" data-dfn-for="TrustedTypePolicyFactory" data-dfn-type="method" data-export id="dom-trustedtypepolicyfactory-isscripturl"><code>isScriptURL(value)</code></dfn>
      <dd data-md>
-      <p>Returns true if value is an instance of <code class="idl"><a data-link-type="idl" href="#trustedscripturl" id="ref-for-trustedscripturl①">TrustedScriptURL</a></code> and has its <code>[[Data]]</code> internal slot set, false otherwise.</p>
+      <p>Returns true if value is an instance of <code class="idl"><a data-link-type="idl" href="#trustedscripturl" id="ref-for-trustedscripturl①">TrustedScriptURL</a></code> and has its <a data-link-type="dfn" href="#trustedscripturl-data" id="ref-for-trustedscripturl-data①">[[Data]]</a> internal slot set, false otherwise.</p>
      <dt data-md><dfn class="dfn-paneled idl-code" data-dfn-for="TrustedTypePolicyFactory" data-dfn-type="method" data-export data-lt="getPropertyType(tagName, property, elementNs)|getPropertyType(tagName, property)" id="dom-trustedtypepolicyfactory-getpropertytype"><code>getPropertyType(tagName, property, elementNs)</code></dfn>
      <dd data-md>
       <p>Allows the authors to check if a Trusted Type is required for a given <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#element" id="ref-for-element②">Element</a></code>'s
@@ -1777,7 +1777,7 @@ trustedTypes<c- p>.</c->getAttributeType<c- p>(</c-><c- t>'foo'</c-><c- p>,</c->
     <dl>
      <dt data-md><dfn class="dfn-paneled idl-code" data-dfn-for="TrustedTypePolicyFactory" data-dfn-type="attribute" data-export id="dom-trustedtypepolicyfactory-emptyhtml"><code>emptyHTML</code></dfn>, <span> of type <a data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml④">TrustedHTML</a>, readonly</span>
      <dd data-md>
-      <p>is a <code class="idl"><a data-link-type="idl" href="#trustedhtml" id="ref-for-trustedhtml⑤">TrustedHTML</a></code> object with its <code>[[Data]]</code> internal slot value set to an empty string.</p>
+      <p>is a <code class="idl"><a data-link-type="idl" href="#trustedhtml" id="ref-for-trustedhtml⑤">TrustedHTML</a></code> object with its <a data-link-type="dfn" href="#trustedhtml-data" id="ref-for-trustedhtml-data②">[[Data]]</a> internal slot value set to an empty string.</p>
     </dl>
     <div class="example" id="empty-html-example">
      <a class="self-link" href="#empty-html-example"></a> 
@@ -1787,7 +1787,7 @@ trustedTypes<c- p>.</c->getAttributeType<c- p>(</c-><c- t>'foo'</c-><c- p>,</c->
     <dl>
      <dt data-md><dfn class="dfn-paneled idl-code" data-dfn-for="TrustedTypePolicyFactory" data-dfn-type="attribute" data-export id="dom-trustedtypepolicyfactory-emptyscript"><code>emptyScript</code></dfn>, <span> of type <a data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript③">TrustedScript</a>, readonly</span>
      <dd data-md>
-      <p>is a <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript④">TrustedScript</a></code> object with its <code>[[Data]]</code> internal slot value set to an empty string.</p>
+      <p>is a <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript④">TrustedScript</a></code> object with its <a data-link-type="dfn" href="#trustedscript-data" id="ref-for-trustedscript-data②">[[Data]]</a> internal slot value set to an empty string.</p>
     </dl>
     <p class="note" role="note"><span class="marker">Note:</span> This object can be used to detect if the runtime environment has <a href="#csp-eval">§ 4.8.7 Support for dynamic code compilation</a>. While native Trusted Types implementation can
 support <code>eval(TrustedScript)</code>, it is impossible for a polyfill to  emulate that, as
@@ -2831,7 +2831,7 @@ throws an "<code>EvalError</code>" if not:</ins>
       If <var>isTrusted</var> is <code>true</code> then: 
       <ol>
        <li data-md>
-        <ins>If <var>bodyString</var> is not equal to <var>bodyArg</var>’s <code>[[Data]]</code> internal slot, set <var>isTrusted</var> to <code>false</code>.</ins>
+        <ins>If <var>bodyString</var> is not equal to <var>bodyArg</var>’s <a data-link-type="dfn" href="#trustedscript-data" id="ref-for-trustedscript-data③">[[Data]]</a> internal slot, set <var>isTrusted</var> to <code>false</code>.</ins>
       </ol>
      </ins>
     <li data-md>
@@ -2848,13 +2848,13 @@ throws an "<code>EvalError</code>" if not:</ins>
          <ins>If <var>isTrusted</var> is <code>true</code>, then:</ins>
          <ol>
           <li data-md>
-           <ins>if <var>parameterStrings</var>[<var>index</var>] is not equal to <var>arg</var>’s <code>[[Data]]</code> internal slot, set <var>isTrusted</var> to <code>false</code>.</ins>
+           <ins>if <var>parameterStrings</var>[<var>index</var>] is not equal to <var>arg</var>’s <a data-link-type="dfn" href="#trustedscript-data" id="ref-for-trustedscript-data④">[[Data]]</a> internal slot, set <var>isTrusted</var> to <code>false</code>.</ins>
          </ol>
        </ol>
      </ol>
     <li data-md>
      <ins>If <var>isTrusted</var> is <code>true</code>, let <var>sourceToValidate</var> be a new instance of
-the <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①⑨">TrustedScript</a></code> interface, with its <code>[[Data]]</code> internal slot value
+the <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①⑨">TrustedScript</a></code> interface, with its <a data-link-type="dfn" href="#trustedscript-data" id="ref-for-trustedscript-data⑤">[[Data]]</a> internal slot value
 set to <var>source</var>. Otherwise, let <var>sourceToValidate</var> be <var>source</var>.</ins>
     <li data-md>
      <ins>
@@ -3085,6 +3085,13 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <li><a href="#callbackdef-createscripturlcallback">CreateScriptURLCallback</a><span>, in § 2.3.3</span>
    <li><a href="#dom-trustedtypepolicy-createscripturl">createScriptURL(input)</a><span>, in § 2.3.2</span>
    <li><a href="#dom-trustedtypepolicy-createscripturl">createScriptURL(input, ...arguments)</a><span>, in § 2.3.2</span>
+   <li>
+    [[Data]]
+    <ul>
+     <li><a href="#trustedhtml-data">dfn for TrustedHTML</a><span>, in § 2.2.1</span>
+     <li><a href="#trustedscript-data">dfn for TrustedScript</a><span>, in § 2.2.2</span>
+     <li><a href="#trustedscripturl-data">dfn for TrustedScriptURL</a><span>, in § 2.2.3</span>
+    </ul>
    <li><a href="#dom-htmlobjectelement-data">data</a><span>, in § 4.3.4</span>
    <li><a href="#default-policy">Default policy</a><span>, in § 2.3.4</span>
    <li><a href="#dom-trustedtypepolicyfactory-defaultpolicy">defaultPolicy</a><span>, in § 2.3.1</span>
@@ -4235,12 +4242,15 @@ window.dfnpanelData['689ce6c5'] = {"dfnID": "689ce6c5", "url": "https://webidl.s
 window.dfnpanelData['injection-sink'] = {"dfnID": "injection-sink", "url": "#injection-sink", "dfnText": "injection sink", "refSections": [{"refs": [{"id": "ref-for-injection-sink"}], "title": "1. Introduction"}, {"refs": [{"id": "ref-for-injection-sink\u2460"}], "title": "1.3. Use cases"}, {"refs": [{"id": "ref-for-injection-sink\u2461"}], "title": "2.1. Injection sinks"}, {"refs": [{"id": "ref-for-injection-sink\u2462"}, {"id": "ref-for-injection-sink\u2463"}], "title": "2.1.1. DOM XSS injection sinks"}, {"refs": [{"id": "ref-for-injection-sink\u2464"}], "title": "2.2. Trusted Types"}, {"refs": [{"id": "ref-for-injection-sink\u2465"}], "title": "2.2.1. TrustedHTML"}, {"refs": [{"id": "ref-for-injection-sink\u2466"}], "title": "2.2.2. TrustedScript"}, {"refs": [{"id": "ref-for-injection-sink\u2467"}], "title": "2.2.3. TrustedScriptURL"}, {"refs": [{"id": "ref-for-injection-sink\u2468"}, {"id": "ref-for-injection-sink\u2460\u24ea"}, {"id": "ref-for-injection-sink\u2460\u2460"}, {"id": "ref-for-injection-sink\u2460\u2461"}], "title": "2.3. Policies"}, {"refs": [{"id": "ref-for-injection-sink\u2460\u2462"}, {"id": "ref-for-injection-sink\u2460\u2463"}], "title": "2.3.4. Default policy"}, {"refs": [{"id": "ref-for-injection-sink\u2460\u2464"}, {"id": "ref-for-injection-sink\u2460\u2465"}, {"id": "ref-for-injection-sink\u2460\u2466"}], "title": "2.4. Enforcement"}, {"refs": [{"id": "ref-for-injection-sink\u2460\u2467"}], "title": "2.4.1. Content Security Policy"}, {"refs": [{"id": "ref-for-injection-sink\u2460\u2468"}], "title": "3.4. Get Trusted Type compliant string"}, {"refs": [{"id": "ref-for-injection-sink\u2461\u24ea"}], "title": "3.5. Process value with a default policy"}, {"refs": [{"id": "ref-for-injection-sink\u2461\u2460"}, {"id": "ref-for-injection-sink\u2461\u2461"}], "title": "4.8.1. require-trusted-types-for directive"}, {"refs": [{"id": "ref-for-injection-sink\u2461\u2462"}, {"id": "ref-for-injection-sink\u2461\u2463"}], "title": "4.8.2. trusted-types directive"}, {"refs": [{"id": "ref-for-injection-sink\u2461\u2464"}], "title": "4.8.3. Does sink type require trusted types?"}, {"refs": [{"id": "ref-for-injection-sink\u2461\u2465"}], "title": "4.8.4. Should sink type mismatch violation be blocked by Content Security Policy?"}, {"refs": [{"id": "ref-for-injection-sink\u2461\u2466"}], "title": "5. Security Considerations"}, {"refs": [{"id": "ref-for-injection-sink\u2461\u2467"}, {"id": "ref-for-injection-sink\u2461\u2468"}], "title": "5.5. Best practices for policy design"}, {"refs": [{"id": "ref-for-injection-sink\u2462\u24ea"}], "title": "6. Privacy Considerations"}, {"refs": [{"id": "ref-for-injection-sink\u2462\u2460"}], "title": "7.1. Vendor-specific Extensions and Addons"}], "external": false};
 window.dfnpanelData['trusted-type'] = {"dfnID": "trusted-type", "url": "#trusted-type", "dfnText": "Trusted Type", "refSections": [{"refs": [{"id": "ref-for-trusted-type"}], "title": "2.3. Policies"}, {"refs": [{"id": "ref-for-trusted-type\u2460"}], "title": "2.3.1. TrustedTypePolicyFactory"}, {"refs": [{"id": "ref-for-trusted-type\u2461"}], "title": "2.3.3. TrustedTypePolicyOptions"}, {"refs": [{"id": "ref-for-trusted-type\u2462"}], "title": "2.4. Enforcement"}, {"refs": [{"id": "ref-for-trusted-type\u2463"}], "title": "3.4. Get Trusted Type compliant string"}, {"refs": [{"id": "ref-for-trusted-type\u2464"}], "title": "4.8.3. Does sink type require trusted types?"}, {"refs": [{"id": "ref-for-trusted-type\u2465"}], "title": "4.8.4. Should sink type mismatch violation be blocked by Content Security Policy?"}], "external": false};
 window.dfnpanelData['trustedhtml'] = {"dfnID": "trustedhtml", "url": "#trustedhtml", "dfnText": "TrustedHTML", "refSections": [{"refs": [{"id": "ref-for-trustedhtml"}], "title": "2.2.1. TrustedHTML"}, {"refs": [{"id": "ref-for-trustedhtml\u2460"}], "title": "2.3. Policies"}, {"refs": [{"id": "ref-for-trustedhtml\u2461"}, {"id": "ref-for-trustedhtml\u2462"}, {"id": "ref-for-trustedhtml\u2463"}, {"id": "ref-for-trustedhtml\u2464"}], "title": "2.3.1. TrustedTypePolicyFactory"}, {"refs": [{"id": "ref-for-trustedhtml\u2465"}], "title": "2.3.2. TrustedTypePolicy"}, {"refs": [{"id": "ref-for-trustedhtml\u2466"}, {"id": "ref-for-trustedhtml\u2467"}], "title": "3.7. Get Trusted Types-compliant attribute value"}, {"refs": [{"id": "ref-for-trustedhtml\u2468"}, {"id": "ref-for-trustedhtml\u2460\u24ea"}], "title": "4. Integrations"}, {"refs": [{"id": "ref-for-trustedhtml\u2460\u2460"}], "title": "4.2. [StringContext]"}, {"refs": [{"id": "ref-for-trustedhtml\u2460\u2461"}], "title": "4.7. Integration with execCommand"}], "external": false};
+window.dfnpanelData['trustedhtml-data'] = {"dfnID": "trustedhtml-data", "url": "#trustedhtml-data", "dfnText": "[[Data]]", "refSections": [{"refs": [{"id": "ref-for-trustedhtml-data"}], "title": "2.2.1. TrustedHTML"}, {"refs": [{"id": "ref-for-trustedhtml-data\u2460"}, {"id": "ref-for-trustedhtml-data\u2461"}], "title": "2.3.1. TrustedTypePolicyFactory"}], "external": false};
 window.dfnpanelData['dom-trustedhtml-tojson'] = {"dfnID": "dom-trustedhtml-tojson", "url": "#dom-trustedhtml-tojson", "dfnText": "toJSON()", "refSections": [{"refs": [{"id": "ref-for-dom-trustedhtml-tojson"}], "title": "2.2.1. TrustedHTML"}], "external": false};
 window.dfnpanelData['trustedhtml-stringification-behavior'] = {"dfnID": "trustedhtml-stringification-behavior", "url": "#trustedhtml-stringification-behavior", "dfnText": "stringification behavior", "refSections": [{"refs": [{"id": "ref-for-trustedhtml-stringification-behavior"}], "title": "2.2.1. TrustedHTML"}], "external": false};
 window.dfnpanelData['trustedscript'] = {"dfnID": "trustedscript", "url": "#trustedscript", "dfnText": "TrustedScript", "refSections": [{"refs": [{"id": "ref-for-trustedscript"}], "title": "2.2.2. TrustedScript"}, {"refs": [{"id": "ref-for-trustedscript\u2460"}, {"id": "ref-for-trustedscript\u2461"}, {"id": "ref-for-trustedscript\u2462"}, {"id": "ref-for-trustedscript\u2463"}], "title": "2.3.1. TrustedTypePolicyFactory"}, {"refs": [{"id": "ref-for-trustedscript\u2464"}], "title": "2.3.2. TrustedTypePolicy"}, {"refs": [{"id": "ref-for-trustedscript\u2465"}], "title": "3.2. Create a Trusted Type"}, {"refs": [{"id": "ref-for-trustedscript\u2466"}], "title": "3.5. Process value with a default policy"}, {"refs": [{"id": "ref-for-trustedscript\u2467"}], "title": "3.7. Get Trusted Types-compliant attribute value"}, {"refs": [{"id": "ref-for-trustedscript\u2468"}, {"id": "ref-for-trustedscript\u2460\u24ea"}], "title": "4. Integrations"}, {"refs": [{"id": "ref-for-trustedscript\u2460\u2460"}], "title": "4.2. [StringContext]"}, {"refs": [{"id": "ref-for-trustedscript\u2460\u2461"}, {"id": "ref-for-trustedscript\u2460\u2462"}], "title": "4.3.5. Enforcement in timer functions"}, {"refs": [{"id": "ref-for-trustedscript\u2460\u2463"}], "title": "4.3.6. Enforcement in event handler content attributes"}, {"refs": [{"id": "ref-for-trustedscript\u2460\u2464"}, {"id": "ref-for-trustedscript\u2460\u2465"}], "title": "4.8.1.1. require-trusted-types-for Pre-Navigation check"}, {"refs": [{"id": "ref-for-trustedscript\u2460\u2466"}, {"id": "ref-for-trustedscript\u2460\u2467"}, {"id": "ref-for-trustedscript\u2460\u2468"}, {"id": "ref-for-trustedscript\u2461\u24ea"}], "title": "4.8.7. Support for dynamic code compilation"}], "external": false};
+window.dfnpanelData['trustedscript-data'] = {"dfnID": "trustedscript-data", "url": "#trustedscript-data", "dfnText": "[[Data]]", "refSections": [{"refs": [{"id": "ref-for-trustedscript-data"}], "title": "2.2.2. TrustedScript"}, {"refs": [{"id": "ref-for-trustedscript-data\u2460"}, {"id": "ref-for-trustedscript-data\u2461"}], "title": "2.3.1. TrustedTypePolicyFactory"}, {"refs": [{"id": "ref-for-trustedscript-data\u2462"}, {"id": "ref-for-trustedscript-data\u2463"}, {"id": "ref-for-trustedscript-data\u2464"}], "title": "4.8.7. Support for dynamic code compilation"}], "external": false};
 window.dfnpanelData['dom-trustedscript-tojson'] = {"dfnID": "dom-trustedscript-tojson", "url": "#dom-trustedscript-tojson", "dfnText": "toJSON()", "refSections": [{"refs": [{"id": "ref-for-dom-trustedscript-tojson"}], "title": "2.2.2. TrustedScript"}], "external": false};
 window.dfnpanelData['trustedscript-stringification-behavior'] = {"dfnID": "trustedscript-stringification-behavior", "url": "#trustedscript-stringification-behavior", "dfnText": "stringification behavior", "refSections": [{"refs": [{"id": "ref-for-trustedscript-stringification-behavior"}], "title": "2.2.2. TrustedScript"}], "external": false};
 window.dfnpanelData['trustedscripturl'] = {"dfnID": "trustedscripturl", "url": "#trustedscripturl", "dfnText": "TrustedScriptURL", "refSections": [{"refs": [{"id": "ref-for-trustedscripturl"}], "title": "2.2.3. TrustedScriptURL"}, {"refs": [{"id": "ref-for-trustedscripturl\u2460"}], "title": "2.3.1. TrustedTypePolicyFactory"}, {"refs": [{"id": "ref-for-trustedscripturl\u2461"}], "title": "2.3.2. TrustedTypePolicy"}, {"refs": [{"id": "ref-for-trustedscripturl\u2462"}], "title": "3.6. Prepare the script text"}, {"refs": [{"id": "ref-for-trustedscripturl\u2463"}, {"id": "ref-for-trustedscripturl\u2464"}, {"id": "ref-for-trustedscripturl\u2465"}, {"id": "ref-for-trustedscripturl\u2466"}, {"id": "ref-for-trustedscripturl\u2467"}, {"id": "ref-for-trustedscripturl\u2468"}, {"id": "ref-for-trustedscripturl\u2460\u24ea"}], "title": "3.7. Get Trusted Types-compliant attribute value"}, {"refs": [{"id": "ref-for-trustedscripturl\u2460\u2460"}, {"id": "ref-for-trustedscripturl\u2460\u2461"}], "title": "4. Integrations"}, {"refs": [{"id": "ref-for-trustedscripturl\u2460\u2462"}], "title": "4.2. [StringContext]"}, {"refs": [{"id": "ref-for-trustedscripturl\u2460\u2463"}, {"id": "ref-for-trustedscripturl\u2460\u2464"}], "title": "4.5. Integration with SVG"}, {"refs": [{"id": "ref-for-trustedscripturl\u2460\u2465"}, {"id": "ref-for-trustedscripturl\u2460\u2466"}], "title": "5.3. Plugin navigation"}], "external": false};
+window.dfnpanelData['trustedscripturl-data'] = {"dfnID": "trustedscripturl-data", "url": "#trustedscripturl-data", "dfnText": "[[Data]]", "refSections": [{"refs": [{"id": "ref-for-trustedscripturl-data"}], "title": "2.2.3. TrustedScriptURL"}, {"refs": [{"id": "ref-for-trustedscripturl-data\u2460"}], "title": "2.3.1. TrustedTypePolicyFactory"}], "external": false};
 window.dfnpanelData['dom-trustedscripturl-tojson'] = {"dfnID": "dom-trustedscripturl-tojson", "url": "#dom-trustedscripturl-tojson", "dfnText": "toJSON()", "refSections": [{"refs": [{"id": "ref-for-dom-trustedscripturl-tojson"}], "title": "2.2.3. TrustedScriptURL"}], "external": false};
 window.dfnpanelData['trustedscripturl-stringification-behavior'] = {"dfnID": "trustedscripturl-stringification-behavior", "url": "#trustedscripturl-stringification-behavior", "dfnText": "stringification behavior", "refSections": [{"refs": [{"id": "ref-for-trustedscripturl-stringification-behavior"}], "title": "2.2.3. TrustedScriptURL"}], "external": false};
 window.dfnpanelData['policies'] = {"dfnID": "policies", "url": "#policies", "dfnText": "Policies", "refSections": [{"refs": [{"id": "ref-for-policies"}], "title": "1. Introduction"}, {"refs": [{"id": "ref-for-policies\u2460"}], "title": "1.3. Use cases"}, {"refs": [{"id": "ref-for-policies\u2461"}], "title": "2.3. Policies"}, {"refs": [{"id": "ref-for-policies\u2462"}], "title": "2.4. Enforcement"}, {"refs": [{"id": "ref-for-policies\u2463"}], "title": "2.4.1. Content Security Policy"}, {"refs": [{"id": "ref-for-policies\u2464"}], "title": "4.8.2. trusted-types directive"}, {"refs": [{"id": "ref-for-policies\u2465"}], "title": "5.5. Best practices for policy design"}], "external": false};
