@@ -1126,93 +1126,9 @@ typedef (TrustedHTML or TrustedScript or TrustedScriptURL) TrustedType;
 
 ## Integration with WebIDL ## {#webidl-integration}
 
-Issue: Keep in sync with https://github.com/heycam/webidl/pull/841.
-
 <h3 id="StringContext" extended-attribute lt="StringContext">[StringContext]</h3>
 
-This specification defines a new [{{StringContext}}] [=extended attribute=].
-
-If the [{{StringContext}}] [=extended attribute=] appears on {{DOMString}} or {{USVString}}, it
-modifies how the value is converted to the IDL type, causing additional value validation to
-adhere to the context the string is used in.
-
-The [{{StringContext}}] extended attribute must [=takes an identifier|take an identifier=]. The [=identifier=]
-must be one of {{TrustedHTML}}, {{TrustedScript}} and {{TrustedScriptURL}}.
-
-Issue: Make sure this is OK, otherwise use strings and convert them to TrustedXYZ in this spec only.
-
-[{{StringContext}}] extended attribute may only annotate a type of a [=regular attribute=] or
-a [=regular operation=] argument. A type annotated with the [{{StringContext}}]
-extended attribute must not appear in a [=read only=] attribute. The [=regular attribute=] or
-a [=regular operation=] argument that the type annotated with the [{{StringContext}}] extended
-attribute appears in is its <dfn>related construct</dfn>.
-
-A type that is not {{DOMString}} or {{USVString}} must not be associated with the [{{StringContext}}] extended attribute.
-
-See the rules for converting ECMAScript values to the IDL types in [[webidl#js-DOMString]]
-for the specific requirements that the use of [{{StringContext}}] entails.
-
-<div class="example" id="webidl-stringcontext-example">
-
-    In the following [=IDL fragment=],
-    a [=variadic=] [=operation=] is declared
-    that uses the [{{StringContext}}] [=extended attribute=]
-    on all its arguments:
-
-    <pre highlight="webidl">
-        interface Document {
-          undefined write([StringContext=TrustedHTML] DOMString... text);
-        };
-    </pre>
-</div>
-
-### Extended attributes applicable to types ### {#webidl-applicable-to-types}
-
-The following extended attributes are <dfn for="extended attributes" noexport>applicable to types</dfn>:
- [{{AllowShared}}],
- [{{Clamp}}],
- [{{EnforceRange}}]<ins>,
- [{{StringContext}}]</ins> and
- [{{LegacyNullToEmptyString}}].
-
-### Type conversion ### {#webidl-type-conversion}
-
-This specification modifies the algorithm implementing the conversion to DOMString in [[webidl#js-DOMString]]:
-
-An ECMAScript value |V| is [=converted to an IDL value|converted=]
-to an IDL {{DOMString}} value by running the following algorithm:
-
-  1.  <ins>If the conversion is to an IDL type associated with the
-      [{{StringContext}}] extended attribute, then set |V| to the result of [=validate the string in context=], passing
-      [=this=], |V|, the {{StringContext}} extended attribute [=identifier=], and the [=identifier=]
-      of the [{{StringContext}}] extended attribute [=related construct=].
-
-      Note: That algorithm may throw a TypeError.
-      </ins>
-  1.  If |V| is <emu-val>null</emu-val> and the conversion is to an IDL type
-      associated with the [{{LegacyNullToEmptyString}}] extended
-      attribute, then return the {{DOMString}} value that represents the empty string.
-  1.  Let |x| be <a abstract-op>ToString</a>(|V|).
-  1.  Return the IDL {{DOMString}} value that represents the same sequence of code units as the one the ECMAScript String value |x| represents.
-
-### Validate the string in context ### {#webidl-validate-the-string-in-context}
-
-This specification adds a following section to [[webidl#js-security]].
-
-Certain algorithms in [[webidl#js-type-mapping]] are defined to
-<dfn id="dfn-validate-the-string-in-context" export>validate the string in context</dfn> on a given
-value. This check is used to determine whether a given value
-is appropriate for its {{StringContext}}. This validation takes the following four inputs:
-
-1.  the [=platform object=] on
-    which the operation invocation or attribute access is being done,
-1.  the value to validate,
-1.  the {{StringContext}} [=identifier=], and
-1.  the [=identifier=] of the operation or attribute.
-
-The algorithm returns an ECMAScript String value, or throws a TypeError.
-
-Note: The HTML Standard defines how the validation is performed. [[!HTML]]
+Issue: See [https://github.com/whatwg/webidl/pull/1392](https://github.com/whatwg/webidl/pull/1392).
 
 ## Integration with HTML ## {#integration-with-html}
 
