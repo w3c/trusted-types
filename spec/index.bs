@@ -1148,7 +1148,7 @@ partial interface mixin WindowOrWorkerGlobalScope {
 The {{WindowOrWorkerGlobalScope/trustedTypes}} getter steps are to return [=this=]'s [=relevant global object=]'s [[#integration-with-html|trusted
 type policy factory]].
 
-### Extensions to the Document interface ### {#extensions-to-the-document-interface}
+### Enforcement in the Document interface ### {#enforcement-in-document-interface}
 
 This document modifies the {{Document}} interface defined by [[HTML5|HTML]]:
 
@@ -1156,6 +1156,31 @@ This document modifies the {{Document}} interface defined by [[HTML5|HTML]]:
 partial interface Document {
   [CEReactions] undefined write(HTMLString... text);
   [CEReactions] undefined writeln(HTMLString... text);
+  static Document parseHTMLUnsafe(HTMLString html);
+};
+</pre>
+
+### Enforcement in DOMParser interface ### {#enforcement-in-domparser-interface}
+
+This document modifies the {{DOMParser}} interface defined by [[HTML5|HTML]]:
+
+<pre class="idl exclude">
+partial interface DOMParser {
+  [NewObject] Document parseFromString(HTMLString str, SupportedType type);
+};
+</pre>
+
+### Enforcement in the Element and ShadowRoot interfaces ### {#enforcement-in-element-shadowroot-interfaces}
+
+This document modifies the {{Element}} and {{ShadowRoot}} interfaces defined by [[HTML5|HTML]]:
+
+<pre class="idl exclude">
+partial interface Element {
+  [CEReactions] undefined setHTMLUnsafe(HTMLString html);
+};
+
+partial interface ShadowRoot {
+  [CEReactions] undefined setHTMLUnsafe(HTMLString html);
 };
 </pre>
 
@@ -1398,7 +1423,6 @@ This document modifies the following interfaces defined by [[DOM-Parsing]]:
 partial interface Element {
   [CEReactions, LegacyNullToEmptyString] attribute HTMLString outerHTML;
   [CEReactions] undefined insertAdjacentHTML(DOMString position, HTMLString text);
-  [CEReactions] undefined setHTMLUnsafe(HTMLString html);
 };
 
 partial interface mixin InnerHTML { // specified in a draft version at https://w3c.github.io/DOM-Parsing/#the-innerhtml-mixin
@@ -1407,20 +1431,6 @@ partial interface mixin InnerHTML { // specified in a draft version at https://w
 
 partial interface Range {
   [CEReactions, NewObject] DocumentFragment createContextualFragment(HTMLString fragment);
-};
-
-partial interface ShadowRoot {
-  [CEReactions] undefined setHTMLUnsafe(HTMLString html);
-};
-
-[Exposed=Window]
-interface DOMParser {
-  constructor();
-  [NewObject] Document parseFromString(HTMLString str, SupportedType type);
-};
-
-partial interface Document {
-  static Document parseHTMLUnsafe(HTMLString html);
 };
 </pre>
 
