@@ -384,7 +384,7 @@ interface TrustedHTML {
 };
 </pre>
 
-TrustedHTML objects have a <dfn for="TrustedHTML">\[[Data]]</dfn> internal slot which holds a
+TrustedHTML objects have a <dfn export for="TrustedHTML">\[[Data]]</dfn> internal slot which holds a
 DOMString. The slot's value is set when the object is created, and
 will never change during its lifetime.
 
@@ -410,7 +410,7 @@ interface TrustedScript {
 };
 </pre>
 
-TrustedScript objects have a <dfn for="TrustedScript">\[[Data]]</dfn> internal slot which holds a
+TrustedScript objects have a <dfn export for="TrustedScript">\[[Data]]</dfn> internal slot which holds a
 DOMString. The slot's value is set when the object is created, and
 will never change during its lifetime.
 
@@ -436,7 +436,7 @@ interface TrustedScriptURL {
 };
 </pre>
 
-TrustedScriptURL objects have a <dfn for="TrustedScriptURL">\[[Data]]</dfn> internal slot which holds a
+TrustedScriptURL objects have a <dfn export for="TrustedScriptURL">\[[Data]]</dfn> internal slot which holds a
 USVString. The slot's value is set when the object is created, and
 will never change during its lifetime.
 
