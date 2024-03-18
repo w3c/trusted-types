@@ -1186,6 +1186,27 @@ partial interface ShadowRoot {
 
 ### Enforcement for scripts ### {#enforcement-in-scripts}
 
+This document modifies how {{HTMLScriptElement}} [=child text content=] can be set to allow applications to control dynamically created scripts. It does so by
+modifying the {{HTMLElement/innerText}} and {{Node/textContent}} attributes. The behavior of the attributes remains the same
+as in their original counterparts, apart from additional behavior similar to that triggered by the {{StringContext}} extended attribute.
+
+Note: Using these IDL attributes is the recommended way of dynamically setting the URL or a text of a script. Manipulating attribute nodes or text nodes directly will call a default policy on the final value when the script is prepared.
+
+<pre class="idl exclude">
+partial interface Node {
+  [CEReactions] attribute (DOMString or TrustedScript)? textContent;
+};
+
+partial interface Node {
+  [CEReactions] attribute ([LegacyNullToEmptyString] DOMString or TrustedScript) innerText;
+};
+
+partial interface HTMLScriptElement {
+ [CEReactions] attribute ScriptURLString src;
+ [CEReactions] attribute ScriptString text;
+};
+</pre>
+
 #### Slots with trusted values #### {#slots-with-trusted-values}
 
 This document modifies {{HTMLScriptElement}}s. Each script has:
@@ -1195,27 +1216,64 @@ This document modifies {{HTMLScriptElement}}s. Each script has:
     through a {{StringContext}} compliant sink. Equivalent to script's
     [=child text content=]. Initially null.
 
-#### Setting slot values #### {#setting-slot-values}
+#### Setting the {{HTMLElement/innerText}} IDL attribute #### {#setting-the-innerText-idl-attribute}
 
-This document modifies how {{HTMLScriptElement}} [=child text content=] can be set to allow applications to control dynamically created scripts. It does so by
-adding the {{HTMLElement/innerText}} and {{Node/textContent}} attributes directly on {{HTMLScriptElement}}. The behavior of the attributes remains the same
-as in their original counterparts, apart from additional behavior triggered by the {{StringContext}} extended attribute presence.
+Update the {{HTMLElement/innerText}} setter steps to:
 
-Note: Using these IDL attributes is the recommended way of dynamically setting URL or a text of a script. Manipulating attribute nodes or text nodes directly will call a default policy on the final value when the script is prepared.
+1. <ins>If [=this=] is an {{HTMLScriptElement}}, then:</ins>
+    1.  <ins>Let |value| be the result of calling [$Get Trusted Type compliant string$] with
+        {{TrustedScript}}, [=this=]'s [=relevant global object=], the given value, `HTMLElement innerText`,
+        `script`</ins>
+    1. <ins>Set {{HTMLScriptElement/[[ScriptText]]}} internal slot value to |value|.</ins>
+1. <ins>Otherwise, let |value| be the stringified given value.</ins>
+1. Let |fragment| be the rendered text fragment for <ins>|value|</ins><del>the given value</del> given [=this=]'s [=node document=].
+1. [=Replace all=] with |fragment| within [=this=].
 
-<pre class="idl exclude">
-partial interface HTMLScriptElement {
- [CEReactions] attribute [LegacyNullToEmptyString] ScriptString innerText;
- [CEReactions] attribute ScriptString? textContent;
- [CEReactions] attribute ScriptURLString src;
- [CEReactions] attribute ScriptString text;
-};
-</pre>
+#### Setting the {{Node/textContent}} IDL attribute #### {#setting-the-textContent-idl-attribute}
 
-On setting the {{HTMLElement/innerText}}, {{Node/textContent}} and {{HTMLScriptElement/text}} IDL attributes execute the following algorithm:
+Update the {{Node/textContent}} setter steps algorithm as follows.
 
-1. Set {{HTMLScriptElement/[[ScriptText]]}} internal slot value to the stringified attribute value.
-1. Perform the usual attribute setter steps.
+<p>The {{Node/textContent}} setter steps are to, if the given value is null, act as if it was the
+empty string instead, and then do as described below, switching on the interface <a>this</a>
+<a>implements</a>:
+
+<dl class=switch>
+ <dt>{{DocumentFragment}}
+ <dt>{{Element}}
+ <dd>
+    <ol>
+        <li>
+            <p><ins>If <a>this</a> is an {{HTMLScriptElement}}, then:</ins>
+            <ol>
+                <li>
+                    <p><ins>Let |value| be the result of calling [$Get Trusted Type compliant string$] with
+                    {{TrustedScript}}, [=this=]'s [=relevant global object=], the given value, `Node textContent`,
+                    `script`</ins>
+                <li><p><ins>Set {{HTMLScriptElement/[[ScriptText]]}} internal slot value to |value|.</ins>
+            </ol>
+
+        <li><ins>Otherwise, let |value| be the stringified given value.</ins>
+
+        <li><p><a>String replace all</a> with <ins>|value|</ins><del>the given value</del> within <a>this</a>.
+    </ol>
+
+ <dt>{{Attr}}
+ <dd><p>Set an existing attribute value with <a>this</a> and the given value.
+
+ <dt>{{CharacterData}}
+ <dd><p><a>Replace data</a> with node <a>this</a>, offset 0, count <a>this</a>'s
+ <a for=Node>length</a>, and data the given value.
+
+ <dt>Otherwise
+ <dd><p>Do nothing.
+</dl>
+
+#### Setting the {{HTMLScriptElement/text}} IDL attribute #### {#setting-the-text-idl-attribute}
+
+Update the {{HTMLScriptElement/text}} setter steps algorithm as follows.
+
+1. <ins>Set {{HTMLScriptElement/[[ScriptText]]}} internal slot value to the given value.</ins>
+1. [=String replace all=] with the given value within this <code>script</code> element.
 
 #### Slot value verification #### {#slot-value-verification}
 
