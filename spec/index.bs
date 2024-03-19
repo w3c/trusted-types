@@ -1093,10 +1093,7 @@ To <dfn abstract-op export>get Trusted Types-compliant attribute value</dfn> on 
         <tr><th>Element<th>Attribute namespace<th>Attribute local name<th>TrustedType<th>Sink
       <tbody>
         <tr><td>{{HTMLIFrameElement}}<td>null<td>"srcdoc"<td>{{TrustedHTML}}<td>"HTMLIFrameElement srcdoc"
-        <tr><td>{{HTMLEmbedElement}}<td>null<td>"src"<td>{{TrustedScriptURL}}<td>"HTMLEmbedElement src"
         <tr><td>{{HTMLScriptElement}}<td>null<td>"src"<td>{{TrustedScriptURL}}<td>"HTMLScriptElement src"
-        <tr><td>{{HTMLObjectElement}}<td>null<td>"data"<td>{{TrustedScriptURL}}<td>"HTMLObjectElement data"
-        <tr><td>{{HTMLObjectElement}}<td>null<td>"codebase"<td>{{TrustedScriptURL}}<td>"HTMLObjectElement codebase"
         <tr><td>{{SVGScriptElement}}<td>null<td>"href"<td>{{TrustedScriptURL}}<td>"SVGScriptElement href"
         <tr><td>{{SVGScriptElement}}<td><a>XLink namespace</a><td>"href"<td>{{TrustedScriptURL}}<td>"SVGScriptElement href"
       </tbody>
@@ -1204,21 +1201,6 @@ The first few steps of the [=prepare the script element=] algorithm are modified
   <li><p>Let <var>source text</var> be <var>el</var>'s <del><a id=script-processing-model:child-text-content href=https://dom.spec.whatwg.org/#concept-child-text-content data-x-internal=child-text-content>child text content</a>.</del> <ins>`[[ScriptText]]` internal slot value.</ins>
   <li>...
   </ol>
-
-### Enforcement in element attributes ### {#enforcement-in-sinks}
-
-This document modifies following IDL attributes of various DOM elements:
-
-<pre class="idl exclude">
-partial interface HTMLEmbedElement {
-  [CEReactions] attribute ScriptURLString src;
-};
-
-partial interface HTMLObjectElement {
-  [CEReactions] attribute ScriptURLString data;
-  [CEReactions] attribute ScriptURLString codeBase; // obsolete
-};
-</pre>
 
 ### Enforcement in timer functions ### {#enforcement-in-timer-functions}
 
@@ -1667,21 +1649,6 @@ Types, and could potentially be used by malicious authors to overcome the
 restrictions:
 
 * <a href="https://w3c.github.io/webcomponents/spec/imports/">HTML imports</a>
-
-## Plugin navigation ## {#plugins}
-
-Plugin content may have access to the document that embeds it (or; more broadly,
-to the origin it was served from), often giving it the same capabilities
-as DOM XSS. That's why Trusted Types limit {{HTMLEmbedElement}}'s <{embed/src}> to
-{{TrustedScriptURL}}.
-
-However, it is also possible to navigate an existing object / embed to an
-arbitrary location, bypassing the {{TrustedScriptURL}} restriction.
-
-Since plugin content in the web in general is being phased out for other
-security reasons, and their navigation model is in flux, we recommend authors
-to prevent that bypass vector by limiting the plugins altogether with
-[=object-src=]. For example: `Content-Security-Policy: object-src: none`.
 
 ## Script gadgets ## {#script-gadgets}
 
