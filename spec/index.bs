@@ -1415,25 +1415,6 @@ On setting {{SVGAnimatedString/baseVal}}, the following steps are run:
 
 Note: SVG does not have a complete script processing model <a href="https://github.com/w3c/svgwg/issues/196">yet</a>. Trusted Types assumes that the attribute and text body modification protections behave similarly to ones for HTML scripts outlined in [[#enforcement-in-scripts]].
 
-## Integration with DOM Parsing ## {#integration-with-dom-parsing}
-
-This document modifies the following interfaces defined by [[DOM-Parsing]]:
-
-<pre class="idl exclude">
-partial interface Element {
-  [CEReactions, LegacyNullToEmptyString] attribute HTMLString outerHTML;
-  [CEReactions] undefined insertAdjacentHTML(DOMString position, HTMLString text);
-};
-
-partial interface mixin InnerHTML { // specified in a draft version at https://w3c.github.io/DOM-Parsing/#the-innerhtml-mixin
-  [CEReactions] attribute [LegacyNullToEmptyString] HTMLString innerHTML;
-};
-
-partial interface Range {
-  [CEReactions, NewObject] DocumentFragment createContextualFragment(HTMLString fragment);
-};
-</pre>
-
 ## Integration with execCommand ## {#integration-with-exec-command}
 
 This document modifies the following interfaces defined by the unofficial <a href="https://w3c.github.io/editing/docs/execCommand/">execCommand</a> document:
