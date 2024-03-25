@@ -331,7 +331,7 @@ DOM XSS <a>injection sinks</a> also include HTML parsing sinks:
 
   * Functions that parse & insert HTML strings into the document like
     {{InnerHTML/innerHTML|Element.innerHTML}},
-    {{Element/outerHTML|Element.outerHTML}} setter, or {{Document/write|Document.write}}.
+    {{Element/outerHTML|Element.outerHTML}} setter, or Document.write.
   * Functions that create a new same-origin {{Document}} with caller-controlled
     markup like {{DOMParser/parseFromString()}}.
 
@@ -1148,42 +1148,6 @@ partial interface mixin WindowOrWorkerGlobalScope {
 The {{WindowOrWorkerGlobalScope/trustedTypes}} getter steps are to return [=this=]'s [=relevant global object=]'s [[#integration-with-html|trusted
 type policy factory]].
 
-### Enforcement in the Document interface ### {#enforcement-in-document-interface}
-
-This document modifies the {{Document}} interface defined by [[HTML5|HTML]]:
-
-<pre class="idl exclude">
-partial interface Document {
-  [CEReactions] undefined write(HTMLString... text);
-  [CEReactions] undefined writeln(HTMLString... text);
-  static Document parseHTMLUnsafe(HTMLString html);
-};
-</pre>
-
-### Enforcement in DOMParser interface ### {#enforcement-in-domparser-interface}
-
-This document modifies the {{DOMParser}} interface defined by [[HTML5|HTML]]:
-
-<pre class="idl exclude">
-partial interface DOMParser {
-  [NewObject] Document parseFromString(HTMLString str, SupportedType type);
-};
-</pre>
-
-### Enforcement in the Element and ShadowRoot interfaces ### {#enforcement-in-element-shadowroot-interfaces}
-
-This document modifies the {{Element}} and {{ShadowRoot}} interfaces defined by [[HTML5|HTML]]:
-
-<pre class="idl exclude">
-partial interface Element {
-  [CEReactions] undefined setHTMLUnsafe(HTMLString html);
-};
-
-partial interface ShadowRoot {
-  [CEReactions] undefined setHTMLUnsafe(HTMLString html);
-};
-</pre>
-
 ### Enforcement for scripts ### {#enforcement-in-scripts}
 
 #### Slots with trusted values #### {#slots-with-trusted-values}
@@ -1246,10 +1210,6 @@ The first few steps of the [=prepare the script element=] algorithm are modified
 This document modifies following IDL attributes of various DOM elements:
 
 <pre class="idl exclude">
-partial interface HTMLIFrameElement {
-  [CEReactions] attribute HTMLString srcdoc;
-};
-
 partial interface HTMLEmbedElement {
   [CEReactions] attribute ScriptURLString src;
 };
@@ -1355,27 +1315,6 @@ When <a>validate the string in context</a> is invoked, with |platformObject|, |v
 
     1. If an exception was thrown, rethrow exception and abort further steps.
  1. Return |value|.
-
-### Web Workers ###  {#html-workers}
-
-This specification modifies the Worker constuctors and {{importScripts}} function to require {{ScriptURLString}}.
-
-<pre class="idl exclude">
-[Exposed=(Window,Worker)]
-partial interface Worker : EventTarget {
-    constructor(ScriptURLString scriptURL, optional WorkerOptions options = {});
-};
-
-[Exposed=(Window,Worker)]
-partial interface SharedWorker : EventTarget {
-  constructor(ScriptURLString scriptURL, optional (DOMString or WorkerOptions) options = {});
-};
-
-[Exposed=Worker]
-partial interface WorkerGlobalScope : EventTarget {
-  undefined importScripts(ScriptURLString... urls);
-};
-</pre>
 
 ## Integration with Service Workers ## {#sw-integration}
 
