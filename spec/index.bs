@@ -1281,6 +1281,15 @@ Note: This also applies to events in [[SVG2#EventAttributes]].
   </pre>
 </div>
 
+### HostEnsureCanCompileStrings ### {#host-ensure-can-compile-strings}
+
+JavaScript contains an <span>implementation-defined</span> <a href="https://tc39.es/ecma262/#sec-hostensurecancompilestrings">HostEnsureCanCompileStrings</a>(<var>realm</var>, <ins><var>parameterStrings</var>,
+<var>bodyString</var>, <var>codeString</var>, <var>compilationType</var>, <var>parameterArgs</var>, <var>bodyArg</var></ins>)
+abstract operation. User agents must use the following implementation:
+
+1. Perform ? [[CSP3#can-compile-strings|EnsureCSPDoesNotBlockStringCompilation]](<var>realm</var>, <ins><var>parameterStrings</var>,
+    <var>bodyString</var>, <var>codeString</var>, <var>compilationType</var>, <var>parameterArgs</var>, <var>bodyArg</var></ins>).
+
 ### Validate the string in context ### {#html-validate-the-string-in-context}
 
 This specification defines the <a>validate the string in context</a> algorithm in [[html#integration-with-idl]].
