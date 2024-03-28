@@ -1197,7 +1197,7 @@ partial interface Node {
   [CEReactions] attribute (DOMString or TrustedScript)? textContent;
 };
 
-partial interface Node {
+partial interface HTMLElement {
   [CEReactions] attribute ([LegacyNullToEmptyString] DOMString or TrustedScript) innerText;
 };
 
