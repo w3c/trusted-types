@@ -1081,24 +1081,23 @@ Given an {{HTMLScriptElement}} (|script|), this algorithm performs the following
     If the algorithm threw an error, rethrow the error.
 
 ## Get Trusted Types-compliant attribute value ## {#validate-attribute-mutation}
-To <dfn abstract-op export>get Trusted Types-compliant attribute value</dfn> on {{Attr}} |attribute| with {{Element}} |element| and {{TrustedType}} or a string |newValue|, perform the following steps:
+To <dfn abstract-op export>get Trusted Types-compliant attribute value</dfn> on {{Attr}} |attribute| with {{Element}} |element|, {{TrustedType}} or a string |newValue|, and string |sink|, perform the following steps:
 
 1. Let |expectedType| be null.
-1. Let |sink| be null.
 1. Find the row in the following table, where |element| is in the first column, and |attribute|'s <a for="Attr">namespace</a> and <a for="Attr">local name</a> match the values in the second and third column, respectively.
-    If a matching row is found, set |expectedType| and |sink| to the value of the fourth, and fifth column in that row, respectively.
+    If a matching row is found, set |expectedType| to the value of the fourth column in that row.
 
     <table>
       <thead>
-        <tr><th>Element<th>Attribute namespace<th>Attribute local name<th>TrustedType<th>Sink
+        <tr><th>Element<th>Attribute namespace<th>Attribute local name<th>TrustedType
       <tbody>
-        <tr><td>{{HTMLIFrameElement}}<td>null<td>"srcdoc"<td>{{TrustedHTML}}<td>"HTMLIFrameElement srcdoc"
-        <tr><td>{{HTMLEmbedElement}}<td>null<td>"src"<td>{{TrustedScriptURL}}<td>"HTMLEmbedElement src"
-        <tr><td>{{HTMLScriptElement}}<td>null<td>"src"<td>{{TrustedScriptURL}}<td>"HTMLScriptElement src"
-        <tr><td>{{HTMLObjectElement}}<td>null<td>"data"<td>{{TrustedScriptURL}}<td>"HTMLObjectElement data"
-        <tr><td>{{HTMLObjectElement}}<td>null<td>"codebase"<td>{{TrustedScriptURL}}<td>"HTMLObjectElement codebase"
-        <tr><td>{{SVGScriptElement}}<td>null<td>"href"<td>{{TrustedScriptURL}}<td>"SVGScriptElement href"
-        <tr><td>{{SVGScriptElement}}<td><a>XLink namespace</a><td>"href"<td>{{TrustedScriptURL}}<td>"SVGScriptElement href"
+        <tr><td>{{HTMLIFrameElement}}<td>null<td>"srcdoc"<td>{{TrustedHTML}}
+        <tr><td>{{HTMLEmbedElement}}<td>null<td>"src"<td>{{TrustedScriptURL}}
+        <tr><td>{{HTMLScriptElement}}<td>null<td>"src"<td>{{TrustedScriptURL}}
+        <tr><td>{{HTMLObjectElement}}<td>null<td>"data"<td>{{TrustedScriptURL}}
+        <tr><td>{{HTMLObjectElement}}<td>null<td>"codebase"<td>{{TrustedScriptURL}}
+        <tr><td>{{SVGScriptElement}}<td>null<td>"href"<td>{{TrustedScriptURL}}
+        <tr><td>{{SVGScriptElement}}<td><a>XLink namespace</a><td>"href"<td>{{TrustedScriptURL}}
       </tbody>
     </table>
 
