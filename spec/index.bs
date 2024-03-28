@@ -1115,6 +1115,8 @@ To <dfn abstract-op export>get Trusted Types-compliant attribute value</dfn> on 
 
    If the algorithm threw an error, rethrow the error.
 
+Issue: This algorithm should account for event handler attributes. See https://github.com/w3c/trusted-types/issues/474
+
 # Integrations # {#integrations}
 
 <pre class="idl">
@@ -1241,37 +1243,6 @@ To the [[HTML5#timer-initialisation-steps|timer initialization steps algorithm]]
 change step 8.4.3 as follows:
 
 1.  Perform <del>HostEnsureCanCompileStrings</del><ins>EnsureCSPDoesNotBlockStringCompilation</ins>(<var>realm</var>, « », <var>handler</var>,<del> false</del><ins>, <var>handler</var>, ~timer~, « », <var>handler</var></ins>). If this throws an exception, catch it, report the exception, and abort these steps.
-
-### Enforcement in event handler content attributes ### {#enforcement-in-event-handler-content-attributes}
-
-This document modifies the
-[=attribute change steps=] for an [[HTML5#event-handler-content-attributes|event handler content attribute]].
-
-At the beginning of step 5, insert the following steps:
-
-1.  Let |value| be the result of executing the
-    [$Get Trusted Type compliant string$] algorithm, with the following arguments:
-    *   |value| as |input|,
-    *   {{TrustedScript}} as |expectedType|,
-    *   `'script'` as |sinkGroup|
-    *   |sink| being the result of [=concatenating=] the list &laquo; <var ignore>element</var>'s [=Element/local name=], |localName| &raquo; with `"."` as a |separator|.
-
-        Note: For example, `document.createElement('div').onclick = value` will result in |sink| being `'div.onclick'`.
-
-    *   <var ignore>eventTarget</var>'s [=relevant global object=] as |global|,
-
-1.  If the algorithm throws an error, abort these steps.
-
-Note: This also applies to events in [[SVG2#EventAttributes]].
-
-<div class="example" id="event-handlers-example">
-  <pre highlight=js>
-  // Content-Security-Policy: require-trusted-types-for 'script'
-
-  const img = document.createElement('img');
-  img.setAttribute('onerror', 'alert(1)'); // TypeError
-  </pre>
-</div>
 
 ### HostEnsureCanCompileStrings ### {#host-ensure-can-compile-strings}
 
