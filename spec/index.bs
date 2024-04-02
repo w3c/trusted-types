@@ -120,6 +120,11 @@ spec:ECMA-262; urlPrefix: https://tc39.github.io/ecma262/
     type:dfn; text:current realm record; url: current-realm
 spec: HTML; urlPrefix: https://html.spec.whatwg.org/
     type: dfn; text: prepare the script element; url: prepare-the-script-element
+    type: dfn; text: get the text steps; url: get-the-text-steps
+    type: dfn; text: set the inner text steps; url: set-the-inner-text-steps
+spec:DOM; urlPrefix: https://dom.spec.whatwg.org/
+    type: dfn; text: get text content; url: get-text-content
+    type: dfn; text: set text content; url: set-text-content
 </pre>
 
 <pre class="link-defaults">
@@ -1137,6 +1142,21 @@ type policy factory]].
 
 ### Enforcement for scripts ### {#enforcement-in-scripts}
 
+This document modifies how {{HTMLScriptElement}} [=child text content=] can be set to allow applications to control dynamically created scripts. It does so by
+adding the {{HTMLElement/innerText}} and {{Node/textContent}} attributes directly on {{HTMLScriptElement}}. The behavior of the attributes remains the same
+as in their original counterparts, apart from additional behavior triggered by the {{StringContext}} extended attribute presence.
+
+Note: Using these IDL attributes is the recommended way of dynamically setting the URL or a text of a script. Manipulating attribute nodes or text nodes directly will call a default policy on the final value when the script is prepared.
+
+<pre class="idl exclude">
+partial interface HTMLScriptElement {
+ [CEReactions] attribute [LegacyNullToEmptyString] ScriptString innerText;
+ [CEReactions] attribute (DOMString or TrustedScript)? textContent;
+ [CEReactions] attribute ScriptURLString src;
+ [CEReactions] attribute ScriptString text;
+};
+</pre>
+
 #### Slots with trusted values #### {#slots-with-trusted-values}
 
 This document modifies {{HTMLScriptElement}}s. Each script has:
@@ -1146,27 +1166,38 @@ This document modifies {{HTMLScriptElement}}s. Each script has:
     through a {{StringContext}} compliant sink. Equivalent to script's
     [=child text content=]. Initially an empty string.
 
-#### Setting slot values #### {#setting-slot-values}
+#### The {{HTMLScriptElement/innerText}} IDL attribute #### {#the-innerText-idl-attribute}
 
-This document modifies how {{HTMLScriptElement}} [=child text content=] can be set to allow applications to control dynamically created scripts. It does so by
-adding the {{HTMLElement/innerText}} and {{Node/textContent}} attributes directly on {{HTMLScriptElement}}. The behavior of the attributes remains the same
-as in their original counterparts, apart from additional behavior triggered by the {{StringContext}} extended attribute presence.
+The {{HTMLScriptElement/innerText}} setter steps are:
 
-Note: Using these IDL attributes is the recommended way of dynamically setting URL or a text of a script. Manipulating attribute nodes or text nodes directly will call a default policy on the final value when the script is prepared.
+1.  Set [=script text=] value to |value|.
+1.  Run [=set the inner text steps=] with [=this=] and |value|.
 
-<pre class="idl exclude">
-partial interface HTMLScriptElement {
- [CEReactions] attribute [LegacyNullToEmptyString] ScriptString innerText;
- [CEReactions] attribute ScriptString? textContent;
- [CEReactions] attribute ScriptURLString src;
- [CEReactions] attribute ScriptString text;
-};
-</pre>
+The {{HTMLScriptElement/innerText}} getter steps are:
 
-On setting the {{HTMLElement/innerText}}, {{Node/textContent}} and {{HTMLScriptElement/text}} IDL attributes execute the following algorithm:
+1.  Return the result of running [=get the text steps=] with [=this=].
 
-1. Set [=script text=] value to the stringified attribute value.
-1. Perform the usual attribute setter steps.
+#### The {{HTMLScriptElement/textContent}} IDL attribute #### {#the-textContent-idl-attribute}
+
+The {{HTMLScriptElement/textContent}} setter steps are to, if the given value is null, act as if it was the
+empty string instead, and then do as described below:
+
+1.  Let |value| be the result of calling [$Get Trusted Type compliant string$] with
+    {{TrustedScript}}, [=this=]'s [=relevant global object=], the given value, `HTMLScriptElement textContent`,
+    `script`.
+1.  Set [=script text=] value to |value|.
+1.  Run [=set text content=] with [=this=] and |value|.
+
+The {{HTMLScriptElement/textContent}} getter steps are:
+
+1.  Return the result of running [=get text content=] with [=this=].
+
+#### The {{HTMLScriptElement/text}} IDL attribute #### {#the-text-idl-attribute}
+
+Update the {{HTMLScriptElement/text}} setter steps algorithm as follows.
+
+1.  <ins>Set [=script text=] value to the given value.</ins>
+1.  [=String replace all=] with the given value within this <code>script</code> element.
 
 #### Slot value verification #### {#slot-value-verification}
 
