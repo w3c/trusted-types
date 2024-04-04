@@ -1022,19 +1022,21 @@ This algorithm will return a string that can be used with an
 It will ensure that the Trusted Type [=enforcement=] rules were respected.
 
 Given a {{TrustedType}} type (|expectedType|), a [=realm/global object=] (|global|),
-{{TrustedType}} or a string (|input|), a string (|sink|) and a string (|sinkGroup|), run these steps:
+an [=ECMAScript language value=] (|input|), a string (|sink|) and a string (|sinkGroup|), run these steps:
 
-1.  If |input| has type |expectedType|, return stringified
-    |input| and abort these steps.
+1.  Let |stringifiedInput| be the result of executing [$ToString$] on |input|.
+1.  If the algorithm threw an error, rethrow the error and abort the following steps.
+1.  If |input| has type |expectedType|, return |stringifiedInput| and abort these steps.
 1.  Let |requireTrustedTypes| be the result of executing [$Does sink type require trusted types?$] algorithm,
     passing |global|, and |sinkGroup|.
-1.  If |requireTrustedTypes| is `false`, return stringified |input| and abort these steps.
-1.  Let |convertedInput| be the result of executing [$Process value with a default policy$] with the same arguments as this algorithm.
+1.  If |requireTrustedTypes| is `false`, return |stringifiedInput| and abort these steps.
+1.  Let |convertedInput| be the result of executing [$Process value with a default policy$] with |expectedType|,
+    |global|, |stringifiedInput|, |sink|, and |sinkGroup| as arguments.
 1.  If the algorithm threw an error, rethrow the error and abort the following steps.
 1.  If |convertedInput| is `null` or `undefined`, execute the following steps:
     1.  Let |disposition| be the result of executing [$Should sink type mismatch violation be blocked by Content Security Policy?$] algorithm,
-        passing |global|, stringified |input| as |source|, |sinkGroup| and |sink|.
-    1.  If |disposition| is `“Allowed”`, return stringified |input| and abort further steps.
+        passing |global|, |stringifiedInput| as |source|, |sinkGroup| and |sink|.
+    1.  If |disposition| is `“Allowed”`, return |stringifiedInput| and abort further steps.
 
         Note: This step assures that the default policy rejection will be reported, but ignored in a report-only mode.
     1. Throw a TypeError and abort further steps.
