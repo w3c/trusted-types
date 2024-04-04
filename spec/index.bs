@@ -122,6 +122,7 @@ spec: HTML; urlPrefix: https://html.spec.whatwg.org/
     type: dfn; text: prepare the script element; url: prepare-the-script-element
     type: dfn; text: get the text steps; url: get-the-text-steps
     type: dfn; text: set the inner text steps; url: set-the-inner-text-steps
+    type: dfn; text: src; url: attr-script-src
 spec:DOM; urlPrefix: https://dom.spec.whatwg.org/
     type: dfn; text: get text content; url: get-text-content
     type: dfn; text: set text content; url: set-text-content
@@ -1144,16 +1145,16 @@ type policy factory]].
 
 This document modifies how {{HTMLScriptElement}} [=child text content=] can be set to allow applications to control dynamically created scripts. It does so by
 adding the {{HTMLElement/innerText}} and {{Node/textContent}} attributes directly on {{HTMLScriptElement}}. The behavior of the attributes remains the same
-as in their original counterparts, apart from additional behavior triggered by the {{StringContext}} extended attribute presence.
+as in their original counterparts, apart from the additional behavior of calling [$Get Trusted Type compliant string$].
 
 Note: Using these IDL attributes is the recommended way of dynamically setting the URL or a text of a script. Manipulating attribute nodes or text nodes directly will call a default policy on the final value when the script is prepared.
 
 <pre class="idl exclude">
 partial interface HTMLScriptElement {
- [CEReactions] attribute [LegacyNullToEmptyString] ScriptString innerText;
+ [CEReactions] attribute ([LegacyNullToEmptyString] DOMString or TrustedScript) innerText;
  [CEReactions] attribute (DOMString or TrustedScript)? textContent;
- [CEReactions] attribute ScriptURLString src;
- [CEReactions] attribute ScriptString text;
+ [CEReactions] attribute (USVString or TrustedScriptURL) src;
+ [CEReactions] attribute (DOMString or TrustedScript) text;
 };
 </pre>
 
@@ -1163,13 +1164,16 @@ This document modifies {{HTMLScriptElement}}s. Each script has:
 
 : an associated string <dfn export for="HTMLScriptElement">script text</dfn>.
 ::  A string, containing the body of the script to execute that was set
-    through a {{StringContext}} compliant sink. Equivalent to script's
+    through a compliant sink. Equivalent to script's
     [=child text content=]. Initially an empty string.
 
 #### The {{HTMLScriptElement/innerText}} IDL attribute #### {#the-innerText-idl-attribute}
 
 The {{HTMLScriptElement/innerText}} setter steps are:
 
+1.  Let |value| be the result of calling [$Get Trusted Type compliant string$] with
+    {{TrustedScript}}, [=this=]'s [=relevant global object=], the given value, `HTMLScriptElement innerText`, and
+    `script`.
 1.  Set [=script text=] value to |value|.
 1.  Run [=set the inner text steps=] with [=this=] and |value|.
 
@@ -1183,7 +1187,7 @@ The {{HTMLScriptElement/textContent}} setter steps are to, if the given value is
 empty string instead, and then do as described below:
 
 1.  Let |value| be the result of calling [$Get Trusted Type compliant string$] with
-    {{TrustedScript}}, [=this=]'s [=relevant global object=], the given value, `HTMLScriptElement textContent`,
+    {{TrustedScript}}, [=this=]'s [=relevant global object=], the given value, `HTMLScriptElement textContent`, and
     `script`.
 1.  Set [=script text=] value to |value|.
 1.  Run [=set text content=] with [=this=] and |value|.
@@ -1196,8 +1200,21 @@ The {{HTMLScriptElement/textContent}} getter steps are:
 
 Update the {{HTMLScriptElement/text}} setter steps algorithm as follows.
 
+1.  <ins>Let |value| be the result of calling [$Get Trusted Type compliant string$] with
+    {{TrustedScript}}, [=this=]'s [=relevant global object=], the given value, `HTMLScriptElement text`, and
+    `script`.</ins>
 1.  <ins>Set [=script text=] value to the given value.</ins>
 1.  [=String replace all=] with the given value within this <code>script</code> element.
+
+
+#### The {{HTMLScriptElement/src}} IDL attribute #### {#the-src-idl-attribute}
+
+The {{HTMLScriptElement/src}} setter steps are:
+
+1.  <ins>Let |value| be the result of calling [$Get Trusted Type compliant string$] with
+    {{TrustedScriptURL}}, [=this=]'s [=relevant global object=], the given value, `HTMLScriptElement src`, and
+    `script`.</ins>
+1.  <ins>Set [=this=]'s [=src=] content attribute to |value|.</ins>
 
 #### Slot value verification #### {#slot-value-verification}
 
