@@ -961,12 +961,8 @@ a string |value| and a list |arguments|, execute the following steps:
 1.  Let |policyValue| be the result of executing [$Get Trusted Type policy value$] with the same arguments as this algorithm and additionally true as |throwIfMissing|.
 1.  If the algorithm threw an error, rethrow the error and abort the following steps.
 1.  Let |dataString| be the result of stringifying |policyValue|.
-1.  Let |trustedObject| be a new instance of an interface with a type
+1.  Return a new instance of an interface with a type
     name |trustedTypeName|, with its associated data value set to |dataString|.
-1.  If |trustedObject| is a {{TrustedScript}}, set its `[[HostDefinedIsCodeLike]]` internal slot value to `true`.
-
-    Note: This adds an integration point with [dynamic-code-brand-checks proposal](https://tc39.es/proposal-dynamic-code-brand-checks/).
-1.  Return |trustedObject|.
 
 ## <dfn abstract-op>Get Trusted Type policy value</dfn> ## {#get-trusted-type-policy-value-algorithm}
 
@@ -1047,12 +1043,8 @@ Given a {{TrustedType}} type (|expectedType|), a [=realm/global object=] (|globa
 1.  If the algorithm threw an error, rethrow the error and abort the following steps.
 1.  If |policyValue| is null or undefined, return |policyValue|.
 1.  Let |dataString| be the result of stringifying |policyValue|.
-1.  Let |trustedObject| be a new instance of an interface with a type
+1.  Return a new instance of an interface with a type
     name |trustedTypeName|, with its associated data value set to |dataString|.
-1.  If |trustedObject| is a {{TrustedScript}}, set its `[[HostDefinedIsCodeLike]]` internal slot value to `true`.
-
-    Note: This adds an integration point with [dynamic-code-brand-checks proposal](https://tc39.es/proposal-dynamic-code-brand-checks/).
-1.  Return |trustedObject|.
 
 ## <dfn abstract-op>Prepare the script text</dfn> ## {#prepare-script-text}
 
@@ -1212,16 +1204,24 @@ also unconditionally accepts any {{Function}} object.
 To the [[HTML5#timer-initialisation-steps|timer initialization steps algorithm]],
 change step 8.4.3 as follows:
 
-1.  Perform <del>HostEnsureCanCompileStrings</del><ins>EnsureCSPDoesNotBlockStringCompilation</ins>(<var>realm</var>, « », <var>handler</var>,<del> false</del><ins>, <var>handler</var>, ~timer~, « », <var>handler</var></ins>). If this throws an exception, catch it, report the exception, and abort these steps.
+1.  Perform <del>HostEnsureCanCompileStrings</del><ins>EnsureCSPDoesNotBlockStringCompilation</ins>(<var>realm</var>, « », <var>handler</var>,<del> false</del><ins>~timer~, « », <var>handler</var></ins>). If this throws an exception, catch it, report the exception, and abort these steps.
 
 ### HostEnsureCanCompileStrings ### {#host-ensure-can-compile-strings}
 
 JavaScript contains an <span>implementation-defined</span> <a href="https://tc39.es/ecma262/#sec-hostensurecancompilestrings">HostEnsureCanCompileStrings</a>(<var>realm</var>, <ins><var>parameterStrings</var>,
-<var>bodyString</var>, <var>codeString</var>, <var>compilationType</var>, <var>parameterArgs</var>, <var>bodyArg</var></ins>)
+<var>bodyString</var>, <var>compilationType</var>, <var>parameterArgs</var>, <var>bodyArg</var></ins>)
 abstract operation. User agents must use the following implementation:
 
 1. Perform ? [[CSP3#can-compile-strings|EnsureCSPDoesNotBlockStringCompilation]](<var>realm</var>, <ins><var>parameterStrings</var>,
-    <var>bodyString</var>, <var>codeString</var>, <var>compilationType</var>, <var>parameterArgs</var>, <var>bodyArg</var></ins>).
+    <var>bodyString</var>, <var>compilationType</var>, <var>parameterArgs</var>, <var>bodyArg</var></ins>).
+
+### HostGetCodeForEval ### {#host-get-code-for-eval}
+
+JavaScript contains an <span>implementation-defined</span> <a href="https://tc39.es/ecma262/#sec-hostgetcodeforeval">HostGetCodeForEval</a>(<var>argument</var>)
+abstract operation. User agents must use the following implementation:
+
+1.  If |argument| is a {{TrustedScript}} object, return the value of its associated [=TrustedScript/data=].
+1.  Return ~unknown~.
 
 ### Validate the string in context ### {#html-validate-the-string-in-context}
 
@@ -1490,9 +1490,7 @@ and `"trusted-types-sink"` as values.
 This document modifies the [[CSP3#can-compile-strings|EnsureCSPDoesNotBlockStringCompilation]]
 which is reproduced in its entirety below with additions and deletions.
 
-Note: This is based on [dynamic-code-brand-checks](https://tc39.es/proposal-dynamic-code-brand-checks/) and
-assumes additional arguments are passed to this algorithm from ECMAScript.
-See also <a href="https://github.com/tc39/ecma262/issues/938">TC39/ecma262 issue #938</a>.
+Note: This is based on [dynamic-code-brand-checks](https://tc39.es/proposal-dynamic-code-brand-checks/).
 
 <div class="note">Note: EcmaScript code may call `Function()` and `eval` cross realm.
 <pre highlight="js">
@@ -1509,9 +1507,18 @@ The Trusted Types portion of this algorithm uses |calleeRealm| and its CSP setti
 </pre>
 </div>
 
-Given a [[ECMA-262#realm|realm]] (|calleeRealm|), a list of strings (|parameterStrings|), a string (|bodyString|), <ins> a string (|source|), an enum (|compilationType|), a list of ECMAScript language values (|parameterArgs|), and an ECMAScript language value (|bodyArg|), this algorithm returns normally if compilation is allowed, and
+Given a [[ECMA-262#realm|realm]] (|calleeRealm|), a list of strings (|parameterStrings|), a string (|bodyString|), <ins> an enum (|compilationType|), a list of ECMAScript language values (|parameterArgs|), and an ECMAScript language value (|bodyArg|)</ins>, this algorithm returns normally if compilation is allowed, and
 throws an "`EvalError`" if not:
 
+1.  <ins>Let |source| be |bodyString|.</ins>
+1.  <ins>If |compilationType| is `*FUNCTION*`:</ins>
+    1.  <ins>Set |source| to `"function anonymous("`</ins>
+    1.  <ins>For each |arg| in |parameterStrings|:</ins>
+        1.  <ins>Append |arg| to |source|.</ins>
+        1.  <ins>If |arg| is not the last item of |parameterStrings|, append `","` to |source|.</ins>
+    1.  <ins>Append `"\n) {\n"` to |source|.</ins>
+    1.  <ins>Append |bodyString| to |source|.</ins>
+    1.  <ins>Append `"\n}"` to |source|.</ins>
 1.  <ins>If |compilationType| is `*TIMER*`, then:</ins>
     1.  <ins>Let |sourceString| be |source|.</ins>
 1.  <ins>Else:</ins>
