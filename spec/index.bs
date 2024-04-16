@@ -109,14 +109,8 @@ WorkerGlobalScope-importScripts.html
 </wpt>
 
 <pre class="anchors">
-spec: DOM-Parsing; urlPrefix: https://w3c.github.io/DOM-Parsing/
-    type: enum; text: SupportedType
-    type: abstract-op; text: fragment parsing algorithm; url: html-fragment-parsing-algorithm
-spec: DOM-Parsing; url: https://w3c.github.io/DOM-Parsing/#dom-innerhtml; type: interface; text: InnerHTML
 urlPrefix: https://html.spec.whatwg.org/multipage/common-dom-interfaces.html; type: dfn; spec: HTML
     text: reflect
-url: https://heycam.github.io/webidl/#this; type: dfn; spec: WebIDL
-    text: this
 spec:ECMA-262; urlPrefix: https://tc39.github.io/ecma262/
     type:abstract-op; text:ToString; url: sec-tostring
     type:abstract-op; text:Get; url: sec-get-o-p
@@ -127,7 +121,6 @@ spec: HTML; urlPrefix: https://html.spec.whatwg.org/
 
 <pre class="link-defaults">
 spec:fetch; type:dfn; for:/; text:request
-spec:DOM Parsing; type:idl; for:Element; text:innerHTML
 spec:html; type:dfn; for:global object; text:realm
 spec:csp3; type:dfn; text:csp list
 spec:csp3; type:dfn; for:global object; text:csp list
@@ -330,8 +323,9 @@ Since HTML parsers can create arbitrary elements, including scripts, and set arb
 DOM XSS <a>injection sinks</a> also include HTML parsing sinks:
 
   * Functions that parse & insert HTML strings into the document like
-    {{InnerHTML/innerHTML|Element.innerHTML}},
-    {{Element/outerHTML|Element.outerHTML}} setter, or Document.write.
+    {{Element/innerHTML|Element.innerHTML}},
+    {{ShadowRoot/innerHTML|ShadowRoot.innerHTML}},
+    and {{Element/outerHTML|Element.outerHTML}} setters, or Document.write.
   * Functions that create a new same-origin {{Document}} with caller-controlled
     markup like {{DOMParser/parseFromString()}}.
 
