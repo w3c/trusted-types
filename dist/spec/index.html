@@ -7,7 +7,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/W3C-ED" rel="stylesheet">
   <meta content="Bikeshed version 82ce88815, updated Thu Sep 7 16:33:55 2023 -0700" name="generator">
   <link href="https://w3c.github.io/trusted-types/dist/spec/" rel="canonical">
-  <meta content="57153a845abbf7ab2b80e8f787b6a0573b63e8a7" name="document-revision">
+  <meta content="38c3cf524ef9cc824585881767c06744d4e208c8" name="document-revision">
 <style>/* Boilerplate: style-autolinks */
 .css.css, .property.property, .descriptor.descriptor {
     color: var(--a-normal-text);
@@ -1005,7 +1005,7 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Trusted Types</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2024-04-15">15 April 2024</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2024-04-16">16 April 2024</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -1441,7 +1441,8 @@ like <code class="idl"><a class="idl-code" data-link-type="attribute" href="#dom
 DOM XSS <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink④">injection sinks</a> also include HTML parsing sinks:</p>
    <ul>
     <li data-md>
-     <p>Functions that parse &amp; insert HTML strings into the document like <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/DOM-Parsing/#dom-innerhtml-innerhtml" id="ref-for-dom-innerhtml-innerhtml">Element.innerHTML</a></code>, <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/DOM-Parsing/#dom-element-outerhtml" id="ref-for-dom-element-outerhtml">Element.outerHTML</a></code> setter, or Document.write.</p>
+     <p>Functions that parse &amp; insert HTML strings into the document like <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/dynamic-markup-insertion.html#dom-element-innerhtml" id="ref-for-dom-element-innerhtml">Element.innerHTML</a></code>, <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/dynamic-markup-insertion.html#dom-shadowroot-innerhtml" id="ref-for-dom-shadowroot-innerhtml">ShadowRoot.innerHTML</a></code>,
+and <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/DOM-Parsing/#dom-element-outerhtml" id="ref-for-dom-element-outerhtml">Element.outerHTML</a></code> setters, or Document.write.</p>
     <li data-md>
      <p>Functions that create a new same-origin <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document">Document</a></code> with caller-controlled
 markup like <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/dynamic-markup-insertion.html#dom-domparser-parsefromstring" id="ref-for-dom-domparser-parsefromstring">parseFromString()</a></code>.</p>
@@ -1651,13 +1652,13 @@ trustedTypes<c- p>.</c->createPolicy<c- p>(</c-><c- u>"foo"</c-><c- p>,</c-> <c-
 with the following arguments:</p>
       <dl>
        <dt>factory
-       <dd><a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this">this</a> value
+       <dd><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this">this</a> value
        <dt>policyName
        <dd><var>policyName</var> 
        <dt>options
        <dd><var>policyOptions</var>
        <dt>global
-       <dd><a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this①">this</a> value’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global">relevant global object</a>
+       <dd><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①">this</a> value’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global">relevant global object</a>
       </dl>
       <div class="example" id="create-and-used-unexposed-policy">
        <a class="self-link" href="#create-and-used-unexposed-policy"></a> 
@@ -1826,7 +1827,7 @@ result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-cr
 following arguments:</p>
       <dl>
        <dt>policy
-       <dd><a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this②">this</a> value 
+       <dd><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②">this</a> value 
        <dt>trustedTypeName
        <dd><code>"TrustedHTML"</code>
        <dt>value
@@ -1841,7 +1842,7 @@ result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-cr
 following arguments:</p>
       <dl>
        <dt>policy
-       <dd><a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this③">this</a> value 
+       <dd><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this③">this</a> value 
        <dt>trustedTypeName
        <dd><code>"TrustedScript"</code>
        <dt>value
@@ -1856,7 +1857,7 @@ result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-cr
 following arguments:</p>
       <dl>
        <dt>policy
-       <dd><a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this④">this</a> value 
+       <dd><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this④">this</a> value 
        <dt>trustedTypeName
        <dd><code>"TrustedScriptURL"</code>
        <dt>value
@@ -2214,7 +2215,7 @@ which is a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicyfac
   <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="#trustedtypepolicyfactory" id="ref-for-trustedtypepolicyfactory③"><c- n>TrustedTypePolicyFactory</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="WindowOrWorkerGlobalScope" data-dfn-type="attribute" data-export data-readonly data-type="TrustedTypePolicyFactory" id="dom-windoworworkerglobalscope-trustedtypes"><code><c- g>trustedTypes</c-></code></dfn>;
 };
 </pre>
-   <p>The <code class="idl"><a data-link-type="idl" href="#dom-windoworworkerglobalscope-trustedtypes" id="ref-for-dom-windoworworkerglobalscope-trustedtypes①">trustedTypes</a></code> getter steps are to return <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this⑤">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global③">relevant global object</a>'s <a href="#integration-with-html">trusted
+   <p>The <code class="idl"><a data-link-type="idl" href="#dom-windoworworkerglobalscope-trustedtypes" id="ref-for-dom-windoworworkerglobalscope-trustedtypes①">trustedTypes</a></code> getter steps are to return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑤">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global③">relevant global object</a>'s <a href="#integration-with-html">trusted
 type policy factory</a>.</p>
    <h4 class="heading settled" data-level="4.3.2" id="enforcement-in-scripts"><span class="secno">4.3.2. </span><span class="content">Enforcement for scripts</span><a class="self-link" href="#enforcement-in-scripts"></a></h4>
    <h5 class="heading settled" data-level="4.3.2.1" id="slots-with-trusted-values"><span class="secno">4.3.2.1. </span><span class="content">Slots with trusted values</span><a class="self-link" href="#slots-with-trusted-values"></a></h5>
@@ -2973,7 +2974,6 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
     <a data-link-type="biblio">[DOM-Parsing]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="862f4131">createContextualFragment()</span>
-     <li><span class="dfn-paneled" id="dcc318fc">innerHTML</span>
      <li><span class="dfn-paneled" id="793262b5">outerHTML</span>
     </ul>
    <li>
@@ -3000,6 +3000,8 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
      <li><span class="dfn-paneled" id="bfc1c271">Worker</span>
      <li><span class="dfn-paneled" id="8a30477b">global object <small>(for environment settings object)</small></span>
      <li><span class="dfn-paneled" id="168f1b6e">global object <small>(for realm)</small></span>
+     <li><span class="dfn-paneled" id="d4127354">innerHTML <small>(for Element)</small></span>
+     <li><span class="dfn-paneled" id="ef8bdfad">innerHTML <small>(for ShadowRoot)</small></span>
      <li><span class="dfn-paneled" id="a264b960">innerText</span>
      <li><span class="dfn-paneled" id="b815ad04">parseFromString(string, type)</span>
      <li><span class="dfn-paneled" id="215d47ca">prepare the script element</span>
@@ -3062,7 +3064,7 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
      <li><span class="dfn-paneled" id="a7900362">include</span>
      <li><span class="dfn-paneled" id="d08c79a9">interface mixin</span>
      <li><span class="dfn-paneled" id="f8de33a3">long</span>
-     <li><span class="dfn-paneled" id="0c3aff42">this</span>
+     <li><span class="dfn-paneled" id="4013a022">this</span>
     </ul>
   </ul>
   <h2 class="no-num no-ref heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
@@ -3860,7 +3862,6 @@ window.dfnpanelData['b3955a25'] = {"dfnID": "b3955a25", "url": "https://dom.spec
 window.dfnpanelData['5216e1a0'] = {"dfnID": "5216e1a0", "url": "https://dom.spec.whatwg.org/#concept-node-document", "dfnText": "node document", "refSections": [{"refs": [{"id": "ref-for-concept-node-document"}], "title": "3.7. Get Trusted Types-compliant attribute value"}], "external": true};
 window.dfnpanelData['421cd2a4'] = {"dfnID": "421cd2a4", "url": "https://dom.spec.whatwg.org/#dom-node-textcontent", "dfnText": "textContent", "refSections": [{"refs": [{"id": "ref-for-dom-node-textcontent"}, {"id": "ref-for-dom-node-textcontent\u2460"}], "title": "4.3.2.2. Setting slot values"}], "external": true};
 window.dfnpanelData['862f4131'] = {"dfnID": "862f4131", "url": "https://w3c.github.io/DOM-Parsing/#dom-range-createcontextualfragment", "dfnText": "createContextualFragment()", "refSections": [{"refs": [{"id": "ref-for-dom-range-createcontextualfragment"}], "title": "4.5. Integration with execCommand"}], "external": true};
-window.dfnpanelData['dcc318fc'] = {"dfnID": "dcc318fc", "url": "https://w3c.github.io/DOM-Parsing/#dom-innerhtml-innerhtml", "dfnText": "innerHTML", "refSections": [{"refs": [{"id": "ref-for-dom-innerhtml-innerhtml"}], "title": "2.1.1. DOM XSS injection sinks"}], "external": true};
 window.dfnpanelData['793262b5'] = {"dfnID": "793262b5", "url": "https://w3c.github.io/DOM-Parsing/#dom-element-outerhtml", "dfnText": "outerHTML", "refSections": [{"refs": [{"id": "ref-for-dom-element-outerhtml"}], "title": "2.1.1. DOM XSS injection sinks"}], "external": true};
 window.dfnpanelData['857d5516'] = {"dfnID": "857d5516", "url": "https://fetch.spec.whatwg.org/#concept-request-client", "dfnText": "client", "refSections": [{"refs": [{"id": "ref-for-concept-request-client"}], "title": "4.6.1.1. require-trusted-types-for Pre-Navigation check"}], "external": true};
 window.dfnpanelData['63340982'] = {"dfnID": "63340982", "url": "https://fetch.spec.whatwg.org/#local-scheme", "dfnText": "local scheme", "refSections": [{"refs": [{"id": "ref-for-local-scheme"}], "title": "5.1. Cross-document vectors"}], "external": true};
@@ -3875,6 +3876,8 @@ window.dfnpanelData['5f6d392d'] = {"dfnID": "5f6d392d", "url": "https://html.spe
 window.dfnpanelData['bfc1c271'] = {"dfnID": "bfc1c271", "url": "https://html.spec.whatwg.org/multipage/workers.html#worker", "dfnText": "Worker", "refSections": [{"refs": [{"id": "ref-for-worker"}], "title": "4.3. Integration with HTML"}], "external": true};
 window.dfnpanelData['8a30477b'] = {"dfnID": "8a30477b", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-global", "dfnText": "global object (for environment settings object)", "refSections": [{"refs": [{"id": "ref-for-concept-settings-object-global"}], "title": "4.6.1.1. require-trusted-types-for Pre-Navigation check"}], "external": true};
 window.dfnpanelData['168f1b6e'] = {"dfnID": "168f1b6e", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global", "dfnText": "global object (for realm)", "refSections": [{"refs": [{"id": "ref-for-concept-realm-global"}], "title": "3.1. Create a Trusted Type Policy"}, {"refs": [{"id": "ref-for-concept-realm-global\u2460"}], "title": "3.4. Get Trusted Type compliant string"}, {"refs": [{"id": "ref-for-concept-realm-global\u2461"}], "title": "3.5. Process value with a default policy"}, {"refs": [{"id": "ref-for-concept-realm-global\u2462"}], "title": "4.6.3. Does sink type require trusted types?"}, {"refs": [{"id": "ref-for-concept-realm-global\u2463"}], "title": "4.6.4. Should sink type mismatch violation be blocked by Content Security Policy?"}, {"refs": [{"id": "ref-for-concept-realm-global\u2464"}], "title": "4.6.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}, {"refs": [{"id": "ref-for-concept-realm-global\u2465"}], "title": "4.6.7. Support for dynamic code compilation"}], "external": true};
+window.dfnpanelData['d4127354'] = {"dfnID": "d4127354", "url": "https://html.spec.whatwg.org/multipage/dynamic-markup-insertion.html#dom-element-innerhtml", "dfnText": "innerHTML (for Element)", "refSections": [{"refs": [{"id": "ref-for-dom-element-innerhtml"}], "title": "2.1.1. DOM XSS injection sinks"}], "external": true};
+window.dfnpanelData['ef8bdfad'] = {"dfnID": "ef8bdfad", "url": "https://html.spec.whatwg.org/multipage/dynamic-markup-insertion.html#dom-shadowroot-innerhtml", "dfnText": "innerHTML (for ShadowRoot)", "refSections": [{"refs": [{"id": "ref-for-dom-shadowroot-innerhtml"}], "title": "2.1.1. DOM XSS injection sinks"}], "external": true};
 window.dfnpanelData['a264b960'] = {"dfnID": "a264b960", "url": "https://html.spec.whatwg.org/multipage/dom.html#dom-innertext", "dfnText": "innerText", "refSections": [{"refs": [{"id": "ref-for-dom-innertext"}, {"id": "ref-for-dom-innertext\u2460"}], "title": "4.3.2.2. Setting slot values"}], "external": true};
 window.dfnpanelData['b815ad04'] = {"dfnID": "b815ad04", "url": "https://html.spec.whatwg.org/multipage/dynamic-markup-insertion.html#dom-domparser-parsefromstring", "dfnText": "parseFromString(string, type)", "refSections": [{"refs": [{"id": "ref-for-dom-domparser-parsefromstring"}], "title": "2.1.1. DOM XSS injection sinks"}], "external": true};
 window.dfnpanelData['215d47ca'] = {"dfnID": "215d47ca", "url": "https://html.spec.whatwg.org/#prepare-the-script-element", "dfnText": "prepare the script element", "refSections": [{"refs": [{"id": "ref-for-prepare-the-script-element"}], "title": "4.3.2.3. Slot value verification"}], "external": true};
@@ -3913,7 +3916,7 @@ window.dfnpanelData['980252f2'] = {"dfnID": "980252f2", "url": "https://webidl.s
 window.dfnpanelData['a7900362'] = {"dfnID": "a7900362", "url": "https://webidl.spec.whatwg.org/#include", "dfnText": "include", "refSections": [{"refs": [{"id": "ref-for-include"}], "title": "2.3.1. TrustedTypePolicyFactory"}], "external": true};
 window.dfnpanelData['d08c79a9'] = {"dfnID": "d08c79a9", "url": "https://webidl.spec.whatwg.org/#interface-mixin", "dfnText": "interface mixin", "refSections": [{"refs": [{"id": "ref-for-interface-mixin"}], "title": "2.3.1. TrustedTypePolicyFactory"}], "external": true};
 window.dfnpanelData['f8de33a3'] = {"dfnID": "f8de33a3", "url": "https://webidl.spec.whatwg.org/#idl-long", "dfnText": "long", "refSections": [{"refs": [{"id": "ref-for-idl-long"}, {"id": "ref-for-idl-long\u2460"}, {"id": "ref-for-idl-long\u2461"}, {"id": "ref-for-idl-long\u2462"}], "title": "4.3.3. Enforcement in timer functions"}], "external": true};
-window.dfnpanelData['0c3aff42'] = {"dfnID": "0c3aff42", "url": "https://heycam.github.io/webidl/#this", "dfnText": "this", "refSections": [{"refs": [{"id": "ref-for-this"}, {"id": "ref-for-this\u2460"}], "title": "2.3.1. TrustedTypePolicyFactory"}, {"refs": [{"id": "ref-for-this\u2461"}, {"id": "ref-for-this\u2462"}, {"id": "ref-for-this\u2463"}], "title": "2.3.2. TrustedTypePolicy"}, {"refs": [{"id": "ref-for-this\u2464"}], "title": "4.3.1. Extensions to the WindowOrWorkerGlobalScope interface"}], "external": true};
+window.dfnpanelData['4013a022'] = {"dfnID": "4013a022", "url": "https://webidl.spec.whatwg.org/#this", "dfnText": "this", "refSections": [{"refs": [{"id": "ref-for-this"}, {"id": "ref-for-this\u2460"}], "title": "2.3.1. TrustedTypePolicyFactory"}, {"refs": [{"id": "ref-for-this\u2461"}, {"id": "ref-for-this\u2462"}, {"id": "ref-for-this\u2463"}], "title": "2.3.2. TrustedTypePolicy"}, {"refs": [{"id": "ref-for-this\u2464"}], "title": "4.3.1. Extensions to the WindowOrWorkerGlobalScope interface"}], "external": true};
 window.dfnpanelData['injection-sink'] = {"dfnID": "injection-sink", "url": "#injection-sink", "dfnText": "injection sink", "refSections": [{"refs": [{"id": "ref-for-injection-sink"}], "title": "1. Introduction"}, {"refs": [{"id": "ref-for-injection-sink\u2460"}], "title": "1.3. Use cases"}, {"refs": [{"id": "ref-for-injection-sink\u2461"}], "title": "2.1. Injection sinks"}, {"refs": [{"id": "ref-for-injection-sink\u2462"}, {"id": "ref-for-injection-sink\u2463"}], "title": "2.1.1. DOM XSS injection sinks"}, {"refs": [{"id": "ref-for-injection-sink\u2464"}], "title": "2.2. Trusted Types"}, {"refs": [{"id": "ref-for-injection-sink\u2465"}], "title": "2.2.1. TrustedHTML"}, {"refs": [{"id": "ref-for-injection-sink\u2466"}], "title": "2.2.2. TrustedScript"}, {"refs": [{"id": "ref-for-injection-sink\u2467"}], "title": "2.2.3. TrustedScriptURL"}, {"refs": [{"id": "ref-for-injection-sink\u2468"}, {"id": "ref-for-injection-sink\u2460\u24ea"}, {"id": "ref-for-injection-sink\u2460\u2460"}, {"id": "ref-for-injection-sink\u2460\u2461"}], "title": "2.3. Policies"}, {"refs": [{"id": "ref-for-injection-sink\u2460\u2462"}, {"id": "ref-for-injection-sink\u2460\u2463"}], "title": "2.3.4. Default policy"}, {"refs": [{"id": "ref-for-injection-sink\u2460\u2464"}, {"id": "ref-for-injection-sink\u2460\u2465"}, {"id": "ref-for-injection-sink\u2460\u2466"}], "title": "2.4. Enforcement"}, {"refs": [{"id": "ref-for-injection-sink\u2460\u2467"}], "title": "2.4.1. Content Security Policy"}, {"refs": [{"id": "ref-for-injection-sink\u2460\u2468"}], "title": "3.4. Get Trusted Type compliant string"}, {"refs": [{"id": "ref-for-injection-sink\u2461\u24ea"}], "title": "3.5. Process value with a default policy"}, {"refs": [{"id": "ref-for-injection-sink\u2461\u2460"}, {"id": "ref-for-injection-sink\u2461\u2461"}], "title": "4.6.1. require-trusted-types-for directive"}, {"refs": [{"id": "ref-for-injection-sink\u2461\u2462"}, {"id": "ref-for-injection-sink\u2461\u2463"}], "title": "4.6.2. trusted-types directive"}, {"refs": [{"id": "ref-for-injection-sink\u2461\u2464"}], "title": "4.6.3. Does sink type require trusted types?"}, {"refs": [{"id": "ref-for-injection-sink\u2461\u2465"}], "title": "4.6.4. Should sink type mismatch violation be blocked by Content Security Policy?"}, {"refs": [{"id": "ref-for-injection-sink\u2461\u2466"}], "title": "5. Security Considerations"}, {"refs": [{"id": "ref-for-injection-sink\u2461\u2467"}, {"id": "ref-for-injection-sink\u2461\u2468"}], "title": "5.4. Best practices for policy design"}, {"refs": [{"id": "ref-for-injection-sink\u2462\u24ea"}], "title": "6. Privacy Considerations"}, {"refs": [{"id": "ref-for-injection-sink\u2462\u2460"}], "title": "7.1. Vendor-specific Extensions and Addons"}], "external": false};
 window.dfnpanelData['trusted-type'] = {"dfnID": "trusted-type", "url": "#trusted-type", "dfnText": "Trusted Type", "refSections": [{"refs": [{"id": "ref-for-trusted-type"}], "title": "2.3. Policies"}, {"refs": [{"id": "ref-for-trusted-type\u2460"}], "title": "2.3.1. TrustedTypePolicyFactory"}, {"refs": [{"id": "ref-for-trusted-type\u2461"}], "title": "2.3.3. TrustedTypePolicyOptions"}, {"refs": [{"id": "ref-for-trusted-type\u2462"}], "title": "2.4. Enforcement"}, {"refs": [{"id": "ref-for-trusted-type\u2463"}], "title": "3.4. Get Trusted Type compliant string"}, {"refs": [{"id": "ref-for-trusted-type\u2464"}], "title": "4.6.3. Does sink type require trusted types?"}, {"refs": [{"id": "ref-for-trusted-type\u2465"}], "title": "4.6.4. Should sink type mismatch violation be blocked by Content Security Policy?"}], "external": false};
 window.dfnpanelData['trustedhtml'] = {"dfnID": "trustedhtml", "url": "#trustedhtml", "dfnText": "TrustedHTML", "refSections": [{"refs": [{"id": "ref-for-trustedhtml"}], "title": "2.2.1. TrustedHTML"}, {"refs": [{"id": "ref-for-trustedhtml\u2460"}], "title": "2.3. Policies"}, {"refs": [{"id": "ref-for-trustedhtml\u2461"}, {"id": "ref-for-trustedhtml\u2462"}, {"id": "ref-for-trustedhtml\u2463"}, {"id": "ref-for-trustedhtml\u2464"}], "title": "2.3.1. TrustedTypePolicyFactory"}, {"refs": [{"id": "ref-for-trustedhtml\u2465"}], "title": "2.3.2. TrustedTypePolicy"}, {"refs": [{"id": "ref-for-trustedhtml\u2466"}, {"id": "ref-for-trustedhtml\u2467"}], "title": "3.7. Get Trusted Types-compliant attribute value"}, {"refs": [{"id": "ref-for-trustedhtml\u2468"}, {"id": "ref-for-trustedhtml\u2460\u24ea"}], "title": "4. Integrations"}, {"refs": [{"id": "ref-for-trustedhtml\u2460\u2460"}], "title": "4.5. Integration with execCommand"}], "external": false};
