@@ -7,7 +7,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/W3C-ED" rel="stylesheet">
   <meta content="Bikeshed version 82ce88815, updated Thu Sep 7 16:33:55 2023 -0700" name="generator">
   <link href="https://w3c.github.io/trusted-types/dist/spec/" rel="canonical">
-  <meta content="74e413ed210b25ed41be2e91ed8ccd0814c8a129" name="document-revision">
+  <meta content="916e9f1b45ca328b3c24ea73d75da297c26f946a" name="document-revision">
 <style>/* Boilerplate: style-autolinks */
 .css.css, .property.property, .descriptor.descriptor {
     color: var(--a-normal-text);
@@ -1125,7 +1125,8 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
          </ol>
         <li><a href="#enforcement-in-timer-functions"><span class="secno">4.3.3</span> <span class="content">Enforcement in timer functions</span></a>
         <li><a href="#host-ensure-can-compile-strings"><span class="secno">4.3.4</span> <span class="content">HostEnsureCanCompileStrings</span></a>
-        <li><a href="#html-validate-the-string-in-context"><span class="secno">4.3.5</span> <span class="content">Validate the string in context</span></a>
+        <li><a href="#host-get-code-for-eval"><span class="secno">4.3.5</span> <span class="content">HostGetCodeForEval</span></a>
+        <li><a href="#html-validate-the-string-in-context"><span class="secno">4.3.6</span> <span class="content">Validate the string in context</span></a>
        </ol>
       <li><a href="#sw-integration"><span class="secno">4.4</span> <span class="content">Integration with Service Workers</span></a>
       <li><a href="#integration-with-exec-command"><span class="secno">4.5</span> <span class="content">Integration with execCommand</span></a>
@@ -1987,13 +1988,8 @@ a string <var>value</var> and a list <var>arguments</var>, execute the following
     <li data-md>
      <p>Let <var>dataString</var> be the result of stringifying <var>policyValue</var>.</p>
     <li data-md>
-     <p>Let <var>trustedObject</var> be a new instance of an interface with a type
+     <p>Return a new instance of an interface with a type
 name <var>trustedTypeName</var>, with its associated data value set to <var>dataString</var>.</p>
-    <li data-md>
-     <p>If <var>trustedObject</var> is a <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript⑥">TrustedScript</a></code>, set its <code>[[HostDefinedIsCodeLike]]</code> internal slot value to <code>true</code>.</p>
-     <p class="note" role="note"><span class="marker">Note:</span> This adds an integration point with <a href="https://tc39.es/proposal-dynamic-code-brand-checks/">dynamic-code-brand-checks proposal</a>.</p>
-    <li data-md>
-     <p>Return <var>trustedObject</var>.</p>
    </ol>
    <h3 class="heading settled" data-level="3.3" id="get-trusted-type-policy-value-algorithm"><span class="secno">3.3. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-get-trusted-type-policy-value">Get Trusted Type policy value</dfn></span><a class="self-link" href="#get-trusted-type-policy-value-algorithm"></a></h3>
    <p>Given a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy①③">TrustedTypePolicy</a></code> <var>policy</var>, a type name <var>trustedTypeName</var>,
@@ -2093,13 +2089,8 @@ passing <var>global</var>, stringified <var>input</var> as <var>source</var>, <v
     <li data-md>
      <p>Let <var>dataString</var> be the result of stringifying <var>policyValue</var>.</p>
     <li data-md>
-     <p>Let <var>trustedObject</var> be a new instance of an interface with a type
+     <p>Return a new instance of an interface with a type
 name <var>trustedTypeName</var>, with its associated data value set to <var>dataString</var>.</p>
-    <li data-md>
-     <p>If <var>trustedObject</var> is a <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript⑦">TrustedScript</a></code>, set its <code>[[HostDefinedIsCodeLike]]</code> internal slot value to <code>true</code>.</p>
-     <p class="note" role="note"><span class="marker">Note:</span> This adds an integration point with <a href="https://tc39.es/proposal-dynamic-code-brand-checks/">dynamic-code-brand-checks proposal</a>.</p>
-    <li data-md>
-     <p>Return <var>trustedObject</var>.</p>
    </ol>
    <h3 class="heading settled" data-level="3.6" id="prepare-script-text"><span class="secno">3.6. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-prepare-the-script-text">Prepare the script text</dfn></span><a class="self-link" href="#prepare-script-text"></a></h3>
    <p>Given an <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement" id="ref-for-htmlscriptelement">HTMLScriptElement</a></code> (<var>script</var>), this algorithm performs the following steps:</p>
@@ -2171,7 +2162,7 @@ If a matching row is found, set <var>expectedType</var> and <var>sink</var> to t
       <li data-md>
        <p>If <var>newValue</var> is a string, return <var>newValue</var>.</p>
       <li data-md>
-       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert">Assert</a>: <var>newValue</var> is <code class="idl"><a data-link-type="idl" href="#trustedhtml" id="ref-for-trustedhtml⑧">TrustedHTML</a></code> or <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript⑧">TrustedScript</a></code> or <code class="idl"><a data-link-type="idl" href="#trustedscripturl" id="ref-for-trustedscripturl⑦">TrustedScriptURL</a></code>.</p>
+       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert">Assert</a>: <var>newValue</var> is <code class="idl"><a data-link-type="idl" href="#trustedhtml" id="ref-for-trustedhtml⑧">TrustedHTML</a></code> or <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript⑥">TrustedScript</a></code> or <code class="idl"><a data-link-type="idl" href="#trustedscripturl" id="ref-for-trustedscripturl⑦">TrustedScriptURL</a></code>.</p>
       <li data-md>
        <p>Return <var>value</var>’s associated data.</p>
      </ol>
@@ -2194,9 +2185,9 @@ If a matching row is found, set <var>expectedType</var> and <var>sink</var> to t
    <p class="issue" id="issue-74d98fc3"><a class="self-link" href="#issue-74d98fc3"></a> This algorithm should account for event handler attributes. See https://github.com/w3c/trusted-types/issues/474</p>
    <h2 class="heading settled" data-level="4" id="integrations"><span class="secno">4. </span><span class="content">Integrations</span><a class="self-link" href="#integrations"></a></h2>
 <pre class="idl highlight def"><c- b>typedef</c-> [<a class="idl-code" data-link-type="extended-attribute" href="#StringContext" id="ref-for-StringContext④"><c- g>StringContext</c-></a>=<a data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml⑨"><c- n>TrustedHTML</c-></a>] <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString②①"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-type="typedef" data-export id="typedefdef-htmlstring"><code><c- g>HTMLString</c-></code><a class="self-link" href="#typedefdef-htmlstring"></a></dfn>;
-<c- b>typedef</c-> [<a class="idl-code" data-link-type="extended-attribute" href="#StringContext" id="ref-for-StringContext⑤"><c- g>StringContext</c-></a>=<a data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript⑨"><c- n>TrustedScript</c-></a>] <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString②②"><c- b>DOMString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-type="typedef" data-export id="typedefdef-scriptstring"><code><c- g>ScriptString</c-></code></dfn>;
+<c- b>typedef</c-> [<a class="idl-code" data-link-type="extended-attribute" href="#StringContext" id="ref-for-StringContext⑤"><c- g>StringContext</c-></a>=<a data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript⑦"><c- n>TrustedScript</c-></a>] <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString②②"><c- b>DOMString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-type="typedef" data-export id="typedefdef-scriptstring"><code><c- g>ScriptString</c-></code></dfn>;
 <c- b>typedef</c-> [<a class="idl-code" data-link-type="extended-attribute" href="#StringContext" id="ref-for-StringContext⑥"><c- g>StringContext</c-></a>=<a data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl⑧"><c- n>TrustedScriptURL</c-></a>] <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString" id="ref-for-idl-USVString②"><c- b>USVString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-type="typedef" data-export id="typedefdef-scripturlstring"><code><c- g>ScriptURLString</c-></code></dfn>;
-<c- b>typedef</c-> (<a data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml①⓪"><c- n>TrustedHTML</c-></a> <c- b>or</c-> <a data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript①⓪"><c- n>TrustedScript</c-></a> <c- b>or</c-> <a data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl⑨"><c- n>TrustedScriptURL</c-></a>) <dfn class="dfn-paneled idl-code" data-dfn-type="typedef" data-export id="typedefdef-trustedtype"><code><c- g>TrustedType</c-></code></dfn>;
+<c- b>typedef</c-> (<a data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml①⓪"><c- n>TrustedHTML</c-></a> <c- b>or</c-> <a data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript⑧"><c- n>TrustedScript</c-></a> <c- b>or</c-> <a data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl⑨"><c- n>TrustedScriptURL</c-></a>) <dfn class="dfn-paneled idl-code" data-dfn-type="typedef" data-export id="typedefdef-trustedtype"><code><c- g>TrustedType</c-></code></dfn>;
 </pre>
    <h3 class="heading settled" data-level="4.1" id="webidl-integration"><span class="secno">4.1. </span><span class="content">Integration with WebIDL</span><a class="self-link" href="#webidl-integration"></a></h3>
    <h3 class="heading settled dfn-paneled idl-code" data-dfn-type="extended-attribute" data-export data-level="4.2" data-lt="StringContext" id="StringContext"><span class="secno">4.2. </span><span class="content">[StringContext]</span><a class="self-link" href="#StringContext" id="ref-for-StringContext⑨"></a></h3>
@@ -2278,7 +2269,7 @@ as in their original counterparts, apart from additional behavior triggered by t
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-long" id="ref-for-idl-long②"><c- b>long</c-></a> <dfn class="idl-code" data-dfn-for="WindowOrWorkerGlobalScope" data-dfn-type="method" data-export data-lt="setInterval(handler, timeout, ...arguments)|setInterval(handler, timeout)|setInterval(handler)" id="dom-windoworworkerglobalscope-setinterval"><code><c- g>setInterval</c-></code><a class="self-link" href="#dom-windoworworkerglobalscope-setinterval"></a></dfn>(<a data-link-type="idl-name" href="#typedefdef-trustedtimerhandler" id="ref-for-typedefdef-trustedtimerhandler①"><c- n>TrustedTimerHandler</c-></a> <dfn class="idl-code" data-dfn-for="WindowOrWorkerGlobalScope/setInterval(handler, timeout, ...arguments), WindowOrWorkerGlobalScope/setInterval(handler, timeout), WindowOrWorkerGlobalScope/setInterval(handler)" data-dfn-type="argument" data-export id="dom-windoworworkerglobalscope-setinterval-handler-timeout-arguments-handler"><code><c- g>handler</c-></code><a class="self-link" href="#dom-windoworworkerglobalscope-setinterval-handler-timeout-arguments-handler"></a></dfn>, <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-long" id="ref-for-idl-long③"><c- b>long</c-></a> <dfn class="idl-code" data-dfn-for="WindowOrWorkerGlobalScope/setInterval(handler, timeout, ...arguments), WindowOrWorkerGlobalScope/setInterval(handler, timeout), WindowOrWorkerGlobalScope/setInterval(handler)" data-dfn-type="argument" data-export id="dom-windoworworkerglobalscope-setinterval-handler-timeout-arguments-timeout"><code><c- g>timeout</c-></code><a class="self-link" href="#dom-windoworworkerglobalscope-setinterval-handler-timeout-arguments-timeout"></a></dfn> = 0, <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any①⓪"><c- b>any</c-></a>... <dfn class="idl-code" data-dfn-for="WindowOrWorkerGlobalScope/setInterval(handler, timeout, ...arguments), WindowOrWorkerGlobalScope/setInterval(handler, timeout), WindowOrWorkerGlobalScope/setInterval(handler)" data-dfn-type="argument" data-export id="dom-windoworworkerglobalscope-setinterval-handler-timeout-arguments-arguments"><code><c- g>arguments</c-></code><a class="self-link" href="#dom-windoworworkerglobalscope-setinterval-handler-timeout-arguments-arguments"></a></dfn>);
 };
 </pre>
-   <p class="note" role="note"><span class="marker">Note:</span> This makes sure that a <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①①">TrustedScript</a></code> is passed to timer
+   <p class="note" role="note"><span class="marker">Note:</span> This makes sure that a <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript⑨">TrustedScript</a></code> is passed to timer
 functions in place of a string when Trusted Types are enforced, but
 also unconditionally accepts any <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#Function" id="ref-for-Function①">Function</a></code> object.</p>
    <p>To the <a href="https://www.w3.org/html/wg/drafts/html/master/#timer-initialisation-steps">timer initialization steps algorithm</a>,
@@ -2291,14 +2282,14 @@ change step 8.4.3 as follows:</p>
       <ins>EnsureCSPDoesNotBlockStringCompilation</ins>
       (<var>realm</var>, « », <var>handler</var>,
       <del> false</del>
-      <ins>, <var>handler</var>, ~timer~, « », <var>handler</var></ins>
+      <ins>~timer~, « », <var>handler</var></ins>
       ). If this throws an exception, catch it, report the exception, and abort these steps.
      </p>
    </ol>
    <h4 class="heading settled" data-level="4.3.4" id="host-ensure-can-compile-strings"><span class="secno">4.3.4. </span><span class="content">HostEnsureCanCompileStrings</span><a class="self-link" href="#host-ensure-can-compile-strings"></a></h4>
    <p>
     JavaScript contains an <span>implementation-defined</span> <a href="https://tc39.es/ecma262/#sec-hostensurecancompilestrings">HostEnsureCanCompileStrings</a>(<var>realm</var>, 
-    <ins><var>parameterStrings</var>, <var>bodyString</var>, <var>codeString</var>, <var>compilationType</var>, <var>parameterArgs</var>, <var>bodyArg</var></ins>
+    <ins><var>parameterStrings</var>, <var>bodyString</var>, <var>compilationType</var>, <var>parameterArgs</var>, <var>bodyArg</var></ins>
     )
 abstract operation. User agents must use the following implementation:
    </p>
@@ -2306,11 +2297,20 @@ abstract operation. User agents must use the following implementation:
     <li data-md>
      <p>
       Perform ? <a href="https://w3c.github.io/webappsec-csp/#can-compile-strings">EnsureCSPDoesNotBlockStringCompilation</a>(<var>realm</var>, 
-      <ins><var>parameterStrings</var>, <var>bodyString</var>, <var>codeString</var>, <var>compilationType</var>, <var>parameterArgs</var>, <var>bodyArg</var></ins>
+      <ins><var>parameterStrings</var>, <var>bodyString</var>, <var>compilationType</var>, <var>parameterArgs</var>, <var>bodyArg</var></ins>
       ).
      </p>
    </ol>
-   <h4 class="heading settled" data-level="4.3.5" id="html-validate-the-string-in-context"><span class="secno">4.3.5. </span><span class="content">Validate the string in context</span><a class="self-link" href="#html-validate-the-string-in-context"></a></h4>
+   <h4 class="heading settled" data-level="4.3.5" id="host-get-code-for-eval"><span class="secno">4.3.5. </span><span class="content">HostGetCodeForEval</span><a class="self-link" href="#host-get-code-for-eval"></a></h4>
+   <p>JavaScript contains an <span>implementation-defined</span> <a href="https://tc39.es/ecma262/#sec-hostgetcodeforeval">HostGetCodeForEval</a>(<var>argument</var>)
+abstract operation. User agents must use the following implementation:</p>
+   <ol>
+    <li data-md>
+     <p>If <var>argument</var> is a <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①⓪">TrustedScript</a></code> object, return the value of its associated <a data-link-type="dfn" href="#trustedscript-data" id="ref-for-trustedscript-data③">data</a>.</p>
+    <li data-md>
+     <p>Return ~unknown~.</p>
+   </ol>
+   <h4 class="heading settled" data-level="4.3.6" id="html-validate-the-string-in-context"><span class="secno">4.3.6. </span><span class="content">Validate the string in context</span><a class="self-link" href="#html-validate-the-string-in-context"></a></h4>
    <p>This specification defines the <a data-link-type="dfn" href="https://www.w3.org/TR/trusted-types/#dfn-validate-the-string-in-context" id="ref-for-dfn-validate-the-string-in-context">validate the string in context</a> algorithm in <a href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#integration-with-idl"><cite>HTML</cite> § 7.2.1.1 Integration with IDL</a>.</p>
    <p>When <a data-link-type="dfn" href="https://www.w3.org/TR/trusted-types/#dfn-validate-the-string-in-context" id="ref-for-dfn-validate-the-string-in-context①">validate the string in context</a> is invoked, with <var>platformObject</var>, <var>value</var>, <var>stringContext</var>, and <var>identifier</var> run these steps:</p>
    <ol>
@@ -2399,7 +2399,7 @@ directive-value = <a data-link-type="dfn" href="#trusted-types-sink-group" id="r
      <p>Let <var>convertedScriptSource</var> be the result of executing <a data-link-type="abstract-op" href="#abstract-opdef-process-value-with-a-default-policy" id="ref-for-abstract-opdef-process-value-with-a-default-policy①">Process value with a default policy</a> algorithm, with the following arguments:</p>
      <ul>
       <li data-md>
-       <p><code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①②">TrustedScript</a></code> as <var>expectedType</var></p>
+       <p><code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①①">TrustedScript</a></code> as <var>expectedType</var></p>
       <li data-md>
        <p><var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-client" id="ref-for-concept-request-client">clients</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-global" id="ref-for-concept-settings-object-global">global object</a> as <var>global</var></p>
       <li data-md>
@@ -2407,7 +2407,7 @@ directive-value = <a data-link-type="dfn" href="#trusted-types-sink-group" id="r
       <li data-md>
        <p><code>"Location href"</code> as <var>sink</var></p>
      </ul>
-     <p>If that algorithm threw an error or <var>convertedScriptSource</var> is not a <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①③">TrustedScript</a></code> object, return "Blocked" and abort further steps.</p>
+     <p>If that algorithm threw an error or <var>convertedScriptSource</var> is not a <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①②">TrustedScript</a></code> object, return "Blocked" and abort further steps.</p>
     <li data-md>
      <p>Set <var>urlString</var> to be the result of prepending <code>"javascript:"</code> to stringified <var>convertedScriptSource</var>.</p>
     <li data-md>
@@ -2567,9 +2567,7 @@ which value is <var>policyName</var>, and <var>directive</var>’s <a data-link-
    <p><a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation" id="ref-for-violation">Violation</a> object <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation-resource" id="ref-for-violation-resource②">resource</a> also allows <code>"trusted-types-policy"</code> and <code>"trusted-types-sink"</code> as values.</p>
    <h4 class="heading settled" data-level="4.6.7" id="csp-eval"><span class="secno">4.6.7. </span><span class="content">Support for dynamic code compilation</span><a class="self-link" href="#csp-eval"></a></h4>
    <p>This document modifies the <a href="https://w3c.github.io/webappsec-csp/#can-compile-strings">EnsureCSPDoesNotBlockStringCompilation</a> which is reproduced in its entirety below with additions and deletions.</p>
-   <p class="note" role="note"><span class="marker">Note:</span> This is based on <a href="https://tc39.es/proposal-dynamic-code-brand-checks/">dynamic-code-brand-checks</a> and
-assumes additional arguments are passed to this algorithm from ECMAScript.
-See also <a href="https://github.com/tc39/ecma262/issues/938">TC39/ecma262 issue #938</a>.</p>
+   <p class="note" role="note"><span class="marker">Note:</span> This is based on <a href="https://tc39.es/proposal-dynamic-code-brand-checks/">dynamic-code-brand-checks</a>.</p>
    <div class="note" role="note">
     Note: EcmaScript code may call <code>Function()</code> and <code>eval</code> cross realm. 
 <pre class="highlight"><c- a>let</c-> f <c- o>=</c-> <c- ow>new</c-> self<c- p>.</c->top<c- p>.</c->Function<c- p>(</c->source<c- p>);</c->
@@ -2585,10 +2583,33 @@ self<c- p>.</c->top<c- p>.</c->body<c- p>.</c->innerHTML <c- o>=</c-> <c- t>'Hel
    </div>
    <p>
     Given a <a href="https://tc39.es/ecma262/multipage/#realm">realm</a> (<var>calleeRealm</var>), a list of strings (<var>parameterStrings</var>), a string (<var>bodyString</var>), 
-    <ins> a string (<var>source</var>), an enum (<var>compilationType</var>), a list of ECMAScript language values (<var>parameterArgs</var>), and an ECMAScript language value (<var>bodyArg</var>), this algorithm returns normally if compilation is allowed, and
-throws an "<code>EvalError</code>" if not:</ins>
+    <ins> an enum (<var>compilationType</var>), a list of ECMAScript language values (<var>parameterArgs</var>), and an ECMAScript language value (<var>bodyArg</var>)</ins>
+    , this algorithm returns normally if compilation is allowed, and
+throws an "<code>EvalError</code>" if not:
    </p>
    <ol>
+    <li data-md>
+     <ins>Let <var>source</var> be <var>bodyString</var>.</ins>
+    <li data-md>
+     <ins>If <var>compilationType</var> is <code>*FUNCTION*</code>:</ins>
+     <ol>
+      <li data-md>
+       <ins>Set <var>source</var> to <code>"function anonymous("</code></ins>
+      <li data-md>
+       <ins>For each <var>arg</var> in <var>parameterStrings</var>:</ins>
+       <ol>
+        <li data-md>
+         <ins>Append <var>arg</var> to <var>source</var>.</ins>
+        <li data-md>
+         <ins>If <var>arg</var> is not the last item of <var>parameterStrings</var>, append <code>","</code> to <var>source</var>.</ins>
+       </ol>
+      <li data-md>
+       <ins>Append <code>"\n) {\n"</code> to <var>source</var>.</ins>
+      <li data-md>
+       <ins>Append <var>bodyString</var> to <var>source</var>.</ins>
+      <li data-md>
+       <ins>Append <code>"\n}"</code> to <var>source</var>.</ins>
+     </ol>
     <li data-md>
      <ins>If <var>compilationType</var> is <code>*TIMER*</code>, then:</ins>
      <ol>
@@ -2603,13 +2624,13 @@ throws an "<code>EvalError</code>" if not:</ins>
       <li data-md>
        <ins>Let <var>isTrusted</var> be <code>true</code>.</ins>
       <li data-md>
-       <ins>If <var>bodyArg</var> is not a <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①④">TrustedScript</a></code> object, set <var>isTrusted</var> to <code>false</code>.</ins>
+       <ins>If <var>bodyArg</var> is not a <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①③">TrustedScript</a></code> object, set <var>isTrusted</var> to <code>false</code>.</ins>
       <li data-md>
        <ins>
         If <var>isTrusted</var> is <code>true</code> then: 
         <ol>
          <li data-md>
-          <ins>If <var>bodyString</var> is not equal to <var>bodyArg</var>’s <a data-link-type="dfn" href="#trustedscript-data" id="ref-for-trustedscript-data③">data</a>, set <var>isTrusted</var> to <code>false</code>.</ins>
+          <ins>If <var>bodyString</var> is not equal to <var>bodyArg</var>’s <a data-link-type="dfn" href="#trustedscript-data" id="ref-for-trustedscript-data④">data</a>, set <var>isTrusted</var> to <code>false</code>.</ins>
         </ol>
        </ins>
       <li data-md>
@@ -2621,18 +2642,18 @@ throws an "<code>EvalError</code>" if not:</ins>
           <li data-md>
            <ins>Let <var>index</var> be the index of <var>arg</var> in <var>parameterArgs</var>.</ins>
           <li data-md>
-           <ins>If <var>arg</var> is not a <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①⑤">TrustedScript</a></code> object, set <var>isTrusted</var> to <code>false</code>.</ins>
+           <ins>If <var>arg</var> is not a <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①④">TrustedScript</a></code> object, set <var>isTrusted</var> to <code>false</code>.</ins>
           <li data-md>
            <ins>If <var>isTrusted</var> is <code>true</code>, then:</ins>
            <ol>
             <li data-md>
-             <ins>if <var>parameterStrings</var>[<var>index</var>] is not equal to <var>arg</var>’s <a data-link-type="dfn" href="#trustedscript-data" id="ref-for-trustedscript-data④">data</a>, set <var>isTrusted</var> to <code>false</code>.</ins>
+             <ins>if <var>parameterStrings</var>[<var>index</var>] is not equal to <var>arg</var>’s <a data-link-type="dfn" href="#trustedscript-data" id="ref-for-trustedscript-data⑤">data</a>, set <var>isTrusted</var> to <code>false</code>.</ins>
            </ol>
          </ol>
        </ol>
       <li data-md>
        <ins>If <var>isTrusted</var> is <code>true</code>, let <var>sourceToValidate</var> be a new instance of
-the <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①⑥">TrustedScript</a></code> interface, with its <a data-link-type="dfn" href="#trustedscript-data" id="ref-for-trustedscript-data⑤">data</a> set to <var>source</var>. Otherwise, let <var>sourceToValidate</var> be <var>source</var>.</ins>
+the <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①⑤">TrustedScript</a></code> interface, with its <a data-link-type="dfn" href="#trustedscript-data" id="ref-for-trustedscript-data⑥">data</a> set to <var>source</var>. Otherwise, let <var>sourceToValidate</var> be <var>source</var>.</ins>
       <li data-md>
        <ins>
         Let <var>sourceString</var> be the result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string③">Get Trusted Type compliant string</a> algorithm, with: 
@@ -2646,7 +2667,7 @@ the <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-
          <li data-md>
           <p><code>'script'</code> as <var>sinkGroup</var>,</p>
          <li data-md>
-          <p><code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①⑦">TrustedScript</a></code> as <var>expectedType</var>.</p>
+          <p><code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①⑥">TrustedScript</a></code> as <var>expectedType</var>.</p>
         </ul>
        </ins>
       <li data-md>
@@ -3881,12 +3902,12 @@ window.dfnpanelData['b815ad04'] = {"dfnID": "b815ad04", "url": "https://html.spe
 window.dfnpanelData['215d47ca'] = {"dfnID": "215d47ca", "url": "https://html.spec.whatwg.org/#prepare-the-script-element", "dfnText": "prepare the script element", "refSections": [{"refs": [{"id": "ref-for-prepare-the-script-element"}], "title": "4.3.2.3. Slot value verification"}], "external": true};
 window.dfnpanelData['b75a7d23'] = {"dfnID": "b75a7d23", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#concept-global-object-realm", "dfnText": "realm", "refSections": [{"refs": [{"id": "ref-for-concept-global-object-realm"}], "title": "2.3. Policies"}, {"refs": [{"id": "ref-for-concept-global-object-realm\u2460"}], "title": "4.6.1. require-trusted-types-for directive"}], "external": true};
 window.dfnpanelData['5ab7b520'] = {"dfnID": "5ab7b520", "url": "https://html.spec.whatwg.org/multipage/common-dom-interfaces.html#reflect", "dfnText": "reflect", "refSections": [{"refs": [{"id": "ref-for-reflect"}], "title": "2.3.1. TrustedTypePolicyFactory"}], "external": true};
-window.dfnpanelData['e99bd18e'] = {"dfnID": "e99bd18e", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global", "dfnText": "relevant global object", "refSections": [{"refs": [{"id": "ref-for-concept-relevant-global"}], "title": "2.3.1. TrustedTypePolicyFactory"}, {"refs": [{"id": "ref-for-concept-relevant-global\u2460"}], "title": "3.6. Prepare the script text"}, {"refs": [{"id": "ref-for-concept-relevant-global\u2461"}], "title": "3.7. Get Trusted Types-compliant attribute value"}, {"refs": [{"id": "ref-for-concept-relevant-global\u2462"}], "title": "4.3.1. Extensions to the WindowOrWorkerGlobalScope interface"}, {"refs": [{"id": "ref-for-concept-relevant-global\u2463"}, {"id": "ref-for-concept-relevant-global\u2464"}], "title": "4.3.5. Validate the string in context"}], "external": true};
+window.dfnpanelData['e99bd18e'] = {"dfnID": "e99bd18e", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global", "dfnText": "relevant global object", "refSections": [{"refs": [{"id": "ref-for-concept-relevant-global"}], "title": "2.3.1. TrustedTypePolicyFactory"}, {"refs": [{"id": "ref-for-concept-relevant-global\u2460"}], "title": "3.6. Prepare the script text"}, {"refs": [{"id": "ref-for-concept-relevant-global\u2461"}], "title": "3.7. Get Trusted Types-compliant attribute value"}, {"refs": [{"id": "ref-for-concept-relevant-global\u2462"}], "title": "4.3.1. Extensions to the WindowOrWorkerGlobalScope interface"}, {"refs": [{"id": "ref-for-concept-relevant-global\u2463"}, {"id": "ref-for-concept-relevant-global\u2464"}], "title": "4.3.6. Validate the string in context"}], "external": true};
 window.dfnpanelData['a3b18719'] = {"dfnID": "a3b18719", "url": "https://infra.spec.whatwg.org/#set-append", "dfnText": "append", "refSections": [{"refs": [{"id": "ref-for-set-append"}], "title": "3.1. Create a Trusted Type Policy"}], "external": true};
 window.dfnpanelData['7f9469b5'] = {"dfnID": "7f9469b5", "url": "https://infra.spec.whatwg.org/#ascii-case-insensitive", "dfnText": "ascii case-insensitive", "refSections": [{"refs": [{"id": "ref-for-ascii-case-insensitive"}], "title": "4.6.7. Support for dynamic code compilation"}], "external": true};
 window.dfnpanelData['6f2dfa22'] = {"dfnID": "6f2dfa22", "url": "https://infra.spec.whatwg.org/#ascii-lowercase", "dfnText": "ascii lowercase", "refSections": [{"refs": [{"id": "ref-for-ascii-lowercase"}, {"id": "ref-for-ascii-lowercase\u2460"}, {"id": "ref-for-ascii-lowercase\u2461"}], "title": "2.3.1. TrustedTypePolicyFactory"}], "external": true};
 window.dfnpanelData['77b4c09a'] = {"dfnID": "77b4c09a", "url": "https://infra.spec.whatwg.org/#assert", "dfnText": "assert", "refSections": [{"refs": [{"id": "ref-for-assert"}], "title": "3.7. Get Trusted Types-compliant attribute value"}], "external": true};
-window.dfnpanelData['4a3bf5fb'] = {"dfnID": "4a3bf5fb", "url": "https://infra.spec.whatwg.org/#string-concatenate", "dfnText": "concatenate", "refSections": [{"refs": [{"id": "ref-for-string-concatenate"}], "title": "4.3.5. Validate the string in context"}, {"refs": [{"id": "ref-for-string-concatenate\u2460"}], "title": "4.6.4. Should sink type mismatch violation be blocked by Content Security Policy?"}], "external": true};
+window.dfnpanelData['4a3bf5fb'] = {"dfnID": "4a3bf5fb", "url": "https://infra.spec.whatwg.org/#string-concatenate", "dfnText": "concatenate", "refSections": [{"refs": [{"id": "ref-for-string-concatenate"}], "title": "4.3.6. Validate the string in context"}, {"refs": [{"id": "ref-for-string-concatenate\u2460"}], "title": "4.6.4. Should sink type mismatch violation be blocked by Content Security Policy?"}], "external": true};
 window.dfnpanelData['ae8def21'] = {"dfnID": "ae8def21", "url": "https://infra.spec.whatwg.org/#list-contain", "dfnText": "contain", "refSections": [{"refs": [{"id": "ref-for-list-contain"}], "title": "4.6.7. Support for dynamic code compilation"}], "external": true};
 window.dfnpanelData['f052b1ea'] = {"dfnID": "f052b1ea", "url": "https://infra.spec.whatwg.org/#html-namespace", "dfnText": "html namespace", "refSections": [{"refs": [{"id": "ref-for-html-namespace"}, {"id": "ref-for-html-namespace\u2460"}], "title": "2.3.1. TrustedTypePolicyFactory"}], "external": true};
 window.dfnpanelData['692595fe'] = {"dfnID": "692595fe", "url": "https://infra.spec.whatwg.org/#ordered-set", "dfnText": "ordered set", "refSections": [{"refs": [{"id": "ref-for-ordered-set"}], "title": "2.3.1. TrustedTypePolicyFactory"}], "external": true};
@@ -3895,7 +3916,7 @@ window.dfnpanelData['3c2e290d'] = {"dfnID": "3c2e290d", "url": "https://w3c.gith
 window.dfnpanelData['5233fc8c'] = {"dfnID": "5233fc8c", "url": "https://w3c.github.io/ServiceWorker/#serviceworkercontainer", "dfnText": "ServiceWorkerContainer", "refSections": [{"refs": [{"id": "ref-for-serviceworkercontainer"}], "title": "4.4. Integration with Service Workers"}], "external": true};
 window.dfnpanelData['a51ea74c'] = {"dfnID": "a51ea74c", "url": "https://w3c.github.io/ServiceWorker/#serviceworkerregistration", "dfnText": "ServiceWorkerRegistration", "refSections": [{"refs": [{"id": "ref-for-serviceworkerregistration"}], "title": "4.4. Integration with Service Workers"}], "external": true};
 window.dfnpanelData['d347f2e7'] = {"dfnID": "d347f2e7", "url": "https://svgwg.org/svg2-draft/interact.html#InterfaceSVGScriptElement", "dfnText": "SVGScriptElement", "refSections": [{"refs": [{"id": "ref-for-InterfaceSVGScriptElement"}, {"id": "ref-for-InterfaceSVGScriptElement\u2460"}], "title": "3.7. Get Trusted Types-compliant attribute value"}], "external": true};
-window.dfnpanelData['a88fced2'] = {"dfnID": "a88fced2", "url": "https://www.w3.org/TR/trusted-types/#dfn-validate-the-string-in-context", "dfnText": "validate the string in context", "refSections": [{"refs": [{"id": "ref-for-dfn-validate-the-string-in-context"}, {"id": "ref-for-dfn-validate-the-string-in-context\u2460"}], "title": "4.3.5. Validate the string in context"}], "external": true};
+window.dfnpanelData['a88fced2'] = {"dfnID": "a88fced2", "url": "https://www.w3.org/TR/trusted-types/#dfn-validate-the-string-in-context", "dfnText": "validate the string in context", "refSections": [{"refs": [{"id": "ref-for-dfn-validate-the-string-in-context"}, {"id": "ref-for-dfn-validate-the-string-in-context\u2460"}], "title": "4.3.6. Validate the string in context"}], "external": true};
 window.dfnpanelData['3a711be7'] = {"dfnID": "3a711be7", "url": "https://url.spec.whatwg.org/#concept-url-scheme", "dfnText": "scheme", "refSections": [{"refs": [{"id": "ref-for-concept-url-scheme"}], "title": "4.6.1.1. require-trusted-types-for Pre-Navigation check"}], "external": true};
 window.dfnpanelData['ca3ca4ae'] = {"dfnID": "ca3ca4ae", "url": "https://url.spec.whatwg.org/#concept-url-parser", "dfnText": "url parser", "refSections": [{"refs": [{"id": "ref-for-concept-url-parser"}], "title": "4.6.1.1. require-trusted-types-for Pre-Navigation check"}], "external": true};
 window.dfnpanelData['5442ea33'] = {"dfnID": "5442ea33", "url": "https://url.spec.whatwg.org/#concept-url-serializer", "dfnText": "url serializer", "refSections": [{"refs": [{"id": "ref-for-concept-url-serializer"}], "title": "4.6.1.1. require-trusted-types-for Pre-Navigation check"}], "external": true};
@@ -3911,7 +3932,7 @@ window.dfnpanelData['b0d7f3c3'] = {"dfnID": "b0d7f3c3", "url": "https://webidl.s
 window.dfnpanelData['6c6b1005'] = {"dfnID": "6c6b1005", "url": "https://webidl.spec.whatwg.org/#idl-any", "dfnText": "any", "refSections": [{"refs": [{"id": "ref-for-idl-any"}, {"id": "ref-for-idl-any\u2460"}, {"id": "ref-for-idl-any\u2461"}], "title": "2.3.1. TrustedTypePolicyFactory"}, {"refs": [{"id": "ref-for-idl-any\u2462"}, {"id": "ref-for-idl-any\u2463"}, {"id": "ref-for-idl-any\u2464"}], "title": "2.3.2. TrustedTypePolicy"}, {"refs": [{"id": "ref-for-idl-any\u2465"}, {"id": "ref-for-idl-any\u2466"}, {"id": "ref-for-idl-any\u2467"}], "title": "2.3.3. TrustedTypePolicyOptions"}, {"refs": [{"id": "ref-for-idl-any\u2468"}, {"id": "ref-for-idl-any\u2460\u24ea"}], "title": "4.3.3. Enforcement in timer functions"}], "external": true};
 window.dfnpanelData['5bf9ea61'] = {"dfnID": "5bf9ea61", "url": "https://webidl.spec.whatwg.org/#dfn-attribute", "dfnText": "attribute", "refSections": [{"refs": [{"id": "ref-for-dfn-attribute"}, {"id": "ref-for-dfn-attribute\u2460"}, {"id": "ref-for-dfn-attribute\u2461"}], "title": "2.3.1. TrustedTypePolicyFactory"}], "external": true};
 window.dfnpanelData['5372cca8'] = {"dfnID": "5372cca8", "url": "https://webidl.spec.whatwg.org/#idl-boolean", "dfnText": "boolean", "refSections": [{"refs": [{"id": "ref-for-idl-boolean"}, {"id": "ref-for-idl-boolean\u2460"}, {"id": "ref-for-idl-boolean\u2461"}], "title": "2.3.1. TrustedTypePolicyFactory"}, {"refs": [{"id": "ref-for-idl-boolean\u2462"}, {"id": "ref-for-idl-boolean\u2463"}], "title": "4.5. Integration with execCommand"}], "external": true};
-window.dfnpanelData['980252f2'] = {"dfnID": "980252f2", "url": "https://webidl.spec.whatwg.org/#dfn-identifier", "dfnText": "identifier", "refSections": [{"refs": [{"id": "ref-for-dfn-identifier"}], "title": "4.3.5. Validate the string in context"}], "external": true};
+window.dfnpanelData['980252f2'] = {"dfnID": "980252f2", "url": "https://webidl.spec.whatwg.org/#dfn-identifier", "dfnText": "identifier", "refSections": [{"refs": [{"id": "ref-for-dfn-identifier"}], "title": "4.3.6. Validate the string in context"}], "external": true};
 window.dfnpanelData['a7900362'] = {"dfnID": "a7900362", "url": "https://webidl.spec.whatwg.org/#include", "dfnText": "include", "refSections": [{"refs": [{"id": "ref-for-include"}], "title": "2.3.1. TrustedTypePolicyFactory"}], "external": true};
 window.dfnpanelData['d08c79a9'] = {"dfnID": "d08c79a9", "url": "https://webidl.spec.whatwg.org/#interface-mixin", "dfnText": "interface mixin", "refSections": [{"refs": [{"id": "ref-for-interface-mixin"}], "title": "2.3.1. TrustedTypePolicyFactory"}], "external": true};
 window.dfnpanelData['f8de33a3'] = {"dfnID": "f8de33a3", "url": "https://webidl.spec.whatwg.org/#idl-long", "dfnText": "long", "refSections": [{"refs": [{"id": "ref-for-idl-long"}, {"id": "ref-for-idl-long\u2460"}, {"id": "ref-for-idl-long\u2461"}, {"id": "ref-for-idl-long\u2462"}], "title": "4.3.3. Enforcement in timer functions"}], "external": true};
@@ -3922,8 +3943,8 @@ window.dfnpanelData['trustedhtml'] = {"dfnID": "trustedhtml", "url": "#trustedht
 window.dfnpanelData['trustedhtml-data'] = {"dfnID": "trustedhtml-data", "url": "#trustedhtml-data", "dfnText": "data", "refSections": [{"refs": [{"id": "ref-for-trustedhtml-data"}], "title": "2.2.1. TrustedHTML"}, {"refs": [{"id": "ref-for-trustedhtml-data\u2460"}, {"id": "ref-for-trustedhtml-data\u2461"}], "title": "2.3.1. TrustedTypePolicyFactory"}], "external": false};
 window.dfnpanelData['dom-trustedhtml-tojson'] = {"dfnID": "dom-trustedhtml-tojson", "url": "#dom-trustedhtml-tojson", "dfnText": "toJSON()", "refSections": [{"refs": [{"id": "ref-for-dom-trustedhtml-tojson"}], "title": "2.2.1. TrustedHTML"}], "external": false};
 window.dfnpanelData['trustedhtml-stringification-behavior'] = {"dfnID": "trustedhtml-stringification-behavior", "url": "#trustedhtml-stringification-behavior", "dfnText": "stringification behavior", "refSections": [{"refs": [{"id": "ref-for-trustedhtml-stringification-behavior"}], "title": "2.2.1. TrustedHTML"}], "external": false};
-window.dfnpanelData['trustedscript'] = {"dfnID": "trustedscript", "url": "#trustedscript", "dfnText": "TrustedScript", "refSections": [{"refs": [{"id": "ref-for-trustedscript"}], "title": "2.2.2. TrustedScript"}, {"refs": [{"id": "ref-for-trustedscript\u2460"}, {"id": "ref-for-trustedscript\u2461"}, {"id": "ref-for-trustedscript\u2462"}, {"id": "ref-for-trustedscript\u2463"}], "title": "2.3.1. TrustedTypePolicyFactory"}, {"refs": [{"id": "ref-for-trustedscript\u2464"}], "title": "2.3.2. TrustedTypePolicy"}, {"refs": [{"id": "ref-for-trustedscript\u2465"}], "title": "3.2. Create a Trusted Type"}, {"refs": [{"id": "ref-for-trustedscript\u2466"}], "title": "3.5. Process value with a default policy"}, {"refs": [{"id": "ref-for-trustedscript\u2467"}], "title": "3.7. Get Trusted Types-compliant attribute value"}, {"refs": [{"id": "ref-for-trustedscript\u2468"}, {"id": "ref-for-trustedscript\u2460\u24ea"}], "title": "4. Integrations"}, {"refs": [{"id": "ref-for-trustedscript\u2460\u2460"}], "title": "4.3.3. Enforcement in timer functions"}, {"refs": [{"id": "ref-for-trustedscript\u2460\u2461"}, {"id": "ref-for-trustedscript\u2460\u2462"}], "title": "4.6.1.1. require-trusted-types-for Pre-Navigation check"}, {"refs": [{"id": "ref-for-trustedscript\u2460\u2463"}, {"id": "ref-for-trustedscript\u2460\u2464"}, {"id": "ref-for-trustedscript\u2460\u2465"}, {"id": "ref-for-trustedscript\u2460\u2466"}], "title": "4.6.7. Support for dynamic code compilation"}], "external": false};
-window.dfnpanelData['trustedscript-data'] = {"dfnID": "trustedscript-data", "url": "#trustedscript-data", "dfnText": "data", "refSections": [{"refs": [{"id": "ref-for-trustedscript-data"}], "title": "2.2.2. TrustedScript"}, {"refs": [{"id": "ref-for-trustedscript-data\u2460"}, {"id": "ref-for-trustedscript-data\u2461"}], "title": "2.3.1. TrustedTypePolicyFactory"}, {"refs": [{"id": "ref-for-trustedscript-data\u2462"}, {"id": "ref-for-trustedscript-data\u2463"}, {"id": "ref-for-trustedscript-data\u2464"}], "title": "4.6.7. Support for dynamic code compilation"}], "external": false};
+window.dfnpanelData['trustedscript'] = {"dfnID": "trustedscript", "url": "#trustedscript", "dfnText": "TrustedScript", "refSections": [{"refs": [{"id": "ref-for-trustedscript"}], "title": "2.2.2. TrustedScript"}, {"refs": [{"id": "ref-for-trustedscript\u2460"}, {"id": "ref-for-trustedscript\u2461"}, {"id": "ref-for-trustedscript\u2462"}, {"id": "ref-for-trustedscript\u2463"}], "title": "2.3.1. TrustedTypePolicyFactory"}, {"refs": [{"id": "ref-for-trustedscript\u2464"}], "title": "2.3.2. TrustedTypePolicy"}, {"refs": [{"id": "ref-for-trustedscript\u2465"}], "title": "3.7. Get Trusted Types-compliant attribute value"}, {"refs": [{"id": "ref-for-trustedscript\u2466"}, {"id": "ref-for-trustedscript\u2467"}], "title": "4. Integrations"}, {"refs": [{"id": "ref-for-trustedscript\u2468"}], "title": "4.3.3. Enforcement in timer functions"}, {"refs": [{"id": "ref-for-trustedscript\u2460\u24ea"}], "title": "4.3.5. HostGetCodeForEval"}, {"refs": [{"id": "ref-for-trustedscript\u2460\u2460"}, {"id": "ref-for-trustedscript\u2460\u2461"}], "title": "4.6.1.1. require-trusted-types-for Pre-Navigation check"}, {"refs": [{"id": "ref-for-trustedscript\u2460\u2462"}, {"id": "ref-for-trustedscript\u2460\u2463"}, {"id": "ref-for-trustedscript\u2460\u2464"}, {"id": "ref-for-trustedscript\u2460\u2465"}], "title": "4.6.7. Support for dynamic code compilation"}], "external": false};
+window.dfnpanelData['trustedscript-data'] = {"dfnID": "trustedscript-data", "url": "#trustedscript-data", "dfnText": "data", "refSections": [{"refs": [{"id": "ref-for-trustedscript-data"}], "title": "2.2.2. TrustedScript"}, {"refs": [{"id": "ref-for-trustedscript-data\u2460"}, {"id": "ref-for-trustedscript-data\u2461"}], "title": "2.3.1. TrustedTypePolicyFactory"}, {"refs": [{"id": "ref-for-trustedscript-data\u2462"}], "title": "4.3.5. HostGetCodeForEval"}, {"refs": [{"id": "ref-for-trustedscript-data\u2463"}, {"id": "ref-for-trustedscript-data\u2464"}, {"id": "ref-for-trustedscript-data\u2465"}], "title": "4.6.7. Support for dynamic code compilation"}], "external": false};
 window.dfnpanelData['dom-trustedscript-tojson'] = {"dfnID": "dom-trustedscript-tojson", "url": "#dom-trustedscript-tojson", "dfnText": "toJSON()", "refSections": [{"refs": [{"id": "ref-for-dom-trustedscript-tojson"}], "title": "2.2.2. TrustedScript"}], "external": false};
 window.dfnpanelData['trustedscript-stringification-behavior'] = {"dfnID": "trustedscript-stringification-behavior", "url": "#trustedscript-stringification-behavior", "dfnText": "stringification behavior", "refSections": [{"refs": [{"id": "ref-for-trustedscript-stringification-behavior"}], "title": "2.2.2. TrustedScript"}], "external": false};
 window.dfnpanelData['trustedscripturl'] = {"dfnID": "trustedscripturl", "url": "#trustedscripturl", "dfnText": "TrustedScriptURL", "refSections": [{"refs": [{"id": "ref-for-trustedscripturl"}], "title": "2.2.3. TrustedScriptURL"}, {"refs": [{"id": "ref-for-trustedscripturl\u2460"}], "title": "2.3.1. TrustedTypePolicyFactory"}, {"refs": [{"id": "ref-for-trustedscripturl\u2461"}], "title": "2.3.2. TrustedTypePolicy"}, {"refs": [{"id": "ref-for-trustedscripturl\u2462"}], "title": "3.6. Prepare the script text"}, {"refs": [{"id": "ref-for-trustedscripturl\u2463"}, {"id": "ref-for-trustedscripturl\u2464"}, {"id": "ref-for-trustedscripturl\u2465"}, {"id": "ref-for-trustedscripturl\u2466"}], "title": "3.7. Get Trusted Types-compliant attribute value"}, {"refs": [{"id": "ref-for-trustedscripturl\u2467"}, {"id": "ref-for-trustedscripturl\u2468"}], "title": "4. Integrations"}], "external": false};
@@ -3961,14 +3982,14 @@ window.dfnpanelData['enforcement'] = {"dfnID": "enforcement", "url": "#enforceme
 window.dfnpanelData['abstract-opdef-create-a-trusted-type-policy'] = {"dfnID": "abstract-opdef-create-a-trusted-type-policy", "url": "#abstract-opdef-create-a-trusted-type-policy", "dfnText": "Create a Trusted Type Policy", "refSections": [{"refs": [{"id": "ref-for-abstract-opdef-create-a-trusted-type-policy"}], "title": "2.3.1. TrustedTypePolicyFactory"}], "external": false};
 window.dfnpanelData['abstract-opdef-create-a-trusted-type'] = {"dfnID": "abstract-opdef-create-a-trusted-type", "url": "#abstract-opdef-create-a-trusted-type", "dfnText": "Create a Trusted Type", "refSections": [{"refs": [{"id": "ref-for-abstract-opdef-create-a-trusted-type"}, {"id": "ref-for-abstract-opdef-create-a-trusted-type\u2460"}, {"id": "ref-for-abstract-opdef-create-a-trusted-type\u2461"}], "title": "2.3.2. TrustedTypePolicy"}], "external": false};
 window.dfnpanelData['abstract-opdef-get-trusted-type-policy-value'] = {"dfnID": "abstract-opdef-get-trusted-type-policy-value", "url": "#abstract-opdef-get-trusted-type-policy-value", "dfnText": "Get Trusted Type policy value", "refSections": [{"refs": [{"id": "ref-for-abstract-opdef-get-trusted-type-policy-value"}], "title": "3.2. Create a Trusted Type"}, {"refs": [{"id": "ref-for-abstract-opdef-get-trusted-type-policy-value\u2460"}], "title": "3.5. Process value with a default policy"}], "external": false};
-window.dfnpanelData['abstract-opdef-get-trusted-type-compliant-string'] = {"dfnID": "abstract-opdef-get-trusted-type-compliant-string", "url": "#abstract-opdef-get-trusted-type-compliant-string", "dfnText": "Get Trusted Type compliant string", "refSections": [{"refs": [{"id": "ref-for-abstract-opdef-get-trusted-type-compliant-string"}], "title": "3.6. Prepare the script text"}, {"refs": [{"id": "ref-for-abstract-opdef-get-trusted-type-compliant-string\u2460"}], "title": "3.7. Get Trusted Types-compliant attribute value"}, {"refs": [{"id": "ref-for-abstract-opdef-get-trusted-type-compliant-string\u2461"}], "title": "4.3.5. Validate the string in context"}, {"refs": [{"id": "ref-for-abstract-opdef-get-trusted-type-compliant-string\u2462"}], "title": "4.6.7. Support for dynamic code compilation"}], "external": false};
+window.dfnpanelData['abstract-opdef-get-trusted-type-compliant-string'] = {"dfnID": "abstract-opdef-get-trusted-type-compliant-string", "url": "#abstract-opdef-get-trusted-type-compliant-string", "dfnText": "Get Trusted Type compliant string", "refSections": [{"refs": [{"id": "ref-for-abstract-opdef-get-trusted-type-compliant-string"}], "title": "3.6. Prepare the script text"}, {"refs": [{"id": "ref-for-abstract-opdef-get-trusted-type-compliant-string\u2460"}], "title": "3.7. Get Trusted Types-compliant attribute value"}, {"refs": [{"id": "ref-for-abstract-opdef-get-trusted-type-compliant-string\u2461"}], "title": "4.3.6. Validate the string in context"}, {"refs": [{"id": "ref-for-abstract-opdef-get-trusted-type-compliant-string\u2462"}], "title": "4.6.7. Support for dynamic code compilation"}], "external": false};
 window.dfnpanelData['abstract-opdef-process-value-with-a-default-policy'] = {"dfnID": "abstract-opdef-process-value-with-a-default-policy", "url": "#abstract-opdef-process-value-with-a-default-policy", "dfnText": "Process value with a default policy", "refSections": [{"refs": [{"id": "ref-for-abstract-opdef-process-value-with-a-default-policy"}], "title": "3.4. Get Trusted Type compliant string"}, {"refs": [{"id": "ref-for-abstract-opdef-process-value-with-a-default-policy\u2460"}], "title": "4.6.1.1. require-trusted-types-for Pre-Navigation check"}], "external": false};
 window.dfnpanelData['abstract-opdef-prepare-the-script-text'] = {"dfnID": "abstract-opdef-prepare-the-script-text", "url": "#abstract-opdef-prepare-the-script-text", "dfnText": "Prepare the script text", "refSections": [{"refs": [{"id": "ref-for-abstract-opdef-prepare-the-script-text"}], "title": "4.3.2.3. Slot value verification"}], "external": false};
 window.dfnpanelData['typedefdef-scriptstring'] = {"dfnID": "typedefdef-scriptstring", "url": "#typedefdef-scriptstring", "dfnText": "ScriptString", "refSections": [{"refs": [{"id": "ref-for-typedefdef-scriptstring"}, {"id": "ref-for-typedefdef-scriptstring\u2460"}, {"id": "ref-for-typedefdef-scriptstring\u2461"}], "title": "4.3.2.2. Setting slot values"}, {"refs": [{"id": "ref-for-typedefdef-scriptstring\u2462"}], "title": "4.3.3. Enforcement in timer functions"}], "external": false};
 window.dfnpanelData['typedefdef-scripturlstring'] = {"dfnID": "typedefdef-scripturlstring", "url": "#typedefdef-scripturlstring", "dfnText": "ScriptURLString", "refSections": [{"refs": [{"id": "ref-for-typedefdef-scripturlstring"}], "title": "4.3.2.2. Setting slot values"}, {"refs": [{"id": "ref-for-typedefdef-scripturlstring\u2460"}, {"id": "ref-for-typedefdef-scripturlstring\u2461"}], "title": "4.4. Integration with Service Workers"}], "external": false};
 window.dfnpanelData['typedefdef-trustedtype'] = {"dfnID": "typedefdef-trustedtype", "url": "#typedefdef-trustedtype", "dfnText": "TrustedType", "refSections": [{"refs": [{"id": "ref-for-typedefdef-trustedtype"}, {"id": "ref-for-typedefdef-trustedtype\u2460"}], "title": "3.4. Get Trusted Type compliant string"}, {"refs": [{"id": "ref-for-typedefdef-trustedtype\u2461"}, {"id": "ref-for-typedefdef-trustedtype\u2462"}], "title": "3.5. Process value with a default policy"}, {"refs": [{"id": "ref-for-typedefdef-trustedtype\u2463"}], "title": "3.7. Get Trusted Types-compliant attribute value"}], "external": false};
 window.dfnpanelData['StringContext'] = {"dfnID": "StringContext", "url": "#StringContext", "dfnText": "4.2. [StringContext]", "refSections": [{"refs": [{"id": "ref-for-StringContext"}, {"id": "ref-for-StringContext\u2460"}, {"id": "ref-for-StringContext\u2461"}, {"id": "ref-for-StringContext\u2462"}], "title": "2.3.1. TrustedTypePolicyFactory"}, {"refs": [{"id": "ref-for-StringContext\u2463"}, {"id": "ref-for-StringContext\u2464"}, {"id": "ref-for-StringContext\u2465"}], "title": "4. Integrations"}, {"refs": [{"id": "ref-for-StringContext"}], "title": "4.2. [StringContext]"}, {"refs": [{"id": "ref-for-StringContext\u2466"}], "title": "4.3.2.1. Slots with trusted values"}, {"refs": [{"id": "ref-for-StringContext\u2467"}], "title": "4.3.2.2. Setting slot values"}], "external": false};
-window.dfnpanelData['window-trusted-type-policy-factory'] = {"dfnID": "window-trusted-type-policy-factory", "url": "#window-trusted-type-policy-factory", "dfnText": "trusted type policy factory", "refSections": [{"refs": [{"id": "ref-for-window-trusted-type-policy-factory"}], "title": "3.5. Process value with a default policy"}, {"refs": [{"id": "ref-for-window-trusted-type-policy-factory\u2460"}], "title": "4.3.5. Validate the string in context"}], "external": false};
+window.dfnpanelData['window-trusted-type-policy-factory'] = {"dfnID": "window-trusted-type-policy-factory", "url": "#window-trusted-type-policy-factory", "dfnText": "trusted type policy factory", "refSections": [{"refs": [{"id": "ref-for-window-trusted-type-policy-factory"}], "title": "3.5. Process value with a default policy"}, {"refs": [{"id": "ref-for-window-trusted-type-policy-factory\u2460"}], "title": "4.3.6. Validate the string in context"}], "external": false};
 window.dfnpanelData['dom-windoworworkerglobalscope-trustedtypes'] = {"dfnID": "dom-windoworworkerglobalscope-trustedtypes", "url": "#dom-windoworworkerglobalscope-trustedtypes", "dfnText": "trustedTypes", "refSections": [{"refs": [{"id": "ref-for-dom-windoworworkerglobalscope-trustedtypes"}], "title": "2.4. Enforcement"}, {"refs": [{"id": "ref-for-dom-windoworworkerglobalscope-trustedtypes\u2460"}], "title": "4.3.1. Extensions to the WindowOrWorkerGlobalScope interface"}], "external": false};
 window.dfnpanelData['htmlscriptelement-script-text'] = {"dfnID": "htmlscriptelement-script-text", "url": "#htmlscriptelement-script-text", "dfnText": "script text", "refSections": [{"refs": [{"id": "ref-for-htmlscriptelement-script-text"}, {"id": "ref-for-htmlscriptelement-script-text\u2460"}], "title": "3.6. Prepare the script text"}, {"refs": [{"id": "ref-for-htmlscriptelement-script-text\u2461"}], "title": "4.3.2.2. Setting slot values"}, {"refs": [{"id": "ref-for-htmlscriptelement-script-text\u2462"}], "title": "4.3.2.3. Slot value verification"}], "external": false};
 window.dfnpanelData['dom-htmlscriptelement-src'] = {"dfnID": "dom-htmlscriptelement-src", "url": "#dom-htmlscriptelement-src", "dfnText": "src", "refSections": [{"refs": [{"id": "ref-for-dom-htmlscriptelement-src"}], "title": "2.1.1. DOM XSS injection sinks"}], "external": false};
