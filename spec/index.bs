@@ -1174,7 +1174,7 @@ The {{HTMLScriptElement/innerText}} setter steps are:
 1.  Let |value| be the result of calling [$Get Trusted Type compliant string$] with
     {{TrustedScript}}, [=this=]'s [=relevant global object=], the given value, `HTMLScriptElement innerText`, and
     `script`.
-1.  Set [=script text=] value to |value|.
+1.  Set [=this=]'s [=script text=] value to |value|.
 1.  Run [=set the inner text steps=] with [=this=] and |value|.
 
 The {{HTMLScriptElement/innerText}} getter steps are:
@@ -1189,7 +1189,7 @@ empty string instead, and then do as described below:
 1.  Let |value| be the result of calling [$Get Trusted Type compliant string$] with
     {{TrustedScript}}, [=this=]'s [=relevant global object=], the given value, `HTMLScriptElement textContent`, and
     `script`.
-1.  Set [=script text=] value to |value|.
+1.  Set [=this=]'s [=script text=] value to |value|.
 1.  Run [=set text content=] with [=this=] and |value|.
 
 The {{HTMLScriptElement/textContent}} getter steps are:
@@ -1203,8 +1203,8 @@ Update the {{HTMLScriptElement/text}} setter steps algorithm as follows.
 1.  <ins>Let |value| be the result of calling [$Get Trusted Type compliant string$] with
     {{TrustedScript}}, [=this=]'s [=relevant global object=], the given value, `HTMLScriptElement text`, and
     `script`.</ins>
-1.  <ins>Set [=script text=] value to the given value.</ins>
-1.  [=String replace all=] with the given value within this <code>script</code> element.
+1.  <ins>Set [=this=]'s [=script text=] value to the given value.</ins>
+1.  [=String replace all=] with the given value within this.
 
 
 #### The {{HTMLScriptElement/src}} IDL attribute #### {#the-src-idl-attribute}
