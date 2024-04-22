@@ -1204,7 +1204,7 @@ Update the {{HTMLScriptElement/text}} setter steps algorithm as follows.
     {{TrustedScript}}, [=this=]'s [=relevant global object=], the given value, `HTMLScriptElement text`, and
     `script`.</ins>
 1.  <ins>Set [=this=]'s [=script text=] value to the given value.</ins>
-1.  [=String replace all=] with the given value within this.
+1.  [=String replace all=] with the given value within [=this=].
 
 
 #### The {{HTMLScriptElement/src}} IDL attribute #### {#the-src-idl-attribute}
