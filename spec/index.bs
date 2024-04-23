@@ -1308,27 +1308,15 @@ When <a>validate the string in context</a> is invoked, with |platformObject|, |v
 
 ## Integration with Service Workers ## {#sw-integration}
 
-This document modifies the IDL for registering service workers, requiring {{ScriptURLString}}:
-
-<pre class="idl exclude">
-[SecureContext, Exposed=(Window,Worker)]
-partial interface ServiceWorkerContainer : EventTarget {
-   [NewObject] Promise&lt;ServiceWorkerRegistration> register(ScriptURLString scriptURL, optional RegistrationOptions options = {});
-};
-</pre>
+Note: See [https://github.com/w3c/ServiceWorker/pull/1709](https://github.com/w3c/ServiceWorker/pull/1709) which upstreams this integration.
 
 ## Integration with execCommand ## {#integration-with-exec-command}
 
-This document modifies the following interfaces defined by the unofficial <a href="https://w3c.github.io/editing/docs/execCommand/">execCommand</a> document:
+Note: See [https://github.com/w3c/editing/pull/460](https://github.com/w3c/editing/pull/460) which upstreams this integration.
 
-<pre class="idl exclude">
-partial interface Document {
-    [CEReactions, RaisesException] boolean execCommand(DOMString commandId, optional boolean showUI = false, optional (DOMString or TrustedHTML) value = "");
-};
-</pre>
+## Integration with DOM ## {#integration-with-dom}
 
-The implementation of the <a href="https://w3c.github.io/editing/docs/execCommand/#the-inserthtml-command">insertHTML</a> execCommand passes the unmodified value from its third argument
-instance to the  {{Range/createContextualFragment()}} algorithm.
+Note: See [https://github.com/whatwg/dom/pull/1258](https://github.com/whatwg/dom/pull/1258) and [https://github.com/whatwg/dom/pull/1268](https://github.com/whatwg/dom/pull/1268) which upstream this integration.
 
 ## Integration with Content Security Policy ## {#integration-with-content-security-policy}
 
