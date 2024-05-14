@@ -7,7 +7,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/W3C-ED" rel="stylesheet">
   <meta content="Bikeshed version 82ce88815, updated Thu Sep 7 16:33:55 2023 -0700" name="generator">
   <link href="https://w3c.github.io/trusted-types/dist/spec/" rel="canonical">
-  <meta content="e7cbf40e89b40c2442ef150c0fb6b3e5c432fc98" name="document-revision">
+  <meta content="be22ef916c3b76e156958eef1512219b2bef962b" name="document-revision">
 <style>/* Boilerplate: style-autolinks */
 .css.css, .property.property, .descriptor.descriptor {
     color: var(--a-normal-text);
@@ -1144,8 +1144,7 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
         <li><a href="#does-sink-require-trusted-types"><span class="secno">4.5.3</span> <span class="content"><span>Does sink type require trusted types?</span></span></a>
         <li><a href="#should-block-sink-type-mismatch"><span class="secno">4.5.4</span> <span class="content"><span>Should sink type mismatch violation be blocked by Content Security Policy?</span></span></a>
         <li><a href="#should-block-create-policy"><span class="secno">4.5.5</span> <span class="content"><span>Should Trusted Type policy creation be blocked by Content Security Policy?</span></span></a>
-        <li><a href="#csp-violation-object-hdr"><span class="secno">4.5.6</span> <span class="content">Violation object changes</span></a>
-        <li><a href="#csp-eval"><span class="secno">4.5.7</span> <span class="content">Support for dynamic code compilation</span></a>
+        <li><a href="#csp-eval"><span class="secno">4.5.6</span> <span class="content">Support for dynamic code compilation</span></a>
        </ol>
      </ol>
     <li>
@@ -1779,7 +1778,7 @@ trustedTypes<c- p>.</c->getAttributeType<c- p>(</c-><c- t>'foo'</c-><c- p>,</c->
      <dd data-md>
       <p>is a <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript④">TrustedScript</a></code> object with its <a data-link-type="dfn" href="#trustedscript-data" id="ref-for-trustedscript-data②">data</a> value set to an empty string.</p>
     </dl>
-    <p class="note" role="note"><span class="marker">Note:</span> This object can be used to detect if the runtime environment has <a href="#csp-eval">§ 4.5.7 Support for dynamic code compilation</a>. While native Trusted Types implementation can
+    <p class="note" role="note"><span class="marker">Note:</span> This object can be used to detect if the runtime environment has <a href="#csp-eval">§ 4.5.6 Support for dynamic code compilation</a>. While native Trusted Types implementation can
 support <code>eval(TrustedScript)</code>, it is impossible for a polyfill to  emulate that, as
 eval(TrustedScript) will return its input without unwrapping and evaluating the code.</p>
     <div class="example" id="empty-script-example">
@@ -2591,160 +2590,8 @@ which value is <var>policyName</var>, and <var>directive</var>’s <a data-link-
     <li data-md>
      <p>Return <var>result</var>.</p>
    </ol>
-   <h4 class="heading settled" data-level="4.5.6" id="csp-violation-object-hdr"><span class="secno">4.5.6. </span><span class="content">Violation object changes</span><a class="self-link" href="#csp-violation-object-hdr"></a></h4>
-   <p><a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation" id="ref-for-violation">Violation</a> object <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation-resource" id="ref-for-violation-resource②">resource</a> also allows <code>"trusted-types-policy"</code> and <code>"trusted-types-sink"</code> as values.</p>
-   <h4 class="heading settled" data-level="4.5.7" id="csp-eval"><span class="secno">4.5.7. </span><span class="content">Support for dynamic code compilation</span><a class="self-link" href="#csp-eval"></a></h4>
-   <p>This document modifies the <a href="https://w3c.github.io/webappsec-csp/#can-compile-strings">EnsureCSPDoesNotBlockStringCompilation</a> which is reproduced in its entirety below with additions and deletions.</p>
-   <p class="note" role="note"><span class="marker">Note:</span> This is based on <a href="https://tc39.es/proposal-dynamic-code-brand-checks/">dynamic-code-brand-checks</a>.</p>
-   <div class="note" role="note">
-    Note: EcmaScript code may call <code>Function()</code> and <code>eval</code> cross realm. 
-<pre class="highlight"><c- a>let</c-> f <c- o>=</c-> <c- ow>new</c-> self<c- p>.</c->top<c- p>.</c->Function<c- p>(</c->source<c- p>);</c->
-</pre>
-    <p>In this case, the <var>callerRealm</var>’s Window is <code>self</code> and the <var>calleeRealm</var>’s Window is <code>self.top</code>.
-The Trusted Types portion of this algorithm uses <var>calleeRealm</var> and its CSP setting for consistency with other sinks.</p>
-<pre class="highlight"><c- c1>// Assigning a string to another Realm’s DOM sink uses that Realm’s default policy.</c->
-self<c- p>.</c->top<c- p>.</c->body<c- p>.</c->innerHTML <c- o>=</c-> <c- t>'Hello, World!'</c-><c- p>;</c->
-<c- c1>// Using another Realm’s builtin Function constructor should analogously use that</c->
-<c- c1>// Realm’s default policy.</c->
-<c- ow>new</c-> self<c- p>.</c->top<c- p>.</c->Function<c- p>(</c-><c- t>'alert(1)'</c-><c- p>)()</c->
-</pre>
-   </div>
-   <p>
-    Given a <a href="https://tc39.es/ecma262/multipage/#realm">realm</a> (<var>calleeRealm</var>), a list of strings (<var>parameterStrings</var>), a string (<var>bodyString</var>), 
-    <ins> an enum (<var>compilationType</var>), a list of ECMAScript language values (<var>parameterArgs</var>), and an ECMAScript language value (<var>bodyArg</var>)</ins>
-    , this algorithm returns normally if compilation is allowed, and
-throws an "<code>EvalError</code>" if not:
-   </p>
-   <ol>
-    <li data-md>
-     <ins>Let <var>source</var> be <var>bodyString</var>.</ins>
-    <li data-md>
-     <ins>If <var>compilationType</var> is <code>*FUNCTION*</code>:</ins>
-     <ol>
-      <li data-md>
-       <ins>Set <var>source</var> to <code>"function anonymous("</code></ins>
-      <li data-md>
-       <ins>For each <var>arg</var> in <var>parameterStrings</var>:</ins>
-       <ol>
-        <li data-md>
-         <ins>Append <var>arg</var> to <var>source</var>.</ins>
-        <li data-md>
-         <ins>If <var>arg</var> is not the last item of <var>parameterStrings</var>, append <code>","</code> to <var>source</var>.</ins>
-       </ol>
-      <li data-md>
-       <ins>Append <code>"\n) {\n"</code> to <var>source</var>.</ins>
-      <li data-md>
-       <ins>Append <var>bodyString</var> to <var>source</var>.</ins>
-      <li data-md>
-       <ins>Append <code>"\n}"</code> to <var>source</var>.</ins>
-     </ol>
-    <li data-md>
-     <ins>If <var>compilationType</var> is <code>*TIMER*</code>, then:</ins>
-     <ol>
-      <li data-md>
-       <ins>Let <var>sourceString</var> be <var>source</var>.</ins>
-     </ol>
-    <li data-md>
-     <ins>Else:</ins>
-     <ol>
-      <li data-md>
-       <ins>Let <var>compilationSink</var> be <code>"Function"</code> if <var>compilationType</var> is <code>*FUNCTION*</code>, otherwise <code>"Eval"</code>.</ins>
-      <li data-md>
-       <ins>Let <var>isTrusted</var> be <code>true</code>.</ins>
-      <li data-md>
-       <ins>If <var>bodyArg</var> is not a <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①⑨">TrustedScript</a></code> object, set <var>isTrusted</var> to <code>false</code>.</ins>
-      <li data-md>
-       <ins>
-        If <var>isTrusted</var> is <code>true</code> then: 
-        <ol>
-         <li data-md>
-          <ins>If <var>bodyString</var> is not equal to <var>bodyArg</var>’s <a data-link-type="dfn" href="#trustedscript-data" id="ref-for-trustedscript-data④">data</a>, set <var>isTrusted</var> to <code>false</code>.</ins>
-        </ol>
-       </ins>
-      <li data-md>
-       <ins>If <var>isTrusted</var> is <code>true</code>, then:</ins>
-       <ol>
-        <li data-md>
-         <ins> For each <var>arg</var> in <var>parameterArgs</var>:</ins>
-         <ol>
-          <li data-md>
-           <ins>Let <var>index</var> be the index of <var>arg</var> in <var>parameterArgs</var>.</ins>
-          <li data-md>
-           <ins>If <var>arg</var> is not a <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript②⓪">TrustedScript</a></code> object, set <var>isTrusted</var> to <code>false</code>.</ins>
-          <li data-md>
-           <ins>If <var>isTrusted</var> is <code>true</code>, then:</ins>
-           <ol>
-            <li data-md>
-             <ins>if <var>parameterStrings</var>[<var>index</var>] is not equal to <var>arg</var>’s <a data-link-type="dfn" href="#trustedscript-data" id="ref-for-trustedscript-data⑤">data</a>, set <var>isTrusted</var> to <code>false</code>.</ins>
-           </ol>
-         </ol>
-       </ol>
-      <li data-md>
-       <ins>If <var>isTrusted</var> is <code>true</code>, let <var>sourceToValidate</var> be a new instance of
-the <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript②①">TrustedScript</a></code> interface, with its <a data-link-type="dfn" href="#trustedscript-data" id="ref-for-trustedscript-data⑥">data</a> set to <var>source</var>. Otherwise, let <var>sourceToValidate</var> be <var>source</var>.</ins>
-      <li data-md>
-       <ins>
-        Let <var>sourceString</var> be the result of executing the <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string⑧">Get Trusted Type compliant string</a> algorithm, with: 
-        <ul>
-         <li data-md>
-          <p><var>calleeRealm</var> as <var>global</var>,</p>
-         <li data-md>
-          <p><var>sourceToValidate</var> as <var>input</var>,</p>
-         <li data-md>
-          <p><var>compilationSink</var> as <var>sink</var>,</p>
-         <li data-md>
-          <p><code>'script'</code> as <var>sinkGroup</var>,</p>
-         <li data-md>
-          <p><code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript②②">TrustedScript</a></code> as <var>expectedType</var>.</p>
-        </ul>
-       </ins>
-      <li data-md>
-       <ins>If the algorithm throws an error, throw an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#exceptiondef-evalerror" id="ref-for-exceptiondef-evalerror">EvalError</a></code>.</ins>
-      <li data-md>
-       <ins>If <var>sourceString</var> is not equal to <var>source</var>, throw an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#exceptiondef-evalerror" id="ref-for-exceptiondef-evalerror①">EvalError</a></code>.</ins>
-     </ol>
-    <li data-md>
-     <p>Let <var>global</var> be a <var>calleeRealm</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global⑥">global object</a>.</p>
-    <li data-md>
-     <p>Let <var>result</var> be "<code>Allowed</code>".</p>
-    <li data-md>
-     <p>For each <var>policy</var> in <var>global</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#global-object-csp-list" id="ref-for-global-object-csp-list③">CSP list</a>:</p>
-     <ol>
-      <li data-md>
-       <p>Let <var>source-list</var> be <code>null</code>.</p>
-      <li data-md>
-       <p>If <var>policy</var> contains a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives⑨">directive</a> whose <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-name" id="ref-for-directive-name④">name</a> is "<code>script-src</code>", then
-set <var>source-list</var> to that <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives①⓪">directive</a>'s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-value" id="ref-for-directive-value⑨">value</a>.</p>
-       <p>Otherwise if <var>policy</var> contains a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives①①">directive</a> whose <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-name" id="ref-for-directive-name⑤">name</a> is
-"<code>default-src</code>", then set <var>source-list</var> to that directive’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-value" id="ref-for-directive-value①⓪">value</a>.</p>
-      <li data-md>
-       <p>If <var>source-list</var> is not <code>null</code>, and does not contain a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#source-expression" id="ref-for-source-expression">source expression</a> which is
-an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ascii-case-insensitive" id="ref-for-ascii-case-insensitive">ASCII case-insensitive</a> match for the string "<a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-unsafe-eval" id="ref-for-grammardef-unsafe-eval"><code>'unsafe-eval'</code></a>" then:</p>
-       <ol>
-        <li data-md>
-         <p>Let <var>violation</var> be the result of executing <a href="https://w3c.github.io/webappsec-csp/#create-violation-for-global"><cite>Content Security Policy 3</cite> § 2.4.1 Create a violation object for global, policy, and directive</a> on <var>global</var>, <var>policy</var>, and "<code>script-src</code>".</p>
-        <li data-md>
-         <p>Set <var>violation</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation-resource" id="ref-for-violation-resource③">resource</a> to "<code>inline</code>".</p>
-        <li data-md>
-         <p>
-          If <var>source-list</var> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain">contains</a> the expression
-"<a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-report-sample" id="ref-for-grammardef-report-sample"><code>'report-sample'</code></a>", then set <var>violation</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation-sample" id="ref-for-violation-sample②">sample</a> to
-the substring of 
-          <del><var>source</var></del>
-          <ins><var>sourceString</var></ins>
-           containing its first
-40 characters.
-         </p>
-        <li data-md>
-         <p>Execute <a href="https://w3c.github.io/webappsec-csp/#report-violation"><cite>Content Security Policy 3</cite> § 5.5 Report a violation</a> on <var>violation</var>.</p>
-        <li data-md>
-         <p>If <var>policy</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#policy-disposition" id="ref-for-policy-disposition②">disposition</a> is "<code>enforce</code>", then set <var>result</var> to
-"<code>Blocked</code>".</p>
-       </ol>
-     </ol>
-    <li data-md>
-     <p>If <var>result</var> is "<code>Blocked</code>", throw an <code>EvalError</code> exception.</p>
-   </ol>
+   <h4 class="heading settled" data-level="4.5.6" id="csp-eval"><span class="secno">4.5.6. </span><span class="content">Support for dynamic code compilation</span><a class="self-link" href="#csp-eval"></a></h4>
+   <p class="note" role="note"><span class="marker">Note:</span> See <a href="https://github.com/w3c/webappsec-csp/pull/659">https://github.com/w3c/webappsec-csp/pull/659</a> which upstreams this integration.</p>
    <h2 class="heading settled" data-level="5" id="security-considerations"><span class="secno">5. </span><span class="content">Security Considerations</span><a class="self-link" href="#security-considerations"></a></h2>
    <p>Trusted Types are not intended to protect access to <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②⑦">injection sinks</a> in an
 actively malicious execution environment. It’s assumed that the application is
@@ -2979,8 +2826,6 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
    <li>
     <a data-link-type="biblio">[CSP3]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="9b0b8196">'report-sample'</span>
-     <li><span class="dfn-paneled" id="6510e617">'unsafe-eval'</span>
      <li><span class="dfn-paneled" id="579a2f63">content security policy object</span>
      <li><span class="dfn-paneled" id="bb8563cb">content-security-policy-report-only</span>
      <li><span class="dfn-paneled" id="138270ef">csp list</span>
@@ -2993,9 +2838,7 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
      <li><span class="dfn-paneled" id="24a8eb94">resource</span>
      <li><span class="dfn-paneled" id="dec095e6">sample</span>
      <li><span class="dfn-paneled" id="9e196595">script-src</span>
-     <li><span class="dfn-paneled" id="b36452d7">source expression</span>
      <li><span class="dfn-paneled" id="461b765a">value</span>
-     <li><span class="dfn-paneled" id="32f77f83">violation</span>
     </ul>
    <li>
     <a data-link-type="biblio">[DOM]</a> defines the following terms:
@@ -3054,11 +2897,9 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
     <a data-link-type="biblio">[INFRA]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="a3b18719">append</span>
-     <li><span class="dfn-paneled" id="7f9469b5">ascii case-insensitive</span>
      <li><span class="dfn-paneled" id="6f2dfa22">ascii lowercase</span>
      <li><span class="dfn-paneled" id="77b4c09a">assert</span>
      <li><span class="dfn-paneled" id="4a3bf5fb">concatenate</span>
-     <li><span class="dfn-paneled" id="ae8def21">contain</span>
      <li><span class="dfn-paneled" id="f052b1ea">html namespace</span>
      <li><span class="dfn-paneled" id="692595fe">ordered set</span>
      <li><span class="dfn-paneled" id="e19f3699">xlink namespace</span>
@@ -3084,7 +2925,6 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
     <a data-link-type="biblio">[WEBIDL]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="8855a9aa">DOMString</span>
-     <li><span class="dfn-paneled" id="522350fb">EvalError</span>
      <li><span class="dfn-paneled" id="889e932f">Exposed</span>
      <li><span class="dfn-paneled" id="ae46556f">Function</span>
      <li><span class="dfn-paneled" id="2c4af168">LegacyNullToEmptyString</span>
@@ -3862,23 +3702,19 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
 </script>
 <script>/* Boilerplate: script-dfn-panel-json */
 window.dfnpanelData = {};
-window.dfnpanelData['9b0b8196'] = {"dfnID": "9b0b8196", "url": "https://w3c.github.io/webappsec-csp/#grammardef-report-sample", "dfnText": "'report-sample'", "refSections": [{"refs": [{"id": "ref-for-grammardef-report-sample"}], "title": "4.5.7. Support for dynamic code compilation"}], "external": true};
-window.dfnpanelData['6510e617'] = {"dfnID": "6510e617", "url": "https://w3c.github.io/webappsec-csp/#grammardef-unsafe-eval", "dfnText": "'unsafe-eval'", "refSections": [{"refs": [{"id": "ref-for-grammardef-unsafe-eval"}], "title": "4.5.7. Support for dynamic code compilation"}], "external": true};
 window.dfnpanelData['579a2f63'] = {"dfnID": "579a2f63", "url": "https://w3c.github.io/webappsec-csp/#content-security-policy-object", "dfnText": "content security policy object", "refSections": [{"refs": [{"id": "ref-for-content-security-policy-object"}], "title": "4.5.1.1. require-trusted-types-for Pre-Navigation check"}], "external": true};
 window.dfnpanelData['bb8563cb'] = {"dfnID": "bb8563cb", "url": "https://w3c.github.io/webappsec-csp/#header-content-security-policy-report-only", "dfnText": "content-security-policy-report-only", "refSections": [{"refs": [{"id": "ref-for-header-content-security-policy-report-only"}], "title": "1.3. Use cases"}, {"refs": [{"id": "ref-for-header-content-security-policy-report-only\u2460"}], "title": "2.4.1. Content Security Policy"}], "external": true};
-window.dfnpanelData['138270ef'] = {"dfnID": "138270ef", "url": "https://w3c.github.io/webappsec-csp/#global-object-csp-list", "dfnText": "csp list", "refSections": [{"refs": [{"id": "ref-for-global-object-csp-list"}], "title": "4.5.3. Does sink type require trusted types?"}, {"refs": [{"id": "ref-for-global-object-csp-list\u2460"}], "title": "4.5.4. Should sink type mismatch violation be blocked by Content Security Policy?"}, {"refs": [{"id": "ref-for-global-object-csp-list\u2461"}], "title": "4.5.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}, {"refs": [{"id": "ref-for-global-object-csp-list\u2462"}], "title": "4.5.7. Support for dynamic code compilation"}], "external": true};
+window.dfnpanelData['138270ef'] = {"dfnID": "138270ef", "url": "https://w3c.github.io/webappsec-csp/#global-object-csp-list", "dfnText": "csp list", "refSections": [{"refs": [{"id": "ref-for-global-object-csp-list"}], "title": "4.5.3. Does sink type require trusted types?"}, {"refs": [{"id": "ref-for-global-object-csp-list\u2460"}], "title": "4.5.4. Should sink type mismatch violation be blocked by Content Security Policy?"}, {"refs": [{"id": "ref-for-global-object-csp-list\u2461"}], "title": "4.5.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}], "external": true};
 window.dfnpanelData['3d7ed2c2'] = {"dfnID": "3d7ed2c2", "url": "https://w3c.github.io/webappsec-csp/#policy-directive-set", "dfnText": "directive set", "refSections": [{"refs": [{"id": "ref-for-policy-directive-set"}], "title": "4.5.3. Does sink type require trusted types?"}, {"refs": [{"id": "ref-for-policy-directive-set\u2460"}], "title": "4.5.4. Should sink type mismatch violation be blocked by Content Security Policy?"}, {"refs": [{"id": "ref-for-policy-directive-set\u2461"}], "title": "4.5.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}], "external": true};
-window.dfnpanelData['c80aa797'] = {"dfnID": "c80aa797", "url": "https://w3c.github.io/webappsec-csp/#directives", "dfnText": "directives", "refSections": [{"refs": [{"id": "ref-for-directives"}], "title": "4.5.1. require-trusted-types-for directive"}, {"refs": [{"id": "ref-for-directives\u2460"}, {"id": "ref-for-directives\u2461"}], "title": "4.5.2. trusted-types directive"}, {"refs": [{"id": "ref-for-directives\u2462"}, {"id": "ref-for-directives\u2463"}], "title": "4.5.3. Does sink type require trusted types?"}, {"refs": [{"id": "ref-for-directives\u2464"}, {"id": "ref-for-directives\u2465"}], "title": "4.5.4. Should sink type mismatch violation be blocked by Content Security Policy?"}, {"refs": [{"id": "ref-for-directives\u2466"}, {"id": "ref-for-directives\u2467"}], "title": "4.5.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}, {"refs": [{"id": "ref-for-directives\u2468"}, {"id": "ref-for-directives\u2460\u24ea"}, {"id": "ref-for-directives\u2460\u2460"}], "title": "4.5.7. Support for dynamic code compilation"}], "external": true};
-window.dfnpanelData['4582ec82'] = {"dfnID": "4582ec82", "url": "https://w3c.github.io/webappsec-csp/#policy-disposition", "dfnText": "disposition", "refSections": [{"refs": [{"id": "ref-for-policy-disposition"}], "title": "4.5.4. Should sink type mismatch violation be blocked by Content Security Policy?"}, {"refs": [{"id": "ref-for-policy-disposition\u2460"}], "title": "4.5.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}, {"refs": [{"id": "ref-for-policy-disposition\u2461"}], "title": "4.5.7. Support for dynamic code compilation"}], "external": true};
+window.dfnpanelData['c80aa797'] = {"dfnID": "c80aa797", "url": "https://w3c.github.io/webappsec-csp/#directives", "dfnText": "directives", "refSections": [{"refs": [{"id": "ref-for-directives"}], "title": "4.5.1. require-trusted-types-for directive"}, {"refs": [{"id": "ref-for-directives\u2460"}, {"id": "ref-for-directives\u2461"}], "title": "4.5.2. trusted-types directive"}, {"refs": [{"id": "ref-for-directives\u2462"}, {"id": "ref-for-directives\u2463"}], "title": "4.5.3. Does sink type require trusted types?"}, {"refs": [{"id": "ref-for-directives\u2464"}, {"id": "ref-for-directives\u2465"}], "title": "4.5.4. Should sink type mismatch violation be blocked by Content Security Policy?"}, {"refs": [{"id": "ref-for-directives\u2466"}, {"id": "ref-for-directives\u2467"}], "title": "4.5.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}], "external": true};
+window.dfnpanelData['4582ec82'] = {"dfnID": "4582ec82", "url": "https://w3c.github.io/webappsec-csp/#policy-disposition", "dfnText": "disposition", "refSections": [{"refs": [{"id": "ref-for-policy-disposition"}], "title": "4.5.4. Should sink type mismatch violation be blocked by Content Security Policy?"}, {"refs": [{"id": "ref-for-policy-disposition\u2460"}], "title": "4.5.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}], "external": true};
 window.dfnpanelData['e9ecb998'] = {"dfnID": "e9ecb998", "url": "https://w3c.github.io/webappsec-csp/#directive-inline-check", "dfnText": "inline check", "refSections": [{"refs": [{"id": "ref-for-directive-inline-check"}], "title": "4.5.1.1. require-trusted-types-for Pre-Navigation check"}], "external": true};
-window.dfnpanelData['51218496'] = {"dfnID": "51218496", "url": "https://w3c.github.io/webappsec-csp/#directive-name", "dfnText": "name", "refSections": [{"refs": [{"id": "ref-for-directive-name"}], "title": "4.5.1. require-trusted-types-for directive"}, {"refs": [{"id": "ref-for-directive-name\u2460"}], "title": "4.5.2. trusted-types directive"}, {"refs": [{"id": "ref-for-directive-name\u2461"}], "title": "4.5.3. Does sink type require trusted types?"}, {"refs": [{"id": "ref-for-directive-name\u2462"}], "title": "4.5.4. Should sink type mismatch violation be blocked by Content Security Policy?"}, {"refs": [{"id": "ref-for-directive-name\u2463"}, {"id": "ref-for-directive-name\u2464"}], "title": "4.5.7. Support for dynamic code compilation"}], "external": true};
+window.dfnpanelData['51218496'] = {"dfnID": "51218496", "url": "https://w3c.github.io/webappsec-csp/#directive-name", "dfnText": "name", "refSections": [{"refs": [{"id": "ref-for-directive-name"}], "title": "4.5.1. require-trusted-types-for directive"}, {"refs": [{"id": "ref-for-directive-name\u2460"}], "title": "4.5.2. trusted-types directive"}, {"refs": [{"id": "ref-for-directive-name\u2461"}], "title": "4.5.3. Does sink type require trusted types?"}, {"refs": [{"id": "ref-for-directive-name\u2462"}], "title": "4.5.4. Should sink type mismatch violation be blocked by Content Security Policy?"}], "external": true};
 window.dfnpanelData['5c117fdd'] = {"dfnID": "5c117fdd", "url": "https://w3c.github.io/webappsec-csp/#directive-pre-navigation-check", "dfnText": "pre-navigation check", "refSections": [{"refs": [{"id": "ref-for-directive-pre-navigation-check"}], "title": "4.5.1.1. require-trusted-types-for Pre-Navigation check"}], "external": true};
-window.dfnpanelData['24a8eb94'] = {"dfnID": "24a8eb94", "url": "https://w3c.github.io/webappsec-csp/#violation-resource", "dfnText": "resource", "refSections": [{"refs": [{"id": "ref-for-violation-resource"}], "title": "4.5.4. Should sink type mismatch violation be blocked by Content Security Policy?"}, {"refs": [{"id": "ref-for-violation-resource\u2460"}], "title": "4.5.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}, {"refs": [{"id": "ref-for-violation-resource\u2461"}], "title": "4.5.6. Violation object changes"}, {"refs": [{"id": "ref-for-violation-resource\u2462"}], "title": "4.5.7. Support for dynamic code compilation"}], "external": true};
-window.dfnpanelData['dec095e6'] = {"dfnID": "dec095e6", "url": "https://w3c.github.io/webappsec-csp/#violation-sample", "dfnText": "sample", "refSections": [{"refs": [{"id": "ref-for-violation-sample"}], "title": "4.5.4. Should sink type mismatch violation be blocked by Content Security Policy?"}, {"refs": [{"id": "ref-for-violation-sample\u2460"}], "title": "4.5.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}, {"refs": [{"id": "ref-for-violation-sample\u2461"}], "title": "4.5.7. Support for dynamic code compilation"}], "external": true};
+window.dfnpanelData['24a8eb94'] = {"dfnID": "24a8eb94", "url": "https://w3c.github.io/webappsec-csp/#violation-resource", "dfnText": "resource", "refSections": [{"refs": [{"id": "ref-for-violation-resource"}], "title": "4.5.4. Should sink type mismatch violation be blocked by Content Security Policy?"}, {"refs": [{"id": "ref-for-violation-resource\u2460"}], "title": "4.5.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}], "external": true};
+window.dfnpanelData['dec095e6'] = {"dfnID": "dec095e6", "url": "https://w3c.github.io/webappsec-csp/#violation-sample", "dfnText": "sample", "refSections": [{"refs": [{"id": "ref-for-violation-sample"}], "title": "4.5.4. Should sink type mismatch violation be blocked by Content Security Policy?"}, {"refs": [{"id": "ref-for-violation-sample\u2460"}], "title": "4.5.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}], "external": true};
 window.dfnpanelData['9e196595'] = {"dfnID": "9e196595", "url": "https://w3c.github.io/webappsec-csp/#script-src", "dfnText": "script-src", "refSections": [{"refs": [{"id": "ref-for-script-src"}], "title": "1.2. Non-goals"}], "external": true};
-window.dfnpanelData['b36452d7'] = {"dfnID": "b36452d7", "url": "https://w3c.github.io/webappsec-csp/#source-expression", "dfnText": "source expression", "refSections": [{"refs": [{"id": "ref-for-source-expression"}], "title": "4.5.7. Support for dynamic code compilation"}], "external": true};
-window.dfnpanelData['461b765a'] = {"dfnID": "461b765a", "url": "https://w3c.github.io/webappsec-csp/#directive-value", "dfnText": "value", "refSections": [{"refs": [{"id": "ref-for-directive-value"}], "title": "4.5.1. require-trusted-types-for directive"}, {"refs": [{"id": "ref-for-directive-value\u2460"}, {"id": "ref-for-directive-value\u2461"}], "title": "4.5.2. trusted-types directive"}, {"refs": [{"id": "ref-for-directive-value\u2462"}], "title": "4.5.3. Does sink type require trusted types?"}, {"refs": [{"id": "ref-for-directive-value\u2463"}], "title": "4.5.4. Should sink type mismatch violation be blocked by Content Security Policy?"}, {"refs": [{"id": "ref-for-directive-value\u2464"}, {"id": "ref-for-directive-value\u2465"}, {"id": "ref-for-directive-value\u2466"}, {"id": "ref-for-directive-value\u2467"}], "title": "4.5.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}, {"refs": [{"id": "ref-for-directive-value\u2468"}, {"id": "ref-for-directive-value\u2460\u24ea"}], "title": "4.5.7. Support for dynamic code compilation"}], "external": true};
-window.dfnpanelData['32f77f83'] = {"dfnID": "32f77f83", "url": "https://w3c.github.io/webappsec-csp/#violation", "dfnText": "violation", "refSections": [{"refs": [{"id": "ref-for-violation"}], "title": "4.5.6. Violation object changes"}], "external": true};
+window.dfnpanelData['461b765a'] = {"dfnID": "461b765a", "url": "https://w3c.github.io/webappsec-csp/#directive-value", "dfnText": "value", "refSections": [{"refs": [{"id": "ref-for-directive-value"}], "title": "4.5.1. require-trusted-types-for directive"}, {"refs": [{"id": "ref-for-directive-value\u2460"}, {"id": "ref-for-directive-value\u2461"}], "title": "4.5.2. trusted-types directive"}, {"refs": [{"id": "ref-for-directive-value\u2462"}], "title": "4.5.3. Does sink type require trusted types?"}, {"refs": [{"id": "ref-for-directive-value\u2463"}], "title": "4.5.4. Should sink type mismatch violation be blocked by Content Security Policy?"}, {"refs": [{"id": "ref-for-directive-value\u2464"}, {"id": "ref-for-directive-value\u2465"}, {"id": "ref-for-directive-value\u2466"}, {"id": "ref-for-directive-value\u2467"}], "title": "4.5.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}], "external": true};
 window.dfnpanelData['99573380'] = {"dfnID": "99573380", "url": "https://dom.spec.whatwg.org/#attr", "dfnText": "Attr", "refSections": [{"refs": [{"id": "ref-for-attr"}], "title": "3.7. Get Trusted Types-compliant attribute value"}], "external": true};
 window.dfnpanelData['85394472'] = {"dfnID": "85394472", "url": "https://dom.spec.whatwg.org/#document", "dfnText": "Document", "refSections": [{"refs": [{"id": "ref-for-document"}], "title": "2.1.1. DOM XSS injection sinks"}, {"refs": [{"id": "ref-for-document\u2460"}], "title": "3.6. Prepare the script text"}], "external": true};
 window.dfnpanelData['296f3551'] = {"dfnID": "296f3551", "url": "https://dom.spec.whatwg.org/#element", "dfnText": "Element", "refSections": [{"refs": [{"id": "ref-for-element"}, {"id": "ref-for-element\u2460"}], "title": "2.1.1. DOM XSS injection sinks"}, {"refs": [{"id": "ref-for-element\u2461"}, {"id": "ref-for-element\u2462"}], "title": "2.3.1. TrustedTypePolicyFactory"}, {"refs": [{"id": "ref-for-element\u2463"}], "title": "3.7. Get Trusted Types-compliant attribute value"}], "external": true};
@@ -3904,7 +3740,7 @@ window.dfnpanelData['5f6d392d'] = {"dfnID": "5f6d392d", "url": "https://html.spe
 window.dfnpanelData['bfc1c271'] = {"dfnID": "bfc1c271", "url": "https://html.spec.whatwg.org/multipage/workers.html#worker", "dfnText": "Worker", "refSections": [{"refs": [{"id": "ref-for-worker"}], "title": "4.3. Integration with HTML"}], "external": true};
 window.dfnpanelData['40ed6102'] = {"dfnID": "40ed6102", "url": "https://html.spec.whatwg.org/#get-the-text-steps", "dfnText": "get the text steps", "refSections": [{"refs": [{"id": "ref-for-get-the-text-steps"}], "title": "4.3.2.2. The innerText IDL attribute"}], "external": true};
 window.dfnpanelData['8a30477b'] = {"dfnID": "8a30477b", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-global", "dfnText": "global object (for environment settings object)", "refSections": [{"refs": [{"id": "ref-for-concept-settings-object-global"}], "title": "4.5.1.1. require-trusted-types-for Pre-Navigation check"}], "external": true};
-window.dfnpanelData['168f1b6e'] = {"dfnID": "168f1b6e", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global", "dfnText": "global object (for realm)", "refSections": [{"refs": [{"id": "ref-for-concept-realm-global"}], "title": "3.1. Create a Trusted Type Policy"}, {"refs": [{"id": "ref-for-concept-realm-global\u2460"}], "title": "3.4. Get Trusted Type compliant string"}, {"refs": [{"id": "ref-for-concept-realm-global\u2461"}], "title": "3.5. Process value with a default policy"}, {"refs": [{"id": "ref-for-concept-realm-global\u2462"}], "title": "4.5.3. Does sink type require trusted types?"}, {"refs": [{"id": "ref-for-concept-realm-global\u2463"}], "title": "4.5.4. Should sink type mismatch violation be blocked by Content Security Policy?"}, {"refs": [{"id": "ref-for-concept-realm-global\u2464"}], "title": "4.5.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}, {"refs": [{"id": "ref-for-concept-realm-global\u2465"}], "title": "4.5.7. Support for dynamic code compilation"}], "external": true};
+window.dfnpanelData['168f1b6e'] = {"dfnID": "168f1b6e", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global", "dfnText": "global object (for realm)", "refSections": [{"refs": [{"id": "ref-for-concept-realm-global"}], "title": "3.1. Create a Trusted Type Policy"}, {"refs": [{"id": "ref-for-concept-realm-global\u2460"}], "title": "3.4. Get Trusted Type compliant string"}, {"refs": [{"id": "ref-for-concept-realm-global\u2461"}], "title": "3.5. Process value with a default policy"}, {"refs": [{"id": "ref-for-concept-realm-global\u2462"}], "title": "4.5.3. Does sink type require trusted types?"}, {"refs": [{"id": "ref-for-concept-realm-global\u2463"}], "title": "4.5.4. Should sink type mismatch violation be blocked by Content Security Policy?"}, {"refs": [{"id": "ref-for-concept-realm-global\u2464"}], "title": "4.5.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}], "external": true};
 window.dfnpanelData['d4127354'] = {"dfnID": "d4127354", "url": "https://html.spec.whatwg.org/multipage/dynamic-markup-insertion.html#dom-element-innerhtml", "dfnText": "innerHTML (for Element)", "refSections": [{"refs": [{"id": "ref-for-dom-element-innerhtml"}], "title": "2.1.1. DOM XSS injection sinks"}], "external": true};
 window.dfnpanelData['ef8bdfad'] = {"dfnID": "ef8bdfad", "url": "https://html.spec.whatwg.org/multipage/dynamic-markup-insertion.html#dom-shadowroot-innerhtml", "dfnText": "innerHTML (for ShadowRoot)", "refSections": [{"refs": [{"id": "ref-for-dom-shadowroot-innerhtml"}], "title": "2.1.1. DOM XSS injection sinks"}], "external": true};
 window.dfnpanelData['a264b960'] = {"dfnID": "a264b960", "url": "https://html.spec.whatwg.org/multipage/dom.html#dom-innertext", "dfnText": "innerText", "refSections": [{"refs": [{"id": "ref-for-dom-innertext"}], "title": "4.3.2. Enforcement for scripts"}], "external": true};
@@ -3917,11 +3753,9 @@ window.dfnpanelData['e99bd18e'] = {"dfnID": "e99bd18e", "url": "https://html.spe
 window.dfnpanelData['f7433a4f'] = {"dfnID": "f7433a4f", "url": "https://html.spec.whatwg.org/#set-the-inner-text-steps", "dfnText": "set the inner text steps", "refSections": [{"refs": [{"id": "ref-for-set-the-inner-text-steps"}], "title": "4.3.2.2. The innerText IDL attribute"}], "external": true};
 window.dfnpanelData['ff5484a3'] = {"dfnID": "ff5484a3", "url": "https://html.spec.whatwg.org/#attr-script-src", "dfnText": "src", "refSections": [{"refs": [{"id": "ref-for-attr-script-src"}], "title": "4.3.2.5. The src IDL attribute"}], "external": true};
 window.dfnpanelData['a3b18719'] = {"dfnID": "a3b18719", "url": "https://infra.spec.whatwg.org/#set-append", "dfnText": "append", "refSections": [{"refs": [{"id": "ref-for-set-append"}], "title": "3.1. Create a Trusted Type Policy"}], "external": true};
-window.dfnpanelData['7f9469b5'] = {"dfnID": "7f9469b5", "url": "https://infra.spec.whatwg.org/#ascii-case-insensitive", "dfnText": "ascii case-insensitive", "refSections": [{"refs": [{"id": "ref-for-ascii-case-insensitive"}], "title": "4.5.7. Support for dynamic code compilation"}], "external": true};
 window.dfnpanelData['6f2dfa22'] = {"dfnID": "6f2dfa22", "url": "https://infra.spec.whatwg.org/#ascii-lowercase", "dfnText": "ascii lowercase", "refSections": [{"refs": [{"id": "ref-for-ascii-lowercase"}, {"id": "ref-for-ascii-lowercase\u2460"}, {"id": "ref-for-ascii-lowercase\u2461"}], "title": "2.3.1. TrustedTypePolicyFactory"}], "external": true};
 window.dfnpanelData['77b4c09a'] = {"dfnID": "77b4c09a", "url": "https://infra.spec.whatwg.org/#assert", "dfnText": "assert", "refSections": [{"refs": [{"id": "ref-for-assert"}], "title": "3.7. Get Trusted Types-compliant attribute value"}], "external": true};
 window.dfnpanelData['4a3bf5fb'] = {"dfnID": "4a3bf5fb", "url": "https://infra.spec.whatwg.org/#string-concatenate", "dfnText": "concatenate", "refSections": [{"refs": [{"id": "ref-for-string-concatenate"}], "title": "4.3.6. Validate the string in context"}, {"refs": [{"id": "ref-for-string-concatenate\u2460"}], "title": "4.5.4. Should sink type mismatch violation be blocked by Content Security Policy?"}], "external": true};
-window.dfnpanelData['ae8def21'] = {"dfnID": "ae8def21", "url": "https://infra.spec.whatwg.org/#list-contain", "dfnText": "contain", "refSections": [{"refs": [{"id": "ref-for-list-contain"}], "title": "4.5.7. Support for dynamic code compilation"}], "external": true};
 window.dfnpanelData['f052b1ea'] = {"dfnID": "f052b1ea", "url": "https://infra.spec.whatwg.org/#html-namespace", "dfnText": "html namespace", "refSections": [{"refs": [{"id": "ref-for-html-namespace"}, {"id": "ref-for-html-namespace\u2460"}], "title": "2.3.1. TrustedTypePolicyFactory"}], "external": true};
 window.dfnpanelData['692595fe'] = {"dfnID": "692595fe", "url": "https://infra.spec.whatwg.org/#ordered-set", "dfnText": "ordered set", "refSections": [{"refs": [{"id": "ref-for-ordered-set"}], "title": "2.3.1. TrustedTypePolicyFactory"}], "external": true};
 window.dfnpanelData['e19f3699'] = {"dfnID": "e19f3699", "url": "https://infra.spec.whatwg.org/#xlink-namespace", "dfnText": "xlink namespace", "refSections": [{"refs": [{"id": "ref-for-xlink-namespace"}], "title": "3.7. Get Trusted Types-compliant attribute value"}], "external": true};
@@ -3931,7 +3765,6 @@ window.dfnpanelData['3a711be7'] = {"dfnID": "3a711be7", "url": "https://url.spec
 window.dfnpanelData['ca3ca4ae'] = {"dfnID": "ca3ca4ae", "url": "https://url.spec.whatwg.org/#concept-url-parser", "dfnText": "url parser", "refSections": [{"refs": [{"id": "ref-for-concept-url-parser"}], "title": "4.5.1.1. require-trusted-types-for Pre-Navigation check"}], "external": true};
 window.dfnpanelData['5442ea33'] = {"dfnID": "5442ea33", "url": "https://url.spec.whatwg.org/#concept-url-serializer", "dfnText": "url serializer", "refSections": [{"refs": [{"id": "ref-for-concept-url-serializer"}], "title": "4.5.1.1. require-trusted-types-for Pre-Navigation check"}], "external": true};
 window.dfnpanelData['8855a9aa'] = {"dfnID": "8855a9aa", "url": "https://webidl.spec.whatwg.org/#idl-DOMString", "dfnText": "DOMString", "refSections": [{"refs": [{"id": "ref-for-idl-DOMString"}], "title": "2.2.1. TrustedHTML"}, {"refs": [{"id": "ref-for-idl-DOMString\u2460"}], "title": "2.2.2. TrustedScript"}, {"refs": [{"id": "ref-for-idl-DOMString\u2461"}, {"id": "ref-for-idl-DOMString\u2462"}, {"id": "ref-for-idl-DOMString\u2463"}, {"id": "ref-for-idl-DOMString\u2464"}, {"id": "ref-for-idl-DOMString\u2465"}, {"id": "ref-for-idl-DOMString\u2466"}, {"id": "ref-for-idl-DOMString\u2467"}, {"id": "ref-for-idl-DOMString\u2468"}, {"id": "ref-for-idl-DOMString\u2460\u24ea"}, {"id": "ref-for-idl-DOMString\u2460\u2460"}], "title": "2.3.1. TrustedTypePolicyFactory"}, {"refs": [{"id": "ref-for-idl-DOMString\u2460\u2461"}, {"id": "ref-for-idl-DOMString\u2460\u2462"}, {"id": "ref-for-idl-DOMString\u2460\u2463"}, {"id": "ref-for-idl-DOMString\u2460\u2464"}], "title": "2.3.2. TrustedTypePolicy"}, {"refs": [{"id": "ref-for-idl-DOMString\u2460\u2465"}, {"id": "ref-for-idl-DOMString\u2460\u2466"}, {"id": "ref-for-idl-DOMString\u2460\u2467"}, {"id": "ref-for-idl-DOMString\u2460\u2468"}, {"id": "ref-for-idl-DOMString\u2461\u24ea"}], "title": "2.3.3. TrustedTypePolicyOptions"}, {"refs": [{"id": "ref-for-idl-DOMString\u2461\u2460"}, {"id": "ref-for-idl-DOMString\u2461\u2461"}], "title": "4. Integrations"}, {"refs": [{"id": "ref-for-idl-DOMString\u2461\u2462"}, {"id": "ref-for-idl-DOMString\u2461\u2463"}, {"id": "ref-for-idl-DOMString\u2461\u2464"}], "title": "4.3.2. Enforcement for scripts"}], "external": true};
-window.dfnpanelData['522350fb'] = {"dfnID": "522350fb", "url": "https://webidl.spec.whatwg.org/#exceptiondef-evalerror", "dfnText": "EvalError", "refSections": [{"refs": [{"id": "ref-for-exceptiondef-evalerror"}, {"id": "ref-for-exceptiondef-evalerror\u2460"}], "title": "4.5.7. Support for dynamic code compilation"}], "external": true};
 window.dfnpanelData['889e932f'] = {"dfnID": "889e932f", "url": "https://webidl.spec.whatwg.org/#Exposed", "dfnText": "Exposed", "refSections": [{"refs": [{"id": "ref-for-Exposed"}], "title": "2.2.1. TrustedHTML"}, {"refs": [{"id": "ref-for-Exposed\u2460"}], "title": "2.2.2. TrustedScript"}, {"refs": [{"id": "ref-for-Exposed\u2461"}], "title": "2.2.3. TrustedScriptURL"}, {"refs": [{"id": "ref-for-Exposed\u2462"}], "title": "2.3.1. TrustedTypePolicyFactory"}, {"refs": [{"id": "ref-for-Exposed\u2463"}], "title": "2.3.2. TrustedTypePolicy"}], "external": true};
 window.dfnpanelData['ae46556f'] = {"dfnID": "ae46556f", "url": "https://webidl.spec.whatwg.org/#Function", "dfnText": "Function", "refSections": [{"refs": [{"id": "ref-for-Function"}, {"id": "ref-for-Function\u2460"}], "title": "4.3.3. Enforcement in timer functions"}], "external": true};
 window.dfnpanelData['2c4af168'] = {"dfnID": "2c4af168", "url": "https://webidl.spec.whatwg.org/#LegacyNullToEmptyString", "dfnText": "LegacyNullToEmptyString", "refSections": [{"refs": [{"id": "ref-for-LegacyNullToEmptyString"}], "title": "4.3.2. Enforcement for scripts"}], "external": true};
@@ -3950,8 +3783,8 @@ window.dfnpanelData['trustedhtml'] = {"dfnID": "trustedhtml", "url": "#trustedht
 window.dfnpanelData['trustedhtml-data'] = {"dfnID": "trustedhtml-data", "url": "#trustedhtml-data", "dfnText": "data", "refSections": [{"refs": [{"id": "ref-for-trustedhtml-data"}], "title": "2.2.1. TrustedHTML"}, {"refs": [{"id": "ref-for-trustedhtml-data\u2460"}, {"id": "ref-for-trustedhtml-data\u2461"}], "title": "2.3.1. TrustedTypePolicyFactory"}], "external": false};
 window.dfnpanelData['dom-trustedhtml-tojson'] = {"dfnID": "dom-trustedhtml-tojson", "url": "#dom-trustedhtml-tojson", "dfnText": "toJSON()", "refSections": [{"refs": [{"id": "ref-for-dom-trustedhtml-tojson"}], "title": "2.2.1. TrustedHTML"}], "external": false};
 window.dfnpanelData['trustedhtml-stringification-behavior'] = {"dfnID": "trustedhtml-stringification-behavior", "url": "#trustedhtml-stringification-behavior", "dfnText": "stringification behavior", "refSections": [{"refs": [{"id": "ref-for-trustedhtml-stringification-behavior"}], "title": "2.2.1. TrustedHTML"}], "external": false};
-window.dfnpanelData['trustedscript'] = {"dfnID": "trustedscript", "url": "#trustedscript", "dfnText": "TrustedScript", "refSections": [{"refs": [{"id": "ref-for-trustedscript"}], "title": "2.2.2. TrustedScript"}, {"refs": [{"id": "ref-for-trustedscript\u2460"}, {"id": "ref-for-trustedscript\u2461"}, {"id": "ref-for-trustedscript\u2462"}, {"id": "ref-for-trustedscript\u2463"}], "title": "2.3.1. TrustedTypePolicyFactory"}, {"refs": [{"id": "ref-for-trustedscript\u2464"}], "title": "2.3.2. TrustedTypePolicy"}, {"refs": [{"id": "ref-for-trustedscript\u2465"}], "title": "3.7. Get Trusted Types-compliant attribute value"}, {"refs": [{"id": "ref-for-trustedscript\u2466"}, {"id": "ref-for-trustedscript\u2467"}], "title": "4. Integrations"}, {"refs": [{"id": "ref-for-trustedscript\u2468"}, {"id": "ref-for-trustedscript\u2460\u24ea"}, {"id": "ref-for-trustedscript\u2460\u2460"}], "title": "4.3.2. Enforcement for scripts"}, {"refs": [{"id": "ref-for-trustedscript\u2460\u2461"}], "title": "4.3.2.2. The innerText IDL attribute"}, {"refs": [{"id": "ref-for-trustedscript\u2460\u2462"}], "title": "4.3.2.3. The textContent IDL attribute"}, {"refs": [{"id": "ref-for-trustedscript\u2460\u2463"}], "title": "4.3.2.4. The text IDL attribute"}, {"refs": [{"id": "ref-for-trustedscript\u2460\u2464"}], "title": "4.3.3. Enforcement in timer functions"}, {"refs": [{"id": "ref-for-trustedscript\u2460\u2465"}], "title": "4.3.5. HostGetCodeForEval"}, {"refs": [{"id": "ref-for-trustedscript\u2460\u2466"}, {"id": "ref-for-trustedscript\u2460\u2467"}], "title": "4.5.1.1. require-trusted-types-for Pre-Navigation check"}, {"refs": [{"id": "ref-for-trustedscript\u2460\u2468"}, {"id": "ref-for-trustedscript\u2461\u24ea"}, {"id": "ref-for-trustedscript\u2461\u2460"}, {"id": "ref-for-trustedscript\u2461\u2461"}], "title": "4.5.7. Support for dynamic code compilation"}], "external": false};
-window.dfnpanelData['trustedscript-data'] = {"dfnID": "trustedscript-data", "url": "#trustedscript-data", "dfnText": "data", "refSections": [{"refs": [{"id": "ref-for-trustedscript-data"}], "title": "2.2.2. TrustedScript"}, {"refs": [{"id": "ref-for-trustedscript-data\u2460"}, {"id": "ref-for-trustedscript-data\u2461"}], "title": "2.3.1. TrustedTypePolicyFactory"}, {"refs": [{"id": "ref-for-trustedscript-data\u2462"}], "title": "4.3.5. HostGetCodeForEval"}, {"refs": [{"id": "ref-for-trustedscript-data\u2463"}, {"id": "ref-for-trustedscript-data\u2464"}, {"id": "ref-for-trustedscript-data\u2465"}], "title": "4.5.7. Support for dynamic code compilation"}], "external": false};
+window.dfnpanelData['trustedscript'] = {"dfnID": "trustedscript", "url": "#trustedscript", "dfnText": "TrustedScript", "refSections": [{"refs": [{"id": "ref-for-trustedscript"}], "title": "2.2.2. TrustedScript"}, {"refs": [{"id": "ref-for-trustedscript\u2460"}, {"id": "ref-for-trustedscript\u2461"}, {"id": "ref-for-trustedscript\u2462"}, {"id": "ref-for-trustedscript\u2463"}], "title": "2.3.1. TrustedTypePolicyFactory"}, {"refs": [{"id": "ref-for-trustedscript\u2464"}], "title": "2.3.2. TrustedTypePolicy"}, {"refs": [{"id": "ref-for-trustedscript\u2465"}], "title": "3.7. Get Trusted Types-compliant attribute value"}, {"refs": [{"id": "ref-for-trustedscript\u2466"}, {"id": "ref-for-trustedscript\u2467"}], "title": "4. Integrations"}, {"refs": [{"id": "ref-for-trustedscript\u2468"}, {"id": "ref-for-trustedscript\u2460\u24ea"}, {"id": "ref-for-trustedscript\u2460\u2460"}], "title": "4.3.2. Enforcement for scripts"}, {"refs": [{"id": "ref-for-trustedscript\u2460\u2461"}], "title": "4.3.2.2. The innerText IDL attribute"}, {"refs": [{"id": "ref-for-trustedscript\u2460\u2462"}], "title": "4.3.2.3. The textContent IDL attribute"}, {"refs": [{"id": "ref-for-trustedscript\u2460\u2463"}], "title": "4.3.2.4. The text IDL attribute"}, {"refs": [{"id": "ref-for-trustedscript\u2460\u2464"}], "title": "4.3.3. Enforcement in timer functions"}, {"refs": [{"id": "ref-for-trustedscript\u2460\u2465"}], "title": "4.3.5. HostGetCodeForEval"}, {"refs": [{"id": "ref-for-trustedscript\u2460\u2466"}, {"id": "ref-for-trustedscript\u2460\u2467"}], "title": "4.5.1.1. require-trusted-types-for Pre-Navigation check"}], "external": false};
+window.dfnpanelData['trustedscript-data'] = {"dfnID": "trustedscript-data", "url": "#trustedscript-data", "dfnText": "data", "refSections": [{"refs": [{"id": "ref-for-trustedscript-data"}], "title": "2.2.2. TrustedScript"}, {"refs": [{"id": "ref-for-trustedscript-data\u2460"}, {"id": "ref-for-trustedscript-data\u2461"}], "title": "2.3.1. TrustedTypePolicyFactory"}, {"refs": [{"id": "ref-for-trustedscript-data\u2462"}], "title": "4.3.5. HostGetCodeForEval"}], "external": false};
 window.dfnpanelData['dom-trustedscript-tojson'] = {"dfnID": "dom-trustedscript-tojson", "url": "#dom-trustedscript-tojson", "dfnText": "toJSON()", "refSections": [{"refs": [{"id": "ref-for-dom-trustedscript-tojson"}], "title": "2.2.2. TrustedScript"}], "external": false};
 window.dfnpanelData['trustedscript-stringification-behavior'] = {"dfnID": "trustedscript-stringification-behavior", "url": "#trustedscript-stringification-behavior", "dfnText": "stringification behavior", "refSections": [{"refs": [{"id": "ref-for-trustedscript-stringification-behavior"}], "title": "2.2.2. TrustedScript"}], "external": false};
 window.dfnpanelData['trustedscripturl'] = {"dfnID": "trustedscripturl", "url": "#trustedscripturl", "dfnText": "TrustedScriptURL", "refSections": [{"refs": [{"id": "ref-for-trustedscripturl"}], "title": "2.2.3. TrustedScriptURL"}, {"refs": [{"id": "ref-for-trustedscripturl\u2460"}], "title": "2.3.1. TrustedTypePolicyFactory"}, {"refs": [{"id": "ref-for-trustedscripturl\u2461"}], "title": "2.3.2. TrustedTypePolicy"}, {"refs": [{"id": "ref-for-trustedscripturl\u2462"}], "title": "3.6. Prepare the script text"}, {"refs": [{"id": "ref-for-trustedscripturl\u2463"}, {"id": "ref-for-trustedscripturl\u2464"}, {"id": "ref-for-trustedscripturl\u2465"}, {"id": "ref-for-trustedscripturl\u2466"}], "title": "3.7. Get Trusted Types-compliant attribute value"}, {"refs": [{"id": "ref-for-trustedscripturl\u2467"}, {"id": "ref-for-trustedscripturl\u2468"}], "title": "4. Integrations"}, {"refs": [{"id": "ref-for-trustedscripturl\u2460\u24ea"}], "title": "4.3.2. Enforcement for scripts"}, {"refs": [{"id": "ref-for-trustedscripturl\u2460\u2460"}], "title": "4.3.2.5. The src IDL attribute"}], "external": false};
@@ -3989,7 +3822,7 @@ window.dfnpanelData['enforcement'] = {"dfnID": "enforcement", "url": "#enforceme
 window.dfnpanelData['abstract-opdef-create-a-trusted-type-policy'] = {"dfnID": "abstract-opdef-create-a-trusted-type-policy", "url": "#abstract-opdef-create-a-trusted-type-policy", "dfnText": "Create a Trusted Type Policy", "refSections": [{"refs": [{"id": "ref-for-abstract-opdef-create-a-trusted-type-policy"}], "title": "2.3.1. TrustedTypePolicyFactory"}], "external": false};
 window.dfnpanelData['abstract-opdef-create-a-trusted-type'] = {"dfnID": "abstract-opdef-create-a-trusted-type", "url": "#abstract-opdef-create-a-trusted-type", "dfnText": "Create a Trusted Type", "refSections": [{"refs": [{"id": "ref-for-abstract-opdef-create-a-trusted-type"}, {"id": "ref-for-abstract-opdef-create-a-trusted-type\u2460"}, {"id": "ref-for-abstract-opdef-create-a-trusted-type\u2461"}], "title": "2.3.2. TrustedTypePolicy"}], "external": false};
 window.dfnpanelData['abstract-opdef-get-trusted-type-policy-value'] = {"dfnID": "abstract-opdef-get-trusted-type-policy-value", "url": "#abstract-opdef-get-trusted-type-policy-value", "dfnText": "Get Trusted Type policy value", "refSections": [{"refs": [{"id": "ref-for-abstract-opdef-get-trusted-type-policy-value"}], "title": "3.2. Create a Trusted Type"}, {"refs": [{"id": "ref-for-abstract-opdef-get-trusted-type-policy-value\u2460"}], "title": "3.5. Process value with a default policy"}], "external": false};
-window.dfnpanelData['abstract-opdef-get-trusted-type-compliant-string'] = {"dfnID": "abstract-opdef-get-trusted-type-compliant-string", "url": "#abstract-opdef-get-trusted-type-compliant-string", "dfnText": "Get Trusted Type compliant string", "refSections": [{"refs": [{"id": "ref-for-abstract-opdef-get-trusted-type-compliant-string"}], "title": "3.6. Prepare the script text"}, {"refs": [{"id": "ref-for-abstract-opdef-get-trusted-type-compliant-string\u2460"}], "title": "3.7. Get Trusted Types-compliant attribute value"}, {"refs": [{"id": "ref-for-abstract-opdef-get-trusted-type-compliant-string\u2461"}], "title": "4.3.2. Enforcement for scripts"}, {"refs": [{"id": "ref-for-abstract-opdef-get-trusted-type-compliant-string\u2462"}], "title": "4.3.2.2. The innerText IDL attribute"}, {"refs": [{"id": "ref-for-abstract-opdef-get-trusted-type-compliant-string\u2463"}], "title": "4.3.2.3. The textContent IDL attribute"}, {"refs": [{"id": "ref-for-abstract-opdef-get-trusted-type-compliant-string\u2464"}], "title": "4.3.2.4. The text IDL attribute"}, {"refs": [{"id": "ref-for-abstract-opdef-get-trusted-type-compliant-string\u2465"}], "title": "4.3.2.5. The src IDL attribute"}, {"refs": [{"id": "ref-for-abstract-opdef-get-trusted-type-compliant-string\u2466"}], "title": "4.3.6. Validate the string in context"}, {"refs": [{"id": "ref-for-abstract-opdef-get-trusted-type-compliant-string\u2467"}], "title": "4.5.7. Support for dynamic code compilation"}], "external": false};
+window.dfnpanelData['abstract-opdef-get-trusted-type-compliant-string'] = {"dfnID": "abstract-opdef-get-trusted-type-compliant-string", "url": "#abstract-opdef-get-trusted-type-compliant-string", "dfnText": "Get Trusted Type compliant string", "refSections": [{"refs": [{"id": "ref-for-abstract-opdef-get-trusted-type-compliant-string"}], "title": "3.6. Prepare the script text"}, {"refs": [{"id": "ref-for-abstract-opdef-get-trusted-type-compliant-string\u2460"}], "title": "3.7. Get Trusted Types-compliant attribute value"}, {"refs": [{"id": "ref-for-abstract-opdef-get-trusted-type-compliant-string\u2461"}], "title": "4.3.2. Enforcement for scripts"}, {"refs": [{"id": "ref-for-abstract-opdef-get-trusted-type-compliant-string\u2462"}], "title": "4.3.2.2. The innerText IDL attribute"}, {"refs": [{"id": "ref-for-abstract-opdef-get-trusted-type-compliant-string\u2463"}], "title": "4.3.2.3. The textContent IDL attribute"}, {"refs": [{"id": "ref-for-abstract-opdef-get-trusted-type-compliant-string\u2464"}], "title": "4.3.2.4. The text IDL attribute"}, {"refs": [{"id": "ref-for-abstract-opdef-get-trusted-type-compliant-string\u2465"}], "title": "4.3.2.5. The src IDL attribute"}, {"refs": [{"id": "ref-for-abstract-opdef-get-trusted-type-compliant-string\u2466"}], "title": "4.3.6. Validate the string in context"}], "external": false};
 window.dfnpanelData['abstract-opdef-process-value-with-a-default-policy'] = {"dfnID": "abstract-opdef-process-value-with-a-default-policy", "url": "#abstract-opdef-process-value-with-a-default-policy", "dfnText": "Process value with a default policy", "refSections": [{"refs": [{"id": "ref-for-abstract-opdef-process-value-with-a-default-policy"}], "title": "3.4. Get Trusted Type compliant string"}, {"refs": [{"id": "ref-for-abstract-opdef-process-value-with-a-default-policy\u2460"}], "title": "4.5.1.1. require-trusted-types-for Pre-Navigation check"}], "external": false};
 window.dfnpanelData['abstract-opdef-prepare-the-script-text'] = {"dfnID": "abstract-opdef-prepare-the-script-text", "url": "#abstract-opdef-prepare-the-script-text", "dfnText": "Prepare the script text", "refSections": [{"refs": [{"id": "ref-for-abstract-opdef-prepare-the-script-text"}], "title": "4.3.2.6. Slot value verification"}], "external": false};
 window.dfnpanelData['typedefdef-scriptstring'] = {"dfnID": "typedefdef-scriptstring", "url": "#typedefdef-scriptstring", "dfnText": "ScriptString", "refSections": [{"refs": [{"id": "ref-for-typedefdef-scriptstring"}], "title": "4.3.3. Enforcement in timer functions"}], "external": false};
