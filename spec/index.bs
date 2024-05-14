@@ -1234,25 +1234,7 @@ The first few steps of the [=prepare the script element=] algorithm are modified
 
 ### Enforcement in timer functions ### {#enforcement-in-timer-functions}
 
-This document modifies the {{WindowOrWorkerGlobalScope}} interface mixin:
-
-<pre class="idl exclude">
-typedef (ScriptString or Function) TrustedTimerHandler;
-
-partial interface mixin WindowOrWorkerGlobalScope {
-  long setTimeout(TrustedTimerHandler handler, optional long timeout = 0, any... arguments);
-  long setInterval(TrustedTimerHandler handler, optional long timeout = 0, any... arguments);
-};
-</pre>
-
-Note: This makes sure that a {{TrustedScript}} is passed to timer
-functions in place of a string when Trusted Types are enforced, but
-also unconditionally accepts any {{Function}} object.
-
-To the [[HTML5#timer-initialisation-steps|timer initialization steps algorithm]],
-change step 8.4.3 as follows:
-
-1.  Perform <del>HostEnsureCanCompileStrings</del><ins>EnsureCSPDoesNotBlockStringCompilation</ins>(<var>realm</var>, « », <var>handler</var>,<del> false</del><ins>~timer~, « », <var>handler</var></ins>). If this throws an exception, catch it, report the exception, and abort these steps.
+Note: See [https://github.com/whatwg/html/pull/10348](https://github.com/whatwg/html/pull/10348) which upstreams this integration.
 
 ### HostEnsureCanCompileStrings ### {#host-ensure-can-compile-strings}
 
