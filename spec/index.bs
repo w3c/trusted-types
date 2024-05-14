@@ -1306,14 +1306,6 @@ When <a>validate the string in context</a> is invoked, with |platformObject|, |v
     1. If an exception was thrown, rethrow exception and abort further steps.
  1. Return |value|.
 
-## Integration with Service Workers ## {#sw-integration}
-
-Note: See [https://github.com/w3c/ServiceWorker/pull/1709](https://github.com/w3c/ServiceWorker/pull/1709) which upstreams this integration.
-
-## Integration with execCommand ## {#integration-with-exec-command}
-
-Note: See [https://github.com/w3c/editing/pull/460](https://github.com/w3c/editing/pull/460) which upstreams this integration.
-
 ## Integration with DOM ## {#integration-with-dom}
 
 Note: See [https://github.com/whatwg/dom/pull/1258](https://github.com/whatwg/dom/pull/1258) and [https://github.com/whatwg/dom/pull/1268](https://github.com/whatwg/dom/pull/1268) which upstream this integration.
