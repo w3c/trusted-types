@@ -20,3 +20,4 @@ jobs:
           SOURCE: spec/index.bs
           W3C_BUILD_OVERRIDE: |
             shortName: trusted-types
+            status: WD
