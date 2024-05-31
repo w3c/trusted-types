@@ -4,6 +4,7 @@ Shortname: trusted-types
 Group: webappsec
 Level: none
 Status: ED
+TR: https://www.w3.org/TR/trusted-types/
 URL: https://w3c.github.io/trusted-types/dist/spec/
 Editor: Krzysztof Kotowicz, Google LLC https://google.com, koto@google.com
 Former Editor: Mike West, Google LLC https://google.com, mkwst@google.com
