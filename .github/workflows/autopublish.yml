@@ -17,7 +17,7 @@ jobs:
           W3C_WG_DECISION_URL: https://github.com/w3c/webappsec/blob/main/meetings/2024/2024-05-15-minutes.md
           # Usually, you want the following set too...
           TOOLCHAIN: bikeshed
-
+          SOURCE: spec/index.bs
           W3C_BUILD_OVERRIDE: |
             shortName: trusted-types
             specStatus: ED
