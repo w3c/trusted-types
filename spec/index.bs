@@ -1103,6 +1103,8 @@ To <dfn abstract-op export>get Trusted Types-compliant attribute value</dfn> on 
 ## Get Trusted Type data for attribute ## {#get-trusted-type-data-for-attribute}
 To <dfn abstract-op>Get Trusted Type data for attribute</dfn> given |element|, |attribute|, |attributeNs|, perform the following steps:
 
+Issue: The [=event handler content attribute=] concept used below is ambiguous. This spec needs a better mechanism to identify event handler attributes. See [https://github.com/w3c/trusted-types/issues/520](https://github.com/w3c/trusted-types/issues/520).
+
 1. Let |data| be null.
 1. If |attributeNs| is null, and |attribute| is the name of an [=event handler content attribute=], then:
     1. Return ({{Element}}, null, |attribute|, {{TrustedScript}}, "Element " + |attribute|).
