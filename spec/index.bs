@@ -1128,17 +1128,8 @@ Issue: The [=event handler content attribute=] concept used below is ambiguous. 
 # Integrations # {#integrations}
 
 <pre class="idl">
-typedef [StringContext=TrustedHTML] DOMString HTMLString;
-typedef [StringContext=TrustedScript] DOMString ScriptString;
-typedef [StringContext=TrustedScriptURL] USVString ScriptURLString;
 typedef (TrustedHTML or TrustedScript or TrustedScriptURL) TrustedType;
 </pre>
-
-## Integration with WebIDL ## {#webidl-integration}
-
-<h3 id="StringContext" extended-attribute lt="StringContext">[StringContext]</h3>
-
-Issue: See [https://github.com/whatwg/webidl/pull/1392](https://github.com/whatwg/webidl/pull/1392).
 
 ## Integration with HTML ## {#integration-with-html}
 
@@ -1277,41 +1268,6 @@ abstract operation. User agents must use the following implementation:
 
 1.  If |argument| is a {{TrustedScript}} object, return the value of its associated [=TrustedScript/data=].
 1.  Return ~unknown~.
-
-### Validate the string in context ### {#html-validate-the-string-in-context}
-
-This specification defines the validate the string in context algorithm in [[html#integration-with-idl]].
-
-When validate the string in context is invoked, with |platformObject|, |value|, |stringContext|, and |identifier| run these steps:
-
- 1. If |platformObject|'s [=relevant global object=] has a [=Window/trusted type policy factory=]:
-
-    1. Set |sink| to the result of [=concatenating=] the list &laquo; |platformObject|'s <a spec=webidl>identifier</a>, |identifier| &raquo; with `" "` as |separator|.
-        <div class="example" id="validate-string-example">
-        For example, the following annotation and JavaScript code:
-        <pre highlight=idl>
-        typedef [StringContext=TrustedHTML] DOMString HTMLString;
-        [ Exposed=Window, HTMLConstructor] interface HTMLIFrameElement : HTMLElement {
-            attribute HTMLString srcdoc;
-        };
-        </pre>
-        <pre highlight=js>
-        document.createElement('iframe').srcdoc = foo;
-        document.createElement('iframe').setAttribute('SRCdoc', foo);
-        </pre>
-        causes the |sink| value to be `"HTMLIFrameElement srcdoc"`.
-        </div>
-    1. Set |value| to the result of running the [$Get Trusted Type compliant string$] algorithm, passing the following arguments:
-        * |value| as |input|,
-        * |stringContext| as |expectedType|,
-        * |sink| as |sink|,
-        * `'script'` as |sinkGroup|,
-        * |platformObject|'s [=relevant global object=] as |global|.
-
-        Issue: Remove hardcoding 'script' when new sink groups are specified.
-
-    1. If an exception was thrown, rethrow exception and abort further steps.
- 1. Return |value|.
 
 ## Integration with DOM ## {#integration-with-dom}
 
