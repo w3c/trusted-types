@@ -1280,9 +1280,9 @@ abstract operation. User agents must use the following implementation:
 
 ### Validate the string in context ### {#html-validate-the-string-in-context}
 
-This specification defines the <a>validate the string in context</a> algorithm in [[html#integration-with-idl]].
+This specification defines the validate the string in context algorithm in [[html#integration-with-idl]].
 
-When <a>validate the string in context</a> is invoked, with |platformObject|, |value|, |stringContext|, and |identifier| run these steps:
+When validate the string in context is invoked, with |platformObject|, |value|, |stringContext|, and |identifier| run these steps:
 
  1. If |platformObject|'s [=relevant global object=] has a [=Window/trusted type policy factory=]:
 
