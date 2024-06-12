@@ -1248,10 +1248,6 @@ The first few steps of the [=prepare the script element=] algorithm are modified
   <li>...
   </ol>
 
-### Enforcement in timer functions ### {#enforcement-in-timer-functions}
-
-Note: See [https://github.com/whatwg/html/pull/10348](https://github.com/whatwg/html/pull/10348) which upstreams this integration.
-
 ### HostEnsureCanCompileStrings ### {#host-ensure-can-compile-strings}
 
 JavaScript contains an <span>implementation-defined</span> <a href="https://tc39.es/ecma262/#sec-hostensurecancompilestrings">HostEnsureCanCompileStrings</a>(<var>realm</var>, <ins><var>parameterStrings</var>,
