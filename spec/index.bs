@@ -121,6 +121,8 @@ spec:ECMA-262; urlPrefix: https://tc39.github.io/ecma262/
     type:dfn; text:current realm record; url: current-realm
 spec: HTML; urlPrefix: https://html.spec.whatwg.org/
     type: dfn; text: prepare the script element; url: prepare-the-script-element
+    type: dfn; text: The text insertion mode; url: parsing-main-incdata
+    type: dfn; text: reentrant invocation of the parser; url: nestedParsing
     type: dfn; text: get the text steps; url: get-the-text-steps
     type: dfn; text: set the inner text steps; url: set-the-inner-text-steps
     type: dfn; text: src; url: attr-script-src
@@ -1223,6 +1225,30 @@ The {{HTMLScriptElement/src}} setter steps are:
     {{TrustedScriptURL}}, [=this=]'s [=relevant global object=], the given value, `HTMLScriptElement src`, and
     `script`.</ins>
 1.  <ins>Set [=this=]'s [=src=] content attribute to |value|.</ins>
+
+#### Setting slot values from parser #### {#setting-slot-values-from-parser}
+
+This document modifies the HTML parser to set the [=script text=] value when the script is created.
+
+Modify the [=The text insertion mode=] algorithm as follows:
+
+<dl class="switch">
+    <dt id="scriptEndTag">An end tag whose tag name is "script"</dt>
+    <dd>
+        <p>...</p>
+
+        <ins><p>Set <var>script</var>'s [=script text=] value to its [=child text content=].</p></ins>
+
+        <p>If the <span>active speculative HTML parser</span> is null, then <span>prepare the script
+        element</span> <var>script</var>. This might cause some script to execute, which might cause
+        <span data-x="dom-document-write">new characters to be inserted into the tokenizer</span>, and
+        might cause the tokenizer to output more tokens, resulting in a [=reentrant invocation of the parser=].</p>
+
+        <p>...</p>
+    </dd>
+</dl>
+
+Issue: The above algorithm doesn't account for the case when the script element's content is changed mid-parse. Implementors should ensure they protect against this case. See [https://github.com/w3c/trusted-types/issues/507](https://github.com/w3c/trusted-types/issues/507).
 
 #### Slot value verification #### {#slot-value-verification}
 
