@@ -670,14 +670,24 @@ Its value is initially « ».
     1. Set |localName| to |tagName| in [=ASCII lowercase=].
     1. If |elementNs| is an empty string, set |elementNs| to [=HTML namespace=].
     1. Let |interface| be the [=element interface=] for |localName| and |elementNs|.
-    1. If |interface| has an IDL <a spec="webidl">attribute</a> member which identifier is |attribute|, and
-        {{StringContext}} IDL extended attribute appears on that attribute, return
-        stringified {{StringContext}}'s identifier and abort further steps.
+    1. Let |expectedType| be null.
+    1. Find the row in the following table, where the first column is "*" or |interface|'s name, and |property| is in the second column.
+        If a matching row is found, set |expectedType| to the value of the third column.
 
-        Note: This also takes into account all members of [=interface mixins=] that
-        |interface| [=includes=].
-
-    1. Return null.
+        <table>
+          <thead>
+            <tr><th>Element<th>Property name<th>TrustedType
+          <tbody>
+            <tr><td>{{HTMLIFrameElement}}<td>"srcdoc"<td>{{TrustedHTML}}
+            <tr><td>{{HTMLScriptElement}}<td>"innerText"<td>{{TrustedScript}}
+            <tr><td>{{HTMLScriptElement}}<td>"src"<td>{{TrustedScriptURL}}
+            <tr><td>{{HTMLScriptElement}}<td>"text"<td>{{TrustedScript}}
+            <tr><td>{{HTMLScriptElement}}<td>"textContent"<td>{{TrustedScript}}
+            <tr><td>"*"<td>"innerHTML"<td>{{TrustedHTML}}
+            <tr><td>"*"<td>"outerHTML"<td>{{TrustedHTML}}
+          </tbody>
+        </table>
+    1. Return |expectedType|.
 
     <div class="example" id="get-property-type-example">
     <xmp highlight="js">
@@ -699,12 +709,13 @@ Its value is initially « ».
     1. If |elementNs| is an empty string, set |elementNs| to [=HTML namespace=].
     1. If |attrNs| is an empty string, set |attrNs| to null.
     1. Let |interface| be the [=element interface=] for |localName| and |elementNs|.
-    1. If |interface| does not have an IDL <a spec="webidl">attribute</a> that [=reflects=] a content attribute with
-        |localName| local name and |attrNs| namespace,
-        return undefined and abort further steps. Otherwise, let |idlAttribute| be that IDL <a spec="webidl">attribute</a>.
-    1. If {{StringContext}} IDL extended attribute appears on |idlAttribute|, return
-        stringified {{StringContext}}'s identifier and abort further steps.
-    1. Return null.
+    1. Let |expectedType| be null.
+    1. Set |attributeData| to the result of [$Get Trusted Type data for attribute$] algorithm, with the following arguments:
+        * |interface| as |element|
+        * |attribute|
+        * |attrNs|
+    1. If |attributeData| is not null, then set |expectedType| to the value of the third member of |attributeData|.
+    1. Return |expectedType|.
 
     <div class="example" id="get-attribute-type-example">
     <xmp highlight="js">
@@ -1070,10 +1081,36 @@ Given an {{HTMLScriptElement}} (|script|), this algorithm performs the following
 ## Get Trusted Types-compliant attribute value ## {#validate-attribute-mutation}
 To <dfn abstract-op export>get Trusted Types-compliant attribute value</dfn> on {{Attr}} |attribute| with {{Element}} |element| and {{TrustedType}} or a string |newValue|, perform the following steps:
 
-1. Let |expectedType| be null.
-1. Let |sink| be null.
-1. Find the row in the following table, where |element| is in the first column, and |attribute|'s <a for="Attr">namespace</a> and <a for="Attr">local name</a> match the values in the second and third column, respectively.
-    If a matching row is found, set |expectedType| and |sink| to the value of the fourth, and fifth column in that row, respectively.
+1. Set |attributeData| to the result of [$Get Trusted Type data for attribute$] algorithm, with the following arguments:
+    * |element|
+    * |attribute|'s <a for="Attr">local name</a> as |attribute|
+    * |attribute|'s <a for="Attr">namespace</a> as |attributeNs|
+1. If |attributeData| is null, then:
+    1. If |newValue| is a string, return |newValue|.
+    1. <a>Assert</a>: |newValue| is {{TrustedHTML}} or {{TrustedScript}} or {{TrustedScriptURL}}.
+    1. Return |value|'s associated data.
+1. Let |expectedType| be the value of the third member of |attributeData|.
+1. Let |sink| be the value of the fourth member of |attributeData|.
+1. Return the result of executing [$Get Trusted Type compliant string$] with the following arguments:
+     * |expectedType|
+     * |newValue| as |input|
+     * |element|'s <a>node document</a>'s <a>relevant global object</a> as |global|
+     * |sink|
+     * 'script' as |sinkGroup|
+
+   If the algorithm threw an error, rethrow the error.
+
+## Get Trusted Type data for attribute ## {#get-trusted-type-data-for-attribute}
+To <dfn abstract-op>Get Trusted Type data for attribute</dfn> given |element|, |attribute|, |attributeNs|, perform the following steps:
+
+Issue: The [=event handler content attribute=] concept used below is ambiguous. This spec needs a better mechanism to identify event handler attributes. See [https://github.com/w3c/trusted-types/issues/520](https://github.com/w3c/trusted-types/issues/520).
+
+1. Let |data| be null.
+1. If |attributeNs| is null, and |attribute| is the name of an [=event handler content attribute=], then:
+    1. Return ({{Element}}, null, |attribute|, {{TrustedScript}}, "Element " + |attribute|).
+1. Find the row in the following table, where |element| is in the first column, |attributeNs| is in the second column,
+    and |attribute| is in the third column.
+    If a matching row is found, set |data| to that row.
 
     <table>
       <thead>
@@ -1086,20 +1123,7 @@ To <dfn abstract-op export>get Trusted Types-compliant attribute value</dfn> on 
       </tbody>
     </table>
 
-1. If |expectedType| is null, then:
-    1. If |newValue| is a string, return |newValue|.
-    1. <a>Assert</a>: |newValue| is {{TrustedHTML}} or {{TrustedScript}} or {{TrustedScriptURL}}.
-    1. Return |value|'s associated data.
-1. Return the result of executing [$Get Trusted Type compliant string$] with the following arguments:
-     * |expectedType|
-     * |newValue| as |input|
-     * |element|'s <a>node document</a>'s <a>relevant global object</a> as |global|
-     * |sink|
-     * 'script' as |sinkGroup|
-
-   If the algorithm threw an error, rethrow the error.
-
-Issue: This algorithm should account for event handler attributes. See https://github.com/w3c/trusted-types/issues/474
+1. Return |data|.
 
 # Integrations # {#integrations}
 
@@ -1256,9 +1280,9 @@ abstract operation. User agents must use the following implementation:
 
 ### Validate the string in context ### {#html-validate-the-string-in-context}
 
-This specification defines the <a>validate the string in context</a> algorithm in [[html#integration-with-idl]].
+This specification defines the validate the string in context algorithm in [[html#integration-with-idl]].
 
-When <a>validate the string in context</a> is invoked, with |platformObject|, |value|, |stringContext|, and |identifier| run these steps:
+When validate the string in context is invoked, with |platformObject|, |value|, |stringContext|, and |identifier| run these steps:
 
  1. If |platformObject|'s [=relevant global object=] has a [=Window/trusted type policy factory=]:
 
