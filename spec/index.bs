@@ -41,6 +41,7 @@ default-policy-report-only.html
 default-policy.html
 Document-execCommand.html
 Document-write.html
+Document-write-exception-order.xhtml
 DOMParser-parseFromString-regression.html
 DOMParser-parseFromString.html
 DOMWindowTimers-setTimeout-setInterval.html
@@ -50,10 +51,12 @@ Element-outerHTML.html
 Element-setAttribute.html
 Element-setAttribute-respects-Elements-node-documents-globals-CSP.html
 Element-setAttributeNS.html
+Element-toggleAttribute.html
 empty-default-policy-report-only.html
 empty-default-policy.html
 eval-csp-no-tt.html
 eval-csp-tt-default-policy.html
+eval-csp-tt-default-policy-mutate.html
 eval-csp-tt-no-default-policy.html
 eval-function-constructor.html
 eval-no-csp-no-tt-default-policy.html
@@ -67,6 +70,7 @@ idlharness.window.js
 no-require-trusted-types-for-report-only.html
 no-require-trusted-types-for.html
 Node-multiple-arguments.html
+modify-attributes-in-callback.html
 Range-createContextualFragment.html
 require-trusted-types-for-report-only.html
 require-trusted-types-for.html
@@ -85,6 +89,7 @@ trusted-types-reporting-check-report.html
 trusted-types-reporting.html
 trusted-types-source-file-path.html
 trusted-types-svg-script.html
+trusted-types-svg-script-set-href.html
 trusted-types-tojson.html
 TrustedType-AttributeNodes.html
 TrustedTypePolicy-createXXX.html
@@ -93,6 +98,8 @@ TrustedTypePolicy-CSP-wildcard.html
 TrustedTypePolicyFactory-constants.html
 TrustedTypePolicyFactory-createPolicy-createXYZTests.html
 TrustedTypePolicyFactory-createPolicy-cspTests-noNamesGiven.html
+TrustedTypePolicyFactory-createPolicy-cspTests-none-none-name.html
+TrustedTypePolicyFactory-createPolicy-cspTests-none-none.html
 TrustedTypePolicyFactory-createPolicy-cspTests-none-skip.html
 TrustedTypePolicyFactory-createPolicy-cspTests-none.html
 TrustedTypePolicyFactory-createPolicy-cspTests-wildcard.html
@@ -102,10 +109,9 @@ TrustedTypePolicyFactory-createPolicy-unenforced.html
 TrustedTypePolicyFactory-defaultPolicy.html
 TrustedTypePolicyFactory-getAttributeType-namespace.html
 TrustedTypePolicyFactory-getAttributeType-svg.html
-TrustedTypePolicyFactory-getPropertyType.html
 TrustedTypePolicyFactory-isXXX.html
-TrustedTypePolicyFactory-metadata.html
 tt-block-eval.html
+SVGScriptElement-internal-slot.html
 Window-TrustedTypes.html
 worker-constructor.https.html
 WorkerGlobalScope-eval.html
