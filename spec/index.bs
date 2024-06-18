@@ -1274,23 +1274,6 @@ The first few steps of the [=prepare the script element=] algorithm are modified
   <li>...
   </ol>
 
-### HostEnsureCanCompileStrings ### {#host-ensure-can-compile-strings}
-
-JavaScript contains an <span>implementation-defined</span> <a href="https://tc39.es/ecma262/#sec-hostensurecancompilestrings">HostEnsureCanCompileStrings</a>(<var>realm</var>, <ins><var>parameterStrings</var>,
-<var>bodyString</var>, <var>compilationType</var>, <var>parameterArgs</var>, <var>bodyArg</var></ins>)
-abstract operation. User agents must use the following implementation:
-
-1. Perform ? [[CSP3#can-compile-strings|EnsureCSPDoesNotBlockStringCompilation]](<var>realm</var>, <ins><var>parameterStrings</var>,
-    <var>bodyString</var>, <var>compilationType</var>, <var>parameterArgs</var>, <var>bodyArg</var></ins>).
-
-### HostGetCodeForEval ### {#host-get-code-for-eval}
-
-JavaScript contains an <span>implementation-defined</span> <a href="https://tc39.es/ecma262/#sec-hostgetcodeforeval">HostGetCodeForEval</a>(<var>argument</var>)
-abstract operation. User agents must use the following implementation:
-
-1.  If |argument| is a {{TrustedScript}} object, return the value of its associated [=TrustedScript/data=].
-1.  Return ~unknown~.
-
 ## Integration with DOM ## {#integration-with-dom}
 
 Note: See [https://github.com/whatwg/dom/pull/1258](https://github.com/whatwg/dom/pull/1258) and [https://github.com/whatwg/dom/pull/1268](https://github.com/whatwg/dom/pull/1268) which upstream this integration.
