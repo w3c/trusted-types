@@ -981,6 +981,7 @@ a string |value| and a list |arguments|, execute the following steps:
 1.  Let |policyValue| be the result of executing [$Get Trusted Type policy value$] with the same arguments as this algorithm and additionally true as |throwIfMissing|.
 1.  If the algorithm threw an error, rethrow the error and abort the following steps.
 1.  Let |dataString| be the result of stringifying |policyValue|.
+1.  If |policyValue| is null or undefined, set |dataString| to the empty string.
 1.  Return a new instance of an interface with a type
     name |trustedTypeName|, with its associated data value set to |dataString|.
 
