@@ -1199,8 +1199,8 @@ empty string instead, and then do as described below:
 1.  Let |value| be the result of calling [$Get Trusted Type compliant string$] with
     {{TrustedScript}}, [=this=]'s [=relevant global object=], the given value, `HTMLScriptElement textContent`, and
     `script`.
-1.  Run [=set text content=] with [=this=] and |value|.
 1.  Set [=this=]'s [=HTMLScriptElement/changed by trusted sink=] to true.
+1.  Run [=set text content=] with [=this=] and |value|.
 
 The {{HTMLScriptElement/textContent}} getter steps are:
 
@@ -1213,8 +1213,8 @@ Update the {{HTMLScriptElement/text}} setter steps algorithm as follows.
 1.  <ins>Let |value| be the result of calling [$Get Trusted Type compliant string$] with
     {{TrustedScript}}, [=this=]'s [=relevant global object=], the given value, `HTMLScriptElement text`, and
     `script`.</ins>
-1.  [=String replace all=] with the given value within [=this=].
 1.  Set [=this=]'s [=HTMLScriptElement/changed by trusted sink=] to true.
+1.  [=String replace all=] with the given value within [=this=].
 
 
 #### The {{HTMLScriptElement/src}} IDL attribute #### {#the-src-idl-attribute}
