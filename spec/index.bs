@@ -1167,9 +1167,9 @@ An {{HTMLScriptElement}} and {{SVGScriptElement}} have:
 ::  A boolean indicating whether a script element is considered trustworthy for execution.
     Initially true.
 
-An {{HTMLScriptElement}} also has:
+Note: This boolean is initially true so that parsed scripts are trusted.
 
-: an associated boolean <dfn export for="HTMLScriptElement">changed by trusted sink</dfn>.
+: an associated boolean <dfn export for="HTMLScriptElement,SVGScriptElement">changed by trusted sink</dfn>.
 ::  A boolean indicating whether a script element has been modified by a trusted sink.
     Initially false.
 
