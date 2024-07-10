@@ -1226,17 +1226,21 @@ The {{HTMLScriptElement/src}} setter steps are:
 
 This document modifies the [=children changed steps=] for {{HTMLScriptElement}} as follows:
 
-1.  If <var ignore=''>parserChange</var> is false, set [=this=]'s [=HTMLScriptElement/is trusted=] to false.
+1.  Set [=this=]'s [=HTMLScriptElement/is trusted=] to false.
 
 1.  If [=this=]'s [=HTMLScriptElement/changed by trusted sink=] is true, set [=this=]'s [=HTMLScriptElement/is trusted=] to true.
 
 1.  Set [=this=]'s [=HTMLScriptElement/changed by trusted sink=] to false.
 
+Note: This relies on the children changed steps never being called by the parser.
+
 Issue: Need to double check how [part of script element's spec](https://html.spec.whatwg.org/#prepare-the-script-element:~:text=When%20a%20script%20element%20el%20that%20is%20not%20parser%2Dinserted%20experiences) fits into this. These steps need to happen before prepare the script is called.
 
 This document modifies the [=children changed steps=] for {{SVGScriptElement}} as follows:
 
-1.  If <var ignore=''>parserChange</var> is false, set [=this=]'s [=SVGScriptElement/is trusted=] to false.
+1.  Set [=this=]'s [=SVGScriptElement/is trusted=] to false.
+
+Note: This relies on the children changed steps never being called by the parser.
 
 #### Slot value verification #### {#slot-value-verification}
 
