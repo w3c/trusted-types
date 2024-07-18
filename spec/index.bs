@@ -964,17 +964,11 @@ a string (|policyName|), {{TrustedTypePolicyOptions}} dictionary (|options|), an
     value is not null, throw a TypeError and abort further steps.
 1.  Let |policy| be a new {{TrustedTypePolicy}} object.
 1.  Set |policy|'s `name` property value to |policyName|.
-1.  Let |policyOptions| be a new {{TrustedTypePolicyOptions}} object.
-1.  Set |policyOptions|
-    {{TrustedTypePolicy/createHTML()|createHTML}} property to |options|'
-    {{TrustedTypePolicyOptions/createHTML|createHTML}} property value.
-1.  Set |policyOptions| {{TrustedTypePolicy/createScript()|createScript}}
-    property to |options|'
-    {{TrustedTypePolicyOptions/createScript|createScript}} property value.
-1.  Set |policyOptions| {{TrustedTypePolicy/createScriptURL()|createScriptURL}}
-    property to |options|'
-    {{TrustedTypePolicyOptions/createScriptURL|createScriptURL}} property value.
-1.  Set |policy|'s [=TrustedTypePolicy/options=] value to *policyOptions*.
+1.  Set |policy|'s [=TrustedTypePolicy/options=] value to «[
+      "createHTML" -> |options|["{{TrustedTypePolicyOptions/createHTML|createHTML}}",
+      "createScript" -> |options|["{{TrustedTypePolicyOptions/createScript|createScript}}",
+      "createScriptURL" -> |options|["{{TrustedTypePolicyOptions/createScriptURL|createScriptURL}}"
+    ]».
 1.  If the |policyName| is `default`, set the |factory|'s [=TrustedTypePolicyFactory/default policy=] value to |policy|.
 1.  [=set/append|Append=] |policyName| to |factory|'s [=created policy names=].
 1.  Return |policy|.
@@ -1018,7 +1012,7 @@ a string |value|, a list |arguments|, and a boolean |throwIfMissing|, execute th
       </tr>
     </table>
 
-1.  Let |function| be the value of the property in |policy|'s [=options=] named |functionName|.
+1.  Let |function| be |policy|'s [=options=][|functionName|].
 1.  If |function| is `null`, then:
     1. If |throwIfMissing| throw a TypeError.
     1. Else return `null`.
