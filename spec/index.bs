@@ -1426,6 +1426,12 @@ returns `"Blocked"` if the [=injection sink=] requires a [=Trusted Type=], and
 `"Allowed"` otherwise.
 
 1.  Let |result| be `"Allowed"`.
+1.  Let |sample| be |source|.
+1.  If |sink| is `"Function"`, then:
+    1. If |sample| starts with `"function anonymous"`, strip that from |sample|.
+    1. Otherwise if |sample| starts with `"async function anonymous"`, strip that from |sample|.
+    1. Otherwise if |sample| starts with `"function* anonymous"`, strip that from |sample|.
+    1. Otherwise if |sample| starts with `"async function* anonymous"`, strip that from |sample|.
 1.  For each |policy| in |global|'s <a>CSP list</a>:
     1.  If |policy|'s <a>directive set</a> does not contain a <a>directive</a>
         whose [=directive/name=] is `"require-trusted-types-for"`, skip to the next |policy|.
@@ -1437,8 +1443,8 @@ returns `"Blocked"` if the [=injection sink=] requires a [=Trusted Type=], and
         [[CSP#create-violation-for-global|Create a violation object for global, policy, and directive]]
         on |global|, |policy| and `"require-trusted-types-for"`
     1. Set |violation|'s [=violation/resource=] to `"trusted-types-sink"`.
-    1. Let |trimmedSource| be the substring of |source|, containing its first 40 characters.
-    1. Set |violation|'s [=violation/sample=] to be the result of [=concatenating=] the list &laquo; |sink|, |trimmedSource| &laquo; using `"|"` as a |separator|.
+    1. Let |trimmedSample| be the substring of |sample|, containing its first 40 characters.
+    1. Set |violation|'s [=violation/sample=] to be the result of [=concatenating=] the list &laquo; |sink|, |trimmedSample| &laquo; using `"|"` as a separator.
     1.  Execute [[CSP#report-violation|Report a violation]] on |violation|.
     1.  If |policy|'s [=policy/disposition=] is `"enforce"`, then set |result| to
         `"Blocked"`.
