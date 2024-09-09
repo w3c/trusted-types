@@ -7,7 +7,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/W3C-ED" rel="stylesheet">
   <meta content="Bikeshed version 82ce88815, updated Thu Sep 7 16:33:55 2023 -0700" name="generator">
   <link href="https://www.w3.org/TR/trusted-types/" rel="canonical">
-  <meta content="3bb49feff9102fd05d08ca5b5e24da939b34ce36" name="document-revision">
+  <meta content="1c98273966a4834cee4cdf5a3ccdb2d0b9d2046d" name="document-revision">
 <style>/* Boilerplate: style-autolinks */
 .css.css, .property.property, .descriptor.descriptor {
     color: var(--a-normal-text);
@@ -1005,7 +1005,7 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Trusted Types</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2024-07-18">18 July 2024</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2024-09-09">9 September 2024</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -1141,7 +1141,6 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
         <li><a href="#does-sink-require-trusted-types"><span class="secno">4.3.3</span> <span class="content"><span>Does sink type require trusted types?</span></span></a>
         <li><a href="#should-block-sink-type-mismatch"><span class="secno">4.3.4</span> <span class="content"><span>Should sink type mismatch violation be blocked by Content Security Policy?</span></span></a>
         <li><a href="#should-block-create-policy"><span class="secno">4.3.5</span> <span class="content"><span>Should Trusted Type policy creation be blocked by Content Security Policy?</span></span></a>
-        <li><a href="#csp-eval"><span class="secno">4.3.6</span> <span class="content">Support for dynamic code compilation</span></a>
        </ol>
      </ol>
     <li>
@@ -1184,7 +1183,6 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
     <summary>Tests</summary>
     <ul class="wpt-tests-list">
      <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/block-Document-execCommand.html" title="trusted-types/block-Document-execCommand.html">block-Document-execCommand.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/block-Document-execCommand.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/block-Document-execCommand.html"><small>(source)</small></a>
-     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/block-Node-multiple-arguments.html" title="trusted-types/block-Node-multiple-arguments.html">block-Node-multiple-arguments.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/block-Node-multiple-arguments.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/block-Node-multiple-arguments.html"><small>(source)</small></a>
      <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/block-string-assignment-to-attribute-via-attribute-node.html" title="trusted-types/block-string-assignment-to-attribute-via-attribute-node.html">block-string-assignment-to-attribute-via-attribute-node.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/block-string-assignment-to-attribute-via-attribute-node.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/block-string-assignment-to-attribute-via-attribute-node.html"><small>(source)</small></a>
      <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/block-string-assignment-to-Document-parseHTMLUnsafe.html" title="trusted-types/block-string-assignment-to-Document-parseHTMLUnsafe.html">block-string-assignment-to-Document-parseHTMLUnsafe.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/block-string-assignment-to-Document-parseHTMLUnsafe.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/block-string-assignment-to-Document-parseHTMLUnsafe.html"><small>(source)</small></a>
      <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/trusted-types/block-string-assignment-to-Document-write.html" title="trusted-types/block-string-assignment-to-Document-write.html">block-string-assignment-to-Document-write.html</a> <a class="wpt-live" href="http://wpt.live/trusted-types/block-string-assignment-to-Document-write.html"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/trusted-types/block-string-assignment-to-Document-write.html"><small>(source)</small></a>
@@ -1828,9 +1826,9 @@ trustedTypes<c- p>.</c->getAttributeType<c- p>(</c-><c- t>'foo'</c-><c- p>,</c->
      <dd data-md>
       <p>is a <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript⑦">TrustedScript</a></code> object with its <a data-link-type="dfn" href="#trustedscript-data" id="ref-for-trustedscript-data②">data</a> value set to an empty string.</p>
     </dl>
-    <p class="note" role="note"><span class="marker">Note:</span> This object can be used to detect if the runtime environment has <a href="#csp-eval">§ 4.3.6 Support for dynamic code compilation</a>. While native Trusted Types implementation can
-support <code>eval(TrustedScript)</code>, it is impossible for a polyfill to  emulate that, as
-eval(TrustedScript) will return its input without unwrapping and evaluating the code.</p>
+    <p class="note" role="note"><span class="marker">Note:</span> This object can be used to detect if the runtime environment has support for dynamic code compilation.
+While native Trusted Types implementation can support <code>eval(TrustedScript)</code>, it is impossible for a polyfill to
+emulate that, as eval(TrustedScript) will return its input without unwrapping and evaluating the code.</p>
     <div class="example" id="empty-script-example">
      <a class="self-link" href="#empty-script-example"></a> 
 <pre class="highlight"><c- c1>// With native Trusted Types support eval(trustedTypes.emptyScript) will execute and return falsy undefined.</c->
@@ -2581,8 +2579,6 @@ which value is <var>policyName</var>, and <var>directive</var>’s <a data-link-
     <li data-md>
      <p>Return <var>result</var>.</p>
    </ol>
-   <h4 class="heading settled" data-level="4.3.6" id="csp-eval"><span class="secno">4.3.6. </span><span class="content">Support for dynamic code compilation</span><a class="self-link" href="#csp-eval"></a></h4>
-   <p class="note" role="note"><span class="marker">Note:</span> See <a href="https://github.com/w3c/webappsec-csp/pull/659">https://github.com/w3c/webappsec-csp/pull/659</a> which upstreams this integration.</p>
    <h2 class="heading settled" data-level="5" id="security-considerations"><span class="secno">5. </span><span class="content">Security Considerations</span><a class="self-link" href="#security-considerations"></a></h2>
    <p>Trusted Types are not intended to protect access to <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②⑦">injection sinks</a> in an
 actively malicious execution environment. It’s assumed that the application is
