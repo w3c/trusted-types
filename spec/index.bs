@@ -748,9 +748,9 @@ anElement.innerHTML = trustedTypes.emptyHTML; // no need to create a policy
 : <dfn>emptyScript</dfn>
 :: is a {{TrustedScript}} object with its [=TrustedScript/data=] value set to an empty string.
 
-Note: This object can be used to detect if the runtime environment has [[#csp-eval]]. While native Trusted Types implementation can
-support `eval(TrustedScript)`, it is impossible for a polyfill to  emulate that, as
-eval(TrustedScript) will return its input without unwrapping and evaluating the code.
+Note: This object can be used to detect if the runtime environment has support for dynamic code compilation.
+While native Trusted Types implementation can support `eval(TrustedScript)`, it is impossible for a polyfill to
+emulate that, as eval(TrustedScript) will return its input without unwrapping and evaluating the code.
 
 <div class="example" id="empty-script-example">
 <xmp highlight="js">
@@ -1476,10 +1476,6 @@ strings (|createdPolicyNames|), this algorithm returns `"Blocked"` if the
     1.  If |policy|'s [=policy/disposition=] is `"enforce"`, then set |result| to
         `"Blocked"`.
 1. Return |result|.
-
-### Support for dynamic code compilation ### {#csp-eval}
-
-Note: See [https://github.com/w3c/webappsec-csp/pull/659](https://github.com/w3c/webappsec-csp/pull/659) which upstreams this integration.
 
 # Security Considerations # {#security-considerations}
 
