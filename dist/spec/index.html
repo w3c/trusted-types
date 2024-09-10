@@ -7,7 +7,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/W3C-ED" rel="stylesheet">
   <meta content="Bikeshed version 82ce88815, updated Thu Sep 7 16:33:55 2023 -0700" name="generator">
   <link href="https://www.w3.org/TR/trusted-types/" rel="canonical">
-  <meta content="1c98273966a4834cee4cdf5a3ccdb2d0b9d2046d" name="document-revision">
+  <meta content="3b74745ed73475d7ef6e144c4f3c62bbdaee54ac" name="document-revision">
 <style>/* Boilerplate: style-autolinks */
 .css.css, .property.property, .descriptor.descriptor {
     color: var(--a-normal-text);
@@ -1005,7 +1005,7 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Trusted Types</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2024-09-09">9 September 2024</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2024-09-10">10 September 2024</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -2508,6 +2508,20 @@ returns <code>"Blocked"</code> if the <a data-link-type="dfn" href="#injection-s
     <li data-md>
      <p>Let <var>result</var> be <code>"Allowed"</code>.</p>
     <li data-md>
+     <p>Let <var>sample</var> be <var>source</var>.</p>
+    <li data-md>
+     <p>If <var>sink</var> is <code>"Function"</code>, then:</p>
+     <ol>
+      <li data-md>
+       <p>If <var>sample</var> starts with <code>"function anonymous"</code>, strip that from <var>sample</var>.</p>
+      <li data-md>
+       <p>Otherwise if <var>sample</var> starts with <code>"async function anonymous"</code>, strip that from <var>sample</var>.</p>
+      <li data-md>
+       <p>Otherwise if <var>sample</var> starts with <code>"function* anonymous"</code>, strip that from <var>sample</var>.</p>
+      <li data-md>
+       <p>Otherwise if <var>sample</var> starts with <code>"async function* anonymous"</code>, strip that from <var>sample</var>.</p>
+     </ol>
+    <li data-md>
      <p>For each <var>policy</var> in <var>global</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#global-object-csp-list" id="ref-for-global-object-csp-list①">CSP list</a>:</p>
      <ol>
       <li data-md>
@@ -2523,9 +2537,9 @@ for <var>sinkGroup</var>, skip to the next <var>policy</var>.</p>
       <li data-md>
        <p>Set <var>violation</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation-resource" id="ref-for-violation-resource">resource</a> to <code>"trusted-types-sink"</code>.</p>
       <li data-md>
-       <p>Let <var>trimmedSource</var> be the substring of <var>source</var>, containing its first 40 characters.</p>
+       <p>Let <var>trimmedSample</var> be the substring of <var>sample</var>, containing its first 40 characters.</p>
       <li data-md>
-       <p>Set <var>violation</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation-sample" id="ref-for-violation-sample">sample</a> to be the result of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-concatenate" id="ref-for-string-concatenate">concatenating</a> the list « <var>sink</var>, <var>trimmedSource</var> « using <code>"|"</code> as a <var>separator</var>.</p>
+       <p>Set <var>violation</var>’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#violation-sample" id="ref-for-violation-sample">sample</a> to be the result of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-concatenate" id="ref-for-string-concatenate">concatenating</a> the list « <var>sink</var>, <var>trimmedSample</var> « using <code>"|"</code> as a separator.</p>
       <li data-md>
        <p>Execute <a href="https://w3c.github.io/webappsec-csp/#report-violation">Report a violation</a> on <var>violation</var>.</p>
       <li data-md>
