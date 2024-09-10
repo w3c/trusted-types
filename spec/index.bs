@@ -1281,7 +1281,7 @@ Note: See [https://github.com/whatwg/dom/pull/1258](https://github.com/whatwg/do
 
 ## Integration with Content Security Policy ## {#integration-with-content-security-policy}
 
-### <dfn lt="require-trusted-types-for-directive">require-trusted-types-for</dfn> directive ### {#require-trusted-types-for-csp-directive}
+### <dfn export lt="require-trusted-types-for-directive">require-trusted-types-for</dfn> directive ### {#require-trusted-types-for-csp-directive}
 
 This document defines *require-trusted-types-for* - a new [=directive|Content Security Policy directive=].
 
@@ -1338,7 +1338,7 @@ Note: This algorithm assures that the code to be executed by a navigation to a `
 1. Return `"Allowed"`.
 
 
-### <dfn lt="trusted-types-directive">trusted-types</dfn> directive ### {#trusted-types-csp-directive}
+### <dfn export lt="trusted-types-directive">trusted-types</dfn> directive ### {#trusted-types-csp-directive}
 
 This document defines *trusted-types* - a new [=directive|Content Security Policy directive=]. The [=trusted-types-directive|trusted-types=] directive controls the creation of Trusted Type [=policies=].
 
