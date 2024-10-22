@@ -722,7 +722,7 @@ Its value is initially « ».
         * |interface| as |element|
         * |attribute|
         * |attrNs|
-    1. If |attributeData| is not null, then set |expectedType| to the value of the third member of |attributeData|.
+    1. If |attributeData| is not null, then set |expectedType| to the value of the fourth member of |attributeData|.
     1. Return |expectedType|.
 
     <div class="example" id="get-attribute-type-example">
@@ -1092,8 +1092,8 @@ To <dfn abstract-op export>get Trusted Types-compliant attribute value</dfn> on 
     1. If |newValue| is a string, return |newValue|.
     1. <a>Assert</a>: |newValue| is {{TrustedHTML}} or {{TrustedScript}} or {{TrustedScriptURL}}.
     1. Return |value|'s associated data.
-1. Let |expectedType| be the value of the third member of |attributeData|.
-1. Let |sink| be the value of the fourth member of |attributeData|.
+1. Let |expectedType| be the value of the fourth member of |attributeData|.
+1. Let |sink| be the value of the fifth member of |attributeData|.
 1. Return the result of executing [$Get Trusted Type compliant string$] with the following arguments:
      * |expectedType|
      * |newValue| as |input|
