@@ -1517,7 +1517,7 @@ Some long-deprecated and rarely used platform features are not subject to Truste
 Types, and could potentially be used by malicious authors to overcome the
 restrictions:
 
-* <a href="https://w3c.github.io/webcomponents/spec/imports/">HTML imports</a>
+* <a href="https://wicg.github.io/webcomponents/spec/imports/">HTML imports</a>
 
 ## Script gadgets ## {#script-gadgets}
 
