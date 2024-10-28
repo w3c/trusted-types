@@ -7,7 +7,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/W3C-ED" rel="stylesheet">
   <meta content="Bikeshed version 82ce88815, updated Thu Sep 7 16:33:55 2023 -0700" name="generator">
   <link href="https://www.w3.org/TR/trusted-types/" rel="canonical">
-  <meta content="a71f29cf9891bfd65f784b457995ee870f264a70" name="document-revision">
+  <meta content="e8ff92bf7786916178f3a170d83a13d2a3e36196" name="document-revision">
 <style>/* Boilerplate: style-autolinks */
 .css.css, .property.property, .descriptor.descriptor {
     color: var(--a-normal-text);
@@ -1721,7 +1721,7 @@ property (IDL attribute).</p>
         <p>Let <var>expectedType</var> be null.</p>
        <li data-md>
         <p>Find the row in the following table, where the first column is "*" or <var>interface</var>’s name, and <var>property</var> is in the second column.
-If a matching row is found, set <var>expectedType</var> to the value of the third column.</p>
+If a matching row is found, set <var>expectedType</var> to the interface’s name of the value of the third column.</p>
         <table>
          <thead>
           <tr>
@@ -1797,7 +1797,7 @@ to <code>Element.setAttribute</code> passes the correct argument type.</p>
           <p><var>attrNs</var></p>
         </ul>
        <li data-md>
-        <p>If <var>attributeData</var> is not null, then set <var>expectedType</var> to the value of the fourth member of <var>attributeData</var>.</p>
+        <p>If <var>attributeData</var> is not null, then set <var>expectedType</var> to the interface’s name of the value of the fourth member of <var>attributeData</var>.</p>
        <li data-md>
         <p>Return <var>expectedType</var>.</p>
       </ol>
