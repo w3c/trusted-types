@@ -7,7 +7,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/W3C-ED" rel="stylesheet">
   <meta content="Bikeshed version 82ce88815, updated Thu Sep 7 16:33:55 2023 -0700" name="generator">
   <link href="https://www.w3.org/TR/trusted-types/" rel="canonical">
-  <meta content="2e1cafd819ecdc6d365263f79f0d9f16cd09e443" name="document-revision">
+  <meta content="ffe51deadc6cfab02550f225a1b18bc3c68e152b" name="document-revision">
 <style>/* Boilerplate: style-autolinks */
 .css.css, .property.property, .descriptor.descriptor {
     color: var(--a-normal-text);
@@ -1798,7 +1798,7 @@ to <code>Element.setAttribute</code> passes the correct argument type.</p>
           <p><var>attrNs</var></p>
         </ul>
        <li data-md>
-        <p>If <var>attributeData</var> is not null, then set <var>expectedType</var> to the value of the third member of <var>attributeData</var>.</p>
+        <p>If <var>attributeData</var> is not null, then set <var>expectedType</var> to the value of the fourth member of <var>attributeData</var>.</p>
        <li data-md>
         <p>Return <var>expectedType</var>.</p>
       </ol>
@@ -2181,9 +2181,9 @@ set <var>script</var>’s <a data-link-type="dfn" href="#htmlscriptelement-scrip
        <p>Return <var>value</var>’s associated data.</p>
      </ol>
     <li data-md>
-     <p>Let <var>expectedType</var> be the value of the third member of <var>attributeData</var>.</p>
+     <p>Let <var>expectedType</var> be the value of the fourth member of <var>attributeData</var>.</p>
     <li data-md>
-     <p>Let <var>sink</var> be the value of the fourth member of <var>attributeData</var>.</p>
+     <p>Let <var>sink</var> be the value of the fifth member of <var>attributeData</var>.</p>
     <li data-md>
      <p>Return the result of executing <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-compliant-string" id="ref-for-abstract-opdef-get-trusted-type-compliant-string①">Get Trusted Type compliant string</a> with the following arguments:</p>
      <ul>
