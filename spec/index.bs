@@ -676,7 +676,7 @@ Its value is initially « ».
     This function returns the result of the following algorithm:
 
     1. Set |localName| to |tagName| in [=ASCII lowercase=].
-    1. If |elementNs| is an empty string, set |elementNs| to [=HTML namespace=].
+    1. If |elementNs| is null or an empty string, set |elementNs| to [=HTML namespace=].
     1. Let |interface| be the [=element interface=] for |localName| and |elementNs|.
     1. Let |expectedType| be null.
     1. Find the row in the following table, where the first column is "*" or |interface|'s name, and |property| is in the second column.
@@ -714,7 +714,7 @@ Its value is initially « ».
 
     1. Set |localName| to |tagName| in [=ASCII lowercase=].
     1. Set |attribute| to |attribute| in [=ASCII lowercase=].
-    1. If |elementNs| is an empty string, set |elementNs| to [=HTML namespace=].
+    1. If |elementNs| is null or an empty string, set |elementNs| to [=HTML namespace=].
     1. If |attrNs| is an empty string, set |attrNs| to null.
     1. Let |interface| be the [=element interface=] for |localName| and |elementNs|.
     1. Let |expectedType| be null.
