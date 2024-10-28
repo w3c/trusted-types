@@ -678,7 +678,7 @@ Its value is initially « ».
     1. Let |interface| be the [=element interface=] for |localName| and |elementNs|.
     1. Let |expectedType| be null.
     1. Find the row in the following table, where the first column is "*" or |interface|'s name, and |property| is in the second column.
-        If a matching row is found, set |expectedType| to the value of the third column.
+        If a matching row is found, set |expectedType| to the interface's name of the value of the third column.
 
         <table>
           <thead>
@@ -720,7 +720,7 @@ Its value is initially « ».
         * |interface| as |element|
         * |attribute|
         * |attrNs|
-    1. If |attributeData| is not null, then set |expectedType| to the value of the fourth member of |attributeData|.
+    1. If |attributeData| is not null, then set |expectedType| to the interface's name of the value of the fourth member of |attributeData|.
     1. Return |expectedType|.
 
     <div class="example" id="get-attribute-type-example">
