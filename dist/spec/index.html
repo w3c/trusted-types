@@ -7,7 +7,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/W3C-ED" rel="stylesheet">
   <meta content="Bikeshed version 82ce88815, updated Thu Sep 7 16:33:55 2023 -0700" name="generator">
   <link href="https://www.w3.org/TR/trusted-types/" rel="canonical">
-  <meta content="ffe51deadc6cfab02550f225a1b18bc3c68e152b" name="document-revision">
+  <meta content="e5717b9115a72d8fdcc303dba8f9b467e76ceaac" name="document-revision">
 <style>/* Boilerplate: style-autolinks */
 .css.css, .property.property, .descriptor.descriptor {
     color: var(--a-normal-text);
@@ -2384,7 +2384,7 @@ empty string instead, and then do as described below:</p>
    <h3 class="heading settled" data-level="4.2" id="integration-with-dom"><span class="secno">4.2. </span><span class="content">Integration with DOM</span><a class="self-link" href="#integration-with-dom"></a></h3>
    <p class="note" role="note"><span class="marker">Note:</span> See <a href="https://github.com/whatwg/dom/pull/1258">https://github.com/whatwg/dom/pull/1258</a> and <a href="https://github.com/whatwg/dom/pull/1268">https://github.com/whatwg/dom/pull/1268</a> which upstream this integration.</p>
    <h3 class="heading settled" data-level="4.3" id="integration-with-content-security-policy"><span class="secno">4.3. </span><span class="content">Integration with Content Security Policy</span><a class="self-link" href="#integration-with-content-security-policy"></a></h3>
-   <h4 class="heading settled" data-level="4.3.1" id="require-trusted-types-for-csp-directive"><span class="secno">4.3.1. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="require-trusted-types-for-directive" data-noexport id="require-trusted-types-for-directive">require-trusted-types-for</dfn> directive</span><a class="self-link" href="#require-trusted-types-for-csp-directive"></a></h4>
+   <h4 class="heading settled" data-level="4.3.1" id="require-trusted-types-for-csp-directive"><span class="secno">4.3.1. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="dfn" data-export data-lt="require-trusted-types-for-directive" id="require-trusted-types-for-directive">require-trusted-types-for</dfn> directive</span><a class="self-link" href="#require-trusted-types-for-csp-directive"></a></h4>
    <p>This document defines <em>require-trusted-types-for</em> - a new <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives">Content Security Policy directive</a>.</p>
    <p><a data-link-type="dfn" href="#require-trusted-types-for-directive" id="ref-for-require-trusted-types-for-directive②">require-trusted-types-for</a> directive configures the Trusted
 Types framework for all the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②①">injection sinks</a> of certain groups in a current <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-global-object-realm" id="ref-for-concept-global-object-realm①">realm</a>.
@@ -2435,7 +2435,7 @@ directive-value = <a data-link-type="dfn" href="#trusted-types-sink-group" id="r
     <li data-md>
      <p>Return <code>"Allowed"</code>.</p>
    </ol>
-   <h4 class="heading settled" data-level="4.3.2" id="trusted-types-csp-directive"><span class="secno">4.3.2. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="trusted-types-directive" data-noexport id="trusted-types-directive">trusted-types</dfn> directive</span><a class="self-link" href="#trusted-types-csp-directive"></a></h4>
+   <h4 class="heading settled" data-level="4.3.2" id="trusted-types-csp-directive"><span class="secno">4.3.2. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="dfn" data-export data-lt="trusted-types-directive" id="trusted-types-directive">trusted-types</dfn> directive</span><a class="self-link" href="#trusted-types-csp-directive"></a></h4>
    <p>This document defines <em>trusted-types</em> - a new <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives①">Content Security Policy directive</a>. The <a data-link-type="dfn" href="#trusted-types-directive" id="ref-for-trusted-types-directive②">trusted-types</a> directive controls the creation of Trusted Type <a data-link-type="dfn" href="#policies" id="ref-for-policies⑤">policies</a>.</p>
    <p>The syntax for the directive’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-name" id="ref-for-directive-name①">name</a> and <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-value" id="ref-for-directive-value①">value</a> is described by the following
 ABNF:</p>
