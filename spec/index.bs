@@ -398,7 +398,7 @@ TrustedHTML objects have an associated string <dfn export for="TrustedHTML">data
 The value is set when the object is created, and will never change during its lifetime.
 
 <dfn method for="TrustedHTML">toJSON()</dfn> method steps and the
-<dfn for="TrustedHTML">stringification behavior</dfn> steps of a
+<dfn dfn for="TrustedHTML">stringification behavior</dfn> steps of a
 TrustedHTML object are to return the associated [=TrustedHTML/data=] value.
 
 ### <dfn interface>TrustedScript</dfn> ### {#trusted-script}
@@ -1028,7 +1028,7 @@ It will ensure that the Trusted Type [=enforcement=] rules were respected.
 Given a {{TrustedType}} type (|expectedType|), a [=realm/global object=] (|global|),
 {{TrustedType}} or a string (|input|), a string (|sink|) and a string (|sinkGroup|), run these steps:
 
-1.  If |input| has type |expectedType|, return stringified
+1.  If |input| is an instance of |expectedType|, return stringified
     |input| and abort these steps.
 1.  Let |requireTrustedTypes| be the result of executing [$Does sink type require trusted types?$] algorithm,
     passing |global|, and |sinkGroup|.
@@ -1042,7 +1042,7 @@ Given a {{TrustedType}} type (|expectedType|), a [=realm/global object=] (|globa
 
         Note: This step assures that the default policy rejection will be reported, but ignored in a report-only mode.
     1. Throw a TypeError and abort further steps.
-1. Assert: |convertedInput| has type |expectedType|.
+1. Assert: |convertedInput| is an instance of |expectedType|.
 1. Return stringified |convertedInput|.
 
 ## <dfn abstract-op>Process value with a default policy</dfn> ## {#process-value-with-a-default-policy-algorithm}
