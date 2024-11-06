@@ -1293,8 +1293,9 @@ ABNF:
 
 <pre>
 directive-name = "require-trusted-types-for"
-directive-value = <a>trusted-types-sink-group</a> *( <a href="https://w3c.github.io/webappsec-csp/#grammardef-required-ascii-whitespace">required-ascii-whitespace</a> <a>trusted-types-sink-group</a>)
-<dfn>trusted-types-sink-group</dfn> = "'script'"
+directive-value = <a>trusted-types-sink-group-keyword</a> *( <a href="https://w3c.github.io/webappsec-csp/#grammardef-required-ascii-whitespace">required-ascii-whitespace</a> <a>trusted-types-sink-group-keyword</a>)
+<dfn>trusted-types-sink-group-keyword</dfn> = "'" <a>trusted-types-sink-group</a> "'"
+<dfn>trusted-types-sink-group</dfn> = "script"
 </pre>
 
 <div class="example" id="require-tt-for-script-header">
