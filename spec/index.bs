@@ -1273,7 +1273,7 @@ Issue: There's no proper definition for the processing of SVG script elements. H
 
 ## Integration with DOM ## {#integration-with-dom}
 
-Note: See [https://github.com/whatwg/dom/pull/1258](https://github.com/whatwg/dom/pull/1258) and [https://github.com/whatwg/dom/pull/1268](https://github.com/whatwg/dom/pull/1268) which upstream this integration.
+Note: See [https://github.com/whatwg/dom/pull/1268](https://github.com/whatwg/dom/pull/1268) which upstreams this integration.
 
 ## Integration with Content Security Policy ## {#integration-with-content-security-policy}
 
