@@ -1146,10 +1146,10 @@ Note: Using these IDL attributes is the recommended way of dynamically setting t
 
 <pre class="idl exclude">
 partial interface HTMLScriptElement {
- [CEReactions] attribute ([LegacyNullToEmptyString] DOMString or TrustedScript) innerText;
- [CEReactions] attribute (DOMString or TrustedScript)? textContent;
- [CEReactions] attribute (USVString or TrustedScriptURL) src;
- [CEReactions] attribute (DOMString or TrustedScript) text;
+ [CEReactions] attribute (TrustedScript or [LegacyNullToEmptyString] DOMString) innerText;
+ [CEReactions] attribute (TrustedScript or DOMString)? textContent;
+ [CEReactions] attribute (TrustedScriptURL or USVString) src;
+ [CEReactions] attribute (TrustedScript or DOMString) text;
 };
 </pre>
 
