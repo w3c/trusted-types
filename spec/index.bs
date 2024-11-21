@@ -127,6 +127,8 @@ spec:ECMA-262; urlPrefix: https://tc39.github.io/ecma262/
     type:dfn; text:current realm record; url: current-realm
 spec: HTML; urlPrefix: https://html.spec.whatwg.org/
     type: dfn; text: prepare the script element; url: prepare-the-script-element
+    type: dfn; text: The text insertion mode; url: parsing-main-incdata
+    type: dfn; text: reentrant invocation of the parser; url: nestedParsing
     type: dfn; text: get the text steps; url: get-the-text-steps
     type: dfn; text: set the inner text steps; url: set-the-inner-text-steps
     type: dfn; text: src; url: attr-script-src
@@ -1065,6 +1067,20 @@ Given a {{TrustedType}} type (|expectedType|), a [=realm/global object=] (|globa
 1.  Return a new instance of an interface with a type
     name |trustedTypeName|, with its associated data value set to |dataString|.
 
+## <dfn abstract-op>Prepare the script text</dfn> ## {#prepare-script-text}
+
+Given an {{HTMLScriptElement}} (|script|), this algorithm performs the following steps:
+
+1.  If |script|'s [=script text=] value is not equal to its [=child text content=],
+    set |script|'s [=script text=] to the result of executing [$Get Trusted Type compliant string$], with the following arguments:
+      * {{TrustedScriptURL}} as |expectedType|,
+      * |script|'s {{Document}}'s [=relevant global object=] as |global|,
+      * |script|'s [=child text content=] attribute value,
+      * `HTMLScriptElement text` as |sink|,
+      * `'script'` as |sinkGroup|.
+
+    If the algorithm threw an error, rethrow the error.
+
 ## Get Trusted Types-compliant attribute value ## {#validate-attribute-mutation}
 To <dfn abstract-op export>get Trusted Types-compliant attribute value</dfn> on {{Attr}} |attribute| with {{Element}} |element| and {{TrustedType}} or a string |newValue|, perform the following steps:
 
@@ -1155,17 +1171,12 @@ partial interface HTMLScriptElement {
 
 #### Slots with trusted values #### {#slots-with-trusted-values}
 
-An {{HTMLScriptElement}} and {{SVGScriptElement}} have:
+This document modifies {{HTMLScriptElement}}s. Each script has:
 
-: an associated boolean <dfn export for="HTMLScriptElement,SVGScriptElement">is trusted</dfn>.
-::  A boolean indicating whether a script element is considered trustworthy for execution.
-    Initially true.
-
-Note: This boolean is initially true so that parsed scripts are trusted.
-
-: an associated boolean <dfn export for="HTMLScriptElement,SVGScriptElement">changed by trusted sink</dfn>.
-::  A boolean indicating whether a script element has been modified by a trusted sink.
-    Initially false.
+: an associated string <dfn export for="HTMLScriptElement">script text</dfn>.
+::  A string, containing the body of the script to execute that was set
+    through a compliant sink. Equivalent to script's
+    [=child text content=]. Initially an empty string.
 
 #### The {{HTMLScriptElement/innerText}} IDL attribute #### {#the-innerText-idl-attribute}
 
@@ -1174,7 +1185,7 @@ The {{HTMLScriptElement/innerText}} setter steps are:
 1.  Let |value| be the result of calling [$Get Trusted Type compliant string$] with
     {{TrustedScript}}, [=this=]'s [=relevant global object=], the given value, `HTMLScriptElement innerText`, and
     `script`.
-1.  Set [=this=]'s [=HTMLScriptElement/changed by trusted sink=] to true.
+1.  Set [=this=]'s [=script text=] value to |value|.
 1.  Run [=set the inner text steps=] with [=this=] and |value|.
 
 The {{HTMLScriptElement/innerText}} getter steps are:
@@ -1189,7 +1200,7 @@ empty string instead, and then do as described below:
 1.  Let |value| be the result of calling [$Get Trusted Type compliant string$] with
     {{TrustedScript}}, [=this=]'s [=relevant global object=], the given value, `HTMLScriptElement textContent`, and
     `script`.
-1.  Set [=this=]'s [=HTMLScriptElement/changed by trusted sink=] to true.
+1.  Set [=this=]'s [=script text=] value to |value|.
 1.  Run [=set text content=] with [=this=] and |value|.
 
 The {{HTMLScriptElement/textContent}} getter steps are:
@@ -1203,7 +1214,7 @@ Update the {{HTMLScriptElement/text}} setter steps algorithm as follows.
 1.  <ins>Let |value| be the result of calling [$Get Trusted Type compliant string$] with
     {{TrustedScript}}, [=this=]'s [=relevant global object=], the given value, `HTMLScriptElement text`, and
     `script`.</ins>
-1.  Set [=this=]'s [=HTMLScriptElement/changed by trusted sink=] to true.
+1.  <ins>Set [=this=]'s [=script text=] value to the given value.</ins>
 1.  [=String replace all=] with the given value within [=this=].
 
 
@@ -1216,25 +1227,29 @@ The {{HTMLScriptElement/src}} setter steps are:
     `script`.</ins>
 1.  <ins>Set [=this=]'s [=src=] content attribute to |value|.</ins>
 
-#### Script children changed steps #### {#script-children-changed-steps}
+#### Setting slot values from parser #### {#setting-slot-values-from-parser}
 
-This document modifies the [=children changed steps=] for {{HTMLScriptElement}} as follows:
+This document modifies the HTML parser to set the [=script text=] value when the script is created.
 
-1.  Set [=this=]'s [=HTMLScriptElement/is trusted=] to false.
+Modify the [=The text insertion mode=] algorithm as follows:
 
-1.  If [=this=]'s [=HTMLScriptElement/changed by trusted sink=] is true, set [=this=]'s [=HTMLScriptElement/is trusted=] to true.
+<dl class="switch">
+    <dt id="scriptEndTag">An end tag whose tag name is "script"</dt>
+    <dd>
+        <p>...</p>
 
-1.  Set [=this=]'s [=HTMLScriptElement/changed by trusted sink=] to false.
+        <ins><p>Set <var>script</var>'s [=script text=] value to its [=child text content=].</p></ins>
 
-Note: This relies on the children changed steps never being called by the parser.
+        <p>If the <span>active speculative HTML parser</span> is null, then <span>prepare the script
+        element</span> <var>script</var>. This might cause some script to execute, which might cause
+        <span data-x="dom-document-write">new characters to be inserted into the tokenizer</span>, and
+        might cause the tokenizer to output more tokens, resulting in a [=reentrant invocation of the parser=].</p>
 
-Issue: Need to double check how [part of script element's spec](https://html.spec.whatwg.org/#prepare-the-script-element:~:text=When%20a%20script%20element%20el%20that%20is%20not%20parser%2Dinserted%20experiences) fits into this. These steps need to happen before prepare the script is called.
+        <p>...</p>
+    </dd>
+</dl>
 
-This document modifies the [=children changed steps=] for {{SVGScriptElement}} as follows:
-
-1.  Set [=this=]'s [=SVGScriptElement/is trusted=] to false.
-
-Note: This relies on the children changed steps never being called by the parser.
+Issue: The above algorithm doesn't account for the case when the script element's content is changed mid-parse. Implementors should ensure they protect against this case. See [https://github.com/w3c/trusted-types/issues/507](https://github.com/w3c/trusted-types/issues/507).
 
 #### Slot value verification #### {#slot-value-verification}
 
@@ -1255,21 +1270,10 @@ The first few steps of the [=prepare the script element=] algorithm are modified
     <p class=note>This is done so that if a parser-inserted <code id=script-processing-model:the-script-element-28><a href=https://html.spec.whatwg.org/#the-script-element>script</a></code> element fails to
     run when the parser tries to run it, but it is later executed after a script dynamically
     updates it, it will execute in an async fashion even if the <code id=script-processing-model:attr-script-async-5><a href=https://html.spec.whatwg.org/#attr-script-async>async</a></code> attribute isn't set.</p>
-
-  <li><p>Let <var>source text</var> be <var>el</var>'s <a id=script-processing-model:child-text-content href=https://dom.spec.whatwg.org/#concept-child-text-content data-x-internal=child-text-content>child text content</a>.
-
-  <li><ins>
-    <p>If <var>el</var>'s [=HTMLScriptElement/is trusted=] is false:
-    <ol>
-      <li><p>Set <var>source text</var> to the result of executing [$Get Trusted Type compliant string$], with
-        {{TrustedScript}}, <var>el</var>'s [=relevant global object=], <var>source text</var>, `'HTMLScriptElement text'`,
-        and `'script'`.
-      <p>If that algorithm threw an error, then return.
-    </ol></ins>
+  <li><ins><p>Execute the [$Prepare the script text$] algorithm on <var>el</var>. If that algorithm threw an error, then return.</p></ins></li>
+  <li><p>Let <var ignore="">source text</var> be <var>el</var>'s <del><a id=script-processing-model:child-text-content href=https://dom.spec.whatwg.org/#concept-child-text-content data-x-internal=child-text-content>child text content</a>.</del> <ins>[=script text=] value.</ins>
   <li>...
   </ol>
-
-Issue: There's no proper definition for the processing of SVG script elements. However, you should apply a similar change to the processing of {{SVGScriptElement}}s.
 
 ## Integration with DOM ## {#integration-with-dom}
 
