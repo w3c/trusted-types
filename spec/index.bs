@@ -956,6 +956,7 @@ To create a {{TrustedTypePolicy}}, given a {{TrustedTypePolicyFactory}} (|factor
 a string (|policyName|), {{TrustedTypePolicyOptions}} dictionary (|options|), and a
 [=realm/global object=] (|global|) run these steps:
 
+1.  If |policyName| is the empty string, throw a TypeError and abort further steps.
 1.  Let |allowedByCSP| be the result of executing [$Should Trusted Type policy
     creation be blocked by Content Security Policy?$] algorithm with |global|,
     |policyName| and |factory|'s [=created policy names=] value.
