@@ -1033,7 +1033,7 @@ Given a {{TrustedType}} type (|expectedType|), a [=realm/global object=] (|globa
 1.  If |input| is an instance of |expectedType|, return stringified
     |input| and abort these steps.
 1.  Let |requireTrustedTypes| be the result of executing [$Does sink type require trusted types?$] algorithm,
-    passing |global|, and |sinkGroup|.
+    passing |global|, |sinkGroup|, and true.
 1.  If |requireTrustedTypes| is `false`, return stringified |input| and abort these steps.
 1.  Let |convertedInput| be the result of executing [$Process value with a default policy$] with the same arguments as this algorithm.
 1.  If the algorithm threw an error, rethrow the error and abort the following steps.
@@ -1399,11 +1399,9 @@ Content-Security-Policy: trusted-types one two default
 
 ### <dfn abstract-op>Does sink type require trusted types?</dfn> ### {#does-sink-require-trusted-types}
 
-Given a [=realm/global object=] (|global|), a string (|sinkGroup|) this algorithm
-returns `true` if the [=injection sink=] requires a [=Trusted Type=], and
-`false` otherwise.
+Given a [=realm/global object=] (|global|), a string (|sinkGroup|) and a boolean (|includeReportOnlyPolicies|), this algorithm
+returns `true` if the [=injection sink=] requires a [=Trusted Type=], and `false` otherwise.
 
-1.  Let |result| be `false`.
 1.  For each |policy| in |global|'s <a>CSP list</a>:
     1.  If |policy|'s <a>directive set</a> does not contain a <a>directive</a>
         whose [=directive/name=] is `"require-trusted-types-for"`, skip to the next |policy|.
@@ -1411,8 +1409,10 @@ returns `true` if the [=injection sink=] requires a [=Trusted Type=], and
         is `"require-trusted-types-for"`
     1.  If |directive|'s [=directive/value=] does not contain a <a>trusted-types-sink-group</a> which is a match
         for |sinkGroup|, skip to the next |policy|.
-    1.  Set |result| to `true`.
-1. Return |result|.
+    1.  Let |enforced| be true if |policy|'s [=policy/disposition=] is `"enforce"`, and false otherwise.
+    1.  If |enforced| is true, return true.
+    1.  If |includeReportOnlyPolicies| is true, return true.
+1. Return false.
 
 ### <dfn abstract-op>Should sink type mismatch violation be blocked by Content Security Policy?</dfn> ### {#should-block-sink-type-mismatch}
 
