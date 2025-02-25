@@ -1069,14 +1069,16 @@ Given a {{TrustedType}} type (|expectedType|), a [=realm/global object=] (|globa
 
 ## <dfn abstract-op>Prepare the script text</dfn> ## {#prepare-script-text}
 
-Given an {{HTMLScriptElement}} (|script|), this algorithm performs the following steps:
+Given an {{HTMLScriptElement}} or {{SVGScriptElement}} (|script|), this algorithm performs the following steps:
+
+1.  let |sink| be `"HTMLScriptElement text"` if |script| is an {{HTMLScriptElement}}; otherwise `"SVGScriptElement text"`.
 
 1.  If |script|'s [=script text=] value is not equal to its [=child text content=],
     set |script|'s [=script text=] to the result of executing [$Get Trusted Type compliant string$], with the following arguments:
       * {{TrustedScriptURL}} as |expectedType|,
       * |script|'s {{Document}}'s [=relevant global object=] as |global|,
       * |script|'s [=child text content=] attribute value,
-      * `HTMLScriptElement text` as |sink|,
+      * |sink|,
       * `'script'` as |sinkGroup|.
 
     If the algorithm threw an error, rethrow the error.
@@ -1171,9 +1173,9 @@ partial interface HTMLScriptElement {
 
 #### Slots with trusted values #### {#slots-with-trusted-values}
 
-This document modifies {{HTMLScriptElement}}s. Each script has:
+An {{HTMLScriptElement}} and {{SVGScriptElement}} have:
 
-: an associated string <dfn export for="HTMLScriptElement">script text</dfn>.
+: an associated string <dfn export for="HTMLScriptElement,SVGScriptElement">script text</dfn>.
 ::  A string, containing the body of the script to execute that was set
     through a compliant sink. Equivalent to script's
     [=child text content=]. Initially an empty string.
@@ -1206,6 +1208,8 @@ empty string instead, and then do as described below:
 The {{HTMLScriptElement/textContent}} getter steps are:
 
 1.  Return the result of running [=get text content=] with [=this=].
+
+Note: Currently we don't add an equivalent to {{SVGScriptElement}}. See [https://github.com/w3c/trusted-types/issues/512](https://github.com/w3c/trusted-types/issues/512).
 
 #### The {{HTMLScriptElement/text}} IDL attribute #### {#the-text-idl-attribute}
 
@@ -1251,6 +1255,8 @@ Modify the [=The text insertion mode=] algorithm as follows:
 
 Issue: The above algorithm doesn't account for the case when the script element's content is changed mid-parse. Implementors should ensure they protect against this case. See [https://github.com/w3c/trusted-types/issues/507](https://github.com/w3c/trusted-types/issues/507).
 
+Issue: There's no proper definition for the processing of SVG script elements. However, you should apply a similar change to the processing of {{SVGScriptElement}}s.
+
 #### Slot value verification #### {#slot-value-verification}
 
 The first few steps of the [=prepare the script element=] algorithm are modified as follows:
@@ -1274,6 +1280,8 @@ The first few steps of the [=prepare the script element=] algorithm are modified
   <li><p>Let <var ignore="">source text</var> be <var>el</var>'s <del><a id=script-processing-model:child-text-content href=https://dom.spec.whatwg.org/#concept-child-text-content data-x-internal=child-text-content>child text content</a>.</del> <ins>[=script text=] value.</ins>
   <li>...
   </ol>
+
+Issue: There's no proper definition for the processing of SVG script elements. However, you should apply a similar change to the processing of {{SVGScriptElement}}s.
 
 ## Integration with DOM ## {#integration-with-dom}
 
