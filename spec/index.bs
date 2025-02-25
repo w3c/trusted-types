@@ -1071,7 +1071,7 @@ Given a {{TrustedType}} type (|expectedType|), a [=realm/global object=] (|globa
 
 Given an {{HTMLScriptElement}} or {{SVGScriptElement}} (|script|), this algorithm performs the following steps:
 
-1.  let |sink| be `"HTMLScriptElement text"` if |script| is an {{HTMLScriptElement}}; otherwise `"SVGScriptElement text"`.
+1.  let |sink| be `HTMLScriptElement text` if |script| is an {{HTMLScriptElement}}; otherwise `SVGScriptElement text`.
 
 1.  If |script|'s [=script text=] value is not equal to its [=child text content=],
     set |script|'s [=script text=] to the result of executing [$Get Trusted Type compliant string$], with the following arguments:
@@ -1253,9 +1253,9 @@ Modify the [=The text insertion mode=] algorithm as follows:
     </dd>
 </dl>
 
-Issue: The above algorithm doesn't account for the case when the script element's content is changed mid-parse. Implementors should ensure they protect against this case. See [https://github.com/w3c/trusted-types/issues/507](https://github.com/w3c/trusted-types/issues/507).
+Issue: The above algorithm doesn't account for the case when the script element's content is changed mid-parse. Implementors must ensure they protect against this case. See [https://github.com/w3c/trusted-types/issues/507](https://github.com/w3c/trusted-types/issues/507).
 
-Issue: There's no proper definition for the processing of SVG script elements. However, you should apply a similar change to the processing of {{SVGScriptElement}}s.
+Issue: There's no proper definition for the processing of SVG script elements. However, implementations must apply a similar change to the processing of {{SVGScriptElement}}s.
 
 #### Slot value verification #### {#slot-value-verification}
 
@@ -1281,7 +1281,7 @@ The first few steps of the [=prepare the script element=] algorithm are modified
   <li>...
   </ol>
 
-Issue: There's no proper definition for the processing of SVG script elements. However, you should apply a similar change to the processing of {{SVGScriptElement}}s.
+Issue: There's no proper definition for the processing of SVG script elements. However, implementations must apply a similar change to the processing of {{SVGScriptElement}}s.
 
 ## Integration with DOM ## {#integration-with-dom}
 
