@@ -1071,7 +1071,7 @@ Given a {{TrustedType}} type (|expectedType|), a [=realm/global object=] (|globa
 
 Given an {{HTMLScriptElement}} or {{SVGScriptElement}} (|script|), this algorithm performs the following steps:
 
-1.  let |sink| be `HTMLScriptElement text` if |script| is an {{HTMLScriptElement}}; otherwise `SVGScriptElement text`.
+1.  Let |sink| be "`HTMLScriptElement text`" if |script| is an {{HTMLScriptElement}}; otherwise "`SVGScriptElement text`".
 
 1.  If |script|'s [=script text=] value is not equal to its [=child text content=],
     set |script|'s [=script text=] to the result of executing [$Get Trusted Type compliant string$], with the following arguments:
