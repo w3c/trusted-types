@@ -1118,7 +1118,7 @@ To <dfn abstract-op>Get Trusted Type data for attribute</dfn> given |element|, |
 Issue: The [=event handler content attribute=] concept used below is ambiguous. This spec needs a better mechanism to identify event handler attributes. See [https://github.com/w3c/trusted-types/issues/520](https://github.com/w3c/trusted-types/issues/520).
 
 1. Let |data| be null.
-1. If |attributeNs| is null, the [=list=] « [=HTML namespace=], [=SVG namespace=], [=MathML namespace=] » [=list contain|contains=] |element|'s [=element namespace|namespace=], and |attribute| is the name of an [=event handler content attribute=], then:
+1. If |attributeNs| is null, « [=HTML namespace=], [=SVG namespace=], [=MathML namespace=] » [=list contain|contains=] |element|'s [=element namespace|namespace=], and |attribute| is the name of an [=event handler content attribute=]:
     1. Return ({{Element}}, null, |attribute|, {{TrustedScript}}, "Element " + |attribute|).
 1. Find the row in the following table, where |element| is in the first column, |attributeNs| is in the second column,
     and |attribute| is in the third column.
