@@ -722,7 +722,7 @@ Its value is initially « ».
     <dt>factory</dt>
     <dd>[=this=] value</dd>
     <dt>policyName</dt>
-    <dd>|policyName|</dt>
+    <dd>|policyName|</dd>
     <dt>options</dt>
     <dd>|policyOptions|</dd>
     <dt>global</dt>
@@ -914,7 +914,7 @@ Each TrustedTypePolicy object has an associated {{TrustedTypePolicyOptions}} <df
     following arguments:
     <dl>
       <dt>policy</dt>
-      <dd>[=this=] value</dt>
+      <dd>[=this=] value</dd>
       <dt>trustedTypeName</dt>
       <dd>`"TrustedHTML"`</dd>
       <dt>value</dt>
@@ -929,7 +929,7 @@ Each TrustedTypePolicy object has an associated {{TrustedTypePolicyOptions}} <df
     following arguments:
     <dl>
       <dt>policy</dt>
-      <dd>[=this=] value</dt>
+      <dd>[=this=] value</dd>
       <dt>trustedTypeName</dt>
       <dd>`"TrustedScript"`</dd>
       <dt>value</dt>
@@ -945,7 +945,7 @@ Each TrustedTypePolicy object has an associated {{TrustedTypePolicyOptions}} <df
     following arguments:
     <dl>
       <dt>policy</dt>
-      <dd>[=this=] value</dt>
+      <dd>[=this=] value</dd>
       <dt>trustedTypeName</dt>
       <dd>`"TrustedScriptURL"`</dd>
       <dt>value</dt>
