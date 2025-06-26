@@ -245,6 +245,8 @@ spec:infra; urlPrefix: https://infra.spec.whatwg.org/
     type: dfn; text: XLink namespace; url: xlink-namespace
     type: dfn; text: list; url: list
     type: dfn; text: list contain; url: list-contain
+spec:webidl; urlPrefix: https://webidl.spec.whatwg.org/
+    type: dfn; text: invoke; url: invoke-a-callback-function
 </pre>
 
 <pre class="link-defaults">
@@ -1126,9 +1128,10 @@ a string |value|, a list |arguments|, and a boolean |throwIfMissing|, execute th
 1.  If |function| is `null`, then:
     1. If |throwIfMissing| throw a TypeError.
     1. Else return `null`.
-1.  Let |policyValue| be the result of invoking |function| with
-    |value| as a first argument, items of |arguments| as subsequent arguments,
-    and [[ECMASCRIPT#sec-method|callback **this** value]] set to `null`, rethrowing any exceptions.
+1.  Let |args| be « |value| ».
+1.  [=set/append|Append=] each item in |arguments| to |args|.
+1.  Let |policyValue| be the result of [=invoke|invoking=] |function| with
+    |args| and `"rethrow"`.
 1.  Return |policyValue|.
 
 ## <dfn abstract-op>Get Trusted Type compliant string</dfn> ## {#get-trusted-type-compliant-string-algorithm}
