@@ -1068,9 +1068,9 @@ To create a {{TrustedTypePolicy}}, given a {{TrustedTypePolicyFactory}} (|factor
 a string (|policyName|), {{TrustedTypePolicyOptions}} dictionary (|options|), and a
 [=realm/global object=] (|global|) run these steps:
 
-1.  Let |allowedByCSP| be the result of executing [$Should Trusted Type policy
-    creation be blocked by Content Security Policy?$] algorithm with |global|,
-    |policyName| and |factory|'s [=created policy names=] value.
+1.  Let |allowedByCSP| be the result of [$Should Trusted Type policy
+    creation be blocked by Content Security Policy?$] given |global|,
+    |policyName|, and |factory|'s [=created policy names=] value.
 1.  If |allowedByCSP| is `"Blocked"`, throw a TypeError and abort further steps.
 1.  If |policyName| is `default` and the |factory|'s [=TrustedTypePolicyFactory/default policy=]
     value is not null, throw a TypeError and abort further steps.
@@ -1090,7 +1090,8 @@ a string (|policyName|), {{TrustedTypePolicyOptions}} dictionary (|options|), an
 Given a {{TrustedTypePolicy}} |policy|, a type name |trustedTypeName|,
 a string |value| and a list |arguments|, execute the following steps:
 
-1.  Let |policyValue| be the result of executing [$Get Trusted Type policy value$] with the same arguments as this algorithm and additionally true as |throwIfMissing|.
+1.  Let |policyValue| be the result of [$Get Trusted Type policy value$] given |policy|, |trustedTypeName|, |value|,
+    |arguments|, and `true`.
 1.  If the algorithm threw an error, rethrow the error and abort the following steps.
 1.  Let |dataString| be the result of stringifying |policyValue|.
 1.  If |policyValue| is null or undefined, set |dataString| to the empty string.
@@ -1143,16 +1144,16 @@ It will ensure that the Trusted Type [=enforcement=] rules were respected.
 Given a {{TrustedType}} type (|expectedType|), a [=realm/global object=] (|global|),
 {{TrustedType}} or a string (|input|), a string (|sink|) and a string (|sinkGroup|), run these steps:
 
-1.  If |input| is an instance of |expectedType|, return stringified
-    |input| and abort these steps.
-1.  Let |requireTrustedTypes| be the result of executing [$Does sink type require trusted types?$] algorithm,
-    passing |global|, |sinkGroup|, and true.
+1.  If |input| is an instance of |expectedType|, return stringified |input| and abort these steps.
+1.  Let |requireTrustedTypes| be the result of [$Does sink type require trusted types?$] given
+    |global|, |sinkGroup|, and true.
 1.  If |requireTrustedTypes| is `false`, return stringified |input| and abort these steps.
-1.  Let |convertedInput| be the result of executing [$Process value with a default policy$] with the same arguments as this algorithm.
+1.  Let |convertedInput| be the result of [$Process value with a default policy|processing value with a default policy$]
+    given |expectedType|, |global|, |input|, |sink|.
 1.  If the algorithm threw an error, rethrow the error and abort the following steps.
 1.  If |convertedInput| is `null` or `undefined`, execute the following steps:
-    1.  Let |disposition| be the result of executing [$Should sink type mismatch violation be blocked by Content Security Policy?$] algorithm,
-        passing |global|, stringified |input| as |source|, |sinkGroup| and |sink|.
+    1.  Let |disposition| be the result of [$Should sink type mismatch violation be blocked by Content Security Policy?$]
+        given |global|, stringified |input|, |sinkGroup|, and |sink|.
     1.  If |disposition| is `“Allowed”`, return stringified |input| and abort further steps.
 
         Note: This step assures that the default policy rejection will be reported, but ignored in a report-only mode.
@@ -1168,12 +1169,8 @@ Given a {{TrustedType}} type (|expectedType|), a [=realm/global object=] (|globa
 {{TrustedType}} or a string (|input|), and a string (|sink|), run these steps:
 
 1.  Let |defaultPolicy| be the value of |global|'s [=Window/trusted type policy factory=]'s [=TrustedTypePolicyFactory/default policy=].
-1.  Let |policyValue| be the result of executing [$Get Trusted Type policy value$], with the following arguments:
-     *  |defaultPolicy| as |policy|
-     *  stringified |input| as |value|
-     *  |expectedType|’s type name as |trustedTypeName|
-     *  &laquo; |trustedTypeName|, |sink| &raquo; as |arguments|
-     *  false as |throwIfMissing|
+1.  Let |policyValue| be the result of [$Get Trusted Type policy value$] given |defaultPolicy|, stringified |input|,
+    |expectedType|'s type name, &laquo; |trustedTypeName|, |sink| &raquo;, and `false`.
 1.  If the algorithm threw an error, rethrow the error and abort the following steps.
 1.  If |policyValue| is null or undefined, return |policyValue|.
 1.  Let |dataString| be the result of stringifying |policyValue|.
@@ -1187,12 +1184,9 @@ Given an {{HTMLScriptElement}} or {{SVGScriptElement}} (|script|), this algorith
 1.  Let |sink| be "`HTMLScriptElement text`" if |script| is an {{HTMLScriptElement}}; otherwise "`SVGScriptElement text`".
 
 1.  If |script|'s [=script text=] value is not equal to its [=child text content=],
-    set |script|'s [=script text=] to the result of executing [$Get Trusted Type compliant string$], with the following arguments:
-      * {{TrustedScriptURL}} as |expectedType|,
-      * |script|'s {{Document}}'s [=relevant global object=] as |global|,
-      * |script|'s [=child text content=] attribute value as |input|,
-      * |sink|,
-      * `'script'` as |sinkGroup|.
+    set |script|'s [=script text=] to the result of [$Get Trusted Type compliant string$] given {{TrustedScriptURL}},
+    |script|'s {{Document}}'s [=relevant global object=], |script|'s [=child text content=] attribute value, |sink|,
+    and `'script'`.
 
     If the algorithm threw an error, rethrow the error.
 
@@ -1200,22 +1194,15 @@ Given an {{HTMLScriptElement}} or {{SVGScriptElement}} (|script|), this algorith
 To <dfn abstract-op export>get Trusted Types-compliant attribute value</dfn> given a string |attributeName|, string |attributeNs|, {{Element}} |element| and {{TrustedType}} or a string |newValue|, perform the following steps:
 
 1. If |attributeNs| is the empty string, set |attributeNs| to null.
-1. Set |attributeData| to the result of [$Get Trusted Type data for attribute$] algorithm, with the following arguments:
-    * |element|
-    * |attributeName|
-    * |attributeNs|
+1. Set |attributeData| to the result of [$Get Trusted Type data for attribute$] given |element|, |attributeName|, |attributeNs|.
 1. If |attributeData| is null, then:
     1. If |newValue| is a string, return |newValue|.
     1. <a>Assert</a>: |newValue| is {{TrustedHTML}} or {{TrustedScript}} or {{TrustedScriptURL}}.
     1. Return |value|'s associated data.
 1. Let |expectedType| be the value of the fourth member of |attributeData|.
 1. Let |sink| be the value of the fifth member of |attributeData|.
-1. Return the result of executing [$Get Trusted Type compliant string$] with the following arguments:
-     * |expectedType|
-     * |newValue| as |input|
-     * |element|'s <a>node document</a>'s <a>relevant global object</a> as |global|
-     * |sink|
-     * 'script' as |sinkGroup|
+1. Return the result of [$Get Trusted Type compliant string$] given |expectedType|, |newValue|
+   |element|'s <a>node document</a>'s <a>relevant global object</a>, |sink|, and `script`.
 
    If the algorithm threw an error, rethrow the error.
 
@@ -1444,12 +1431,8 @@ Note: This algorithm assures that the code to be executed by a navigation to a `
 1. If |request|'s [=request/url=]'s [=url/scheme=] is not `"javascript"`, return `"Allowed"` and abort further steps.
 1. Let |urlString| be the result of running the [=URL serializer=] on |request|'s [=request/url=].
 1. Let |encodedScriptSource| be the result of removing the leading `"javascript:"` from |urlString|.
-1. Let |convertedScriptSource| be the result of executing [$Process value with a default policy$] algorithm, with the following arguments:
-
-    * {{TrustedScript}} as |expectedType|
-    * |request|'s [=request/clients=]'s [=environment settings object/global object=] as |global|
-    * |encodedScriptSource| as |input|
-    * `"Location href"` as |sink|
+1. Let |convertedScriptSource| be the result of [$Process value with a default policy|processing value with a default policy$] given {{TrustedScript}},
+|request|'s [=request/clients=]'s [=environment settings object/global object=], |encodedScriptSource|, `"Location href"`.
 
     If that algorithm threw an error or |convertedScriptSource| is not a {{TrustedScript}} object, return "Blocked" and abort further steps.
 1. Set |urlString| to be the result of prepending `"javascript:"` to stringified |convertedScriptSource|.
@@ -1556,9 +1539,9 @@ returns `"Blocked"` if the [=injection sink=] requires a [=Trusted Type=], and
         is `"require-trusted-types-for"`
     1.  If |directive|'s [=directive/value=] does not contain a <a>trusted-types-sink-group</a> which is a match
         for |sinkGroup|, skip to the next |policy|.
-    1.  Let |violation| be the result of executing
-        [[CSP#create-violation-for-global|Create a violation object for global, policy, and directive]]
-        on |global|, |policy| and `"require-trusted-types-for"`
+    1.  Let |violation| be the result of
+        [[CSP#create-violation-for-global|Creating a violation object]]
+        with |global|, |policy| and `"require-trusted-types-for"`
     1. Set |violation|'s [=violation/resource=] to `"trusted-types-sink"`.
     1. Let |trimmedSample| be the substring of |sample|, containing its first 40 characters.
     1. Set |violation|'s [=violation/sample=] to be the result of [=concatenating=] the list &laquo; |sink|, |trimmedSample| &laquo; using `"|"` as a separator.
@@ -1596,8 +1579,8 @@ strings (|createdPolicyNames|), this algorithm returns `"Blocked"` if the
         Note: `trusted-types *` allows authors to create policies with any unique names. To allow for multiple policies with the same name, use
         `trusted-types * 'allow-duplicates'` or don't set the `trusted-types` directive at all.
     1.  If |createViolation| is false, skip to the next |policy|.
-    1.  Let |violation| be the result of executing
-        [[CSP#create-violation-for-global|Create a violation object for global, policy, and directive]] on |global|, |policy| and
+    1.  Let |violation| be the result of
+        [[CSP#create-violation-for-global|Creating a violation object]] with |global|, |policy| and
         `"trusted-types"`
     1. Set |violation|'s [=violation/resource=] to `"trusted-types-policy"`.
     1. Set |violation|'s [=violation/sample=] to the substring of |policyName|, containing its first 40 characters.
