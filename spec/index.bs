@@ -1201,10 +1201,10 @@ To <dfn abstract-op export>get Trusted Types-compliant attribute value</dfn> giv
     1. Return |value|'s associated data.
 1. Let |expectedType| be the value of the fourth member of |attributeData|.
 1. Let |sink| be the value of the fifth member of |attributeData|.
-1. Return the result of [$Get Trusted Type compliant string$] given |expectedType|, |newValue|
-   |element|'s <a>node document</a>'s <a>relevant global object</a>, |sink|, and `script`.
+1. Return the result of [$Get Trusted Type compliant string$] given |expectedType|, |newValue|, |element|'s
+    <a>node document</a>'s <a>relevant global object</a>, |sink|, and `script`.
 
-   If the algorithm threw an error, rethrow the error.
+    If the algorithm threw an error, rethrow the error.
 
 ## Get Trusted Type data for attribute ## {#get-trusted-type-data-for-attribute}
 To <dfn abstract-op>Get Trusted Type data for attribute</dfn> given |element|, |attribute|, |attributeNs|, perform the following steps:
@@ -1432,7 +1432,7 @@ Note: This algorithm assures that the code to be executed by a navigation to a `
 1. Let |urlString| be the result of running the [=URL serializer=] on |request|'s [=request/url=].
 1. Let |encodedScriptSource| be the result of removing the leading `"javascript:"` from |urlString|.
 1. Let |convertedScriptSource| be the result of [$Process value with a default policy|processing value with a default policy$] given {{TrustedScript}},
-|request|'s [=request/clients=]'s [=environment settings object/global object=], |encodedScriptSource|, `"Location href"`.
+    |request|'s [=request/clients=]'s [=environment settings object/global object=], |encodedScriptSource|, `"Location href"`.
 
     If that algorithm threw an error or |convertedScriptSource| is not a {{TrustedScript}} object, return "Blocked" and abort further steps.
 1. Set |urlString| to be the result of prepending `"javascript:"` to stringified |convertedScriptSource|.
