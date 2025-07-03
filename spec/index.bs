@@ -1197,12 +1197,13 @@ Given an {{HTMLScriptElement}} or {{SVGScriptElement}} (|script|), this algorith
     If the algorithm threw an error, rethrow the error.
 
 ## Get Trusted Types-compliant attribute value ## {#validate-attribute-mutation}
-To <dfn abstract-op export>get Trusted Types-compliant attribute value</dfn> on {{Attr}} |attribute| with {{Element}} |element| and {{TrustedType}} or a string |newValue|, perform the following steps:
+To <dfn abstract-op export>get Trusted Types-compliant attribute value</dfn> given a string |attributeName|, string |attributeNs|, {{Element}} |element| and {{TrustedType}} or a string |newValue|, perform the following steps:
 
+1. If |attributeNs| is the empty string, set |attributeNs| to null.
 1. Set |attributeData| to the result of [$Get Trusted Type data for attribute$] algorithm, with the following arguments:
     * |element|
-    * |attribute|'s <a for="Attr">local name</a> as |attribute|
-    * |attribute|'s <a for="Attr">namespace</a> as |attributeNs|
+    * |attributeName|
+    * |attributeNs|
 1. If |attributeData| is null, then:
     1. If |newValue| is a string, return |newValue|.
     1. <a>Assert</a>: |newValue| is {{TrustedHTML}} or {{TrustedScript}} or {{TrustedScriptURL}}.
