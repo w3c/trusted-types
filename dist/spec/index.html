@@ -5,9 +5,9 @@
   <title>Trusted Types</title>
   <meta content="ED" name="w3c-status">
   <link href="https://www.w3.org/StyleSheets/TR/2021/W3C-ED" rel="stylesheet">
-  <meta content="Bikeshed version 275834c42, updated Wed Jun 11 14:18:15 2025 -0700" name="generator">
+  <meta content="Bikeshed version 618007319, updated Thu Jun 26 17:23:55 2025 -0700" name="generator">
   <link href="https://www.w3.org/TR/trusted-types/" rel="canonical">
-  <meta content="a63d3cd7a344001ee98e10bec52483bf419f3194" name="revision">
+  <meta content="bdaf020c505d4a17167eb28a6ef56f706119d467" name="revision">
   <meta content="dark light" name="color-scheme">
   <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
 <style>/* Boilerplate: style-autolinks */
@@ -1060,7 +1060,7 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
 </p>
    <h1 class="p-name no-ref" id="title">Trusted Types</h1>
    <p id="w3c-state"><a href="https://www.w3.org/standards/types/#ED">Editor’s Draft</a>,
-    <time class="dt-updated" datetime="2025-06-26">26 June 2025</time></p>
+    <time class="dt-updated" datetime="2025-07-03">3 July 2025</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -1127,7 +1127,7 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
 	W3C maintains a <a href="https://www.w3.org/groups/wg/webappsec/ipr" rel="disclosure">public list of any patent disclosures</a>
 	made in connection with the deliverables of the group;
 	that page also includes instructions for disclosing a patent.
-	An individual who has actual knowledge of a patent which the individual believes contains <a href="https://www.w3.org/policies/patent-policy/#def-essential">Essential Claim(s)</a>
+	An individual who has actual knowledge of a patent that the individual believes contains <a href="https://www.w3.org/policies/patent-policy/#def-essential">Essential Claim(s)</a>
 	must disclose the information in accordance with <a href="https://www.w3.org/policies/patent-policy/#sec-Disclosure">section 6 of the W3C Patent Policy</a>.
 
 </p>
@@ -2309,9 +2309,12 @@ based on the following table:</p>
        <p>Else return <code>null</code>.</p>
      </ol>
     <li data-md>
-     <p>Let <var>policyValue</var> be the result of invoking <var>function</var> with
-<var>value</var> as a first argument, items of <var>arguments</var> as subsequent arguments,
-and <a href="https://tc39.es/ecma262/multipage/overview.html#sec-method">callback <strong>this</strong> value</a> set to <code>null</code>, rethrowing any exceptions.</p>
+     <p>Let <var>args</var> be « <var>value</var> ».</p>
+    <li data-md>
+     <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#set-append" id="ref-for-set-append①">Append</a> each item in <var>arguments</var> to <var>args</var>.</p>
+    <li data-md>
+     <p>Let <var>policyValue</var> be the result of <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#invoke-a-callback-function" id="ref-for-invoke-a-callback-function">invoking</a> <var>function</var> with
+<var>args</var> and <code>"rethrow"</code>.</p>
     <li data-md>
      <p>Return <var>policyValue</var>.</p>
    </ol>
@@ -3245,6 +3248,7 @@ execution, violation generation, or the rejection of the value.</p>
      <li><span class="dfn-paneled" id="b0d7f3c3">USVString</span>
      <li><span class="dfn-paneled" id="6c6b1005">any</span>
      <li><span class="dfn-paneled" id="5372cca8">boolean</span>
+     <li><span class="dfn-paneled" id="10ce5f6f">invoke</span>
      <li><span class="dfn-paneled" id="4013a022">this</span>
     </ul>
   </ul>
@@ -3255,8 +3259,6 @@ execution, violation generation, or the rejection of the value.</p>
    <dd>Mike West; Antonio Sartori. <a href="https://w3c.github.io/webappsec-csp/"><cite>Content Security Policy Level 3</cite></a>. URL: <a href="https://w3c.github.io/webappsec-csp/">https://w3c.github.io/webappsec-csp/</a>
    <dt id="biblio-dom">[DOM]
    <dd>Anne van Kesteren. <a href="https://dom.spec.whatwg.org/"><cite>DOM Standard</cite></a>. Living Standard. URL: <a href="https://dom.spec.whatwg.org/">https://dom.spec.whatwg.org/</a>
-   <dt id="biblio-ecmascript">[ECMASCRIPT]
-   <dd><a href="https://tc39.es/ecma262/multipage/"><cite>ECMAScript Language Specification</cite></a>. URL: <a href="https://tc39.es/ecma262/multipage/">https://tc39.es/ecma262/multipage/</a>
    <dt id="biblio-fetch">[Fetch]
    <dd>Anne van Kesteren. <a href="https://fetch.spec.whatwg.org/"><cite>Fetch Standard</cite></a>. Living Standard. URL: <a href="https://fetch.spec.whatwg.org/">https://fetch.spec.whatwg.org/</a>
    <dt id="biblio-fileapi">[FileAPI]
@@ -3276,6 +3278,8 @@ execution, violation generation, or the rejection of the value.</p>
   </dl>
   <h3 class="no-num no-ref heading settled" id="informative"><span class="content">Informative References</span><a class="self-link" href="#informative"></a></h3>
   <dl>
+   <dt id="biblio-ecmascript">[ECMASCRIPT]
+   <dd><a href="https://tc39.es/ecma262/multipage/"><cite>ECMAScript Language Specification</cite></a>. URL: <a href="https://tc39.es/ecma262/multipage/">https://tc39.es/ecma262/multipage/</a>
    <dt id="biblio-html-design-principles">[HTML-DESIGN-PRINCIPLES]
    <dd>Anne van Kesteren; Maciej Stachowiak. <a href="https://www.w3.org/TR/html-design-principles/"><cite>HTML Design Principles</cite></a>. 26 November 2007. WD. URL: <a href="https://www.w3.org/TR/html-design-principles/">https://www.w3.org/TR/html-design-principles/</a>
    <dt id="biblio-html5">[HTML5]
@@ -3902,6 +3906,7 @@ function parseHTML(markup) {
 "use strict";
 {
 let dfnPanelData = {
+"10ce5f6f": {"dfnID":"10ce5f6f","dfnText":"invoke","external":true,"refSections":[{"refs":[{"id":"ref-for-invoke-a-callback-function"}],"title":"3.3. Get Trusted Type policy value"}],"url":"https://webidl.spec.whatwg.org/#invoke-a-callback-function"},
 "10e25f42": {"dfnID":"10e25f42","dfnText":"HTMLIFrameElement","external":true,"refSections":[{"refs":[{"id":"ref-for-htmliframeelement"}],"title":"2.3.1. TrustedTypePolicyFactory"},{"refs":[{"id":"ref-for-htmliframeelement\u2460"}],"title":"3.8. Get Trusted Type data for attribute"}],"url":"https://html.spec.whatwg.org/multipage/iframe-embed-object.html#htmliframeelement"},
 "138270ef": {"dfnID":"138270ef","dfnText":"CSP list","external":true,"refSections":[{"refs":[{"id":"ref-for-global-object-csp-list"}],"title":"4.3.3. Does sink type require trusted types?"},{"refs":[{"id":"ref-for-global-object-csp-list\u2460"}],"title":"4.3.4. Should sink type mismatch violation be blocked by Content Security Policy?"},{"refs":[{"id":"ref-for-global-object-csp-list\u2461"}],"title":"4.3.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}],"url":"https://w3c.github.io/webappsec-csp/#global-object-csp-list"},
 "168f1b6e": {"dfnID":"168f1b6e","dfnText":"global object (for realm)","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-realm-global"}],"title":"3.1. Create a Trusted Type Policy"},{"refs":[{"id":"ref-for-concept-realm-global\u2460"}],"title":"3.4. Get Trusted Type compliant string"},{"refs":[{"id":"ref-for-concept-realm-global\u2461"}],"title":"3.5. Process value with a default policy"},{"refs":[{"id":"ref-for-concept-realm-global\u2462"}],"title":"4.3.3. Does sink type require trusted types?"},{"refs":[{"id":"ref-for-concept-realm-global\u2463"}],"title":"4.3.4. Should sink type mismatch violation be blocked by Content Security Policy?"},{"refs":[{"id":"ref-for-concept-realm-global\u2464"}],"title":"4.3.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global"},
@@ -3946,7 +3951,7 @@ let dfnPanelData = {
 "9e196595": {"dfnID":"9e196595","dfnText":"script-src","external":true,"refSections":[{"refs":[{"id":"ref-for-script-src"}],"title":"1.2. Non-goals"}],"url":"https://w3c.github.io/webappsec-csp/#script-src"},
 "9e1b2fe2": {"dfnID":"9e1b2fe2","dfnText":"set text content","external":true,"refSections":[{"refs":[{"id":"ref-for-set-text-content"}],"title":"4.1.2.3. The textContent IDL attribute"}],"url":"https://dom.spec.whatwg.org/#set-text-content"},
 "a264b960": {"dfnID":"a264b960","dfnText":"innerText","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-innertext"}],"title":"4.1.2. Enforcement for scripts"}],"url":"https://html.spec.whatwg.org/multipage/dom.html#dom-innertext"},
-"a3b18719": {"dfnID":"a3b18719","dfnText":"append","external":true,"refSections":[{"refs":[{"id":"ref-for-set-append"}],"title":"3.1. Create a Trusted Type Policy"}],"url":"https://infra.spec.whatwg.org/#set-append"},
+"a3b18719": {"dfnID":"a3b18719","dfnText":"append","external":true,"refSections":[{"refs":[{"id":"ref-for-set-append"}],"title":"3.1. Create a Trusted Type Policy"},{"refs":[{"id":"ref-for-set-append\u2460"}],"title":"3.3. Get Trusted Type policy value"}],"url":"https://infra.spec.whatwg.org/#set-append"},
 "abstract-opdef-create-a-trusted-type": {"dfnID":"abstract-opdef-create-a-trusted-type","dfnText":"Create a Trusted Type","external":false,"refSections":[{"refs":[{"id":"ref-for-abstract-opdef-create-a-trusted-type"},{"id":"ref-for-abstract-opdef-create-a-trusted-type\u2460"},{"id":"ref-for-abstract-opdef-create-a-trusted-type\u2461"}],"title":"2.3.2. TrustedTypePolicy"}],"url":"#abstract-opdef-create-a-trusted-type"},
 "abstract-opdef-create-a-trusted-type-policy": {"dfnID":"abstract-opdef-create-a-trusted-type-policy","dfnText":"Create a Trusted Type Policy","external":false,"refSections":[{"refs":[{"id":"ref-for-abstract-opdef-create-a-trusted-type-policy"}],"title":"2.3.1. TrustedTypePolicyFactory"}],"url":"#abstract-opdef-create-a-trusted-type-policy"},
 "abstract-opdef-does-sink-type-require-trusted-types": {"dfnID":"abstract-opdef-does-sink-type-require-trusted-types","dfnText":"Does sink type require trusted types?","external":false,"refSections":[{"refs":[{"id":"ref-for-abstract-opdef-does-sink-type-require-trusted-types"}],"title":"3.4. Get Trusted Type compliant string"}],"url":"#abstract-opdef-does-sink-type-require-trusted-types"},
@@ -4658,6 +4663,7 @@ let refsData = {
 "https://webidl.spec.whatwg.org/#idl-USVString": {"displayText":"USVString","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"USVString","type":"interface","url":"https://webidl.spec.whatwg.org/#idl-USVString"},
 "https://webidl.spec.whatwg.org/#idl-any": {"displayText":"any","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"any","type":"interface","url":"https://webidl.spec.whatwg.org/#idl-any"},
 "https://webidl.spec.whatwg.org/#idl-boolean": {"displayText":"boolean","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"boolean","type":"interface","url":"https://webidl.spec.whatwg.org/#idl-boolean"},
+"https://webidl.spec.whatwg.org/#invoke-a-callback-function": {"displayText":"invoke","export":true,"for_":[],"level":"","normative":true,"shortname":"webidl","spec":"webidl","status":"anchor-block","text":"invoke","type":"dfn","url":"https://webidl.spec.whatwg.org/#invoke-a-callback-function"},
 "https://webidl.spec.whatwg.org/#this": {"displayText":"this","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"this","type":"dfn","url":"https://webidl.spec.whatwg.org/#this"},
 };
 
