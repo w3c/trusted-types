@@ -1190,7 +1190,7 @@ Given an {{HTMLScriptElement}} or {{SVGScriptElement}} (|script|), this algorith
     set |script|'s [=script text=] to the result of executing [$Get Trusted Type compliant string$], with the following arguments:
       * {{TrustedScriptURL}} as |expectedType|,
       * |script|'s {{Document}}'s [=relevant global object=] as |global|,
-      * |script|'s [=child text content=] attribute value,
+      * |script|'s [=child text content=] attribute value as |input|,
       * |sink|,
       * `'script'` as |sinkGroup|.
 
