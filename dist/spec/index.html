@@ -7,7 +7,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/W3C-ED" rel="stylesheet">
   <meta content="Bikeshed version 618007319, updated Thu Jun 26 17:23:55 2025 -0700" name="generator">
   <link href="https://www.w3.org/TR/trusted-types/" rel="canonical">
-  <meta content="bdaf020c505d4a17167eb28a6ef56f706119d467" name="revision">
+  <meta content="f69c6ae61ddfa34b6293d78a625e1875fd223a7a" name="revision">
   <meta content="dark light" name="color-scheme">
   <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
 <style>/* Boilerplate: style-autolinks */
@@ -2409,19 +2409,21 @@ set <var>script</var>’s <a data-link-type="dfn" href="#htmlscriptelement-scrip
    </ol>
    <h3 class="heading settled" data-level="3.7" id="validate-attribute-mutation"><span class="secno">3.7. </span><span class="content">Get Trusted Types-compliant attribute value</span><a class="self-link" href="#validate-attribute-mutation"></a></h3>
    
-To <dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-get-trusted-types-compliant-attribute-value">get Trusted Types-compliant attribute value</dfn> on <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#attr" id="ref-for-attr">Attr</a></code> <var>attribute</var> with <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#element" id="ref-for-element④">Element</a></code> <var>element</var> and <code class="idl"><a data-link-type="idl" href="#typedefdef-trustedtype" id="ref-for-typedefdef-trustedtype④">TrustedType</a></code> or a string <var>newValue</var>, perform the following steps:
+To <dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-get-trusted-types-compliant-attribute-value">get Trusted Types-compliant attribute value</dfn> given a string <var>attributeName</var>, string <var>attributeNs</var>, <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#element" id="ref-for-element④">Element</a></code> <var>element</var> and <code class="idl"><a data-link-type="idl" href="#typedefdef-trustedtype" id="ref-for-typedefdef-trustedtype④">TrustedType</a></code> or a string <var>newValue</var>, perform the following steps:
 
 
    <ol>
+    <li data-md>
+     <p>If <var>attributeNs</var> is the empty string, set <var>attributeNs</var> to null.</p>
     <li data-md>
      <p>Set <var>attributeData</var> to the result of <a data-link-type="abstract-op" href="#abstract-opdef-get-trusted-type-data-for-attribute" id="ref-for-abstract-opdef-get-trusted-type-data-for-attribute①">Get Trusted Type data for attribute</a> algorithm, with the following arguments:</p>
      <ul>
       <li data-md>
        <p><var>element</var></p>
       <li data-md>
-       <p><var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-local-name" id="ref-for-concept-attribute-local-name">local name</a> as <var>attribute</var></p>
+       <p><var>attributeName</var></p>
       <li data-md>
-       <p><var>attribute</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-attribute-namespace" id="ref-for-concept-attribute-namespace">namespace</a> as <var>attributeNs</var></p>
+       <p><var>attributeNs</var></p>
      </ul>
     <li data-md>
      <p>If <var>attributeData</var> is null, then:</p>
@@ -3160,15 +3162,12 @@ execution, violation generation, or the rejection of the value.</p>
    <li>
     <a data-link-type="biblio">[DOM]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="99573380">Attr</span>
      <li><span class="dfn-paneled" id="85394472">Document</span>
      <li><span class="dfn-paneled" id="296f3551">Element</span>
      <li><span class="dfn-paneled" id="631f76db">child text content</span>
      <li><span class="dfn-paneled" id="f20f4175">element interface</span>
      <li><span class="dfn-paneled" id="e02495ec">element namespace</span>
      <li><span class="dfn-paneled" id="e1f8b538">get text content</span>
-     <li><span class="dfn-paneled" id="e240317a">local name</span>
-     <li><span class="dfn-paneled" id="b3955a25">namespace</span>
      <li><span class="dfn-paneled" id="5216e1a0">node document</span>
      <li><span class="dfn-paneled" id="9e1b2fe2">set text content</span>
      <li><span class="dfn-paneled" id="5dbae2b0">string replace all</span>
@@ -3947,7 +3946,6 @@ let dfnPanelData = {
 "889e932f": {"dfnID":"889e932f","dfnText":"Exposed","external":true,"refSections":[{"refs":[{"id":"ref-for-Exposed"}],"title":"2.2.1. TrustedHTML"},{"refs":[{"id":"ref-for-Exposed\u2460"}],"title":"2.2.2. TrustedScript"},{"refs":[{"id":"ref-for-Exposed\u2461"}],"title":"2.2.3. TrustedScriptURL"},{"refs":[{"id":"ref-for-Exposed\u2462"}],"title":"2.3.1. TrustedTypePolicyFactory"},{"refs":[{"id":"ref-for-Exposed\u2463"}],"title":"2.3.2. TrustedTypePolicy"}],"url":"https://webidl.spec.whatwg.org/#Exposed"},
 "8a30477b": {"dfnID":"8a30477b","dfnText":"global object (for environment settings object)","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-settings-object-global"}],"title":"4.3.1.1. require-trusted-types-for Pre-Navigation check"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-global"},
 "8d48cf32": {"dfnID":"8d48cf32","dfnText":"event handler content attribute","external":true,"refSections":[{"refs":[{"id":"ref-for-event-handler-content-attributes"},{"id":"ref-for-event-handler-content-attributes\u2460"}],"title":"3.8. Get Trusted Type data for attribute"}],"url":"https://html.spec.whatwg.org/#event-handler-content-attributes"},
-"99573380": {"dfnID":"99573380","dfnText":"Attr","external":true,"refSections":[{"refs":[{"id":"ref-for-attr"}],"title":"3.7. Get Trusted Types-compliant attribute value"}],"url":"https://dom.spec.whatwg.org/#attr"},
 "9e196595": {"dfnID":"9e196595","dfnText":"script-src","external":true,"refSections":[{"refs":[{"id":"ref-for-script-src"}],"title":"1.2. Non-goals"}],"url":"https://w3c.github.io/webappsec-csp/#script-src"},
 "9e1b2fe2": {"dfnID":"9e1b2fe2","dfnText":"set text content","external":true,"refSections":[{"refs":[{"id":"ref-for-set-text-content"}],"title":"4.1.2.3. The textContent IDL attribute"}],"url":"https://dom.spec.whatwg.org/#set-text-content"},
 "a264b960": {"dfnID":"a264b960","dfnText":"innerText","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-innertext"}],"title":"4.1.2. Enforcement for scripts"}],"url":"https://html.spec.whatwg.org/multipage/dom.html#dom-innertext"},
@@ -3964,7 +3962,6 @@ let dfnPanelData = {
 "abstract-opdef-should-sink-type-mismatch-violation-be-blocked-by-content-security-policy": {"dfnID":"abstract-opdef-should-sink-type-mismatch-violation-be-blocked-by-content-security-policy","dfnText":"Should sink type mismatch violation be blocked by Content Security Policy?","external":false,"refSections":[{"refs":[{"id":"ref-for-abstract-opdef-should-sink-type-mismatch-violation-be-blocked-by-content-security-policy"}],"title":"3.4. Get Trusted Type compliant string"}],"url":"#abstract-opdef-should-sink-type-mismatch-violation-be-blocked-by-content-security-policy"},
 "abstract-opdef-should-trusted-type-policy-creation-be-blocked-by-content-security-policy": {"dfnID":"abstract-opdef-should-trusted-type-policy-creation-be-blocked-by-content-security-policy","dfnText":"Should Trusted Type policy creation be blocked by Content Security Policy?","external":false,"refSections":[{"refs":[{"id":"ref-for-abstract-opdef-should-trusted-type-policy-creation-be-blocked-by-content-security-policy"}],"title":"3.1. Create a Trusted Type Policy"}],"url":"#abstract-opdef-should-trusted-type-policy-creation-be-blocked-by-content-security-policy"},
 "b0d7f3c3": {"dfnID":"b0d7f3c3","dfnText":"USVString","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-USVString"}],"title":"2.2.3. TrustedScriptURL"},{"refs":[{"id":"ref-for-idl-USVString\u2460"}],"title":"2.3.3. TrustedTypePolicyOptions"},{"refs":[{"id":"ref-for-idl-USVString\u2461"}],"title":"4.1.2. Enforcement for scripts"}],"url":"https://webidl.spec.whatwg.org/#idl-USVString"},
-"b3955a25": {"dfnID":"b3955a25","dfnText":"namespace","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-attribute-namespace"}],"title":"3.7. Get Trusted Types-compliant attribute value"}],"url":"https://dom.spec.whatwg.org/#concept-attribute-namespace"},
 "b75a7d23": {"dfnID":"b75a7d23","dfnText":"realm","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-global-object-realm"}],"title":"2.3. Policies"},{"refs":[{"id":"ref-for-concept-global-object-realm\u2460"}],"title":"4.3.1. require-trusted-types-for directive"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#concept-global-object-realm"},
 "b7d73f5b": {"dfnID":"b7d73f5b","dfnText":"Blob","external":true,"refSections":[{"refs":[{"id":"ref-for-dfn-Blob"},{"id":"ref-for-dfn-Blob\u2460"}],"title":"5.1. Cross-document vectors"}],"url":"https://w3c.github.io/FileAPI/#dfn-Blob"},
 "b815ad04": {"dfnID":"b815ad04","dfnText":"parseFromString(string, type)","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-domparser-parsefromstring"}],"title":"2.1.1. DOM XSS injection sinks"}],"url":"https://html.spec.whatwg.org/multipage/dynamic-markup-insertion.html#dom-domparser-parsefromstring"},
@@ -4034,7 +4031,6 @@ let dfnPanelData = {
 "e02495ec": {"dfnID":"e02495ec","dfnText":"element namespace","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-element-namespace"}],"title":"3.8. Get Trusted Type data for attribute"}],"url":"https://dom.spec.whatwg.org/#concept-element-namespace"},
 "e19f3699": {"dfnID":"e19f3699","dfnText":"XLink namespace","external":true,"refSections":[{"refs":[{"id":"ref-for-xlink-namespace"}],"title":"3.8. Get Trusted Type data for attribute"}],"url":"https://infra.spec.whatwg.org/#xlink-namespace"},
 "e1f8b538": {"dfnID":"e1f8b538","dfnText":"get text content","external":true,"refSections":[{"refs":[{"id":"ref-for-get-text-content"}],"title":"4.1.2.3. The textContent IDL attribute"}],"url":"https://dom.spec.whatwg.org/#get-text-content"},
-"e240317a": {"dfnID":"e240317a","dfnText":"local name","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-attribute-local-name"}],"title":"3.7. Get Trusted Types-compliant attribute value"}],"url":"https://dom.spec.whatwg.org/#concept-attribute-local-name"},
 "e7762445": {"dfnID":"e7762445","dfnText":"reentrant invocation of the parser","external":true,"refSections":[{"refs":[{"id":"ref-for-nestedParsing"}],"title":"4.1.2.6. Setting slot values from parser"}],"url":"https://html.spec.whatwg.org/#nestedParsing"},
 "e99bd18e": {"dfnID":"e99bd18e","dfnText":"relevant global object","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-relevant-global"}],"title":"2.3.1. TrustedTypePolicyFactory"},{"refs":[{"id":"ref-for-concept-relevant-global\u2460"}],"title":"3.6. Prepare the script text"},{"refs":[{"id":"ref-for-concept-relevant-global\u2461"}],"title":"3.7. Get Trusted Types-compliant attribute value"},{"refs":[{"id":"ref-for-concept-relevant-global\u2462"}],"title":"4.1.1. Extensions to the WindowOrWorkerGlobalScope interface"},{"refs":[{"id":"ref-for-concept-relevant-global\u2463"}],"title":"4.1.2.2. The innerText IDL attribute"},{"refs":[{"id":"ref-for-concept-relevant-global\u2464"}],"title":"4.1.2.3. The textContent IDL attribute"},{"refs":[{"id":"ref-for-concept-relevant-global\u2465"}],"title":"4.1.2.4. The text IDL attribute"},{"refs":[{"id":"ref-for-concept-relevant-global\u2466"}],"title":"4.1.2.5. The src IDL attribute"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global"},
 "e9ecb998": {"dfnID":"e9ecb998","dfnText":"inline check","external":true,"refSections":[{"refs":[{"id":"ref-for-directive-inline-check"}],"title":"4.3.1.1. require-trusted-types-for Pre-Navigation check"}],"url":"https://w3c.github.io/webappsec-csp/#directive-inline-check"},
@@ -4590,9 +4586,6 @@ let refsData = {
 "#tt-wildcard": {"displayText":"tt-wildcard","export":true,"for_":[],"level":"","normative":true,"shortname":"trusted-types","spec":"trusted-types","status":"local","text":"tt-wildcard","type":"dfn","url":"#tt-wildcard"},
 "#typedefdef-trustedtype": {"displayText":"TrustedType","export":true,"for_":[],"level":"","normative":true,"shortname":"trusted-types","spec":"trusted-types","status":"local","text":"TrustedType","type":"typedef","url":"#typedefdef-trustedtype"},
 "#window-trusted-type-policy-factory": {"displayText":"trusted type policy factory","export":true,"for_":["Window"],"level":"","normative":true,"shortname":"trusted-types","spec":"trusted-types","status":"local","text":"trusted type policy factory","type":"dfn","url":"#window-trusted-type-policy-factory"},
-"https://dom.spec.whatwg.org/#attr": {"displayText":"Attr","export":true,"for_":[],"level":"1","normative":true,"shortname":"dom","spec":"dom","status":"current","text":"Attr","type":"interface","url":"https://dom.spec.whatwg.org/#attr"},
-"https://dom.spec.whatwg.org/#concept-attribute-local-name": {"displayText":"local name","export":true,"for_":["Attr"],"level":"1","normative":true,"shortname":"dom","spec":"dom","status":"current","text":"local name","type":"dfn","url":"https://dom.spec.whatwg.org/#concept-attribute-local-name"},
-"https://dom.spec.whatwg.org/#concept-attribute-namespace": {"displayText":"namespace","export":true,"for_":["Attr"],"level":"1","normative":true,"shortname":"dom","spec":"dom","status":"current","text":"namespace","type":"dfn","url":"https://dom.spec.whatwg.org/#concept-attribute-namespace"},
 "https://dom.spec.whatwg.org/#concept-child-text-content": {"displayText":"child text content","export":true,"for_":[],"level":"1","normative":true,"shortname":"dom","spec":"dom","status":"current","text":"child text content","type":"dfn","url":"https://dom.spec.whatwg.org/#concept-child-text-content"},
 "https://dom.spec.whatwg.org/#concept-element-interface": {"displayText":"element interface","export":true,"for_":[],"level":"1","normative":true,"shortname":"dom","spec":"dom","status":"current","text":"element interface","type":"dfn","url":"https://dom.spec.whatwg.org/#concept-element-interface"},
 "https://dom.spec.whatwg.org/#concept-element-namespace": {"displayText":"element namespace","export":true,"for_":[],"level":"","normative":true,"shortname":"dom","spec":"dom","status":"anchor-block","text":"element namespace","type":"dfn","url":"https://dom.spec.whatwg.org/#concept-element-namespace"},
