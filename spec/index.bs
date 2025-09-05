@@ -515,6 +515,20 @@ The value is set when the object is created, and will never change during its li
 <dfn dfn for="TrustedHTML">stringification behavior</dfn> steps of a
 TrustedHTML object are to return the associated [=TrustedHTML/data=] value.
 
+### <dfn interface>TrustedTransformStream</dfn> ### {#trusted-transform-stream}
+
+The TrustedTransformStream interface represents a {{TransformStream}} that a
+{{ReadableStream}} is piped through, so that the result can confidently be
+piped into an [=injection sink=] that expects a {{ReadableStream}}.
+These objects are constructed via a {{TrustedTypePolicy}}'s
+{{TrustedTypePolicy/createTransformStream()}} method.
+
+<pre class="idl">
+[Exposed=(Window,Worker)]
+interface TrustedTransformStream : TransformStream {
+};
+</pre>
+
 ### <dfn interface>TrustedScript</dfn> ### {#trusted-script}
 
 The TrustedScript interface represents a string with an uncompiled
@@ -899,6 +913,7 @@ throws a TypeError if a conversion of a given value is disallowed.
 interface TrustedTypePolicy {
   readonly attribute DOMString name;
   TrustedHTML createHTML(DOMString input, any... arguments);
+  TrustedTransformStream createTransformStream(any... arguments);
   TrustedScript createScript(DOMString input, any... arguments);
   TrustedScriptURL createScriptURL(DOMString input, any... arguments);
 };
@@ -921,6 +936,21 @@ Each TrustedTypePolicy object has an associated {{TrustedTypePolicyOptions}} <df
       <dd>`"TrustedHTML"`</dd>
       <dt>value</dt>
       <dd>input</dd>
+      <dt>arguments</dt>
+      <dd>arguments</dd>
+    </dl>
+
+: <dfn>createTransformStream(...arguments)</dfn>
+::  Returns the
+    result of executing the [$Create a Trusted Type$] algorithm, with the
+    following arguments:
+    <dl>
+      <dt>policy</dt>
+      <dd>[=this=] value</dd>
+      <dt>trustedTypeName</dt>
+      <dd>`"TrustedTransformStream"`</dd>
+      <dt>value</dt>
+      <dd>null</dd>
       <dt>arguments</dt>
       <dd>arguments</dd>
     </dl>
@@ -968,10 +998,12 @@ object instances directly - this behavior is provided by
 <pre class="idl">
 dictionary TrustedTypePolicyOptions {
    CreateHTMLCallback createHTML;
+   CreateTransformStreamCallback createTransformStream;
    CreateScriptCallback createScript;
    CreateScriptURLCallback createScriptURL;
 };
 callback CreateHTMLCallback = DOMString? (DOMString input, any... arguments);
+callback CreateTransformStreamCallback = TransformStream (any... arguments);
 callback CreateScriptCallback = DOMString? (DOMString input, any... arguments);
 callback CreateScriptURLCallback = USVString? (DOMString input, any... arguments);
 </pre>
@@ -1078,6 +1110,7 @@ a string (|policyName|), {{TrustedTypePolicyOptions}} dictionary (|options|), an
 1.  Set |policy|'s `name` property value to |policyName|.
 1.  Set |policy|'s [=TrustedTypePolicy/options=] value to «[
       "createHTML" -> |options|["{{TrustedTypePolicyOptions/createHTML|createHTML}}",
+      "createTransformStream" -> |options|["{{TrustedTypePolicyOptions/createTransformStream|createTransformStream}}",
       "createScript" -> |options|["{{TrustedTypePolicyOptions/createScript|createScript}}",
       "createScriptURL" -> |options|["{{TrustedTypePolicyOptions/createScriptURL|createScriptURL}}"
     ]».
@@ -1113,6 +1146,10 @@ a string |value|, a list |arguments|, and a boolean |throwIfMissing|, execute th
       <tr>
         <td>"createHTML"</td>
         <td>"TrustedHTML"</td>
+      </tr>
+      <tr>
+        <td>"createTransformStream"</td>
+        <td>"TrustedTransformStream"</td>
       </tr>
       <tr>
         <td>"createScript"</td>
