@@ -830,7 +830,7 @@ Its value is initially « ».
     1. If |attrNs| is an empty string, set |attrNs| to null.
     1. Let |interface| be the [=element interface=] for |localName| and |elementNs|.
     1. Let |expectedType| be null.
-    1. Set |attributeData| to the result of [=Get Trusted Type data for attribute=] algorithm, with the following arguments:
+    1. Set |attributeData| to the result of [=get trusted type data for attribute=] algorithm, with the following arguments:
         * |interface| as |element|
         * |attribute|
         * |attrNs|
@@ -1062,14 +1062,14 @@ algorithms in other specifications, see [[#integrations]].
 
 # Algorithms # {#algorithms}
 
-## <dfn>Create a Trusted Type Policy</dfn> ## {#create-trusted-type-policy-algorithm}
+## Create a Trusted Type Policy ## {#create-trusted-type-policy-algorithm}
 
-To create a {{TrustedTypePolicy}}, given a {{TrustedTypePolicyFactory}} (|factory|),
+To <dfn>create a trusted type policy</dfn>, given a {{TrustedTypePolicyFactory}} (|factory|),
 a string (|policyName|), {{TrustedTypePolicyOptions}} dictionary (|options|), and a
 [=realm/global object=] (|global|) run these steps:
 
-1.  Let |allowedByCSP| be the result of executing [=Should Trusted Type policy
-    creation be blocked by Content Security Policy?=] algorithm with |global|,
+1.  Let |allowedByCSP| be the result of executing [=should Trusted Type policy
+    creation be blocked by content security policy?=] algorithm with |global|,
     |policyName| and |factory|'s [=created policy names=] value.
 1.  If |allowedByCSP| is `"Blocked"`, throw a TypeError and abort further steps.
 1.  If |policyName| is `default` and the |factory|'s [=TrustedTypePolicyFactory/default policy=]
@@ -1085,22 +1085,22 @@ a string (|policyName|), {{TrustedTypePolicyOptions}} dictionary (|options|), an
 1.  [=set/append|Append=] |policyName| to |factory|'s [=created policy names=].
 1.  Return |policy|.
 
-## <dfn>Create a Trusted Type</dfn> ## {#create-a-trusted-type-algorithm}
+## Create a Trusted Type ## {#create-a-trusted-type-algorithm}
 
-Given a {{TrustedTypePolicy}} |policy|, a type name |trustedTypeName|,
-a string |value| and a list |arguments|, execute the following steps:
+To <dfn>create a trusted type</dfn> given a {{TrustedTypePolicy}} |policy|, a type name |trustedTypeName|,
+a string |value| and a list |arguments|, perform the following steps:
 
-1.  Let |policyValue| be the result of executing [=Get Trusted Type policy value=] with the same arguments as this algorithm and additionally true as |throwIfMissing|.
+1.  Let |policyValue| be the result of executing [=get trusted type policy value=] with the same arguments as this algorithm and additionally true as |throwIfMissing|.
 1.  If the algorithm threw an error, rethrow the error and abort the following steps.
 1.  Let |dataString| be the result of stringifying |policyValue|.
 1.  If |policyValue| is null or undefined, set |dataString| to the empty string.
 1.  Return a new instance of an interface with a type
     name |trustedTypeName|, with its associated data value set to |dataString|.
 
-## <dfn>Get Trusted Type policy value</dfn> ## {#get-trusted-type-policy-value-algorithm}
+## Get Trusted Type policy value ## {#get-trusted-type-policy-value-algorithm}
 
-Given a {{TrustedTypePolicy}} |policy|, a type name |trustedTypeName|,
-a string |value|, a list |arguments|, and a boolean |throwIfMissing|, execute the following steps:
+To <dfn>get trusted type policy value</dfn> given a {{TrustedTypePolicy}} |policy|, a type name |trustedTypeName|,
+a string |value|, a list |arguments|, and a boolean |throwIfMissing|, perform the following steps:
 
 1.  Let |functionName| be a function name for the given |trustedTypeName|,
     based on the following table:
@@ -1134,13 +1134,13 @@ a string |value|, a list |arguments|, and a boolean |throwIfMissing|, execute th
     |args| and `"rethrow"`.
 1.  Return |policyValue|.
 
-## <dfn>Get Trusted Type compliant string</dfn> ## {#get-trusted-type-compliant-string-algorithm}
+## Get Trusted Type compliant string ## {#get-trusted-type-compliant-string-algorithm}
 
 This algorithm will return a string that can be used with an
 [=injection sink=], optionally unwrapping it from a matching [=Trusted Type=].
 It will ensure that the Trusted Type [=enforcement=] rules were respected.
 
-Given a {{TrustedType}} type (|expectedType|), a [=realm/global object=] (|global|),
+To <dfn export>get trusted type compliant string</dfn> a {{TrustedType}} type (|expectedType|), a [=realm/global object=] (|global|),
 {{TrustedType}} or a string (|input|), a string (|sink|) and a string (|sinkGroup|), run these steps:
 
 1.  If |input| is an instance of |expectedType|, return stringified
@@ -1151,7 +1151,7 @@ Given a {{TrustedType}} type (|expectedType|), a [=realm/global object=] (|globa
 1.  Let |convertedInput| be the result of executing [=Process value with a default policy=] with the same arguments as this algorithm.
 1.  If the algorithm threw an error, rethrow the error and abort the following steps.
 1.  If |convertedInput| is `null` or `undefined`, execute the following steps:
-    1.  Let |disposition| be the result of executing [=Should sink type mismatch violation be blocked by Content Security Policy?=] algorithm,
+    1.  Let |disposition| be the result of executing [=should sink type mismatch violation be blocked by content security policy?=] algorithm,
         passing |global|, stringified |input| as |source|, |sinkGroup| and |sink|.
     1.  If |disposition| is `“Allowed”`, return stringified |input| and abort further steps.
 
@@ -1160,15 +1160,15 @@ Given a {{TrustedType}} type (|expectedType|), a [=realm/global object=] (|globa
 1. Assert: |convertedInput| is an instance of |expectedType|.
 1. Return stringified |convertedInput|.
 
-## <dfn>Process value with a default policy</dfn> ## {#process-value-with-a-default-policy-algorithm}
+## Process value with a default policy ## {#process-value-with-a-default-policy-algorithm}
 
 This algorithm routes a value to be assigned to an [=injection sink=]  through a default policy, should one exist.
 
-Given a {{TrustedType}} type (|expectedType|), a [=realm/global object=] (|global|),
+To <dfn>process value with a default policy</dfn> given a {{TrustedType}} type (|expectedType|), a [=realm/global object=] (|global|),
 {{TrustedType}} or a string (|input|), and a string (|sink|), run these steps:
 
 1.  Let |defaultPolicy| be the value of |global|'s [=Window/trusted type policy factory=]'s [=TrustedTypePolicyFactory/default policy=].
-1.  Let |policyValue| be the result of executing [=Get Trusted Type policy value=], with the following arguments:
+1.  Let |policyValue| be the result of executing [=get trusted type policy value=], with the following arguments:
      *  |defaultPolicy| as |policy|
      *  stringified |input| as |value|
      *  |expectedType|’s type name as |trustedTypeName|
@@ -1180,14 +1180,14 @@ Given a {{TrustedType}} type (|expectedType|), a [=realm/global object=] (|globa
 1.  Return a new instance of an interface with a type
     name |trustedTypeName|, with its associated data value set to |dataString|.
 
-## <dfn>Prepare the script text</dfn> ## {#prepare-script-text}
+## Prepare the script text ## {#prepare-script-text}
 
-Given an {{HTMLScriptElement}} or {{SVGScriptElement}} (|script|), this algorithm performs the following steps:
+To <dfn>prepare the script text</dfn> given an {{HTMLScriptElement}} or {{SVGScriptElement}} (|script|), perform the following steps:
 
 1.  Let |sink| be "`HTMLScriptElement text`" if |script| is an {{HTMLScriptElement}}; otherwise "`SVGScriptElement text`".
 
 1.  If |script|'s [=script text=] value is not equal to its [=child text content=],
-    set |script|'s [=script text=] to the result of executing [=Get Trusted Type compliant string=], with the following arguments:
+    set |script|'s [=script text=] to the result of executing [=get Trusted Type compliant string=], with the following arguments:
       * {{TrustedScriptURL}} as |expectedType|,
       * |script|'s {{Document}}'s [=relevant global object=] as |global|,
       * |script|'s [=child text content=] attribute value as |input|,
@@ -1196,11 +1196,12 @@ Given an {{HTMLScriptElement}} or {{SVGScriptElement}} (|script|), this algorith
 
     If the algorithm threw an error, rethrow the error.
 
-## Get Trusted Types-compliant attribute value ## {#validate-attribute-mutation}
-To <dfn export>get Trusted Types-compliant attribute value</dfn> given a string |attributeName|, string |attributeNs|, {{Element}} |element| and {{TrustedType}} or a string |newValue|, perform the following steps:
+## Get Trusted Type compliant attribute value ## {#validate-attribute-mutation}
+
+To <dfn export>get trusted type compliant attribute value</dfn> given a string |attributeName|, string |attributeNs|, {{Element}} |element| and {{TrustedType}} or a string |newValue|, perform the following steps:
 
 1. If |attributeNs| is the empty string, set |attributeNs| to null.
-1. Set |attributeData| to the result of [=Get Trusted Type data for attribute=] algorithm, with the following arguments:
+1. Set |attributeData| to the result of [=get Trusted Type data for attribute=] algorithm, with the following arguments:
     * |element|
     * |attributeName|
     * |attributeNs|
@@ -1210,7 +1211,7 @@ To <dfn export>get Trusted Types-compliant attribute value</dfn> given a string 
     1. Return |value|'s associated data.
 1. Let |expectedType| be the value of the fourth member of |attributeData|.
 1. Let |sink| be the value of the fifth member of |attributeData|.
-1. Return the result of executing [=Get Trusted Type compliant string=] with the following arguments:
+1. Return the result of executing [=get trusted type compliant string=] with the following arguments:
      * |expectedType|
      * |newValue| as |input|
      * |element|'s <a>node document</a>'s <a>relevant global object</a> as |global|
@@ -1220,7 +1221,8 @@ To <dfn export>get Trusted Types-compliant attribute value</dfn> given a string 
    If the algorithm threw an error, rethrow the error.
 
 ## Get Trusted Type data for attribute ## {#get-trusted-type-data-for-attribute}
-To <dfn>Get Trusted Type data for attribute</dfn> given |element|, |attribute|, |attributeNs|, perform the following steps:
+
+To <dfn>get Trusted Type data for attribute</dfn> given |element|, |attribute|, |attributeNs|, perform the following steps:
 
 Issue: The [=event handler content attribute=] concept used below is ambiguous. This spec needs a better mechanism to identify event handler attributes. See [https://github.com/w3c/trusted-types/issues/520](https://github.com/w3c/trusted-types/issues/520).
 
@@ -1272,7 +1274,7 @@ type policy factory]].
 
 This document modifies how {{HTMLScriptElement}} [=child text content=] can be set to allow applications to control dynamically created scripts. It does so by
 adding the {{HTMLElement/innerText}} and {{Node/textContent}} attributes directly on {{HTMLScriptElement}}. The behavior of the attributes remains the same
-as in their original counterparts, apart from the additional behavior of calling [=Get Trusted Type compliant string=].
+as in their original counterparts, apart from the additional behavior of calling [=get trusted type compliant string=].
 
 Note: Using these IDL attributes is the recommended way of dynamically setting the URL or a text of a script. Manipulating attribute nodes or text nodes directly will call a default policy on the final value when the script is prepared.
 
@@ -1298,7 +1300,7 @@ An {{HTMLScriptElement}} and {{SVGScriptElement}} have:
 
 The {{HTMLScriptElement/innerText}} setter steps are:
 
-1.  Let |value| be the result of calling [=Get Trusted Type compliant string=] with
+1.  Let |value| be the result of calling [=get trusted type compliant string=] with
     {{TrustedScript}}, [=this=]'s [=relevant global object=], the given value, `HTMLScriptElement innerText`, and
     `script`.
 1.  Set [=this=]'s [=script text=] value to |value|.
@@ -1313,7 +1315,7 @@ The {{HTMLScriptElement/innerText}} getter steps are:
 The {{HTMLScriptElement/textContent}} setter steps are to, if the given value is null, act as if it was the
 empty string instead, and then do as described below:
 
-1.  Let |value| be the result of calling [=Get Trusted Type compliant string=] with
+1.  Let |value| be the result of calling [=get trusted type compliant string=] with
     {{TrustedScript}}, [=this=]'s [=relevant global object=], the given value, `HTMLScriptElement textContent`, and
     `script`.
 1.  Set [=this=]'s [=script text=] value to |value|.
@@ -1329,7 +1331,7 @@ Note: Currently we don't add an equivalent to {{SVGScriptElement}}. See [https:/
 
 Update the {{HTMLScriptElement/text}} setter steps algorithm as follows.
 
-1.  <ins>Let |value| be the result of calling [=Get Trusted Type compliant string=] with
+1.  <ins>Let |value| be the result of calling [=get trusted type compliant string=] with
     {{TrustedScript}}, [=this=]'s [=relevant global object=], the given value, `HTMLScriptElement text`, and
     `script`.</ins>
 1.  <ins>Set [=this=]'s [=script text=] value to the given value.</ins>
@@ -1354,7 +1356,7 @@ The {{HTMLScriptElement/src}} getter steps are:
 
 The {{HTMLScriptElement/src}} setter steps are:
 
-1.  <ins>Let |value| be the result of calling [=Get Trusted Type compliant string=] with
+1.  <ins>Let |value| be the result of calling [=get trusted type compliant string=] with
     {{TrustedScriptURL}}, [=this=]'s [=relevant global object=], the given value, `HTMLScriptElement src`, and
     `script`.</ins>
 1.  <ins>Set [=this=]'s [=src=] content attribute to |value|.</ins>
@@ -1533,10 +1535,11 @@ Content-Security-Policy: trusted-types one two default
 </pre>
 </div>
 
-### <dfn>Does sink type require trusted types?</dfn> ### {#does-sink-require-trusted-types}
+### Does sink type require trusted types? ### {#does-sink-require-trusted-types}
 
-Given a [=realm/global object=] (|global|), a string (|sinkGroup|) and a boolean (|includeReportOnlyPolicies|), this algorithm
-returns `true` if the [=injection sink=] requires a [=Trusted Type=], and `false` otherwise.
+This algorithm returns `true` if the [=injection sink=] requires a [=Trusted Type=], and `false` otherwise.
+
+The <dfn>does sink type require trusted types?</dfn> algorithm, given a [=realm/global object=] (|global|), a string (|sinkGroup|) and a boolean (|includeReportOnlyPolicies|), performs these steps:
 
 1.  For each |policy| in |global|'s <a>CSP list</a>:
     1.  If |policy|'s <a>directive set</a> does not contain a <a>directive</a>
@@ -1550,11 +1553,11 @@ returns `true` if the [=injection sink=] requires a [=Trusted Type=], and `false
     1.  If |includeReportOnlyPolicies| is true, return true.
 1. Return false.
 
-### <dfn>Should sink type mismatch violation be blocked by Content Security Policy?</dfn> ### {#should-block-sink-type-mismatch}
+### Should sink type mismatch violation be blocked by Content Security Policy? ### {#should-block-sink-type-mismatch}
 
-Given a [=realm/global object=] (|global|), a string (|sink|), a string (|sinkGroup|) and a string (|source|) this algorithm
-returns `"Blocked"` if the [=injection sink=] requires a [=Trusted Type=], and
-`"Allowed"` otherwise.
+This algorithm returns `"Blocked"` if the [=injection sink=] requires a [=Trusted Type=], and `"Allowed"` otherwise.
+
+The <dfn>should sink type mismatch violation be blocked by content security policy?</dfn> algorithm, given a [=realm/global object=] (|global|), a string (|sink|), a string (|sinkGroup|) and a string (|source|), performs the following steps:
 
 1.  Let |result| be `"Allowed"`.
 1.  Let |sample| be |source|.
@@ -1581,11 +1584,12 @@ returns `"Blocked"` if the [=injection sink=] requires a [=Trusted Type=], and
         `"Blocked"`.
 1. Return |result|.
 
-### <dfn>Should Trusted Type policy creation be blocked by Content Security Policy?</dfn> ### {#should-block-create-policy}
+### Should Trusted Type policy creation be blocked by Content Security Policy? ### {#should-block-create-policy}
 
-Given a [=realm/global object=] (|global|), a string (|policyName|) and a list of
-strings (|createdPolicyNames|), this algorithm returns `"Blocked"` if the
-{{TrustedTypePolicy}} should not be created, and `"Allowed"` otherwise.
+This algorithm returns `"Blocked"` if the {{TrustedTypePolicy}} should not be created, and `"Allowed"` otherwise.
+
+The <dfn>Should Trusted Type policy creation be blocked by content security policy?</dfn> algorithm, given a [=realm/global object=] (|global|), a string (|policyName|) and a list of
+strings (|createdPolicyNames|), performs the following steps:
 
 1.  Let |result| be `"Allowed"`.
 1.  For each |policy| in |global|'s <a>CSP list</a>:
