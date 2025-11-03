@@ -1539,7 +1539,7 @@ Content-Security-Policy: trusted-types one two default
 
 This algorithm returns `true` if the [=injection sink=] requires a [=Trusted Type=], and `false` otherwise.
 
-The <dfn>does sink type require trusted types?</dfn> algorithm, given a [=realm/global object=] (|global|), a string (|sinkGroup|) and a boolean (|includeReportOnlyPolicies|), performs these steps:
+The <dfn export>does sink type require trusted types?</dfn> algorithm, given a [=realm/global object=] (|global|), a string (|sinkGroup|) and a boolean (|includeReportOnlyPolicies|), performs these steps:
 
 1.  For each |policy| in |global|'s <a>CSP list</a>:
     1.  If |policy|'s <a>directive set</a> does not contain a <a>directive</a>
