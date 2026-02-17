@@ -576,7 +576,7 @@ These objects are immutable wrappers around a
 
 typedef (Sanitizer or SanitizerConfig or SanitizerPresets) SanitizerInput;
 
-[Exposed=(Window,Worker)]
+[Exposed=(Window)]
 interface TrustedParserOptions {
   readonly attribute SanitizerInput sanitizer;
 };
