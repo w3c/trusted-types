@@ -692,7 +692,7 @@ using the built-in sanitizer API. [[SANITIZER-API]]
 <xmp highlight=js>
 (function renderFootnote() {
   const footnote = await fetch('/footnote.html').then(r => r.text());
-  footNote.setHTMLUnsafe(footnote, trustedTypes.createPolicy('html', {
+  const policy = trustedTypes.createPolicy('html', {
     createParserOptions: options => {
       const sanitizer = new Sanitizer(options.sanitizer || {});
       sanitizer.removeElement("script");
@@ -700,7 +700,8 @@ using the built-in sanitizer API. [[SANITIZER-API]]
         sanitizer,
       };
     }
-  }).createParserOptions({}));
+  });
+  footNote.setHTMLUnsafe(footnote, policy.createParserOptions({}));
 })();
 </xmp>
 </div>
