@@ -563,6 +563,28 @@ The value is set when the object is created, and will never change during its li
 <dfn for="TrustedScriptURL">stringification behavior</dfn> steps of a
 TrustedScriptURL object are to return the associated [=TrustedScriptURL/data=] value.
 
+### <dfn interface>TrustedParserOptions</dfn> ### {#trused-parser-options}
+
+The TrustedParserOptions interface represents a dictionary that a developer
+can confidently pass into an [=injection sink=] that will parse it as a URL of
+an external script resource.
+These objects are immutable wrappers around a
+{{SetHTMLUnsafeOptions}} dictionary, constructed via a {{TrustedTypePolicy}}'s
+{{TrustedTypePolicy/createParserOptions(options)|createParserOptions}} method.
+
+<pre class="idl">
+
+typedef (Sanitizer or SanitizerConfig or SanitizerPresets) SanitizerInput;
+
+[Exposed=(Window,Worker)]
+interface TrustedParserOptions {
+  readonly attribute SanitizerInput sanitizer;
+};
+</pre>
+
+{{TrustedParserOptions}} objects have an associated {{SanitizerInput}} <dfn export for="TrustedParserOptions">sanitizer</dfn>.
+The value is set when the object is created, and will never change during its lifetime.
+
 ## <dfn>Policies</dfn> ## {#policies-hdr}
 
 Trusted Types can only be created via user-defined
@@ -659,6 +681,32 @@ that it's called only with no attacker-controlled values.
 })();
 </xmp>
 </div>
+
+### Using together with a sanitizer ### {#trusted-types-with-sanitizer}
+
+While trusted types are built in a way that allows custom sanitizers to be used,
+the {{TrustedTypePolicy/createParserOptions(options)|createParserOptions}} also allows for using them as a way to enforce
+using the built-in sanitizer API. [[SANITIZER-API]]
+
+<div class="example" id="trusted-types-with-sanitizer-example">
+<xmp highlight=js>
+(function renderFootnote() {
+  const footnote = await fetch('/footnote.html').then(r => r.text());
+  footNote.setHTMLUnsafe(footnote, trustedTypes.createPolicy('html', {
+    createParserOptions: options => {
+      const sanitizer = new Sanitizer(options.sanitizer || {});
+      sanitizer.removeElement("script");
+      return {
+        sanitizer,
+      };
+    }
+  }).createParserOptions({}));
+})();
+</xmp>
+</div>
+
+Note: `createParserOptions` does not necessarily replace `createHTML`. If both exist in the policy, the `createHTML` function will be called first,
+and the result will be sanitized using the result of the `createParserOptions` function, if that exists.
 
 ### <dfn interface>TrustedTypePolicyFactory</dfn> ### {#trusted-type-policy-factory}
 
@@ -901,6 +949,7 @@ interface TrustedTypePolicy {
   TrustedHTML createHTML(DOMString input, any... arguments);
   TrustedScript createScript(DOMString input, any... arguments);
   TrustedScriptURL createScriptURL(DOMString input, any... arguments);
+  TrustedParserOptions createParserOptions(SetHTMLUnsafeOptions options, any... arguments);
 };
 </pre>
 
@@ -956,6 +1005,21 @@ Each TrustedTypePolicy object has an associated {{TrustedTypePolicyOptions}} <df
       <dd>arguments</dd>
     </dl>
 
+: <dfn>createParserOptions(options)</dfn>
+::  Returns the
+    result of executing the [=Create a Trusted Type=] algorithm, with the
+    following arguments:
+    <dl>
+      <dt>policy</dt>
+      <dd>[=this=] value</dd>
+      <dt>trustedTypeName</dt>
+      <dd>`"TrustedParserOptions"`</dd>
+      <dt>value</dt>
+      <dd>options</dd>
+      <dt>arguments</dt>
+      <dd>arguments</dd>
+    </dl>
+
 </div>
 
 ### <dfn dictionary>TrustedTypePolicyOptions</dfn> ### {#trusted-type-policy-options}
@@ -970,10 +1034,12 @@ dictionary TrustedTypePolicyOptions {
    CreateHTMLCallback createHTML;
    CreateScriptCallback createScript;
    CreateScriptURLCallback createScriptURL;
+   CreateParserOptionsCallback createParserOptions;
 };
 callback CreateHTMLCallback = DOMString? (DOMString input, any... arguments);
 callback CreateScriptCallback = DOMString? (DOMString input, any... arguments);
 callback CreateScriptURLCallback = USVString? (DOMString input, any... arguments);
+callback CreateParserOptionsCallback = SetHTMLUnsafeOptions? (SetHTMLUnsafeOptions options, any... arguments);
 </pre>
 
 ### <dfn data-lt="default-policy-explanation">Default policy</dfn> ### {#default-policy-hdr}
@@ -1077,9 +1143,10 @@ a string (|policyName|), {{TrustedTypePolicyOptions}} dictionary (|options|), an
 1.  Let |policy| be a new {{TrustedTypePolicy}} object.
 1.  Set |policy|'s `name` property value to |policyName|.
 1.  Set |policy|'s [=TrustedTypePolicy/options=] value to «[
-      "createHTML" -> |options|["{{TrustedTypePolicyOptions/createHTML|createHTML}}",
-      "createScript" -> |options|["{{TrustedTypePolicyOptions/createScript|createScript}}",
-      "createScriptURL" -> |options|["{{TrustedTypePolicyOptions/createScriptURL|createScriptURL}}"
+      "createHTML" -> |options|["{{TrustedTypePolicyOptions/createHTML|createHTML}}"],
+      "createScript" -> |options|["{{TrustedTypePolicyOptions/createScript|createScript}}"],
+      "createScriptURL" -> |options|["{{TrustedTypePolicyOptions/createScriptURL|createScriptURL}}"],
+      "createParserOptions" -> |options|["{{TrustedTypePolicyOptions/createParserOptions|createParserOptions}}"]
     ]».
 1.  If the |policyName| is `default`, set the |factory|'s [=TrustedTypePolicyFactory/default policy=] value to |policy|.
 1.  [=set/append|Append=] |policyName| to |factory|'s [=created policy names=].
@@ -1092,6 +1159,10 @@ a string |value| and a list |arguments|, perform the following steps:
 
 1.  Let |policyValue| be the result of executing [=get trusted type policy value=] with the same arguments as this algorithm and additionally true as |throwIfMissing|.
 1.  If the algorithm threw an error, rethrow the error and abort the following steps.
+1. If |trustedTypeName| is "TrustedParserOptions":
+  1. Let |sanitizer| be an empty {{SanitizerConfig}}.
+  1. If |policyValue| is a [=dictionary=] and has a property named "sanitizer", set |sanitizer| to |policyValue|["sanitizer"].
+  1. Return a new interface of {{TrustedTypePolicyOptions}} with its [=TrustedParserOptions/sanitizer=] set to |sanitizer|.
 1.  Let |dataString| be the result of stringifying |policyValue|.
 1.  If |policyValue| is null or undefined, set |dataString| to the empty string.
 1.  Return a new instance of an interface with a type
@@ -1121,6 +1192,10 @@ a string |value|, a list |arguments|, and a boolean |throwIfMissing|, perform th
       <tr>
         <td>"createScriptURL"</td>
         <td>"TrustedScriptURL"</td>
+      </tr>
+      <tr>
+        <td>"createParserOptions"</td>
+        <td>"TrustedParserOptions"</td>
       </tr>
     </table>
 
@@ -1159,6 +1234,28 @@ To <dfn export>get trusted type compliant string</dfn> a {{TrustedType}} type (|
     1. Throw a TypeError and abort further steps.
 1. Assert: |convertedInput| is an instance of |expectedType|.
 1. Return stringified |convertedInput|.
+
+
+## Get Trusted Type compliant parser options ## {#get-trusted-type-compliant-parser-options-algorithm}
+
+To <dfn export>get Trusted Type compliant parser options</dfn> given a [=realm/global object=] (|global|),
+{{TrustedParserOptions}} or a {{SetHTMLOptions}} or a {{SetHTMLUnsafeOptions}} (|input|), a string (|sink|) and a string (|sinkGroup|), run these steps:
+
+1.  If |input| is an instance of {{TrustedParserOptions}}, return |input| and abort these steps.
+1.  Let |requireTrustedTypes| be the result of executing [=Does sink type require trusted types?=] algorithm,
+    passing |global|, |sinkGroup|, and true.
+1.  If |requireTrustedTypes| is `false`, return |input| and abort these steps.
+1.  Let |convertedInput| be the result of executing [=Process value with a default policy=] with the same arguments as this algorithm.
+1.  If the algorithm threw an error, rethrow the error and abort the following steps.
+1.  If |convertedInput| is `null` or `undefined`, execute the following steps:
+    1.  Let |disposition| be the result of executing [=should sink type mismatch violation be blocked by content security policy?=] algorithm,
+        passing |global|, stringified |input| as |source|, |sinkGroup| and |sink|.
+    1.  If |disposition| is `“Allowed”`, return |input| and abort further steps.
+
+        Note: This step assures that the default policy rejection will be reported, but ignored in a report-only mode.
+    1. Throw a TypeError and abort further steps.
+1. Assert: |convertedInput| is an instance of |expectedType|.
+1. Return |convertedInput|.
 
 ## Process value with a default policy ## {#process-value-with-a-default-policy-algorithm}
 
@@ -1207,7 +1304,7 @@ To <dfn export>get trusted type compliant attribute value</dfn> given a string |
     * |attributeNs|
 1. If |attributeData| is null, then:
     1. If |newValue| is a string, return |newValue|.
-    1. <a>Assert</a>: |newValue| is {{TrustedHTML}} or {{TrustedScript}} or {{TrustedScriptURL}}.
+    1. <a>Assert</a>: |newValue| is {{TrustedHTML}} or {{TrustedScript}} or {{TrustedScriptURL}} or {{TrustedParserOptions}}.
     1. Return |value|'s associated data.
 1. Let |expectedType| be the value of the fourth member of |attributeData|.
 1. Let |sink| be the value of the fifth member of |attributeData|.
@@ -1220,7 +1317,7 @@ To <dfn export>get trusted type compliant attribute value</dfn> given a string |
 
    If the algorithm threw an error, rethrow the error.
 
-## Get Trusted Type data for attribute ## {#get-trusted-type-data-for-attribute}
+## Get Trusted Type data for attribute ## {#get-trusted-type-data-for-attribute-algorithm}
 
 To <dfn>get Trusted Type data for attribute</dfn> given |element|, |attribute|, |attributeNs|, perform the following steps:
 
@@ -1249,7 +1346,7 @@ Issue: The [=event handler content attribute=] concept used below is ambiguous. 
 # Integrations # {#integrations}
 
 <pre class="idl">
-typedef (TrustedHTML or TrustedScript or TrustedScriptURL) TrustedType;
+typedef (TrustedHTML or TrustedScript or TrustedScriptURL or TrustedParserOptions) TrustedType;
 </pre>
 
 ## Integration with HTML ## {#integration-with-html}
