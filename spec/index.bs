@@ -1272,21 +1272,6 @@ type policy factory]].
 
 ### Enforcement for scripts ### {#enforcement-in-scripts}
 
-This document modifies how {{HTMLScriptElement}} [=child text content=] can be set to allow applications to control dynamically created scripts. It does so by
-adding the {{HTMLElement/innerText}} and {{Node/textContent}} attributes directly on {{HTMLScriptElement}}. The behavior of the attributes remains the same
-as in their original counterparts, apart from the additional behavior of calling [=get trusted type compliant string=].
-
-Note: Using these IDL attributes is the recommended way of dynamically setting the URL or a text of a script. Manipulating attribute nodes or text nodes directly will call a default policy on the final value when the script is prepared.
-
-<pre class="idl exclude">
-partial interface HTMLScriptElement {
- [CEReactions] attribute (TrustedScript or [LegacyNullToEmptyString] DOMString) innerText;
- [CEReactions] attribute (TrustedScript or DOMString)? textContent;
- [CEReactions] attribute (TrustedScriptURL or USVString) src;
- [CEReactions] attribute (TrustedScript or DOMString) text;
-};
-</pre>
-
 #### Slots with trusted values #### {#slots-with-trusted-values}
 
 An {{HTMLScriptElement}} and {{SVGScriptElement}} have:
@@ -1296,70 +1281,11 @@ An {{HTMLScriptElement}} and {{SVGScriptElement}} have:
     through a compliant sink. Equivalent to script's
     [=child text content=]. Initially an empty string.
 
-#### The {{HTMLScriptElement/innerText}} IDL attribute #### {#the-innerText-idl-attribute}
+#### Update script trustedness algorithm
 
-The {{HTMLScriptElement/innerText}} setter steps are:
+To <dfn export="HTMLScriptElement">update script trustedness</dfn> for {{HTMLScriptElement}} |script| given string |value|:
 
-1.  Let |value| be the result of calling [=get trusted type compliant string=] with
-    {{TrustedScript}}, [=this=]'s [=relevant global object=], the given value, `HTMLScriptElement innerText`, and
-    `script`.
 1.  Set [=this=]'s [=script text=] value to |value|.
-1.  Run [=set the inner text steps=] with [=this=] and |value|.
-
-The {{HTMLScriptElement/innerText}} getter steps are:
-
-1.  Return the result of running [=get the text steps=] with [=this=].
-
-#### The {{HTMLScriptElement/textContent}} IDL attribute #### {#the-textContent-idl-attribute}
-
-The {{HTMLScriptElement/textContent}} setter steps are to, if the given value is null, act as if it was the
-empty string instead, and then do as described below:
-
-1.  Let |value| be the result of calling [=get trusted type compliant string=] with
-    {{TrustedScript}}, [=this=]'s [=relevant global object=], the given value, `HTMLScriptElement textContent`, and
-    `script`.
-1.  Set [=this=]'s [=script text=] value to |value|.
-1.  Run [=set text content=] with [=this=] and |value|.
-
-The {{HTMLScriptElement/textContent}} getter steps are:
-
-1.  Return the result of running [=get text content=] with [=this=].
-
-Note: Currently we don't add an equivalent to {{SVGScriptElement}}. See [https://github.com/w3c/trusted-types/issues/512](https://github.com/w3c/trusted-types/issues/512).
-
-#### The {{HTMLScriptElement/text}} IDL attribute #### {#the-text-idl-attribute}
-
-Update the {{HTMLScriptElement/text}} setter steps algorithm as follows.
-
-1.  <ins>Let |value| be the result of calling [=get trusted type compliant string=] with
-    {{TrustedScript}}, [=this=]'s [=relevant global object=], the given value, `HTMLScriptElement text`, and
-    `script`.</ins>
-1.  <ins>Set [=this=]'s [=script text=] value to the given value.</ins>
-1.  [=String replace all=] with the given value within [=this=].
-
-
-#### The {{HTMLScriptElement/src}} IDL attribute #### {#the-src-idl-attribute}
-
-The {{HTMLScriptElement/src}} getter steps are:
-
-1. <ins>Let |element| be the result of running [=this=]'s get the element.</ins>
-
-1. <ins>Let |contentAttributeValue| be the result of running [=this=]'s get the content attribute.</ins>
-
-1. <ins>If |contentAttributeValue| is null, then return the empty string.</ins>
-
-1. <ins>Let |urlString| be the result of encoding-parsing-and-serializing a URL given |contentAttributeValue|, relative to |element|'s [=node document=].</ins>
-
-1. <ins>If |urlString| is not failure, then return |urlString|.</ins>
-
-1. <ins>Return |contentAttributeValue|, converted to a scalar value string.
-
-The {{HTMLScriptElement/src}} setter steps are:
-
-1.  <ins>Let |value| be the result of calling [=get trusted type compliant string=] with
-    {{TrustedScriptURL}}, [=this=]'s [=relevant global object=], the given value, `HTMLScriptElement src`, and
-    `script`.</ins>
-1.  <ins>Set [=this=]'s [=src=] content attribute to |value|.</ins>
 
 #### Setting slot values from parser #### {#setting-slot-values-from-parser}
 
