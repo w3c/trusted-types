@@ -5,9 +5,9 @@
   <title>Trusted Types</title>
   <meta content="ED" name="w3c-status">
   <link href="https://www.w3.org/StyleSheets/TR/2021/W3C-ED" rel="stylesheet">
-  <meta content="Bikeshed version 3f621ba99, updated Mon Jul 28 15:38:36 2025 -0700" name="generator">
+  <meta content="Bikeshed version 3c53a5b02, updated Thu Nov 27 17:03:30 2025 +0000" name="generator">
   <link href="https://www.w3.org/TR/trusted-types/" rel="canonical">
-  <meta content="4193b7234b1188ee4f77e8fd1b162b5d0651c4dc" name="revision">
+  <meta content="b76b1441024b4a7e18453dc020cd63374a9a674a" name="revision">
   <meta content="dark light" name="color-scheme">
   <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
 <style>/* Boilerplate: style-autolinks */
@@ -320,7 +320,7 @@ body {
 }
 .invalid.example:not(.no-marker)::before,
 .illegal.example:not(.no-marker)::before {
-    content: "Invalid Example" counter(example);
+    content: "Invalid Example " counter(example);
 }
 
 figcaption {
@@ -1058,9 +1058,9 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
     <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72">
 </a>
 </p>
-   <h1 class="p-name no-ref" id="title">Trusted Types</h1>
+   <h1 class="no-ref p-name" id="title">Trusted Types</h1>
    <p id="w3c-state"><a href="https://www.w3.org/standards/types/#ED">Editor’s Draft</a>,
-    <time class="dt-updated" datetime="2025-11-03">3 November 2025</time></p>
+    <time class="dt-updated" datetime="2026-02-24">24 February 2026</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -1074,24 +1074,24 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
       <dd><a href="https://github.com/w3c/trusted-types/issues/">GitHub</a>
       <dd><a href="#issues-index">Inline In Spec</a>
       <dt class="editor">Editor:
-      <dd class="editor p-author h-card vcard" data-editor-id="110276"><a class="p-name fn u-email email" href="mailto:koto@google.com">Krzysztof Kotowicz</a> (<a class="p-org org" href="https://google.com">Google LLC</a>)
+      <dd class="editor h-card p-author vcard" data-editor-id="110276"><a class="email fn p-name u-email" href="mailto:koto@google.com">Krzysztof Kotowicz</a> (<a class="org p-org" href="https://google.com">Google LLC</a>)
       <dt class="editor">Former Editor:
-      <dd class="editor p-author h-card vcard"><a class="p-name fn u-email email" href="mailto:mkwst@google.com">Mike West</a> (<a class="p-org org" href="https://google.com">Google LLC</a>)
+      <dd class="editor h-card p-author vcard"><a class="email fn p-name u-email" href="mailto:mkwst@google.com">Mike West</a> (<a class="org p-org" href="https://google.com">Google LLC</a>)
       <dt>Test Suite:
       <dd class="wpt-overview"><a href="https://wpt.fyi/results/trusted-types/">https://wpt.fyi/results/trusted-types/</a>
      </dl>
     </div>
    </details>
    <div data-fill-with="warning"></div>
-   <p class="copyright" data-fill-with="copyright"><a href="https://www.w3.org/policies/#copyright">Copyright</a> © 2025 <a href="https://www.w3.org/">World Wide Web Consortium</a>. <abbr title="World Wide Web Consortium">W3C</abbr><sup>®</sup> <a href="https://www.w3.org/policies/#Legal_Disclaimer">liability</a>, <a href="https://www.w3.org/policies/#W3C_Trademarks">trademark</a> and <a href="https://www.w3.org/copyright/software-license/" rel="license" title="W3C Software and Document License">permissive document license</a> rules apply.
+   <p class="copyright" data-fill-with="copyright"><a href="https://www.w3.org/policies/#copyright">Copyright</a> © 2026 <a href="https://www.w3.org/">World Wide Web Consortium</a>. <abbr title="World Wide Web Consortium">W3C</abbr><sup>®</sup> <a href="https://www.w3.org/policies/#Legal_Disclaimer">liability</a>, <a href="https://www.w3.org/policies/#W3C_Trademarks">trademark</a> and <a href="https://www.w3.org/copyright/software-license/" rel="license" title="W3C Software and Document License">permissive document license</a> rules apply.
 </p>
    <hr title="Separator for header">
   </div>
   <div class="p-summary" data-fill-with="abstract">
-   <h2 class="no-num no-toc no-ref heading settled" id="abstract"><span class="content">Abstract</span></h2>
+   <h2 class="heading no-num no-ref no-toc settled" id="abstract"><span class="content">Abstract</span></h2>
    <p>An API that allows applications to lock down powerful APIs to only accept non-spoofable, typed values in place of strings to prevent vulnerabilities caused by using these APIs with attacker-controlled inputs.</p>
   </div>
-  <h2 class="no-num no-toc no-ref heading settled" id="sotd"><span class="content">Status of this document</span></h2>
+  <h2 class="heading no-num no-ref no-toc settled" id="sotd"><span class="content">Status of this document</span></h2>
   <div data-fill-with="status">
    <p>
 	This is a public copy of the editors’ draft.
@@ -1139,8 +1139,8 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
   </div>
   <div data-fill-with="at-risk"></div>
   <nav data-fill-with="table-of-contents" id="toc">
-   <h2 class="no-num no-toc no-ref" id="contents">Table of Contents</h2>
-   <ol class="toc" role="directory">
+   <h2 class="no-num no-ref no-toc" id="contents">Table of Contents</h2>
+   <ol class="toc">
     <li>
      <a href="#introduction"><span class="secno">1</span> <span class="content">Introduction</span></a>
      <ol class="toc">
@@ -1208,19 +1208,18 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
           <li><a href="#slot-value-verification"><span class="secno">4.1.2.7</span> <span class="content">Slot value verification</span></a>
          </ol>
        </ol>
-      <li><a href="#integration-with-dom"><span class="secno">4.2</span> <span class="content">Integration with DOM</span></a>
       <li>
-       <a href="#integration-with-content-security-policy"><span class="secno">4.3</span> <span class="content">Integration with Content Security Policy</span></a>
+       <a href="#integration-with-content-security-policy"><span class="secno">4.2</span> <span class="content">Integration with Content Security Policy</span></a>
        <ol class="toc">
         <li>
-         <a href="#require-trusted-types-for-csp-directive"><span class="secno">4.3.1</span> <span class="content"><span>require-trusted-types-for</span> directive</span></a>
+         <a href="#require-trusted-types-for-csp-directive"><span class="secno">4.2.1</span> <span class="content"><span>require-trusted-types-for</span> directive</span></a>
          <ol class="toc">
-          <li><a href="#require-trusted-types-for-pre-navigation-check"><span class="secno">4.3.1.1</span> <span class="content"><code>require-trusted-types-for</code> Pre-Navigation check</span></a>
+          <li><a href="#require-trusted-types-for-pre-navigation-check"><span class="secno">4.2.1.1</span> <span class="content"><code>require-trusted-types-for</code> Pre-Navigation check</span></a>
          </ol>
-        <li><a href="#trusted-types-csp-directive"><span class="secno">4.3.2</span> <span class="content"><span>trusted-types</span> directive</span></a>
-        <li><a href="#does-sink-require-trusted-types"><span class="secno">4.3.3</span> <span class="content">Does sink type require trusted types?</span></a>
-        <li><a href="#should-block-sink-type-mismatch"><span class="secno">4.3.4</span> <span class="content">Should sink type mismatch violation be blocked by Content Security Policy?</span></a>
-        <li><a href="#should-block-create-policy"><span class="secno">4.3.5</span> <span class="content">Should Trusted Type policy creation be blocked by Content Security Policy?</span></a>
+        <li><a href="#trusted-types-csp-directive"><span class="secno">4.2.2</span> <span class="content"><span>trusted-types</span> directive</span></a>
+        <li><a href="#does-sink-require-trusted-types"><span class="secno">4.2.3</span> <span class="content">Does sink type require trusted types?</span></a>
+        <li><a href="#should-block-sink-type-mismatch"><span class="secno">4.2.4</span> <span class="content">Should sink type mismatch violation be blocked by Content Security Policy?</span></a>
+        <li><a href="#should-block-create-policy"><span class="secno">4.2.5</span> <span class="content">Should Trusted Type policy creation be blocked by Content Security Policy?</span></a>
        </ol>
      </ol>
     <li>
@@ -1679,7 +1678,7 @@ confidently insert into an <a data-link-type="dfn" href="#injection-sink" id="re
 These objects are immutable
 wrappers around a string, constructed via a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy">TrustedTypePolicy</a></code>’s
 <code class="idl"><a data-link-type="idl" href="#dom-trustedtypepolicy-createhtml" id="ref-for-dom-trustedtypepolicy-createhtml">createHTML</a></code> method.</p>
-<pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed" id="ref-for-Exposed"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
+<pre class="def highlight idl">[<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed" id="ref-for-Exposed"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
 <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="#trustedhtml" id="ref-for-trustedhtml"><c- g>TrustedHTML</c-></a> {
   <a data-link-type="dfn" href="#trustedhtml-stringification-behavior" id="ref-for-trustedhtml-stringification-behavior"><c- b>stringifier</c-></a>;
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString"><c- b>DOMString</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedhtml-tojson" id="ref-for-dom-trustedhtml-tojson"><c- g>toJSON</c-></a>();
@@ -1697,7 +1696,7 @@ that might lead to executing that script.
 These objects are immutable wrappers
 around a string, constructed via a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy①">TrustedTypePolicy</a></code>’s
 <code class="idl"><a data-link-type="idl" href="#dom-trustedtypepolicy-createscript" id="ref-for-dom-trustedtypepolicy-createscript">createScript</a></code> method.</p>
-<pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed" id="ref-for-Exposed①"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
+<pre class="def highlight idl">[<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed" id="ref-for-Exposed①"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
 <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="#trustedscript" id="ref-for-trustedscript"><c- g>TrustedScript</c-></a> {
   <a data-link-type="dfn" href="#trustedscript-stringification-behavior" id="ref-for-trustedscript-stringification-behavior"><c- b>stringifier</c-></a>;
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString①"><c- b>DOMString</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedscript-tojson" id="ref-for-dom-trustedscript-tojson"><c- g>toJSON</c-></a>();
@@ -1715,7 +1714,7 @@ an external script resource.
 These objects are immutable wrappers around a
 string, constructed via a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy②">TrustedTypePolicy</a></code>’s
 <code class="idl"><a data-link-type="idl" href="#dom-trustedtypepolicy-createscripturl" id="ref-for-dom-trustedtypepolicy-createscripturl">createScriptURL</a></code> method.</p>
-<pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed" id="ref-for-Exposed②"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
+<pre class="def highlight idl">[<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed" id="ref-for-Exposed②"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
 <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="#trustedscripturl" id="ref-for-trustedscripturl"><c- g>TrustedScriptURL</c-></a> {
   <a data-link-type="dfn" href="#trustedscripturl-stringification-behavior" id="ref-for-trustedscripturl-stringification-behavior"><c- b>stringifier</c-></a>;
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString" id="ref-for-idl-USVString"><c- b>USVString</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedscripturl-tojson" id="ref-for-dom-trustedscripturl-tojson"><c- g>toJSON</c-></a>();
@@ -1822,7 +1821,7 @@ that it’s called only with no attacker-controlled values.
 were created via one of the policies.</p>
    <p class="note" role="note"><span class="marker">Note:</span> This factory object is exposed to JavaScript through <code>trustedTypes</code> property
 on the global object - see <a href="#extensions-to-the-windoworworkerglobalscope-interface">§ 4.1.1 Extensions to the WindowOrWorkerGlobalScope interface</a>.</p>
-<pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed" id="ref-for-Exposed③"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)] <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="#trustedtypepolicyfactory" id="ref-for-trustedtypepolicyfactory"><c- g>TrustedTypePolicyFactory</c-></a> {
+<pre class="def highlight idl">[<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed" id="ref-for-Exposed③"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)] <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="#trustedtypepolicyfactory" id="ref-for-trustedtypepolicyfactory"><c- g>TrustedTypePolicyFactory</c-></a> {
     <a data-link-type="idl-name" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy④"><c- n>TrustedTypePolicy</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicyfactory-createpolicy" id="ref-for-dom-trustedtypepolicyfactory-createpolicy②"><c- g>createPolicy</c-></a>(
         <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString②"><c- b>DOMString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="TrustedTypePolicyFactory/createPolicy(policyName, policyOptions), TrustedTypePolicyFactory/createPolicy(policyName)" data-dfn-type="argument" data-export id="dom-trustedtypepolicyfactory-createpolicy-policyname-policyoptions-policyname"><code><c- g>policyName</c-></code></dfn>, <c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-trustedtypepolicyoptions" id="ref-for-dictdef-trustedtypepolicyoptions"><c- n>TrustedTypePolicyOptions</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="TrustedTypePolicyFactory/createPolicy(policyName, policyOptions), TrustedTypePolicyFactory/createPolicy(policyName)" data-dfn-type="argument" data-export id="dom-trustedtypepolicyfactory-createpolicy-policyname-policyoptions-policyoptions"><code><c- g>policyOptions</c-></code></dfn> = {});
     <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean" id="ref-for-idl-boolean"><c- b>boolean</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicyfactory-ishtml" id="ref-for-dom-trustedtypepolicyfactory-ishtml"><c- g>isHTML</c-></a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any"><c- b>any</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="TrustedTypePolicyFactory/isHTML(value)" data-dfn-type="argument" data-export id="dom-trustedtypepolicyfactory-ishtml-value-value"><code><c- g>value</c-></code></dfn>);
@@ -2089,7 +2088,7 @@ trustedTypes<c- p>.</c->defaultPolicy <c- o>===</c-> dp<c- p>;</c->  <c- c1>// t
 group of functions creating Trusted Type objects.
 Each of the <code>create*</code> functions converts a string value to a given Trusted Type variant, or
 throws a TypeError if a conversion of a given value is disallowed.</p>
-<pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed" id="ref-for-Exposed④"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
+<pre class="def highlight idl">[<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed" id="ref-for-Exposed④"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
 <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy⑧"><c- g>TrustedTypePolicy</c-></a> {
   <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString①②"><c- b>DOMString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="TrustedTypePolicy" data-dfn-type="attribute" data-export data-readonly data-type="DOMString" id="dom-trustedtypepolicy-name"><code><c- g>name</c-></code></dfn>;
   <a data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml⑨"><c- n>TrustedHTML</c-></a> <a class="idl-code" data-link-type="method" href="#dom-trustedtypepolicy-createhtml" id="ref-for-dom-trustedtypepolicy-createhtml①"><c- g>createHTML</c-></a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString①③"><c- b>DOMString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="TrustedTypePolicy/createHTML(input, ...arguments), TrustedTypePolicy/createHTML(input)" data-dfn-type="argument" data-export id="dom-trustedtypepolicy-createhtml-input-arguments-input"><code><c- g>input</c-></code></dfn>, <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any③"><c- b>any</c-></a>... <dfn class="dfn-paneled idl-code" data-dfn-for="TrustedTypePolicy/createHTML(input, ...arguments), TrustedTypePolicy/createHTML(input)" data-dfn-type="argument" data-export id="dom-trustedtypepolicy-createhtml-input-arguments-arguments"><code><c- g>arguments</c-></code></dfn>);
@@ -2153,7 +2152,7 @@ following arguments:</p>
 values into trusted values. These functions do not create <a data-link-type="dfn" href="#trusted-type" id="ref-for-trusted-type②">Trusted Type</a>
 object instances directly - this behavior is provided by
 <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy⑨">TrustedTypePolicy</a></code>.</p>
-<pre class="idl highlight def"><c- b>dictionary</c-> <a class="idl-code" data-link-type="dictionary" href="#dictdef-trustedtypepolicyoptions" id="ref-for-dictdef-trustedtypepolicyoptions③"><c- g>TrustedTypePolicyOptions</c-></a> {
+<pre class="def highlight idl"><c- b>dictionary</c-> <a class="idl-code" data-link-type="dictionary" href="#dictdef-trustedtypepolicyoptions" id="ref-for-dictdef-trustedtypepolicyoptions③"><c- g>TrustedTypePolicyOptions</c-></a> {
    <a data-link-type="idl-name" href="#callbackdef-createhtmlcallback" id="ref-for-callbackdef-createhtmlcallback"><c- n>CreateHTMLCallback</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="TrustedTypePolicyOptions" data-dfn-type="dict-member" data-export data-type="CreateHTMLCallback" id="dom-trustedtypepolicyoptions-createhtml"><code><c- g>createHTML</c-></code></dfn>;
    <a data-link-type="idl-name" href="#callbackdef-createscriptcallback" id="ref-for-callbackdef-createscriptcallback"><c- n>CreateScriptCallback</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="TrustedTypePolicyOptions" data-dfn-type="dict-member" data-export data-type="CreateScriptCallback" id="dom-trustedtypepolicyoptions-createscript"><code><c- g>createScript</c-></code></dfn>;
    <a data-link-type="idl-name" href="#callbackdef-createscripturlcallback" id="ref-for-callbackdef-createscripturlcallback"><c- n>CreateScriptURLCallback</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="TrustedTypePolicyOptions" data-dfn-type="dict-member" data-export data-type="CreateScriptURLCallback" id="dom-trustedtypepolicyoptions-createscripturl"><code><c- g>createScriptURL</c-></code></dfn>;
@@ -2511,14 +2510,14 @@ If a matching row is found, set <var>data</var> to that row.</p>
      <p>Return <var>data</var>.</p>
    </ol>
    <h2 class="heading settled" data-level="4" id="integrations"><span class="secno">4. </span><span class="content">Integrations</span><a class="self-link" href="#integrations"></a></h2>
-<pre class="idl highlight def"><c- b>typedef</c-> (<a data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml①②"><c- n>TrustedHTML</c-></a> <c- b>or</c-> <a data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript①①"><c- n>TrustedScript</c-></a> <c- b>or</c-> <a data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl⑨"><c- n>TrustedScriptURL</c-></a>) <dfn class="dfn-paneled idl-code" data-dfn-type="typedef" data-export id="typedefdef-trustedtype"><code><c- g>TrustedType</c-></code></dfn>;
+<pre class="def highlight idl"><c- b>typedef</c-> (<a data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml①②"><c- n>TrustedHTML</c-></a> <c- b>or</c-> <a data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript①①"><c- n>TrustedScript</c-></a> <c- b>or</c-> <a data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl⑨"><c- n>TrustedScriptURL</c-></a>) <dfn class="dfn-paneled idl-code" data-dfn-type="typedef" data-export id="typedefdef-trustedtype"><code><c- g>TrustedType</c-></code></dfn>;
 </pre>
    <h3 class="heading settled" data-level="4.1" id="integration-with-html"><span class="secno">4.1. </span><span class="content">Integration with HTML</span><a class="self-link" href="#integration-with-html"></a></h3>
    <p><code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window" id="ref-for-window">Window</a></code> and <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/workers.html#worker" id="ref-for-worker">Worker</a></code> objects have a <dfn class="dfn-paneled" data-dfn-for="Window" data-dfn-type="dfn" data-noexport id="window-trusted-type-policy-factory">trusted type policy factory</dfn>,
 which is a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicyfactory" id="ref-for-trustedtypepolicyfactory④">TrustedTypePolicyFactory</a></code> object.</p>
    <h4 class="heading settled" data-level="4.1.1" id="extensions-to-the-windoworworkerglobalscope-interface"><span class="secno">4.1.1. </span><span class="content">Extensions to the WindowOrWorkerGlobalScope interface</span><a class="self-link" href="#extensions-to-the-windoworworkerglobalscope-interface"></a></h4>
    <p>This document extends the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/webappapis.html#windoworworkerglobalscope" id="ref-for-windoworworkerglobalscope">WindowOrWorkerGlobalScope</a></code> interface defined by <a data-link-type="biblio" href="#biblio-html5" title="HTML5">HTML</a>:</p>
-<pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/webappapis.html#windoworworkerglobalscope" id="ref-for-windoworworkerglobalscope①"><c- g>WindowOrWorkerGlobalScope</c-></a> {
+<pre class="def highlight idl"><c- b>partial</c-> <c- b>interface</c-> <c- b>mixin</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/webappapis.html#windoworworkerglobalscope" id="ref-for-windoworworkerglobalscope①"><c- g>WindowOrWorkerGlobalScope</c-></a> {
   <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="#trustedtypepolicyfactory" id="ref-for-trustedtypepolicyfactory⑤"><c- n>TrustedTypePolicyFactory</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="WindowOrWorkerGlobalScope" data-dfn-type="attribute" data-export data-readonly data-type="TrustedTypePolicyFactory" id="dom-windoworworkerglobalscope-trustedtypes"><code><c- g>trustedTypes</c-></code></dfn>;
 };
 </pre>
@@ -2529,7 +2528,7 @@ type policy factory</a>.</p>
 adding the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/dom.html#dom-innertext" id="ref-for-dom-innertext">innerText</a></code> and <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#dom-node-textcontent" id="ref-for-dom-node-textcontent">textContent</a></code> attributes directly on <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement" id="ref-for-htmlscriptelement⑧">HTMLScriptElement</a></code>. The behavior of the attributes remains the same
 as in their original counterparts, apart from the additional behavior of calling <a data-link-type="dfn" href="#get-trusted-type-compliant-string" id="ref-for-get-trusted-type-compliant-string②">get trusted type compliant string</a>.</p>
    <p class="note" role="note"><span class="marker">Note:</span> Using these IDL attributes is the recommended way of dynamically setting the URL or a text of a script. Manipulating attribute nodes or text nodes directly will call a default policy on the final value when the script is prepared.</p>
-<pre class="exclude idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement" id="ref-for-htmlscriptelement⑨"><c- g>HTMLScriptElement</c-></a> {
+<pre class="def exclude highlight idl"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement" id="ref-for-htmlscriptelement⑨"><c- g>HTMLScriptElement</c-></a> {
  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> (<a data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript①②"><c- n>TrustedScript</c-></a> <c- b>or</c-> [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#LegacyNullToEmptyString" id="ref-for-LegacyNullToEmptyString"><c- g>LegacyNullToEmptyString</c-></a>] <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString②①"><c- b>DOMString</c-></a>) <dfn class="dfn-paneled idl-code" data-dfn-for="HTMLScriptElement" data-dfn-type="attribute" data-export data-type="(TrustedScript or [LegacyNullToEmptyString] DOMString)" id="dom-htmlscriptelement-innertext"><code><c- g>innerText</c-></code></dfn>;
  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions①"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> (<a data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript①③"><c- n>TrustedScript</c-></a> <c- b>or</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString②②"><c- b>DOMString</c-></a>)? <dfn class="dfn-paneled idl-code" data-dfn-for="HTMLScriptElement" data-dfn-type="attribute" data-export data-type="(TrustedScript or DOMString)?" id="dom-htmlscriptelement-textcontent"><code><c- g>textContent</c-></code></dfn>;
  [<a class="idl-code" data-link-type="extended-attribute" href="https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions" id="ref-for-cereactions②"><c- g>CEReactions</c-></a>] <c- b>attribute</c-> (<a data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl①⓪"><c- n>TrustedScriptURL</c-></a> <c- b>or</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString" id="ref-for-idl-USVString②"><c- b>USVString</c-></a>) <dfn class="dfn-paneled idl-code" data-dfn-for="HTMLScriptElement" data-dfn-type="attribute" data-export data-type="(TrustedScriptURL or USVString)" id="dom-htmlscriptelement-src"><code><c- g>src</c-></code></dfn>;
@@ -2670,10 +2669,8 @@ empty string instead, and then do as described below:</p>
   
    </ol>
    <p class="issue" id="issue-c38e8ff0①"><a class="self-link" href="#issue-c38e8ff0①"></a> There’s no proper definition for the processing of SVG script elements. However, implementations must apply a similar change to the processing of <code class="idl"><a data-link-type="idl" href="https://svgwg.org/svg2-draft/interact.html#InterfaceSVGScriptElement" id="ref-for-InterfaceSVGScriptElement⑥">SVGScriptElement</a></code>s.</p>
-   <h3 class="heading settled" data-level="4.2" id="integration-with-dom"><span class="secno">4.2. </span><span class="content">Integration with DOM</span><a class="self-link" href="#integration-with-dom"></a></h3>
-   <p class="note" role="note"><span class="marker">Note:</span> See <a href="https://github.com/whatwg/dom/pull/1268">https://github.com/whatwg/dom/pull/1268</a> which upstreams this integration.</p>
-   <h3 class="heading settled" data-level="4.3" id="integration-with-content-security-policy"><span class="secno">4.3. </span><span class="content">Integration with Content Security Policy</span><a class="self-link" href="#integration-with-content-security-policy"></a></h3>
-   <h4 class="heading settled" data-level="4.3.1" id="require-trusted-types-for-csp-directive"><span class="secno">4.3.1. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="dfn" data-export data-lt="require-trusted-types-for-directive" id="require-trusted-types-for-directive">require-trusted-types-for</dfn> directive</span><a class="self-link" href="#require-trusted-types-for-csp-directive"></a></h4>
+   <h3 class="heading settled" data-level="4.2" id="integration-with-content-security-policy"><span class="secno">4.2. </span><span class="content">Integration with Content Security Policy</span><a class="self-link" href="#integration-with-content-security-policy"></a></h3>
+   <h4 class="heading settled" data-level="4.2.1" id="require-trusted-types-for-csp-directive"><span class="secno">4.2.1. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="dfn" data-export data-lt="require-trusted-types-for-directive" id="require-trusted-types-for-directive">require-trusted-types-for</dfn> directive</span><a class="self-link" href="#require-trusted-types-for-csp-directive"></a></h4>
    <p>This document defines <em>require-trusted-types-for</em> - a new <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives">Content Security Policy directive</a>.</p>
    <p><a data-link-type="dfn" href="#require-trusted-types-for-directive" id="ref-for-require-trusted-types-for-directive②">require-trusted-types-for</a> directive configures the Trusted
 Types framework for all the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②①">injection sinks</a> of certain groups in a current <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-global-object-realm" id="ref-for-concept-global-object-realm①">realm</a>.
@@ -2695,7 +2692,7 @@ Enforce Trusted Types at the DOM XSS injection sinks.
 <pre class="http">Content-Security-Policy: require-trusted-types-for 'script'
 </pre>
    </div>
-   <h5 class="heading settled" data-level="4.3.1.1" id="require-trusted-types-for-pre-navigation-check"><span class="secno">4.3.1.1. </span><span class="content"><code>require-trusted-types-for</code> Pre-Navigation check</span><a class="self-link" href="#require-trusted-types-for-pre-navigation-check"></a></h5>
+   <h5 class="heading settled" data-level="4.2.1.1" id="require-trusted-types-for-pre-navigation-check"><span class="secno">4.2.1.1. </span><span class="content"><code>require-trusted-types-for</code> Pre-Navigation check</span><a class="self-link" href="#require-trusted-types-for-pre-navigation-check"></a></h5>
    <p>Given a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request" id="ref-for-concept-request">request</a> (<var>request</var>), a string <var>navigation type</var> and a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#content-security-policy-object" id="ref-for-content-security-policy-object">policy</a> (<var>policy</var>), this algorithm returns <code>"Blocked"</code>
 if a navigation violates the <a data-link-type="dfn" href="#require-trusted-types-for-directive" id="ref-for-require-trusted-types-for-directive③">require-trusted-types-for</a> directive’s constraints and <code>"Allowed"</code>
 otherwise. This constitutes the <a data-link-type="dfn" href="#require-trusted-types-for-directive" id="ref-for-require-trusted-types-for-directive④">require-trusted-types-for</a> directive’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-pre-navigation-check" id="ref-for-directive-pre-navigation-check">pre-navigation check</a>:</p>
@@ -2732,7 +2729,7 @@ otherwise. This constitutes the <a data-link-type="dfn" href="#require-trusted-t
     <li data-md>
      <p>Return <code>"Allowed"</code>.</p>
    </ol>
-   <h4 class="heading settled" data-level="4.3.2" id="trusted-types-csp-directive"><span class="secno">4.3.2. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="dfn" data-export data-lt="trusted-types-directive" id="trusted-types-directive">trusted-types</dfn> directive</span><a class="self-link" href="#trusted-types-csp-directive"></a></h4>
+   <h4 class="heading settled" data-level="4.2.2" id="trusted-types-csp-directive"><span class="secno">4.2.2. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="dfn" data-export data-lt="trusted-types-directive" id="trusted-types-directive">trusted-types</dfn> directive</span><a class="self-link" href="#trusted-types-csp-directive"></a></h4>
    <p>This document defines <em>trusted-types</em> - a new <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives①">Content Security Policy directive</a>. The <a data-link-type="dfn" href="#trusted-types-directive" id="ref-for-trusted-types-directive②">trusted-types</a> directive controls the creation of Trusted Type <a data-link-type="dfn" href="#policies" id="ref-for-policies⑤">policies</a>.</p>
    <p>The syntax for the directive’s <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-name" id="ref-for-directive-name①">name</a> and <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directive-value" id="ref-for-directive-value①">value</a> is described by the following
 ABNF:</p>
@@ -2783,7 +2780,7 @@ All strings passed to <a data-link-type="dfn" href="#injection-sink" id="ref-for
 <pre class="http">Content-Security-Policy: trusted-types one two default
 </pre>
    </div>
-   <h4 class="heading settled" data-level="4.3.3" id="does-sink-require-trusted-types"><span class="secno">4.3.3. </span><span class="content">Does sink type require trusted types?</span><a class="self-link" href="#does-sink-require-trusted-types"></a></h4>
+   <h4 class="heading settled" data-level="4.2.3" id="does-sink-require-trusted-types"><span class="secno">4.2.3. </span><span class="content">Does sink type require trusted types?</span><a class="self-link" href="#does-sink-require-trusted-types"></a></h4>
    <p>This algorithm returns <code>true</code> if the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②⑤">injection sink</a> requires a <a data-link-type="dfn" href="#trusted-type" id="ref-for-trusted-type⑤">Trusted Type</a>, and <code>false</code> otherwise.</p>
    <p>The <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="does-sink-type-require-trusted-types">does sink type require trusted types?</dfn> algorithm, given a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global③">global object</a> (<var>global</var>), a string (<var>sinkGroup</var>) and a boolean (<var>includeReportOnlyPolicies</var>), performs these steps:</p>
    <ol>
@@ -2809,7 +2806,7 @@ for <var>sinkGroup</var>, skip to the next <var>policy</var>.</p>
     <li data-md>
      <p>Return false.</p>
    </ol>
-   <h4 class="heading settled" data-level="4.3.4" id="should-block-sink-type-mismatch"><span class="secno">4.3.4. </span><span class="content">Should sink type mismatch violation be blocked by Content Security Policy?</span><a class="self-link" href="#should-block-sink-type-mismatch"></a></h4>
+   <h4 class="heading settled" data-level="4.2.4" id="should-block-sink-type-mismatch"><span class="secno">4.2.4. </span><span class="content">Should sink type mismatch violation be blocked by Content Security Policy?</span><a class="self-link" href="#should-block-sink-type-mismatch"></a></h4>
    <p>This algorithm returns <code>"Blocked"</code> if the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink②⑥">injection sink</a> requires a <a data-link-type="dfn" href="#trusted-type" id="ref-for-trusted-type⑥">Trusted Type</a>, and <code>"Allowed"</code> otherwise.</p>
    <p>The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="should-sink-type-mismatch-violation-be-blocked-by-content-security-policy">should sink type mismatch violation be blocked by content security policy?</dfn> algorithm, given a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global④">global object</a> (<var>global</var>), a string (<var>sink</var>), a string (<var>sinkGroup</var>) and a string (<var>source</var>), performs the following steps:</p>
    <ol>
@@ -2860,7 +2857,7 @@ on <var>global</var>, <var>policy</var> and <code>"require-trusted-types-for"</c
     <li data-md>
      <p>Return <var>result</var>.</p>
    </ol>
-   <h4 class="heading settled" data-level="4.3.5" id="should-block-create-policy"><span class="secno">4.3.5. </span><span class="content">Should Trusted Type policy creation be blocked by Content Security Policy?</span><a class="self-link" href="#should-block-create-policy"></a></h4>
+   <h4 class="heading settled" data-level="4.2.5" id="should-block-create-policy"><span class="secno">4.2.5. </span><span class="content">Should Trusted Type policy creation be blocked by Content Security Policy?</span><a class="self-link" href="#should-block-create-policy"></a></h4>
    <p>This algorithm returns <code>"Blocked"</code> if the <code class="idl"><a data-link-type="idl" href="#trustedtypepolicy" id="ref-for-trustedtypepolicy①③">TrustedTypePolicy</a></code> should not be created, and <code>"Allowed"</code> otherwise.</p>
    <p>The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="should-trusted-type-policy-creation-be-blocked-by-content-security-policy">Should Trusted Type policy creation be blocked by content security policy?</dfn> algorithm, given a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global⑤">global object</a> (<var>global</var>), a string (<var>policyName</var>) and a list of
 strings (<var>createdPolicyNames</var>), performs the following steps:</p>
@@ -2987,8 +2984,8 @@ to the <a data-link-type="dfn" href="#injection-sink" id="ref-for-injection-sink
 execution, violation generation, or the rejection of the value.</p>
   </main>
   <div data-fill-with="conformance">
-   <h2 class="no-ref no-num heading settled" id="w3c-conformance"><span class="content">Conformance</span><a class="self-link" href="#w3c-conformance"></a></h2>
-   <h3 class="no-ref no-num heading settled" id="w3c-conventions"><span class="content">Document conventions</span><a class="self-link" href="#w3c-conventions"></a></h3>
+   <h2 class="heading no-num no-ref settled" id="w3c-conformance"><span class="content">Conformance</span><a class="self-link" href="#w3c-conformance"></a></h2>
+   <h3 class="heading no-num no-ref settled" id="w3c-conventions"><span class="content">Document conventions</span><a class="self-link" href="#w3c-conventions"></a></h3>
    <p>Conformance requirements are expressed
     with a combination of descriptive assertions
     and RFC 2119 terminology.
@@ -3031,7 +3028,7 @@ execution, violation generation, or the rejection of the value.</p>
     <hr>
    </details>
    <section>
-    <h3 class="no-ref no-num heading settled" id="w3c-conformant-algorithms"><span class="content">Conformant Algorithms</span><a class="self-link" href="#w3c-conformant-algorithms"></a></h3>
+    <h3 class="heading no-num no-ref settled" id="w3c-conformant-algorithms"><span class="content">Conformant Algorithms</span><a class="self-link" href="#w3c-conformant-algorithms"></a></h3>
     <p>Requirements phrased in the imperative as part of algorithms
     (such as "strip any leading space characters"
     or "return false and abort these steps")
@@ -3051,8 +3048,8 @@ execution, violation generation, or the rejection of the value.</p>
    </section>
   </div>
   <script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script>
-  <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
-  <h3 class="no-num no-ref heading settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
+  <h2 class="heading no-num no-ref settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
+  <h3 class="heading no-num no-ref settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
   <ul class="index">
    <li><a href="#create-a-trusted-type">create a trusted type</a><span>, in § 3.2</span>
    <li><a href="#create-a-trusted-type-policy">create a trusted type policy</a><span>, in § 3.1</span>
@@ -3081,7 +3078,7 @@ execution, violation generation, or the rejection of the value.</p>
    <li><a href="#trustedtypepolicyfactory-default-policy">default policy</a><span>, in § 2.3.1</span>
    <li><a href="#dom-trustedtypepolicyfactory-defaultpolicy">defaultPolicy</a><span>, in § 2.3.1</span>
    <li><a href="#default-policy-explanation">default-policy-explanation</a><span>, in § 2.3.4</span>
-   <li><a href="#does-sink-type-require-trusted-types">does sink type require trusted types?</a><span>, in § 4.3.3</span>
+   <li><a href="#does-sink-type-require-trusted-types">does sink type require trusted types?</a><span>, in § 4.2.3</span>
    <li><a href="#dom-trustedtypepolicyfactory-emptyhtml">emptyHTML</a><span>, in § 2.3.1</span>
    <li><a href="#dom-trustedtypepolicyfactory-emptyscript">emptyScript</a><span>, in § 2.3.1</span>
    <li><a href="#enforcement">Enforcement</a><span>, in § 2.4</span>
@@ -3109,11 +3106,11 @@ execution, violation generation, or the rejection of the value.</p>
    <li><a href="#policies">Policies</a><span>, in § 2.3</span>
    <li><a href="#prepare-the-script-text">prepare the script text</a><span>, in § 3.6</span>
    <li><a href="#process-value-with-a-default-policy">process value with a default policy</a><span>, in § 3.5</span>
-   <li><a href="#require-trusted-types-for-directive">require-trusted-types-for-directive</a><span>, in § 4.3.1</span>
+   <li><a href="#require-trusted-types-for-directive">require-trusted-types-for-directive</a><span>, in § 4.2.1</span>
    <li><a href="#htmlscriptelement-script-text">script text</a><span>, in § 4.1.2.1</span>
-   <li><a href="#serialized-tt-configuration">serialized-tt-configuration</a><span>, in § 4.3.2</span>
-   <li><a href="#should-sink-type-mismatch-violation-be-blocked-by-content-security-policy">should sink type mismatch violation be blocked by content security policy?</a><span>, in § 4.3.4</span>
-   <li><a href="#should-trusted-type-policy-creation-be-blocked-by-content-security-policy">Should Trusted Type policy creation be blocked by content security policy?</a><span>, in § 4.3.5</span>
+   <li><a href="#serialized-tt-configuration">serialized-tt-configuration</a><span>, in § 4.2.2</span>
+   <li><a href="#should-sink-type-mismatch-violation-be-blocked-by-content-security-policy">should sink type mismatch violation be blocked by content security policy?</a><span>, in § 4.2.4</span>
+   <li><a href="#should-trusted-type-policy-creation-be-blocked-by-content-security-policy">Should Trusted Type policy creation be blocked by content security policy?</a><span>, in § 4.2.5</span>
    <li><a href="#dom-htmlscriptelement-src">src</a><span>, in § 4.1.2</span>
    <li>
     stringificationbehavior
@@ -3141,15 +3138,15 @@ execution, violation generation, or the rejection of the value.</p>
    <li><a href="#trustedtypepolicyfactory">TrustedTypePolicyFactory</a><span>, in § 2.3.1</span>
    <li><a href="#dictdef-trustedtypepolicyoptions">TrustedTypePolicyOptions</a><span>, in § 2.3.3</span>
    <li><a href="#dom-windoworworkerglobalscope-trustedtypes">trustedTypes</a><span>, in § 4.1.1</span>
-   <li><a href="#trusted-types-directive">trusted-types-directive</a><span>, in § 4.3.2</span>
-   <li><a href="#trusted-types-sink-group">trusted-types-sink-group</a><span>, in § 4.3.1</span>
-   <li><a href="#trusted-types-sink-group-keyword">trusted-types-sink-group-keyword</a><span>, in § 4.3.1</span>
-   <li><a href="#tt-expression">tt-expression</a><span>, in § 4.3.2</span>
-   <li><a href="#tt-keyword">tt-keyword</a><span>, in § 4.3.2</span>
-   <li><a href="#tt-policy-name">tt-policy-name</a><span>, in § 4.3.2</span>
-   <li><a href="#tt-wildcard">tt-wildcard</a><span>, in § 4.3.2</span>
+   <li><a href="#trusted-types-directive">trusted-types-directive</a><span>, in § 4.2.2</span>
+   <li><a href="#trusted-types-sink-group">trusted-types-sink-group</a><span>, in § 4.2.1</span>
+   <li><a href="#trusted-types-sink-group-keyword">trusted-types-sink-group-keyword</a><span>, in § 4.2.1</span>
+   <li><a href="#tt-expression">tt-expression</a><span>, in § 4.2.2</span>
+   <li><a href="#tt-keyword">tt-keyword</a><span>, in § 4.2.2</span>
+   <li><a href="#tt-policy-name">tt-policy-name</a><span>, in § 4.2.2</span>
+   <li><a href="#tt-wildcard">tt-wildcard</a><span>, in § 4.2.2</span>
   </ul>
-  <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
+  <h3 class="heading no-num no-ref settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
   <ul class="index">
    <li>
     <a data-link-type="biblio">[CSP3]</a> defines the following terms:
@@ -3260,8 +3257,8 @@ execution, violation generation, or the rejection of the value.</p>
      <li><span class="dfn-paneled" id="4013a022">this</span>
     </ul>
   </ul>
-  <h2 class="no-num no-ref heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
-  <h3 class="no-num no-ref heading settled" id="normative"><span class="content">Normative References</span><a class="self-link" href="#normative"></a></h3>
+  <h2 class="heading no-num no-ref settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
+  <h3 class="heading no-num no-ref settled" id="normative"><span class="content">Normative References</span><a class="self-link" href="#normative"></a></h3>
   <dl>
    <dt id="biblio-csp3">[CSP3]
    <dd>Mike West; Antonio Sartori. <a href="https://w3c.github.io/webappsec-csp/"><cite>Content Security Policy Level 3</cite></a>. URL: <a href="https://w3c.github.io/webappsec-csp/">https://w3c.github.io/webappsec-csp/</a>
@@ -3284,7 +3281,7 @@ execution, violation generation, or the rejection of the value.</p>
    <dt id="biblio-webidl">[WEBIDL]
    <dd>Edgar Chen; Timothy Gu. <a href="https://webidl.spec.whatwg.org/"><cite>Web IDL Standard</cite></a>. Living Standard. URL: <a href="https://webidl.spec.whatwg.org/">https://webidl.spec.whatwg.org/</a>
   </dl>
-  <h3 class="no-num no-ref heading settled" id="informative"><span class="content">Informative References</span><a class="self-link" href="#informative"></a></h3>
+  <h3 class="heading no-num no-ref settled" id="informative"><span class="content">Informative References</span><a class="self-link" href="#informative"></a></h3>
   <dl>
    <dt id="biblio-ecmascript">[ECMASCRIPT]
    <dd><a href="https://tc39.es/ecma262/multipage/"><cite>ECMAScript Language Specification</cite></a>. URL: <a href="https://tc39.es/ecma262/multipage/">https://tc39.es/ecma262/multipage/</a>
@@ -3293,7 +3290,7 @@ execution, violation generation, or the rejection of the value.</p>
    <dt id="biblio-html5">[HTML5]
    <dd>Ian Hickson; et al. <a href="https://www.w3.org/TR/html5/"><cite>HTML5</cite></a>. 27 March 2018. REC. URL: <a href="https://www.w3.org/TR/html5/">https://www.w3.org/TR/html5/</a>
   </dl>
-  <h2 class="no-num no-ref heading settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
+  <h2 class="heading no-num no-ref settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
   <div style="counter-reset:issue">
    <div class="issue"> The <a data-link-type="dfn" href="https://html.spec.whatwg.org/#event-handler-content-attributes">event handler content attribute</a> concept used below is ambiguous. This spec needs a better mechanism to identify event handler attributes. See <a href="https://github.com/w3c/trusted-types/issues/520">https://github.com/w3c/trusted-types/issues/520</a>. <a class="issue-return" href="#issue-15b3006c" title="Jump to section">↵</a></div>
    <div class="issue"> The above algorithm doesn’t account for the case when the script element’s content is changed mid-parse. Implementors must ensure they protect against this case. See <a href="https://github.com/w3c/trusted-types/issues/507">https://github.com/w3c/trusted-types/issues/507</a>. <a class="issue-return" href="#issue-d6e90040" title="Jump to section">↵</a></div>
@@ -3307,13 +3304,13 @@ execution, violation generation, or the rejection of the value.</p>
     <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedHTML/toJSON" title="The toJSON() method of the TrustedHTML interface returns a JSON representation of the stored data.">TrustedHTML/toJSON</a></p>
     <p class="less-than-two-engines-text">In only one current engine.</p>
     <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="safari no"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>90+</span></span>
+     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>90+</span></span>
      <hr>
-     <span class="opera no"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>90+</span></span>
+     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>90+</span></span>
      <hr>
      <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
      <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="safari_ios no"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="webview_android no"><span>Android WebView</span><span>?</span></span><span class="samsunginternet_android no"><span>Samsung Internet</span><span>?</span></span><span class="opera_android no"><span>Opera Mobile</span><span>?</span></span>
+     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
     </div>
    </div>
   </details>
@@ -3323,13 +3320,13 @@ execution, violation generation, or the rejection of the value.</p>
     <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedHTML/toString" title="The toString() method of the TrustedHTML interface returns a string which may safely inserted into an injection sink.">TrustedHTML/toString</a></p>
     <p class="less-than-two-engines-text">In only one current engine.</p>
     <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="safari no"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
+     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
      <hr>
-     <span class="opera no"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
+     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
      <hr>
      <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
      <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="safari_ios no"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="webview_android no"><span>Android WebView</span><span>?</span></span><span class="samsunginternet_android no"><span>Samsung Internet</span><span>?</span></span><span class="opera_android no"><span>Opera Mobile</span><span>?</span></span>
+     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
     </div>
    </div>
   </details>
@@ -3339,13 +3336,13 @@ execution, violation generation, or the rejection of the value.</p>
     <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedHTML" title="The TrustedHTML interface of the Trusted Types API represents a string that a developer can insert into an injection sink that will render it as HTML. These objects are created via TrustedTypePolicy.createHTML() and therefore have no constructor.">TrustedHTML</a></p>
     <p class="less-than-two-engines-text">In only one current engine.</p>
     <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="safari no"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
+     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
      <hr>
-     <span class="opera no"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
+     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
      <hr>
      <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
      <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="safari_ios no"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="webview_android no"><span>Android WebView</span><span>?</span></span><span class="samsunginternet_android no"><span>Samsung Internet</span><span>?</span></span><span class="opera_android no"><span>Opera Mobile</span><span>?</span></span>
+     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
     </div>
    </div>
   </details>
@@ -3355,13 +3352,13 @@ execution, violation generation, or the rejection of the value.</p>
     <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedScript/toJSON" title="The toJSON() method of the TrustedScript interface returns a JSON representation of the stored data.">TrustedScript/toJSON</a></p>
     <p class="less-than-two-engines-text">In only one current engine.</p>
     <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="safari no"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>90+</span></span>
+     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>90+</span></span>
      <hr>
-     <span class="opera no"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>90+</span></span>
+     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>90+</span></span>
      <hr>
      <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
      <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="safari_ios no"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="webview_android no"><span>Android WebView</span><span>?</span></span><span class="samsunginternet_android no"><span>Samsung Internet</span><span>?</span></span><span class="opera_android no"><span>Opera Mobile</span><span>?</span></span>
+     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
     </div>
    </div>
   </details>
@@ -3371,26 +3368,26 @@ execution, violation generation, or the rejection of the value.</p>
     <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedScript/toString" title="The toString() method of the TrustedScript interface returns a string which may safely inserted into an injection sink.">TrustedScript/toString</a></p>
     <p class="less-than-two-engines-text">In only one current engine.</p>
     <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="safari no"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
+     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
      <hr>
-     <span class="opera no"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
+     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
      <hr>
      <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
      <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="safari_ios no"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="webview_android no"><span>Android WebView</span><span>?</span></span><span class="samsunginternet_android no"><span>Samsung Internet</span><span>?</span></span><span class="opera_android no"><span>Opera Mobile</span><span>?</span></span>
+     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
     </div>
    </div>
    <div class="feature">
     <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedScriptURL/toString" title="The toString() method of the TrustedScriptURL interface returns a string which may safely inserted into an injection sink.">TrustedScriptURL/toString</a></p>
     <p class="less-than-two-engines-text">In only one current engine.</p>
     <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="safari no"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
+     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
      <hr>
-     <span class="opera no"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
+     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
      <hr>
      <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
      <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="safari_ios no"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="webview_android no"><span>Android WebView</span><span>?</span></span><span class="samsunginternet_android no"><span>Samsung Internet</span><span>?</span></span><span class="opera_android no"><span>Opera Mobile</span><span>?</span></span>
+     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
     </div>
    </div>
   </details>
@@ -3400,13 +3397,13 @@ execution, violation generation, or the rejection of the value.</p>
     <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedScript" title="The TrustedScript interface of the Trusted Types API represents a string with an uncompiled script body that a developer can insert into an injection sink that might execute the script. These objects are created via TrustedTypePolicy.createScript() and therefore have no constructor.">TrustedScript</a></p>
     <p class="less-than-two-engines-text">In only one current engine.</p>
     <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="safari no"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
+     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
      <hr>
-     <span class="opera no"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
+     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
      <hr>
      <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
      <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="safari_ios no"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="webview_android no"><span>Android WebView</span><span>?</span></span><span class="samsunginternet_android no"><span>Samsung Internet</span><span>?</span></span><span class="opera_android no"><span>Opera Mobile</span><span>?</span></span>
+     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
     </div>
    </div>
   </details>
@@ -3416,13 +3413,13 @@ execution, violation generation, or the rejection of the value.</p>
     <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedScriptURL/toJSON" title="The toJSON() method of the TrustedScriptURL interface returns a JSON representation of the stored data.">TrustedScriptURL/toJSON</a></p>
     <p class="less-than-two-engines-text">In only one current engine.</p>
     <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="safari no"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>90+</span></span>
+     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>90+</span></span>
      <hr>
-     <span class="opera no"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>90+</span></span>
+     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>90+</span></span>
      <hr>
      <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
      <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="safari_ios no"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="webview_android no"><span>Android WebView</span><span>?</span></span><span class="samsunginternet_android no"><span>Samsung Internet</span><span>?</span></span><span class="opera_android no"><span>Opera Mobile</span><span>?</span></span>
+     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
     </div>
    </div>
   </details>
@@ -3432,13 +3429,13 @@ execution, violation generation, or the rejection of the value.</p>
     <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedScriptURL" title="The TrustedScriptURL interface of the Trusted Types API represents a string that a developer can insert into an injection sink that will parse it as a URL of an external script. These objects are created via TrustedTypePolicy.createScriptURL() and therefore have no constructor.">TrustedScriptURL</a></p>
     <p class="less-than-two-engines-text">In only one current engine.</p>
     <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="safari no"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
+     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
      <hr>
-     <span class="opera no"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
+     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
      <hr>
      <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
      <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="safari_ios no"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="webview_android no"><span>Android WebView</span><span>?</span></span><span class="samsunginternet_android no"><span>Samsung Internet</span><span>?</span></span><span class="opera_android no"><span>Opera Mobile</span><span>?</span></span>
+     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
     </div>
    </div>
   </details>
@@ -3448,13 +3445,13 @@ execution, violation generation, or the rejection of the value.</p>
     <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedTypePolicy/createHTML" title="The createHTML() method of the TrustedTypePolicy interface creates a TrustedHTML object using a policy created by TrustedTypePolicyFactory.createPolicy().">TrustedTypePolicy/createHTML</a></p>
     <p class="less-than-two-engines-text">In only one current engine.</p>
     <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="safari no"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
+     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
      <hr>
-     <span class="opera no"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
+     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
      <hr>
      <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
      <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="safari_ios no"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="webview_android no"><span>Android WebView</span><span>?</span></span><span class="samsunginternet_android no"><span>Samsung Internet</span><span>?</span></span><span class="opera_android no"><span>Opera Mobile</span><span>?</span></span>
+     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
     </div>
    </div>
   </details>
@@ -3464,13 +3461,13 @@ execution, violation generation, or the rejection of the value.</p>
     <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedTypePolicy/createScript" title="The createScript() method of the TrustedTypePolicy interface creates a TrustedScript object using a policy created by TrustedTypePolicyFactory.createPolicy().">TrustedTypePolicy/createScript</a></p>
     <p class="less-than-two-engines-text">In only one current engine.</p>
     <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="safari no"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
+     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
      <hr>
-     <span class="opera no"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
+     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
      <hr>
      <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
      <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="safari_ios no"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="webview_android no"><span>Android WebView</span><span>?</span></span><span class="samsunginternet_android no"><span>Samsung Internet</span><span>?</span></span><span class="opera_android no"><span>Opera Mobile</span><span>?</span></span>
+     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
     </div>
    </div>
   </details>
@@ -3480,13 +3477,13 @@ execution, violation generation, or the rejection of the value.</p>
     <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedTypePolicy/createScriptURL" title="The createScriptURL() method of the TrustedTypePolicy interface creates a TrustedScriptURL object using a policy created by TrustedTypePolicyFactory.createPolicy().">TrustedTypePolicy/createScriptURL</a></p>
     <p class="less-than-two-engines-text">In only one current engine.</p>
     <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="safari no"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
+     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
      <hr>
-     <span class="opera no"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
+     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
      <hr>
      <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
      <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="safari_ios no"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="webview_android no"><span>Android WebView</span><span>?</span></span><span class="samsunginternet_android no"><span>Samsung Internet</span><span>?</span></span><span class="opera_android no"><span>Opera Mobile</span><span>?</span></span>
+     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
     </div>
    </div>
   </details>
@@ -3496,13 +3493,13 @@ execution, violation generation, or the rejection of the value.</p>
     <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedTypePolicy/name" title="The name read-only property of the TrustedTypePolicy interface returns the name of the policy.">TrustedTypePolicy/name</a></p>
     <p class="less-than-two-engines-text">In only one current engine.</p>
     <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="safari no"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
+     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
      <hr>
-     <span class="opera no"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
+     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
      <hr>
      <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
      <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="safari_ios no"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="webview_android no"><span>Android WebView</span><span>?</span></span><span class="samsunginternet_android no"><span>Samsung Internet</span><span>?</span></span><span class="opera_android no"><span>Opera Mobile</span><span>?</span></span>
+     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
     </div>
    </div>
   </details>
@@ -3512,13 +3509,13 @@ execution, violation generation, or the rejection of the value.</p>
     <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedTypePolicy" title="The TrustedTypePolicy interface of the Trusted Types API defines a group of functions which create TrustedType objects.">TrustedTypePolicy</a></p>
     <p class="less-than-two-engines-text">In only one current engine.</p>
     <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="safari no"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
+     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
      <hr>
-     <span class="opera no"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
+     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
      <hr>
      <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
      <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="safari_ios no"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="webview_android no"><span>Android WebView</span><span>?</span></span><span class="samsunginternet_android no"><span>Samsung Internet</span><span>?</span></span><span class="opera_android no"><span>Opera Mobile</span><span>?</span></span>
+     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
     </div>
    </div>
   </details>
@@ -3528,13 +3525,13 @@ execution, violation generation, or the rejection of the value.</p>
     <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedTypePolicyFactory/createPolicy" title="The createPolicy() method of the TrustedTypePolicyFactory interface creates a TrustedTypePolicy object that implements the rules passed as policyOptions.">TrustedTypePolicyFactory/createPolicy</a></p>
     <p class="less-than-two-engines-text">In only one current engine.</p>
     <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="safari no"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
+     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
      <hr>
-     <span class="opera no"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
+     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
      <hr>
      <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
      <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="safari_ios no"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="webview_android no"><span>Android WebView</span><span>?</span></span><span class="samsunginternet_android no"><span>Samsung Internet</span><span>?</span></span><span class="opera_android no"><span>Opera Mobile</span><span>?</span></span>
+     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
     </div>
    </div>
   </details>
@@ -3544,13 +3541,13 @@ execution, violation generation, or the rejection of the value.</p>
     <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedTypePolicyFactory/defaultPolicy" title="The defaultPolicy read-only property of the TrustedTypePolicyFactory interface returns the default TrustedTypePolicy or null if this is empty.">TrustedTypePolicyFactory/defaultPolicy</a></p>
     <p class="less-than-two-engines-text">In only one current engine.</p>
     <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="safari no"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
+     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
      <hr>
-     <span class="opera no"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
+     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
      <hr>
      <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
      <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="safari_ios no"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="webview_android no"><span>Android WebView</span><span>?</span></span><span class="samsunginternet_android no"><span>Samsung Internet</span><span>?</span></span><span class="opera_android no"><span>Opera Mobile</span><span>?</span></span>
+     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
     </div>
    </div>
   </details>
@@ -3560,13 +3557,13 @@ execution, violation generation, or the rejection of the value.</p>
     <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedTypePolicyFactory/emptyHTML" title="The emptyHTML read-only property of the TrustedTypePolicyFactory interface returns a TrustedHTML object containing an empty string.">TrustedTypePolicyFactory/emptyHTML</a></p>
     <p class="less-than-two-engines-text">In only one current engine.</p>
     <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="safari no"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
+     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
      <hr>
-     <span class="opera no"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
+     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
      <hr>
      <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
      <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="safari_ios no"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="webview_android no"><span>Android WebView</span><span>?</span></span><span class="samsunginternet_android no"><span>Samsung Internet</span><span>?</span></span><span class="opera_android no"><span>Opera Mobile</span><span>?</span></span>
+     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
     </div>
    </div>
   </details>
@@ -3576,13 +3573,13 @@ execution, violation generation, or the rejection of the value.</p>
     <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedTypePolicyFactory/emptyScript" title="The emptyScript read-only property of the TrustedTypePolicyFactory interface returns a TrustedScript object containing an empty string.">TrustedTypePolicyFactory/emptyScript</a></p>
     <p class="less-than-two-engines-text">In only one current engine.</p>
     <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="safari no"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
+     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
      <hr>
-     <span class="opera no"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
+     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
      <hr>
      <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
      <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="safari_ios no"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="webview_android no"><span>Android WebView</span><span>?</span></span><span class="samsunginternet_android no"><span>Samsung Internet</span><span>?</span></span><span class="opera_android no"><span>Opera Mobile</span><span>?</span></span>
+     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
     </div>
    </div>
   </details>
@@ -3592,13 +3589,13 @@ execution, violation generation, or the rejection of the value.</p>
     <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedTypePolicyFactory/getAttributeType" title="The getAttributeType() method of the TrustedTypePolicyFactory interface allows web developers to check if a Trusted Type is required for an element, and if so which Trusted Type is used.">TrustedTypePolicyFactory/getAttributeType</a></p>
     <p class="less-than-two-engines-text">In only one current engine.</p>
     <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="safari no"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
+     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
      <hr>
-     <span class="opera no"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
+     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
      <hr>
      <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
      <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="safari_ios no"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="webview_android no"><span>Android WebView</span><span>?</span></span><span class="samsunginternet_android no"><span>Samsung Internet</span><span>?</span></span><span class="opera_android no"><span>Opera Mobile</span><span>?</span></span>
+     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
     </div>
    </div>
   </details>
@@ -3608,13 +3605,13 @@ execution, violation generation, or the rejection of the value.</p>
     <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedTypePolicyFactory/getPropertyType" title="The getPropertyType() method of the TrustedTypePolicyFactory interface allows web developers to check if a Trusted Type is required for an element&apos;s property.">TrustedTypePolicyFactory/getPropertyType</a></p>
     <p class="less-than-two-engines-text">In only one current engine.</p>
     <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="safari no"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
+     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
      <hr>
-     <span class="opera no"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
+     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
      <hr>
      <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
      <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="safari_ios no"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="webview_android no"><span>Android WebView</span><span>?</span></span><span class="samsunginternet_android no"><span>Samsung Internet</span><span>?</span></span><span class="opera_android no"><span>Opera Mobile</span><span>?</span></span>
+     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
     </div>
    </div>
   </details>
@@ -3624,13 +3621,13 @@ execution, violation generation, or the rejection of the value.</p>
     <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedTypePolicyFactory/isHTML" title="The isHTML() method of the TrustedTypePolicyFactory interface returns true if it is passed a valid TrustedHTML object.">TrustedTypePolicyFactory/isHTML</a></p>
     <p class="less-than-two-engines-text">In only one current engine.</p>
     <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="safari no"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
+     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
      <hr>
-     <span class="opera no"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
+     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
      <hr>
      <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
      <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="safari_ios no"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="webview_android no"><span>Android WebView</span><span>?</span></span><span class="samsunginternet_android no"><span>Samsung Internet</span><span>?</span></span><span class="opera_android no"><span>Opera Mobile</span><span>?</span></span>
+     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
     </div>
    </div>
   </details>
@@ -3640,13 +3637,13 @@ execution, violation generation, or the rejection of the value.</p>
     <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedTypePolicyFactory/isScript" title="The isScript() method of the TrustedTypePolicyFactory interface returns true if it is passed a valid TrustedScript object.">TrustedTypePolicyFactory/isScript</a></p>
     <p class="less-than-two-engines-text">In only one current engine.</p>
     <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="safari no"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
+     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
      <hr>
-     <span class="opera no"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
+     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
      <hr>
      <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
      <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="safari_ios no"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="webview_android no"><span>Android WebView</span><span>?</span></span><span class="samsunginternet_android no"><span>Samsung Internet</span><span>?</span></span><span class="opera_android no"><span>Opera Mobile</span><span>?</span></span>
+     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
     </div>
    </div>
   </details>
@@ -3656,13 +3653,13 @@ execution, violation generation, or the rejection of the value.</p>
     <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedTypePolicyFactory/isScriptURL" title="The isScriptURL() method of the TrustedTypePolicyFactory interface returns true if it is passed a valid TrustedScriptURL object.">TrustedTypePolicyFactory/isScriptURL</a></p>
     <p class="less-than-two-engines-text">In only one current engine.</p>
     <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="safari no"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
+     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
      <hr>
-     <span class="opera no"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
+     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
      <hr>
      <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
      <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="safari_ios no"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="webview_android no"><span>Android WebView</span><span>?</span></span><span class="samsunginternet_android no"><span>Samsung Internet</span><span>?</span></span><span class="opera_android no"><span>Opera Mobile</span><span>?</span></span>
+     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
     </div>
    </div>
   </details>
@@ -3672,13 +3669,13 @@ execution, violation generation, or the rejection of the value.</p>
     <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedTypePolicyFactory" title="The TrustedTypePolicyFactory interface of the Trusted Types API creates policies and allows the verification of Trusted Type objects against created policies.">TrustedTypePolicyFactory</a></p>
     <p class="less-than-two-engines-text">In only one current engine.</p>
     <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="safari no"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
+     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
      <hr>
-     <span class="opera no"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
+     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
      <hr>
      <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
      <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="safari_ios no"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="webview_android no"><span>Android WebView</span><span>?</span></span><span class="samsunginternet_android no"><span>Samsung Internet</span><span>?</span></span><span class="opera_android no"><span>Opera Mobile</span><span>?</span></span>
+     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
     </div>
    </div>
   </details>
@@ -3688,13 +3685,13 @@ execution, violation generation, or the rejection of the value.</p>
     <p><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/require-trusted-types-for" title="The HTTP Content-Security-Policy (CSP) require-trusted-types-for Experimental directive instructs user agents to control the data passed to DOM XSS sink functions, like Element.innerHTML setter.">Headers/Content-Security-Policy/require-trusted-types-for</a></p>
     <p class="less-than-two-engines-text">In only one current engine.</p>
     <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="safari no"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
+     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
      <hr>
-     <span class="opera no"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
+     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
      <hr>
      <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
      <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="safari_ios no"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="webview_android no"><span>Android WebView</span><span>?</span></span><span class="samsunginternet_android no"><span>Samsung Internet</span><span>?</span></span><span class="opera_android no"><span>Opera Mobile</span><span>?</span></span>
+     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
     </div>
    </div>
   </details>
@@ -3704,13 +3701,13 @@ execution, violation generation, or the rejection of the value.</p>
     <p><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/trusted-types" title="The HTTP Content-Security-Policy (CSP) trusted-types Experimental directive instructs user agents to restrict the creation of Trusted Types policies - functions that build non-spoofable, typed values intended to be passed to DOM XSS sinks in place of strings.">Headers/Content-Security-Policy/trusted-types</a></p>
     <p class="less-than-two-engines-text">In only one current engine.</p>
     <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="safari no"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
+     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
      <hr>
-     <span class="opera no"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
+     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
      <hr>
      <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
      <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="safari_ios no"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="webview_android no"><span>Android WebView</span><span>?</span></span><span class="samsunginternet_android no"><span>Samsung Internet</span><span>?</span></span><span class="opera_android no"><span>Opera Mobile</span><span>None</span></span>
+     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>None</span></span>
     </div>
    </div>
   </details>
@@ -3916,29 +3913,29 @@ function parseHTML(markup) {
 let dfnPanelData = {
 "10ce5f6f": {"dfnID":"10ce5f6f","dfnText":"invoke","external":true,"refSections":[{"refs":[{"id":"ref-for-invoke-a-callback-function"}],"title":"3.3. Get Trusted Type policy value"}],"url":"https://webidl.spec.whatwg.org/#invoke-a-callback-function"},
 "10e25f42": {"dfnID":"10e25f42","dfnText":"HTMLIFrameElement","external":true,"refSections":[{"refs":[{"id":"ref-for-htmliframeelement"}],"title":"2.3.1. TrustedTypePolicyFactory"},{"refs":[{"id":"ref-for-htmliframeelement\u2460"}],"title":"3.8. Get Trusted Type data for attribute"}],"url":"https://html.spec.whatwg.org/multipage/iframe-embed-object.html#htmliframeelement"},
-"138270ef": {"dfnID":"138270ef","dfnText":"CSP list","external":true,"refSections":[{"refs":[{"id":"ref-for-global-object-csp-list"}],"title":"4.3.3. Does sink type require trusted types?"},{"refs":[{"id":"ref-for-global-object-csp-list\u2460"}],"title":"4.3.4. Should sink type mismatch violation be blocked by Content Security Policy?"},{"refs":[{"id":"ref-for-global-object-csp-list\u2461"}],"title":"4.3.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}],"url":"https://w3c.github.io/webappsec-csp/#global-object-csp-list"},
-"168f1b6e": {"dfnID":"168f1b6e","dfnText":"global object (for realm)","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-realm-global"}],"title":"3.1. Create a Trusted Type Policy"},{"refs":[{"id":"ref-for-concept-realm-global\u2460"}],"title":"3.4. Get Trusted Type compliant string"},{"refs":[{"id":"ref-for-concept-realm-global\u2461"}],"title":"3.5. Process value with a default policy"},{"refs":[{"id":"ref-for-concept-realm-global\u2462"}],"title":"4.3.3. Does sink type require trusted types?"},{"refs":[{"id":"ref-for-concept-realm-global\u2463"}],"title":"4.3.4. Should sink type mismatch violation be blocked by Content Security Policy?"},{"refs":[{"id":"ref-for-concept-realm-global\u2464"}],"title":"4.3.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global"},
+"138270ef": {"dfnID":"138270ef","dfnText":"CSP list","external":true,"refSections":[{"refs":[{"id":"ref-for-global-object-csp-list"}],"title":"4.2.3. Does sink type require trusted types?"},{"refs":[{"id":"ref-for-global-object-csp-list\u2460"}],"title":"4.2.4. Should sink type mismatch violation be blocked by Content Security Policy?"},{"refs":[{"id":"ref-for-global-object-csp-list\u2461"}],"title":"4.2.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}],"url":"https://w3c.github.io/webappsec-csp/#global-object-csp-list"},
+"168f1b6e": {"dfnID":"168f1b6e","dfnText":"global object (for realm)","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-realm-global"}],"title":"3.1. Create a Trusted Type Policy"},{"refs":[{"id":"ref-for-concept-realm-global\u2460"}],"title":"3.4. Get Trusted Type compliant string"},{"refs":[{"id":"ref-for-concept-realm-global\u2461"}],"title":"3.5. Process value with a default policy"},{"refs":[{"id":"ref-for-concept-realm-global\u2462"}],"title":"4.2.3. Does sink type require trusted types?"},{"refs":[{"id":"ref-for-concept-realm-global\u2463"}],"title":"4.2.4. Should sink type mismatch violation be blocked by Content Security Policy?"},{"refs":[{"id":"ref-for-concept-realm-global\u2464"}],"title":"4.2.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global"},
 "215d47ca": {"dfnID":"215d47ca","dfnText":"prepare the script element","external":true,"refSections":[{"refs":[{"id":"ref-for-prepare-the-script-element"}],"title":"4.1.2.7. Slot value verification"}],"url":"https://html.spec.whatwg.org/#prepare-the-script-element"},
-"24a8eb94": {"dfnID":"24a8eb94","dfnText":"resource","external":true,"refSections":[{"refs":[{"id":"ref-for-violation-resource"}],"title":"4.3.4. Should sink type mismatch violation be blocked by Content Security Policy?"},{"refs":[{"id":"ref-for-violation-resource\u2460"}],"title":"4.3.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}],"url":"https://w3c.github.io/webappsec-csp/#violation-resource"},
+"24a8eb94": {"dfnID":"24a8eb94","dfnText":"resource","external":true,"refSections":[{"refs":[{"id":"ref-for-violation-resource"}],"title":"4.2.4. Should sink type mismatch violation be blocked by Content Security Policy?"},{"refs":[{"id":"ref-for-violation-resource\u2460"}],"title":"4.2.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}],"url":"https://w3c.github.io/webappsec-csp/#violation-resource"},
 "296f3551": {"dfnID":"296f3551","dfnText":"Element","external":true,"refSections":[{"refs":[{"id":"ref-for-element"},{"id":"ref-for-element\u2460"}],"title":"2.1.1. DOM XSS injection sinks"},{"refs":[{"id":"ref-for-element\u2461"},{"id":"ref-for-element\u2462"}],"title":"2.3.1. TrustedTypePolicyFactory"},{"refs":[{"id":"ref-for-element\u2463"}],"title":"3.7. Get Trusted Type compliant attribute value"},{"refs":[{"id":"ref-for-element\u2464"}],"title":"3.8. Get Trusted Type data for attribute"}],"url":"https://dom.spec.whatwg.org/#element"},
 "2c4af168": {"dfnID":"2c4af168","dfnText":"LegacyNullToEmptyString","external":true,"refSections":[{"refs":[{"id":"ref-for-LegacyNullToEmptyString"}],"title":"4.1.2. Enforcement for scripts"}],"url":"https://webidl.spec.whatwg.org/#LegacyNullToEmptyString"},
 "364094ea": {"dfnID":"364094ea","dfnText":"outerHTML","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-element-outerhtml"}],"title":"2.1.1. DOM XSS injection sinks"}],"url":"https://html.spec.whatwg.org/multipage/dynamic-markup-insertion.html#dom-element-outerhtml"},
-"3a711be7": {"dfnID":"3a711be7","dfnText":"scheme","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-url-scheme"}],"title":"4.3.1.1. require-trusted-types-for Pre-Navigation check"}],"url":"https://url.spec.whatwg.org/#concept-url-scheme"},
-"3d7ed2c2": {"dfnID":"3d7ed2c2","dfnText":"directive set","external":true,"refSections":[{"refs":[{"id":"ref-for-policy-directive-set"}],"title":"4.3.3. Does sink type require trusted types?"},{"refs":[{"id":"ref-for-policy-directive-set\u2460"}],"title":"4.3.4. Should sink type mismatch violation be blocked by Content Security Policy?"},{"refs":[{"id":"ref-for-policy-directive-set\u2461"}],"title":"4.3.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}],"url":"https://w3c.github.io/webappsec-csp/#policy-directive-set"},
+"3a711be7": {"dfnID":"3a711be7","dfnText":"scheme","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-url-scheme"}],"title":"4.2.1.1. require-trusted-types-for Pre-Navigation check"}],"url":"https://url.spec.whatwg.org/#concept-url-scheme"},
+"3d7ed2c2": {"dfnID":"3d7ed2c2","dfnText":"directive set","external":true,"refSections":[{"refs":[{"id":"ref-for-policy-directive-set"}],"title":"4.2.3. Does sink type require trusted types?"},{"refs":[{"id":"ref-for-policy-directive-set\u2460"}],"title":"4.2.4. Should sink type mismatch violation be blocked by Content Security Policy?"},{"refs":[{"id":"ref-for-policy-directive-set\u2461"}],"title":"4.2.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}],"url":"https://w3c.github.io/webappsec-csp/#policy-directive-set"},
 "4013a022": {"dfnID":"4013a022","dfnText":"this","external":true,"refSections":[{"refs":[{"id":"ref-for-this"},{"id":"ref-for-this\u2460"}],"title":"2.3.1. TrustedTypePolicyFactory"},{"refs":[{"id":"ref-for-this\u2461"},{"id":"ref-for-this\u2462"},{"id":"ref-for-this\u2463"}],"title":"2.3.2. TrustedTypePolicy"},{"refs":[{"id":"ref-for-this\u2464"}],"title":"4.1.1. Extensions to the WindowOrWorkerGlobalScope interface"},{"refs":[{"id":"ref-for-this\u2465"},{"id":"ref-for-this\u2466"},{"id":"ref-for-this\u2467"},{"id":"ref-for-this\u2468"}],"title":"4.1.2.2. The innerText IDL attribute"},{"refs":[{"id":"ref-for-this\u2460\u24ea"},{"id":"ref-for-this\u2460\u2460"},{"id":"ref-for-this\u2460\u2461"},{"id":"ref-for-this\u2460\u2462"}],"title":"4.1.2.3. The textContent IDL attribute"},{"refs":[{"id":"ref-for-this\u2460\u2463"},{"id":"ref-for-this\u2460\u2464"},{"id":"ref-for-this\u2460\u2465"}],"title":"4.1.2.4. The text IDL attribute"},{"refs":[{"id":"ref-for-this\u2460\u2466"},{"id":"ref-for-this\u2460\u2467"},{"id":"ref-for-this\u2460\u2468"},{"id":"ref-for-this\u2461\u24ea"}],"title":"4.1.2.5. The src IDL attribute"}],"url":"https://webidl.spec.whatwg.org/#this"},
 "402ed79d": {"dfnID":"402ed79d","dfnText":"CEReactions","external":true,"refSections":[{"refs":[{"id":"ref-for-cereactions"},{"id":"ref-for-cereactions\u2460"},{"id":"ref-for-cereactions\u2461"},{"id":"ref-for-cereactions\u2462"}],"title":"4.1.2. Enforcement for scripts"}],"url":"https://html.spec.whatwg.org/multipage/custom-elements.html#cereactions"},
 "40ed6102": {"dfnID":"40ed6102","dfnText":"get the text steps","external":true,"refSections":[{"refs":[{"id":"ref-for-get-the-text-steps"}],"title":"4.1.2.2. The innerText IDL attribute"}],"url":"https://html.spec.whatwg.org/#get-the-text-steps"},
 "421cd2a4": {"dfnID":"421cd2a4","dfnText":"textContent","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-node-textcontent"}],"title":"4.1.2. Enforcement for scripts"}],"url":"https://dom.spec.whatwg.org/#dom-node-textcontent"},
-"4582ec82": {"dfnID":"4582ec82","dfnText":"disposition","external":true,"refSections":[{"refs":[{"id":"ref-for-policy-disposition"}],"title":"4.3.3. Does sink type require trusted types?"},{"refs":[{"id":"ref-for-policy-disposition\u2460"}],"title":"4.3.4. Should sink type mismatch violation be blocked by Content Security Policy?"},{"refs":[{"id":"ref-for-policy-disposition\u2461"}],"title":"4.3.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}],"url":"https://w3c.github.io/webappsec-csp/#policy-disposition"},
-"461b765a": {"dfnID":"461b765a","dfnText":"value","external":true,"refSections":[{"refs":[{"id":"ref-for-directive-value"}],"title":"4.3.1. require-trusted-types-for directive"},{"refs":[{"id":"ref-for-directive-value\u2460"},{"id":"ref-for-directive-value\u2461"}],"title":"4.3.2. trusted-types directive"},{"refs":[{"id":"ref-for-directive-value\u2462"}],"title":"4.3.3. Does sink type require trusted types?"},{"refs":[{"id":"ref-for-directive-value\u2463"}],"title":"4.3.4. Should sink type mismatch violation be blocked by Content Security Policy?"},{"refs":[{"id":"ref-for-directive-value\u2464"},{"id":"ref-for-directive-value\u2465"},{"id":"ref-for-directive-value\u2466"},{"id":"ref-for-directive-value\u2467"}],"title":"4.3.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}],"url":"https://w3c.github.io/webappsec-csp/#directive-value"},
-"4a3bf5fb": {"dfnID":"4a3bf5fb","dfnText":"concatenate","external":true,"refSections":[{"refs":[{"id":"ref-for-string-concatenate"}],"title":"4.3.4. Should sink type mismatch violation be blocked by Content Security Policy?"}],"url":"https://infra.spec.whatwg.org/#string-concatenate"},
-"51218496": {"dfnID":"51218496","dfnText":"name","external":true,"refSections":[{"refs":[{"id":"ref-for-directive-name"}],"title":"4.3.1. require-trusted-types-for directive"},{"refs":[{"id":"ref-for-directive-name\u2460"}],"title":"4.3.2. trusted-types directive"},{"refs":[{"id":"ref-for-directive-name\u2461"}],"title":"4.3.3. Does sink type require trusted types?"},{"refs":[{"id":"ref-for-directive-name\u2462"}],"title":"4.3.4. Should sink type mismatch violation be blocked by Content Security Policy?"}],"url":"https://w3c.github.io/webappsec-csp/#directive-name"},
+"4582ec82": {"dfnID":"4582ec82","dfnText":"disposition","external":true,"refSections":[{"refs":[{"id":"ref-for-policy-disposition"}],"title":"4.2.3. Does sink type require trusted types?"},{"refs":[{"id":"ref-for-policy-disposition\u2460"}],"title":"4.2.4. Should sink type mismatch violation be blocked by Content Security Policy?"},{"refs":[{"id":"ref-for-policy-disposition\u2461"}],"title":"4.2.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}],"url":"https://w3c.github.io/webappsec-csp/#policy-disposition"},
+"461b765a": {"dfnID":"461b765a","dfnText":"value","external":true,"refSections":[{"refs":[{"id":"ref-for-directive-value"}],"title":"4.2.1. require-trusted-types-for directive"},{"refs":[{"id":"ref-for-directive-value\u2460"},{"id":"ref-for-directive-value\u2461"}],"title":"4.2.2. trusted-types directive"},{"refs":[{"id":"ref-for-directive-value\u2462"}],"title":"4.2.3. Does sink type require trusted types?"},{"refs":[{"id":"ref-for-directive-value\u2463"}],"title":"4.2.4. Should sink type mismatch violation be blocked by Content Security Policy?"},{"refs":[{"id":"ref-for-directive-value\u2464"},{"id":"ref-for-directive-value\u2465"},{"id":"ref-for-directive-value\u2466"},{"id":"ref-for-directive-value\u2467"}],"title":"4.2.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}],"url":"https://w3c.github.io/webappsec-csp/#directive-value"},
+"4a3bf5fb": {"dfnID":"4a3bf5fb","dfnText":"concatenate","external":true,"refSections":[{"refs":[{"id":"ref-for-string-concatenate"}],"title":"4.2.4. Should sink type mismatch violation be blocked by Content Security Policy?"}],"url":"https://infra.spec.whatwg.org/#string-concatenate"},
+"51218496": {"dfnID":"51218496","dfnText":"name","external":true,"refSections":[{"refs":[{"id":"ref-for-directive-name"}],"title":"4.2.1. require-trusted-types-for directive"},{"refs":[{"id":"ref-for-directive-name\u2460"}],"title":"4.2.2. trusted-types directive"},{"refs":[{"id":"ref-for-directive-name\u2461"}],"title":"4.2.3. Does sink type require trusted types?"},{"refs":[{"id":"ref-for-directive-name\u2462"}],"title":"4.2.4. Should sink type mismatch violation be blocked by Content Security Policy?"}],"url":"https://w3c.github.io/webappsec-csp/#directive-name"},
 "5216e1a0": {"dfnID":"5216e1a0","dfnText":"node document","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-node-document"}],"title":"3.7. Get Trusted Type compliant attribute value"},{"refs":[{"id":"ref-for-concept-node-document\u2460"}],"title":"4.1.2.5. The src IDL attribute"}],"url":"https://dom.spec.whatwg.org/#concept-node-document"},
 "5372cca8": {"dfnID":"5372cca8","dfnText":"boolean","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-boolean"},{"id":"ref-for-idl-boolean\u2460"},{"id":"ref-for-idl-boolean\u2461"}],"title":"2.3.1. TrustedTypePolicyFactory"}],"url":"https://webidl.spec.whatwg.org/#idl-boolean"},
-"5442ea33": {"dfnID":"5442ea33","dfnText":"URL serializer","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-url-serializer"}],"title":"4.3.1.1. require-trusted-types-for Pre-Navigation check"}],"url":"https://url.spec.whatwg.org/#concept-url-serializer"},
-"55213b5b": {"dfnID":"55213b5b","dfnText":"request","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-request"}],"title":"4.3.1.1. require-trusted-types-for Pre-Navigation check"}],"url":"https://fetch.spec.whatwg.org/#concept-request"},
-"579a2f63": {"dfnID":"579a2f63","dfnText":"content security policy object","external":true,"refSections":[{"refs":[{"id":"ref-for-content-security-policy-object"}],"title":"4.3.1.1. require-trusted-types-for Pre-Navigation check"}],"url":"https://w3c.github.io/webappsec-csp/#content-security-policy-object"},
-"5c117fdd": {"dfnID":"5c117fdd","dfnText":"pre-navigation check","external":true,"refSections":[{"refs":[{"id":"ref-for-directive-pre-navigation-check"}],"title":"4.3.1.1. require-trusted-types-for Pre-Navigation check"}],"url":"https://w3c.github.io/webappsec-csp/#directive-pre-navigation-check"},
+"5442ea33": {"dfnID":"5442ea33","dfnText":"URL serializer","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-url-serializer"}],"title":"4.2.1.1. require-trusted-types-for Pre-Navigation check"}],"url":"https://url.spec.whatwg.org/#concept-url-serializer"},
+"55213b5b": {"dfnID":"55213b5b","dfnText":"request","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-request"}],"title":"4.2.1.1. require-trusted-types-for Pre-Navigation check"}],"url":"https://fetch.spec.whatwg.org/#concept-request"},
+"579a2f63": {"dfnID":"579a2f63","dfnText":"content security policy object","external":true,"refSections":[{"refs":[{"id":"ref-for-content-security-policy-object"}],"title":"4.2.1.1. require-trusted-types-for Pre-Navigation check"}],"url":"https://w3c.github.io/webappsec-csp/#content-security-policy-object"},
+"5c117fdd": {"dfnID":"5c117fdd","dfnText":"pre-navigation check","external":true,"refSections":[{"refs":[{"id":"ref-for-directive-pre-navigation-check"}],"title":"4.2.1.1. require-trusted-types-for Pre-Navigation check"}],"url":"https://w3c.github.io/webappsec-csp/#directive-pre-navigation-check"},
 "5d7209e9": {"dfnID":"5d7209e9","dfnText":"Window","external":true,"refSections":[{"refs":[{"id":"ref-for-window"}],"title":"4.1. Integration with HTML"}],"url":"https://html.spec.whatwg.org/multipage/nav-history-apis.html#window"},
 "5dbae2b0": {"dfnID":"5dbae2b0","dfnText":"string replace all","external":true,"refSections":[{"refs":[{"id":"ref-for-string-replace-all"}],"title":"4.1.2.4. The text IDL attribute"}],"url":"https://dom.spec.whatwg.org/#string-replace-all"},
 "5f6d392d": {"dfnID":"5f6d392d","dfnText":"WindowOrWorkerGlobalScope","external":true,"refSections":[{"refs":[{"id":"ref-for-windoworworkerglobalscope"},{"id":"ref-for-windoworworkerglobalscope\u2460"}],"title":"4.1.1. Extensions to the WindowOrWorkerGlobalScope interface"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#windoworworkerglobalscope"},
@@ -3949,26 +3946,26 @@ let dfnPanelData = {
 "6f2dfa22": {"dfnID":"6f2dfa22","dfnText":"ASCII lowercase","external":true,"refSections":[{"refs":[{"id":"ref-for-ascii-lowercase"},{"id":"ref-for-ascii-lowercase\u2460"},{"id":"ref-for-ascii-lowercase\u2461"}],"title":"2.3.1. TrustedTypePolicyFactory"}],"url":"https://infra.spec.whatwg.org/#ascii-lowercase"},
 "77b4c09a": {"dfnID":"77b4c09a","dfnText":"assert","external":true,"refSections":[{"refs":[{"id":"ref-for-assert"}],"title":"3.7. Get Trusted Type compliant attribute value"}],"url":"https://infra.spec.whatwg.org/#assert"},
 "85394472": {"dfnID":"85394472","dfnText":"Document","external":true,"refSections":[{"refs":[{"id":"ref-for-document"}],"title":"2.1.1. DOM XSS injection sinks"},{"refs":[{"id":"ref-for-document\u2460"}],"title":"3.6. Prepare the script text"}],"url":"https://dom.spec.whatwg.org/#document"},
-"857d5516": {"dfnID":"857d5516","dfnText":"client","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-request-client"}],"title":"4.3.1.1. require-trusted-types-for Pre-Navigation check"}],"url":"https://fetch.spec.whatwg.org/#concept-request-client"},
+"857d5516": {"dfnID":"857d5516","dfnText":"client","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-request-client"}],"title":"4.2.1.1. require-trusted-types-for Pre-Navigation check"}],"url":"https://fetch.spec.whatwg.org/#concept-request-client"},
 "85a289c7": {"dfnID":"85a289c7","dfnText":"SVG namespace","external":true,"refSections":[{"refs":[{"id":"ref-for-svg-namespace"}],"title":"3.8. Get Trusted Type data for attribute"}],"url":"https://infra.spec.whatwg.org/#svg-namespace"},
 "8855a9aa": {"dfnID":"8855a9aa","dfnText":"DOMString","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-DOMString"}],"title":"2.2.1. TrustedHTML"},{"refs":[{"id":"ref-for-idl-DOMString\u2460"}],"title":"2.2.2. TrustedScript"},{"refs":[{"id":"ref-for-idl-DOMString\u2461"},{"id":"ref-for-idl-DOMString\u2462"},{"id":"ref-for-idl-DOMString\u2463"},{"id":"ref-for-idl-DOMString\u2464"},{"id":"ref-for-idl-DOMString\u2465"},{"id":"ref-for-idl-DOMString\u2466"},{"id":"ref-for-idl-DOMString\u2467"},{"id":"ref-for-idl-DOMString\u2468"},{"id":"ref-for-idl-DOMString\u2460\u24ea"},{"id":"ref-for-idl-DOMString\u2460\u2460"}],"title":"2.3.1. TrustedTypePolicyFactory"},{"refs":[{"id":"ref-for-idl-DOMString\u2460\u2461"},{"id":"ref-for-idl-DOMString\u2460\u2462"},{"id":"ref-for-idl-DOMString\u2460\u2463"},{"id":"ref-for-idl-DOMString\u2460\u2464"}],"title":"2.3.2. TrustedTypePolicy"},{"refs":[{"id":"ref-for-idl-DOMString\u2460\u2465"},{"id":"ref-for-idl-DOMString\u2460\u2466"},{"id":"ref-for-idl-DOMString\u2460\u2467"},{"id":"ref-for-idl-DOMString\u2460\u2468"},{"id":"ref-for-idl-DOMString\u2461\u24ea"}],"title":"2.3.3. TrustedTypePolicyOptions"},{"refs":[{"id":"ref-for-idl-DOMString\u2461\u2460"},{"id":"ref-for-idl-DOMString\u2461\u2461"},{"id":"ref-for-idl-DOMString\u2461\u2462"}],"title":"4.1.2. Enforcement for scripts"}],"url":"https://webidl.spec.whatwg.org/#idl-DOMString"},
 "889e932f": {"dfnID":"889e932f","dfnText":"Exposed","external":true,"refSections":[{"refs":[{"id":"ref-for-Exposed"}],"title":"2.2.1. TrustedHTML"},{"refs":[{"id":"ref-for-Exposed\u2460"}],"title":"2.2.2. TrustedScript"},{"refs":[{"id":"ref-for-Exposed\u2461"}],"title":"2.2.3. TrustedScriptURL"},{"refs":[{"id":"ref-for-Exposed\u2462"}],"title":"2.3.1. TrustedTypePolicyFactory"},{"refs":[{"id":"ref-for-Exposed\u2463"}],"title":"2.3.2. TrustedTypePolicy"}],"url":"https://webidl.spec.whatwg.org/#Exposed"},
-"8a30477b": {"dfnID":"8a30477b","dfnText":"global object (for environment settings object)","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-settings-object-global"}],"title":"4.3.1.1. require-trusted-types-for Pre-Navigation check"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-global"},
+"8a30477b": {"dfnID":"8a30477b","dfnText":"global object (for environment settings object)","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-settings-object-global"}],"title":"4.2.1.1. require-trusted-types-for Pre-Navigation check"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-global"},
 "8d48cf32": {"dfnID":"8d48cf32","dfnText":"event handler content attribute","external":true,"refSections":[{"refs":[{"id":"ref-for-event-handler-content-attributes"},{"id":"ref-for-event-handler-content-attributes\u2460"}],"title":"3.8. Get Trusted Type data for attribute"}],"url":"https://html.spec.whatwg.org/#event-handler-content-attributes"},
 "9e196595": {"dfnID":"9e196595","dfnText":"script-src","external":true,"refSections":[{"refs":[{"id":"ref-for-script-src"}],"title":"1.2. Non-goals"}],"url":"https://w3c.github.io/webappsec-csp/#script-src"},
 "9e1b2fe2": {"dfnID":"9e1b2fe2","dfnText":"set text content","external":true,"refSections":[{"refs":[{"id":"ref-for-set-text-content"}],"title":"4.1.2.3. The textContent IDL attribute"}],"url":"https://dom.spec.whatwg.org/#set-text-content"},
 "a264b960": {"dfnID":"a264b960","dfnText":"innerText","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-innertext"}],"title":"4.1.2. Enforcement for scripts"}],"url":"https://html.spec.whatwg.org/multipage/dom.html#dom-innertext"},
 "a3b18719": {"dfnID":"a3b18719","dfnText":"append","external":true,"refSections":[{"refs":[{"id":"ref-for-set-append"}],"title":"3.1. Create a Trusted Type Policy"},{"refs":[{"id":"ref-for-set-append\u2460"}],"title":"3.3. Get Trusted Type policy value"}],"url":"https://infra.spec.whatwg.org/#set-append"},
 "b0d7f3c3": {"dfnID":"b0d7f3c3","dfnText":"USVString","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-USVString"}],"title":"2.2.3. TrustedScriptURL"},{"refs":[{"id":"ref-for-idl-USVString\u2460"}],"title":"2.3.3. TrustedTypePolicyOptions"},{"refs":[{"id":"ref-for-idl-USVString\u2461"}],"title":"4.1.2. Enforcement for scripts"}],"url":"https://webidl.spec.whatwg.org/#idl-USVString"},
-"b75a7d23": {"dfnID":"b75a7d23","dfnText":"realm","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-global-object-realm"}],"title":"2.3. Policies"},{"refs":[{"id":"ref-for-concept-global-object-realm\u2460"}],"title":"4.3.1. require-trusted-types-for directive"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#concept-global-object-realm"},
+"b75a7d23": {"dfnID":"b75a7d23","dfnText":"realm","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-global-object-realm"}],"title":"2.3. Policies"},{"refs":[{"id":"ref-for-concept-global-object-realm\u2460"}],"title":"4.2.1. require-trusted-types-for directive"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#concept-global-object-realm"},
 "b7d73f5b": {"dfnID":"b7d73f5b","dfnText":"Blob","external":true,"refSections":[{"refs":[{"id":"ref-for-dfn-Blob"},{"id":"ref-for-dfn-Blob\u2460"}],"title":"5.1. Cross-document vectors"}],"url":"https://w3c.github.io/FileAPI/#dfn-Blob"},
 "b815ad04": {"dfnID":"b815ad04","dfnText":"parseFromString(string, type)","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-domparser-parsefromstring"}],"title":"2.1.1. DOM XSS injection sinks"}],"url":"https://html.spec.whatwg.org/multipage/dynamic-markup-insertion.html#dom-domparser-parsefromstring"},
 "bb8563cb": {"dfnID":"bb8563cb","dfnText":"Content-Security-Policy-Report-Only","external":true,"refSections":[{"refs":[{"id":"ref-for-header-content-security-policy-report-only"}],"title":"1.3. Use cases"},{"refs":[{"id":"ref-for-header-content-security-policy-report-only\u2460"}],"title":"2.4.1. Content Security Policy"}],"url":"https://w3c.github.io/webappsec-csp/#header-content-security-policy-report-only"},
 "bfc1c271": {"dfnID":"bfc1c271","dfnText":"Worker","external":true,"refSections":[{"refs":[{"id":"ref-for-worker"}],"title":"4.1. Integration with HTML"}],"url":"https://html.spec.whatwg.org/multipage/workers.html#worker"},
 "c62c4764": {"dfnID":"c62c4764","dfnText":"The text insertion mode","external":true,"refSections":[{"refs":[{"id":"ref-for-parsing-main-incdata"}],"title":"4.1.2.6. Setting slot values from parser"}],"url":"https://html.spec.whatwg.org/#parsing-main-incdata"},
-"c80aa797": {"dfnID":"c80aa797","dfnText":"directives","external":true,"refSections":[{"refs":[{"id":"ref-for-directives"}],"title":"4.3.1. require-trusted-types-for directive"},{"refs":[{"id":"ref-for-directives\u2460"},{"id":"ref-for-directives\u2461"}],"title":"4.3.2. trusted-types directive"},{"refs":[{"id":"ref-for-directives\u2462"},{"id":"ref-for-directives\u2463"}],"title":"4.3.3. Does sink type require trusted types?"},{"refs":[{"id":"ref-for-directives\u2464"},{"id":"ref-for-directives\u2465"}],"title":"4.3.4. Should sink type mismatch violation be blocked by Content Security Policy?"},{"refs":[{"id":"ref-for-directives\u2466"},{"id":"ref-for-directives\u2467"}],"title":"4.3.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}],"url":"https://w3c.github.io/webappsec-csp/#directives"},
+"c80aa797": {"dfnID":"c80aa797","dfnText":"directives","external":true,"refSections":[{"refs":[{"id":"ref-for-directives"}],"title":"4.2.1. require-trusted-types-for directive"},{"refs":[{"id":"ref-for-directives\u2460"},{"id":"ref-for-directives\u2461"}],"title":"4.2.2. trusted-types directive"},{"refs":[{"id":"ref-for-directives\u2462"},{"id":"ref-for-directives\u2463"}],"title":"4.2.3. Does sink type require trusted types?"},{"refs":[{"id":"ref-for-directives\u2464"},{"id":"ref-for-directives\u2465"}],"title":"4.2.4. Should sink type mismatch violation be blocked by Content Security Policy?"},{"refs":[{"id":"ref-for-directives\u2466"},{"id":"ref-for-directives\u2467"}],"title":"4.2.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}],"url":"https://w3c.github.io/webappsec-csp/#directives"},
 "c885c5c1": {"dfnID":"c885c5c1","dfnText":"list contain","external":true,"refSections":[{"refs":[{"id":"ref-for-list-contain"}],"title":"3.8. Get Trusted Type data for attribute"}],"url":"https://infra.spec.whatwg.org/#list-contain"},
-"ca3ca4ae": {"dfnID":"ca3ca4ae","dfnText":"URL parser","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-url-parser"}],"title":"4.3.1.1. require-trusted-types-for Pre-Navigation check"}],"url":"https://url.spec.whatwg.org/#concept-url-parser"},
+"ca3ca4ae": {"dfnID":"ca3ca4ae","dfnText":"URL parser","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-url-parser"}],"title":"4.2.1.1. require-trusted-types-for Pre-Navigation check"}],"url":"https://url.spec.whatwg.org/#concept-url-parser"},
 "callbackdef-createhtmlcallback": {"dfnID":"callbackdef-createhtmlcallback","dfnText":"CreateHTMLCallback","external":false,"refSections":[{"refs":[{"id":"ref-for-callbackdef-createhtmlcallback"}],"title":"2.3.3. TrustedTypePolicyOptions"}],"url":"#callbackdef-createhtmlcallback"},
 "callbackdef-createscriptcallback": {"dfnID":"callbackdef-createscriptcallback","dfnText":"CreateScriptCallback","external":false,"refSections":[{"refs":[{"id":"ref-for-callbackdef-createscriptcallback"}],"title":"2.3.3. TrustedTypePolicyOptions"}],"url":"#callbackdef-createscriptcallback"},
 "callbackdef-createscripturlcallback": {"dfnID":"callbackdef-createscripturlcallback","dfnText":"CreateScriptURLCallback","external":false,"refSections":[{"refs":[{"id":"ref-for-callbackdef-createscripturlcallback"}],"title":"2.3.3. TrustedTypePolicyOptions"}],"url":"#callbackdef-createscripturlcallback"},
@@ -3976,9 +3973,9 @@ let dfnPanelData = {
 "create-a-trusted-type-policy": {"dfnID":"create-a-trusted-type-policy","dfnText":"create a trusted type policy","external":false,"refSections":[{"refs":[{"id":"ref-for-create-a-trusted-type-policy"}],"title":"2.3.1. TrustedTypePolicyFactory"}],"url":"#create-a-trusted-type-policy"},
 "d347f2e7": {"dfnID":"d347f2e7","dfnText":"SVGScriptElement","external":true,"refSections":[{"refs":[{"id":"ref-for-InterfaceSVGScriptElement"}],"title":"3.6. Prepare the script text"},{"refs":[{"id":"ref-for-InterfaceSVGScriptElement\u2460"},{"id":"ref-for-InterfaceSVGScriptElement\u2461"}],"title":"3.8. Get Trusted Type data for attribute"},{"refs":[{"id":"ref-for-InterfaceSVGScriptElement\u2462"}],"title":"4.1.2.1. Slots with trusted values"},{"refs":[{"id":"ref-for-InterfaceSVGScriptElement\u2463"}],"title":"4.1.2.3. The textContent IDL attribute"},{"refs":[{"id":"ref-for-InterfaceSVGScriptElement\u2464"}],"title":"4.1.2.6. Setting slot values from parser"},{"refs":[{"id":"ref-for-InterfaceSVGScriptElement\u2465"}],"title":"4.1.2.7. Slot value verification"}],"url":"https://svgwg.org/svg2-draft/interact.html#InterfaceSVGScriptElement"},
 "d4127354": {"dfnID":"d4127354","dfnText":"innerHTML (for Element)","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-element-innerhtml"}],"title":"2.1.1. DOM XSS injection sinks"}],"url":"https://html.spec.whatwg.org/multipage/dynamic-markup-insertion.html#dom-element-innerhtml"},
-"dc1cd39b": {"dfnID":"dc1cd39b","dfnText":"URL","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-request-url"},{"id":"ref-for-concept-request-url\u2460"},{"id":"ref-for-concept-request-url\u2461"}],"title":"4.3.1.1. require-trusted-types-for Pre-Navigation check"}],"url":"https://fetch.spec.whatwg.org/#concept-request-url"},
-"dec095e6": {"dfnID":"dec095e6","dfnText":"sample","external":true,"refSections":[{"refs":[{"id":"ref-for-violation-sample"}],"title":"4.3.4. Should sink type mismatch violation be blocked by Content Security Policy?"},{"refs":[{"id":"ref-for-violation-sample\u2460"}],"title":"4.3.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}],"url":"https://w3c.github.io/webappsec-csp/#violation-sample"},
-"default-policy-explanation": {"dfnID":"default-policy-explanation","dfnText":"Default policy","external":false,"refSections":[{"refs":[{"id":"ref-for-default-policy-explanation"}],"title":"4.3.1.1. require-trusted-types-for Pre-Navigation check"}],"url":"#default-policy-explanation"},
+"dc1cd39b": {"dfnID":"dc1cd39b","dfnText":"URL","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-request-url"},{"id":"ref-for-concept-request-url\u2460"},{"id":"ref-for-concept-request-url\u2461"}],"title":"4.2.1.1. require-trusted-types-for Pre-Navigation check"}],"url":"https://fetch.spec.whatwg.org/#concept-request-url"},
+"dec095e6": {"dfnID":"dec095e6","dfnText":"sample","external":true,"refSections":[{"refs":[{"id":"ref-for-violation-sample"}],"title":"4.2.4. Should sink type mismatch violation be blocked by Content Security Policy?"},{"refs":[{"id":"ref-for-violation-sample\u2460"}],"title":"4.2.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}],"url":"https://w3c.github.io/webappsec-csp/#violation-sample"},
+"default-policy-explanation": {"dfnID":"default-policy-explanation","dfnText":"Default policy","external":false,"refSections":[{"refs":[{"id":"ref-for-default-policy-explanation"}],"title":"4.2.1.1. require-trusted-types-for Pre-Navigation check"}],"url":"#default-policy-explanation"},
 "dictdef-trustedtypepolicyoptions": {"dfnID":"dictdef-trustedtypepolicyoptions","dfnText":"TrustedTypePolicyOptions","external":false,"refSections":[{"refs":[{"id":"ref-for-dictdef-trustedtypepolicyoptions"},{"id":"ref-for-dictdef-trustedtypepolicyoptions\u2460"}],"title":"2.3.1. TrustedTypePolicyFactory"},{"refs":[{"id":"ref-for-dictdef-trustedtypepolicyoptions\u2461"}],"title":"2.3.2. TrustedTypePolicy"},{"refs":[{"id":"ref-for-dictdef-trustedtypepolicyoptions\u2462"}],"title":"2.3.3. TrustedTypePolicyOptions"},{"refs":[{"id":"ref-for-dictdef-trustedtypepolicyoptions\u2463"}],"title":"3.1. Create a Trusted Type Policy"}],"url":"#dictdef-trustedtypepolicyoptions"},
 "does-sink-type-require-trusted-types": {"dfnID":"does-sink-type-require-trusted-types","dfnText":"does sink type require trusted types?","external":false,"refSections":[{"refs":[{"id":"ref-for-does-sink-type-require-trusted-types"}],"title":"3.4. Get Trusted Type compliant string"}],"url":"#does-sink-type-require-trusted-types"},
 "dom-createhtmlcallback-arguments": {"dfnID":"dom-createhtmlcallback-arguments","dfnText":"arguments","external":false,"refSections":[],"url":"#dom-createhtmlcallback-arguments"},
@@ -4034,7 +4031,7 @@ let dfnPanelData = {
 "e1f8b538": {"dfnID":"e1f8b538","dfnText":"get text content","external":true,"refSections":[{"refs":[{"id":"ref-for-get-text-content"}],"title":"4.1.2.3. The textContent IDL attribute"}],"url":"https://dom.spec.whatwg.org/#get-text-content"},
 "e7762445": {"dfnID":"e7762445","dfnText":"reentrant invocation of the parser","external":true,"refSections":[{"refs":[{"id":"ref-for-nestedParsing"}],"title":"4.1.2.6. Setting slot values from parser"}],"url":"https://html.spec.whatwg.org/#nestedParsing"},
 "e99bd18e": {"dfnID":"e99bd18e","dfnText":"relevant global object","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-relevant-global"}],"title":"2.3.1. TrustedTypePolicyFactory"},{"refs":[{"id":"ref-for-concept-relevant-global\u2460"}],"title":"3.6. Prepare the script text"},{"refs":[{"id":"ref-for-concept-relevant-global\u2461"}],"title":"3.7. Get Trusted Type compliant attribute value"},{"refs":[{"id":"ref-for-concept-relevant-global\u2462"}],"title":"4.1.1. Extensions to the WindowOrWorkerGlobalScope interface"},{"refs":[{"id":"ref-for-concept-relevant-global\u2463"}],"title":"4.1.2.2. The innerText IDL attribute"},{"refs":[{"id":"ref-for-concept-relevant-global\u2464"}],"title":"4.1.2.3. The textContent IDL attribute"},{"refs":[{"id":"ref-for-concept-relevant-global\u2465"}],"title":"4.1.2.4. The text IDL attribute"},{"refs":[{"id":"ref-for-concept-relevant-global\u2466"}],"title":"4.1.2.5. The src IDL attribute"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global"},
-"e9ecb998": {"dfnID":"e9ecb998","dfnText":"inline check","external":true,"refSections":[{"refs":[{"id":"ref-for-directive-inline-check"}],"title":"4.3.1.1. require-trusted-types-for Pre-Navigation check"}],"url":"https://w3c.github.io/webappsec-csp/#directive-inline-check"},
+"e9ecb998": {"dfnID":"e9ecb998","dfnText":"inline check","external":true,"refSections":[{"refs":[{"id":"ref-for-directive-inline-check"}],"title":"4.2.1.1. require-trusted-types-for Pre-Navigation check"}],"url":"https://w3c.github.io/webappsec-csp/#directive-inline-check"},
 "ead425bd": {"dfnID":"ead425bd","dfnText":"MathML namespace","external":true,"refSections":[{"refs":[{"id":"ref-for-mathml-namespace"}],"title":"3.8. Get Trusted Type data for attribute"}],"url":"https://infra.spec.whatwg.org/#mathml-namespace"},
 "ec4838d8": {"dfnID":"ec4838d8","dfnText":"HTMLScriptElement","external":true,"refSections":[{"refs":[{"id":"ref-for-htmlscriptelement"},{"id":"ref-for-htmlscriptelement\u2460"},{"id":"ref-for-htmlscriptelement\u2461"},{"id":"ref-for-htmlscriptelement\u2462"}],"title":"2.3.1. TrustedTypePolicyFactory"},{"refs":[{"id":"ref-for-htmlscriptelement\u2463"},{"id":"ref-for-htmlscriptelement\u2464"}],"title":"3.6. Prepare the script text"},{"refs":[{"id":"ref-for-htmlscriptelement\u2465"}],"title":"3.8. Get Trusted Type data for attribute"},{"refs":[{"id":"ref-for-htmlscriptelement\u2466"},{"id":"ref-for-htmlscriptelement\u2467"},{"id":"ref-for-htmlscriptelement\u2468"}],"title":"4.1.2. Enforcement for scripts"},{"refs":[{"id":"ref-for-htmlscriptelement\u2460\u24ea"}],"title":"4.1.2.1. Slots with trusted values"}],"url":"https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement"},
 "ef8bdfad": {"dfnID":"ef8bdfad","dfnText":"innerHTML (for ShadowRoot)","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-shadowroot-innerhtml"}],"title":"2.1.1. DOM XSS injection sinks"}],"url":"https://html.spec.whatwg.org/multipage/dynamic-markup-insertion.html#dom-shadowroot-innerhtml"},
@@ -4048,37 +4045,37 @@ let dfnPanelData = {
 "get-trusted-type-data-for-attribute①": {"dfnID":"get-trusted-type-data-for-attribute\u2460","dfnText":"get Trusted Type data for attribute","external":false,"refSections":[{"refs":[{"id":"ref-for-get-trusted-type-data-for-attribute\u2460"}],"title":"2.3.1. TrustedTypePolicyFactory"},{"refs":[{"id":"ref-for-get-trusted-type-data-for-attribute\u2460\u2460"}],"title":"3.7. Get Trusted Type compliant attribute value"}],"url":"#get-trusted-type-data-for-attribute\u2460"},
 "get-trusted-type-policy-value": {"dfnID":"get-trusted-type-policy-value","dfnText":"get trusted type policy value","external":false,"refSections":[{"refs":[{"id":"ref-for-get-trusted-type-policy-value"}],"title":"3.2. Create a Trusted Type"},{"refs":[{"id":"ref-for-get-trusted-type-policy-value\u2460"}],"title":"3.5. Process value with a default policy"}],"url":"#get-trusted-type-policy-value"},
 "htmlscriptelement-script-text": {"dfnID":"htmlscriptelement-script-text","dfnText":"script text","external":false,"refSections":[{"refs":[{"id":"ref-for-htmlscriptelement-script-text"},{"id":"ref-for-htmlscriptelement-script-text\u2460"}],"title":"3.6. Prepare the script text"},{"refs":[{"id":"ref-for-htmlscriptelement-script-text\u2461"}],"title":"4.1.2.2. The innerText IDL attribute"},{"refs":[{"id":"ref-for-htmlscriptelement-script-text\u2462"}],"title":"4.1.2.3. The textContent IDL attribute"},{"refs":[{"id":"ref-for-htmlscriptelement-script-text\u2463"}],"title":"4.1.2.4. The text IDL attribute"},{"refs":[{"id":"ref-for-htmlscriptelement-script-text\u2464"},{"id":"ref-for-htmlscriptelement-script-text\u2465"}],"title":"4.1.2.6. Setting slot values from parser"},{"refs":[{"id":"ref-for-htmlscriptelement-script-text\u2466"}],"title":"4.1.2.7. Slot value verification"}],"url":"#htmlscriptelement-script-text"},
-"injection-sink": {"dfnID":"injection-sink","dfnText":"injection sink","external":false,"refSections":[{"refs":[{"id":"ref-for-injection-sink"}],"title":"1. Introduction"},{"refs":[{"id":"ref-for-injection-sink\u2460"}],"title":"1.3. Use cases"},{"refs":[{"id":"ref-for-injection-sink\u2461"}],"title":"2.1. Injection sinks"},{"refs":[{"id":"ref-for-injection-sink\u2462"},{"id":"ref-for-injection-sink\u2463"}],"title":"2.1.1. DOM XSS injection sinks"},{"refs":[{"id":"ref-for-injection-sink\u2464"}],"title":"2.2. Trusted Types"},{"refs":[{"id":"ref-for-injection-sink\u2465"}],"title":"2.2.1. TrustedHTML"},{"refs":[{"id":"ref-for-injection-sink\u2466"}],"title":"2.2.2. TrustedScript"},{"refs":[{"id":"ref-for-injection-sink\u2467"}],"title":"2.2.3. TrustedScriptURL"},{"refs":[{"id":"ref-for-injection-sink\u2468"},{"id":"ref-for-injection-sink\u2460\u24ea"},{"id":"ref-for-injection-sink\u2460\u2460"},{"id":"ref-for-injection-sink\u2460\u2461"}],"title":"2.3. Policies"},{"refs":[{"id":"ref-for-injection-sink\u2460\u2462"},{"id":"ref-for-injection-sink\u2460\u2463"}],"title":"2.3.4. Default policy"},{"refs":[{"id":"ref-for-injection-sink\u2460\u2464"},{"id":"ref-for-injection-sink\u2460\u2465"},{"id":"ref-for-injection-sink\u2460\u2466"}],"title":"2.4. Enforcement"},{"refs":[{"id":"ref-for-injection-sink\u2460\u2467"}],"title":"2.4.1. Content Security Policy"},{"refs":[{"id":"ref-for-injection-sink\u2460\u2468"}],"title":"3.4. Get Trusted Type compliant string"},{"refs":[{"id":"ref-for-injection-sink\u2461\u24ea"}],"title":"3.5. Process value with a default policy"},{"refs":[{"id":"ref-for-injection-sink\u2461\u2460"},{"id":"ref-for-injection-sink\u2461\u2461"}],"title":"4.3.1. require-trusted-types-for directive"},{"refs":[{"id":"ref-for-injection-sink\u2461\u2462"},{"id":"ref-for-injection-sink\u2461\u2463"}],"title":"4.3.2. trusted-types directive"},{"refs":[{"id":"ref-for-injection-sink\u2461\u2464"}],"title":"4.3.3. Does sink type require trusted types?"},{"refs":[{"id":"ref-for-injection-sink\u2461\u2465"}],"title":"4.3.4. Should sink type mismatch violation be blocked by Content Security Policy?"},{"refs":[{"id":"ref-for-injection-sink\u2461\u2466"}],"title":"5. Security Considerations"},{"refs":[{"id":"ref-for-injection-sink\u2461\u2467"},{"id":"ref-for-injection-sink\u2461\u2468"}],"title":"5.4. Best practices for policy design"},{"refs":[{"id":"ref-for-injection-sink\u2462\u24ea"}],"title":"6. Privacy Considerations"},{"refs":[{"id":"ref-for-injection-sink\u2462\u2460"}],"title":"7.1. Vendor-specific Extensions and Addons"}],"url":"#injection-sink"},
-"policies": {"dfnID":"policies","dfnText":"Policies","external":false,"refSections":[{"refs":[{"id":"ref-for-policies"}],"title":"1. Introduction"},{"refs":[{"id":"ref-for-policies\u2460"}],"title":"1.3. Use cases"},{"refs":[{"id":"ref-for-policies\u2461"}],"title":"2.3. Policies"},{"refs":[{"id":"ref-for-policies\u2462"}],"title":"2.4. Enforcement"},{"refs":[{"id":"ref-for-policies\u2463"}],"title":"2.4.1. Content Security Policy"},{"refs":[{"id":"ref-for-policies\u2464"}],"title":"4.3.2. trusted-types directive"},{"refs":[{"id":"ref-for-policies\u2465"}],"title":"5.4. Best practices for policy design"}],"url":"#policies"},
+"injection-sink": {"dfnID":"injection-sink","dfnText":"injection sink","external":false,"refSections":[{"refs":[{"id":"ref-for-injection-sink"}],"title":"1. Introduction"},{"refs":[{"id":"ref-for-injection-sink\u2460"}],"title":"1.3. Use cases"},{"refs":[{"id":"ref-for-injection-sink\u2461"}],"title":"2.1. Injection sinks"},{"refs":[{"id":"ref-for-injection-sink\u2462"},{"id":"ref-for-injection-sink\u2463"}],"title":"2.1.1. DOM XSS injection sinks"},{"refs":[{"id":"ref-for-injection-sink\u2464"}],"title":"2.2. Trusted Types"},{"refs":[{"id":"ref-for-injection-sink\u2465"}],"title":"2.2.1. TrustedHTML"},{"refs":[{"id":"ref-for-injection-sink\u2466"}],"title":"2.2.2. TrustedScript"},{"refs":[{"id":"ref-for-injection-sink\u2467"}],"title":"2.2.3. TrustedScriptURL"},{"refs":[{"id":"ref-for-injection-sink\u2468"},{"id":"ref-for-injection-sink\u2460\u24ea"},{"id":"ref-for-injection-sink\u2460\u2460"},{"id":"ref-for-injection-sink\u2460\u2461"}],"title":"2.3. Policies"},{"refs":[{"id":"ref-for-injection-sink\u2460\u2462"},{"id":"ref-for-injection-sink\u2460\u2463"}],"title":"2.3.4. Default policy"},{"refs":[{"id":"ref-for-injection-sink\u2460\u2464"},{"id":"ref-for-injection-sink\u2460\u2465"},{"id":"ref-for-injection-sink\u2460\u2466"}],"title":"2.4. Enforcement"},{"refs":[{"id":"ref-for-injection-sink\u2460\u2467"}],"title":"2.4.1. Content Security Policy"},{"refs":[{"id":"ref-for-injection-sink\u2460\u2468"}],"title":"3.4. Get Trusted Type compliant string"},{"refs":[{"id":"ref-for-injection-sink\u2461\u24ea"}],"title":"3.5. Process value with a default policy"},{"refs":[{"id":"ref-for-injection-sink\u2461\u2460"},{"id":"ref-for-injection-sink\u2461\u2461"}],"title":"4.2.1. require-trusted-types-for directive"},{"refs":[{"id":"ref-for-injection-sink\u2461\u2462"},{"id":"ref-for-injection-sink\u2461\u2463"}],"title":"4.2.2. trusted-types directive"},{"refs":[{"id":"ref-for-injection-sink\u2461\u2464"}],"title":"4.2.3. Does sink type require trusted types?"},{"refs":[{"id":"ref-for-injection-sink\u2461\u2465"}],"title":"4.2.4. Should sink type mismatch violation be blocked by Content Security Policy?"},{"refs":[{"id":"ref-for-injection-sink\u2461\u2466"}],"title":"5. Security Considerations"},{"refs":[{"id":"ref-for-injection-sink\u2461\u2467"},{"id":"ref-for-injection-sink\u2461\u2468"}],"title":"5.4. Best practices for policy design"},{"refs":[{"id":"ref-for-injection-sink\u2462\u24ea"}],"title":"6. Privacy Considerations"},{"refs":[{"id":"ref-for-injection-sink\u2462\u2460"}],"title":"7.1. Vendor-specific Extensions and Addons"}],"url":"#injection-sink"},
+"policies": {"dfnID":"policies","dfnText":"Policies","external":false,"refSections":[{"refs":[{"id":"ref-for-policies"}],"title":"1. Introduction"},{"refs":[{"id":"ref-for-policies\u2460"}],"title":"1.3. Use cases"},{"refs":[{"id":"ref-for-policies\u2461"}],"title":"2.3. Policies"},{"refs":[{"id":"ref-for-policies\u2462"}],"title":"2.4. Enforcement"},{"refs":[{"id":"ref-for-policies\u2463"}],"title":"2.4.1. Content Security Policy"},{"refs":[{"id":"ref-for-policies\u2464"}],"title":"4.2.2. trusted-types directive"},{"refs":[{"id":"ref-for-policies\u2465"}],"title":"5.4. Best practices for policy design"}],"url":"#policies"},
 "prepare-the-script-text": {"dfnID":"prepare-the-script-text","dfnText":"prepare the script text","external":false,"refSections":[{"refs":[{"id":"ref-for-prepare-the-script-text"}],"title":"4.1.2.7. Slot value verification"}],"url":"#prepare-the-script-text"},
-"process-value-with-a-default-policy": {"dfnID":"process-value-with-a-default-policy","dfnText":"process value with a default policy","external":false,"refSections":[{"refs":[{"id":"ref-for-process-value-with-a-default-policy"}],"title":"3.4. Get Trusted Type compliant string"},{"refs":[{"id":"ref-for-process-value-with-a-default-policy\u2460"}],"title":"4.3.1.1. require-trusted-types-for Pre-Navigation check"}],"url":"#process-value-with-a-default-policy"},
-"require-trusted-types-for-directive": {"dfnID":"require-trusted-types-for-directive","dfnText":"require-trusted-types-for","external":false,"refSections":[{"refs":[{"id":"ref-for-require-trusted-types-for-directive"}],"title":"1.3. Use cases"},{"refs":[{"id":"ref-for-require-trusted-types-for-directive\u2460"}],"title":"2.4.1. Content Security Policy"},{"refs":[{"id":"ref-for-require-trusted-types-for-directive\u2461"}],"title":"4.3.1. require-trusted-types-for directive"},{"refs":[{"id":"ref-for-require-trusted-types-for-directive\u2462"},{"id":"ref-for-require-trusted-types-for-directive\u2463"}],"title":"4.3.1.1. require-trusted-types-for Pre-Navigation check"}],"url":"#require-trusted-types-for-directive"},
-"serialized-tt-configuration": {"dfnID":"serialized-tt-configuration","dfnText":"serialized-tt-configuration","external":false,"refSections":[{"refs":[{"id":"ref-for-serialized-tt-configuration"}],"title":"4.3.2. trusted-types directive"}],"url":"#serialized-tt-configuration"},
+"process-value-with-a-default-policy": {"dfnID":"process-value-with-a-default-policy","dfnText":"process value with a default policy","external":false,"refSections":[{"refs":[{"id":"ref-for-process-value-with-a-default-policy"}],"title":"3.4. Get Trusted Type compliant string"},{"refs":[{"id":"ref-for-process-value-with-a-default-policy\u2460"}],"title":"4.2.1.1. require-trusted-types-for Pre-Navigation check"}],"url":"#process-value-with-a-default-policy"},
+"require-trusted-types-for-directive": {"dfnID":"require-trusted-types-for-directive","dfnText":"require-trusted-types-for","external":false,"refSections":[{"refs":[{"id":"ref-for-require-trusted-types-for-directive"}],"title":"1.3. Use cases"},{"refs":[{"id":"ref-for-require-trusted-types-for-directive\u2460"}],"title":"2.4.1. Content Security Policy"},{"refs":[{"id":"ref-for-require-trusted-types-for-directive\u2461"}],"title":"4.2.1. require-trusted-types-for directive"},{"refs":[{"id":"ref-for-require-trusted-types-for-directive\u2462"},{"id":"ref-for-require-trusted-types-for-directive\u2463"}],"title":"4.2.1.1. require-trusted-types-for Pre-Navigation check"}],"url":"#require-trusted-types-for-directive"},
+"serialized-tt-configuration": {"dfnID":"serialized-tt-configuration","dfnText":"serialized-tt-configuration","external":false,"refSections":[{"refs":[{"id":"ref-for-serialized-tt-configuration"}],"title":"4.2.2. trusted-types directive"}],"url":"#serialized-tt-configuration"},
 "should-sink-type-mismatch-violation-be-blocked-by-content-security-policy": {"dfnID":"should-sink-type-mismatch-violation-be-blocked-by-content-security-policy","dfnText":"should sink type mismatch violation be blocked by content security policy?","external":false,"refSections":[{"refs":[{"id":"ref-for-should-sink-type-mismatch-violation-be-blocked-by-content-security-policy"}],"title":"3.4. Get Trusted Type compliant string"}],"url":"#should-sink-type-mismatch-violation-be-blocked-by-content-security-policy"},
 "should-trusted-type-policy-creation-be-blocked-by-content-security-policy": {"dfnID":"should-trusted-type-policy-creation-be-blocked-by-content-security-policy","dfnText":"Should Trusted Type policy creation be blocked by content security policy?","external":false,"refSections":[{"refs":[{"id":"ref-for-should-trusted-type-policy-creation-be-blocked-by-content-security-policy"}],"title":"3.1. Create a Trusted Type Policy"}],"url":"#should-trusted-type-policy-creation-be-blocked-by-content-security-policy"},
-"trusted-type": {"dfnID":"trusted-type","dfnText":"Trusted Type","external":false,"refSections":[{"refs":[{"id":"ref-for-trusted-type"}],"title":"2.3. Policies"},{"refs":[{"id":"ref-for-trusted-type\u2460"}],"title":"2.3.1. TrustedTypePolicyFactory"},{"refs":[{"id":"ref-for-trusted-type\u2461"}],"title":"2.3.3. TrustedTypePolicyOptions"},{"refs":[{"id":"ref-for-trusted-type\u2462"}],"title":"2.4. Enforcement"},{"refs":[{"id":"ref-for-trusted-type\u2463"}],"title":"3.4. Get Trusted Type compliant string"},{"refs":[{"id":"ref-for-trusted-type\u2464"}],"title":"4.3.3. Does sink type require trusted types?"},{"refs":[{"id":"ref-for-trusted-type\u2465"}],"title":"4.3.4. Should sink type mismatch violation be blocked by Content Security Policy?"}],"url":"#trusted-type"},
-"trusted-types-directive": {"dfnID":"trusted-types-directive","dfnText":"trusted-types","external":false,"refSections":[{"refs":[{"id":"ref-for-trusted-types-directive"}],"title":"1.3. Use cases"},{"refs":[{"id":"ref-for-trusted-types-directive\u2460"}],"title":"2.3.1. TrustedTypePolicyFactory"},{"refs":[{"id":"ref-for-trusted-types-directive\u2461"}],"title":"4.3.2. trusted-types directive"}],"url":"#trusted-types-directive"},
-"trusted-types-sink-group": {"dfnID":"trusted-types-sink-group","dfnText":"trusted-types-sink-group","external":false,"refSections":[{"refs":[{"id":"ref-for-trusted-types-sink-group"}],"title":"2.1. Injection sinks"},{"refs":[{"id":"ref-for-trusted-types-sink-group\u2460"}],"title":"2.1.1. DOM XSS injection sinks"},{"refs":[{"id":"ref-for-trusted-types-sink-group\u2461"}],"title":"4.3.1. require-trusted-types-for directive"},{"refs":[{"id":"ref-for-trusted-types-sink-group\u2462"}],"title":"4.3.3. Does sink type require trusted types?"},{"refs":[{"id":"ref-for-trusted-types-sink-group\u2463"}],"title":"4.3.4. Should sink type mismatch violation be blocked by Content Security Policy?"}],"url":"#trusted-types-sink-group"},
-"trusted-types-sink-group-keyword": {"dfnID":"trusted-types-sink-group-keyword","dfnText":"trusted-types-sink-group-keyword","external":false,"refSections":[{"refs":[{"id":"ref-for-trusted-types-sink-group-keyword"},{"id":"ref-for-trusted-types-sink-group-keyword\u2460"}],"title":"4.3.1. require-trusted-types-for directive"}],"url":"#trusted-types-sink-group-keyword"},
+"trusted-type": {"dfnID":"trusted-type","dfnText":"Trusted Type","external":false,"refSections":[{"refs":[{"id":"ref-for-trusted-type"}],"title":"2.3. Policies"},{"refs":[{"id":"ref-for-trusted-type\u2460"}],"title":"2.3.1. TrustedTypePolicyFactory"},{"refs":[{"id":"ref-for-trusted-type\u2461"}],"title":"2.3.3. TrustedTypePolicyOptions"},{"refs":[{"id":"ref-for-trusted-type\u2462"}],"title":"2.4. Enforcement"},{"refs":[{"id":"ref-for-trusted-type\u2463"}],"title":"3.4. Get Trusted Type compliant string"},{"refs":[{"id":"ref-for-trusted-type\u2464"}],"title":"4.2.3. Does sink type require trusted types?"},{"refs":[{"id":"ref-for-trusted-type\u2465"}],"title":"4.2.4. Should sink type mismatch violation be blocked by Content Security Policy?"}],"url":"#trusted-type"},
+"trusted-types-directive": {"dfnID":"trusted-types-directive","dfnText":"trusted-types","external":false,"refSections":[{"refs":[{"id":"ref-for-trusted-types-directive"}],"title":"1.3. Use cases"},{"refs":[{"id":"ref-for-trusted-types-directive\u2460"}],"title":"2.3.1. TrustedTypePolicyFactory"},{"refs":[{"id":"ref-for-trusted-types-directive\u2461"}],"title":"4.2.2. trusted-types directive"}],"url":"#trusted-types-directive"},
+"trusted-types-sink-group": {"dfnID":"trusted-types-sink-group","dfnText":"trusted-types-sink-group","external":false,"refSections":[{"refs":[{"id":"ref-for-trusted-types-sink-group"}],"title":"2.1. Injection sinks"},{"refs":[{"id":"ref-for-trusted-types-sink-group\u2460"}],"title":"2.1.1. DOM XSS injection sinks"},{"refs":[{"id":"ref-for-trusted-types-sink-group\u2461"}],"title":"4.2.1. require-trusted-types-for directive"},{"refs":[{"id":"ref-for-trusted-types-sink-group\u2462"}],"title":"4.2.3. Does sink type require trusted types?"},{"refs":[{"id":"ref-for-trusted-types-sink-group\u2463"}],"title":"4.2.4. Should sink type mismatch violation be blocked by Content Security Policy?"}],"url":"#trusted-types-sink-group"},
+"trusted-types-sink-group-keyword": {"dfnID":"trusted-types-sink-group-keyword","dfnText":"trusted-types-sink-group-keyword","external":false,"refSections":[{"refs":[{"id":"ref-for-trusted-types-sink-group-keyword"},{"id":"ref-for-trusted-types-sink-group-keyword\u2460"}],"title":"4.2.1. require-trusted-types-for directive"}],"url":"#trusted-types-sink-group-keyword"},
 "trustedhtml": {"dfnID":"trustedhtml","dfnText":"TrustedHTML","external":false,"refSections":[{"refs":[{"id":"ref-for-trustedhtml"}],"title":"2.2.1. TrustedHTML"},{"refs":[{"id":"ref-for-trustedhtml\u2460"}],"title":"2.3. Policies"},{"refs":[{"id":"ref-for-trustedhtml\u2461"},{"id":"ref-for-trustedhtml\u2462"},{"id":"ref-for-trustedhtml\u2463"},{"id":"ref-for-trustedhtml\u2464"},{"id":"ref-for-trustedhtml\u2465"},{"id":"ref-for-trustedhtml\u2466"},{"id":"ref-for-trustedhtml\u2467"}],"title":"2.3.1. TrustedTypePolicyFactory"},{"refs":[{"id":"ref-for-trustedhtml\u2468"}],"title":"2.3.2. TrustedTypePolicy"},{"refs":[{"id":"ref-for-trustedhtml\u2460\u24ea"}],"title":"3.7. Get Trusted Type compliant attribute value"},{"refs":[{"id":"ref-for-trustedhtml\u2460\u2460"}],"title":"3.8. Get Trusted Type data for attribute"},{"refs":[{"id":"ref-for-trustedhtml\u2460\u2461"}],"title":"4. Integrations"}],"url":"#trustedhtml"},
 "trustedhtml-data": {"dfnID":"trustedhtml-data","dfnText":"data","external":false,"refSections":[{"refs":[{"id":"ref-for-trustedhtml-data"}],"title":"2.2.1. TrustedHTML"},{"refs":[{"id":"ref-for-trustedhtml-data\u2460"},{"id":"ref-for-trustedhtml-data\u2461"}],"title":"2.3.1. TrustedTypePolicyFactory"}],"url":"#trustedhtml-data"},
 "trustedhtml-stringification-behavior": {"dfnID":"trustedhtml-stringification-behavior","dfnText":"stringification behavior","external":false,"refSections":[{"refs":[{"id":"ref-for-trustedhtml-stringification-behavior"}],"title":"2.2.1. TrustedHTML"}],"url":"#trustedhtml-stringification-behavior"},
-"trustedscript": {"dfnID":"trustedscript","dfnText":"TrustedScript","external":false,"refSections":[{"refs":[{"id":"ref-for-trustedscript"}],"title":"2.2.2. TrustedScript"},{"refs":[{"id":"ref-for-trustedscript\u2460"},{"id":"ref-for-trustedscript\u2461"},{"id":"ref-for-trustedscript\u2462"},{"id":"ref-for-trustedscript\u2463"},{"id":"ref-for-trustedscript\u2464"},{"id":"ref-for-trustedscript\u2465"},{"id":"ref-for-trustedscript\u2466"}],"title":"2.3.1. TrustedTypePolicyFactory"},{"refs":[{"id":"ref-for-trustedscript\u2467"}],"title":"2.3.2. TrustedTypePolicy"},{"refs":[{"id":"ref-for-trustedscript\u2468"}],"title":"3.7. Get Trusted Type compliant attribute value"},{"refs":[{"id":"ref-for-trustedscript\u2460\u24ea"}],"title":"3.8. Get Trusted Type data for attribute"},{"refs":[{"id":"ref-for-trustedscript\u2460\u2460"}],"title":"4. Integrations"},{"refs":[{"id":"ref-for-trustedscript\u2460\u2461"},{"id":"ref-for-trustedscript\u2460\u2462"},{"id":"ref-for-trustedscript\u2460\u2463"}],"title":"4.1.2. Enforcement for scripts"},{"refs":[{"id":"ref-for-trustedscript\u2460\u2464"}],"title":"4.1.2.2. The innerText IDL attribute"},{"refs":[{"id":"ref-for-trustedscript\u2460\u2465"}],"title":"4.1.2.3. The textContent IDL attribute"},{"refs":[{"id":"ref-for-trustedscript\u2460\u2466"}],"title":"4.1.2.4. The text IDL attribute"},{"refs":[{"id":"ref-for-trustedscript\u2460\u2467"},{"id":"ref-for-trustedscript\u2460\u2468"}],"title":"4.3.1.1. require-trusted-types-for Pre-Navigation check"}],"url":"#trustedscript"},
+"trustedscript": {"dfnID":"trustedscript","dfnText":"TrustedScript","external":false,"refSections":[{"refs":[{"id":"ref-for-trustedscript"}],"title":"2.2.2. TrustedScript"},{"refs":[{"id":"ref-for-trustedscript\u2460"},{"id":"ref-for-trustedscript\u2461"},{"id":"ref-for-trustedscript\u2462"},{"id":"ref-for-trustedscript\u2463"},{"id":"ref-for-trustedscript\u2464"},{"id":"ref-for-trustedscript\u2465"},{"id":"ref-for-trustedscript\u2466"}],"title":"2.3.1. TrustedTypePolicyFactory"},{"refs":[{"id":"ref-for-trustedscript\u2467"}],"title":"2.3.2. TrustedTypePolicy"},{"refs":[{"id":"ref-for-trustedscript\u2468"}],"title":"3.7. Get Trusted Type compliant attribute value"},{"refs":[{"id":"ref-for-trustedscript\u2460\u24ea"}],"title":"3.8. Get Trusted Type data for attribute"},{"refs":[{"id":"ref-for-trustedscript\u2460\u2460"}],"title":"4. Integrations"},{"refs":[{"id":"ref-for-trustedscript\u2460\u2461"},{"id":"ref-for-trustedscript\u2460\u2462"},{"id":"ref-for-trustedscript\u2460\u2463"}],"title":"4.1.2. Enforcement for scripts"},{"refs":[{"id":"ref-for-trustedscript\u2460\u2464"}],"title":"4.1.2.2. The innerText IDL attribute"},{"refs":[{"id":"ref-for-trustedscript\u2460\u2465"}],"title":"4.1.2.3. The textContent IDL attribute"},{"refs":[{"id":"ref-for-trustedscript\u2460\u2466"}],"title":"4.1.2.4. The text IDL attribute"},{"refs":[{"id":"ref-for-trustedscript\u2460\u2467"},{"id":"ref-for-trustedscript\u2460\u2468"}],"title":"4.2.1.1. require-trusted-types-for Pre-Navigation check"}],"url":"#trustedscript"},
 "trustedscript-data": {"dfnID":"trustedscript-data","dfnText":"data","external":false,"refSections":[{"refs":[{"id":"ref-for-trustedscript-data"}],"title":"2.2.2. TrustedScript"},{"refs":[{"id":"ref-for-trustedscript-data\u2460"},{"id":"ref-for-trustedscript-data\u2461"}],"title":"2.3.1. TrustedTypePolicyFactory"}],"url":"#trustedscript-data"},
 "trustedscript-stringification-behavior": {"dfnID":"trustedscript-stringification-behavior","dfnText":"stringification behavior","external":false,"refSections":[{"refs":[{"id":"ref-for-trustedscript-stringification-behavior"}],"title":"2.2.2. TrustedScript"}],"url":"#trustedscript-stringification-behavior"},
 "trustedscripturl": {"dfnID":"trustedscripturl","dfnText":"TrustedScriptURL","external":false,"refSections":[{"refs":[{"id":"ref-for-trustedscripturl"}],"title":"2.2.3. TrustedScriptURL"},{"refs":[{"id":"ref-for-trustedscripturl\u2460"},{"id":"ref-for-trustedscripturl\u2461"}],"title":"2.3.1. TrustedTypePolicyFactory"},{"refs":[{"id":"ref-for-trustedscripturl\u2462"}],"title":"2.3.2. TrustedTypePolicy"},{"refs":[{"id":"ref-for-trustedscripturl\u2463"}],"title":"3.6. Prepare the script text"},{"refs":[{"id":"ref-for-trustedscripturl\u2464"}],"title":"3.7. Get Trusted Type compliant attribute value"},{"refs":[{"id":"ref-for-trustedscripturl\u2465"},{"id":"ref-for-trustedscripturl\u2466"},{"id":"ref-for-trustedscripturl\u2467"}],"title":"3.8. Get Trusted Type data for attribute"},{"refs":[{"id":"ref-for-trustedscripturl\u2468"}],"title":"4. Integrations"},{"refs":[{"id":"ref-for-trustedscripturl\u2460\u24ea"}],"title":"4.1.2. Enforcement for scripts"},{"refs":[{"id":"ref-for-trustedscripturl\u2460\u2460"}],"title":"4.1.2.5. The src IDL attribute"}],"url":"#trustedscripturl"},
 "trustedscripturl-data": {"dfnID":"trustedscripturl-data","dfnText":"data","external":false,"refSections":[{"refs":[{"id":"ref-for-trustedscripturl-data"}],"title":"2.2.3. TrustedScriptURL"},{"refs":[{"id":"ref-for-trustedscripturl-data\u2460"}],"title":"2.3.1. TrustedTypePolicyFactory"}],"url":"#trustedscripturl-data"},
 "trustedscripturl-stringification-behavior": {"dfnID":"trustedscripturl-stringification-behavior","dfnText":"stringification behavior","external":false,"refSections":[{"refs":[{"id":"ref-for-trustedscripturl-stringification-behavior"}],"title":"2.2.3. TrustedScriptURL"}],"url":"#trustedscripturl-stringification-behavior"},
-"trustedtypepolicy": {"dfnID":"trustedtypepolicy","dfnText":"TrustedTypePolicy","external":false,"refSections":[{"refs":[{"id":"ref-for-trustedtypepolicy"}],"title":"2.2.1. TrustedHTML"},{"refs":[{"id":"ref-for-trustedtypepolicy\u2460"}],"title":"2.2.2. TrustedScript"},{"refs":[{"id":"ref-for-trustedtypepolicy\u2461"}],"title":"2.2.3. TrustedScriptURL"},{"refs":[{"id":"ref-for-trustedtypepolicy\u2462"},{"id":"ref-for-trustedtypepolicy\u2463"},{"id":"ref-for-trustedtypepolicy\u2464"},{"id":"ref-for-trustedtypepolicy\u2465"},{"id":"ref-for-trustedtypepolicy\u2466"}],"title":"2.3.1. TrustedTypePolicyFactory"},{"refs":[{"id":"ref-for-trustedtypepolicy\u2467"}],"title":"2.3.2. TrustedTypePolicy"},{"refs":[{"id":"ref-for-trustedtypepolicy\u2468"}],"title":"2.3.3. TrustedTypePolicyOptions"},{"refs":[{"id":"ref-for-trustedtypepolicy\u2460\u24ea"}],"title":"3.1. Create a Trusted Type Policy"},{"refs":[{"id":"ref-for-trustedtypepolicy\u2460\u2460"}],"title":"3.2. Create a Trusted Type"},{"refs":[{"id":"ref-for-trustedtypepolicy\u2460\u2461"}],"title":"3.3. Get Trusted Type policy value"},{"refs":[{"id":"ref-for-trustedtypepolicy\u2460\u2462"}],"title":"4.3.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}],"url":"#trustedtypepolicy"},
+"trustedtypepolicy": {"dfnID":"trustedtypepolicy","dfnText":"TrustedTypePolicy","external":false,"refSections":[{"refs":[{"id":"ref-for-trustedtypepolicy"}],"title":"2.2.1. TrustedHTML"},{"refs":[{"id":"ref-for-trustedtypepolicy\u2460"}],"title":"2.2.2. TrustedScript"},{"refs":[{"id":"ref-for-trustedtypepolicy\u2461"}],"title":"2.2.3. TrustedScriptURL"},{"refs":[{"id":"ref-for-trustedtypepolicy\u2462"},{"id":"ref-for-trustedtypepolicy\u2463"},{"id":"ref-for-trustedtypepolicy\u2464"},{"id":"ref-for-trustedtypepolicy\u2465"},{"id":"ref-for-trustedtypepolicy\u2466"}],"title":"2.3.1. TrustedTypePolicyFactory"},{"refs":[{"id":"ref-for-trustedtypepolicy\u2467"}],"title":"2.3.2. TrustedTypePolicy"},{"refs":[{"id":"ref-for-trustedtypepolicy\u2468"}],"title":"2.3.3. TrustedTypePolicyOptions"},{"refs":[{"id":"ref-for-trustedtypepolicy\u2460\u24ea"}],"title":"3.1. Create a Trusted Type Policy"},{"refs":[{"id":"ref-for-trustedtypepolicy\u2460\u2460"}],"title":"3.2. Create a Trusted Type"},{"refs":[{"id":"ref-for-trustedtypepolicy\u2460\u2461"}],"title":"3.3. Get Trusted Type policy value"},{"refs":[{"id":"ref-for-trustedtypepolicy\u2460\u2462"}],"title":"4.2.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}],"url":"#trustedtypepolicy"},
 "trustedtypepolicy-name": {"dfnID":"trustedtypepolicy-name","dfnText":"name","external":false,"refSections":[{"refs":[{"id":"ref-for-trustedtypepolicy-name"}],"title":"2.3.4. Default policy"}],"url":"#trustedtypepolicy-name"},
 "trustedtypepolicy-options": {"dfnID":"trustedtypepolicy-options","dfnText":"options","external":false,"refSections":[{"refs":[{"id":"ref-for-trustedtypepolicy-options"}],"title":"3.1. Create a Trusted Type Policy"},{"refs":[{"id":"ref-for-trustedtypepolicy-options\u2460"}],"title":"3.3. Get Trusted Type policy value"}],"url":"#trustedtypepolicy-options"},
 "trustedtypepolicyfactory": {"dfnID":"trustedtypepolicyfactory","dfnText":"TrustedTypePolicyFactory","external":false,"refSections":[{"refs":[{"id":"ref-for-trustedtypepolicyfactory"},{"id":"ref-for-trustedtypepolicyfactory\u2460"},{"id":"ref-for-trustedtypepolicyfactory\u2461"}],"title":"2.3.1. TrustedTypePolicyFactory"},{"refs":[{"id":"ref-for-trustedtypepolicyfactory\u2462"}],"title":"3.1. Create a Trusted Type Policy"},{"refs":[{"id":"ref-for-trustedtypepolicyfactory\u2463"}],"title":"4.1. Integration with HTML"},{"refs":[{"id":"ref-for-trustedtypepolicyfactory\u2464"}],"title":"4.1.1. Extensions to the WindowOrWorkerGlobalScope interface"}],"url":"#trustedtypepolicyfactory"},
 "trustedtypepolicyfactory-created-policy-names": {"dfnID":"trustedtypepolicyfactory-created-policy-names","dfnText":"created policy names","external":false,"refSections":[{"refs":[{"id":"ref-for-trustedtypepolicyfactory-created-policy-names"},{"id":"ref-for-trustedtypepolicyfactory-created-policy-names\u2460"}],"title":"3.1. Create a Trusted Type Policy"}],"url":"#trustedtypepolicyfactory-created-policy-names"},
-"trustedtypepolicyfactory-default-policy": {"dfnID":"trustedtypepolicyfactory-default-policy","dfnText":"default policy","external":false,"refSections":[{"refs":[{"id":"ref-for-trustedtypepolicyfactory-default-policy"}],"title":"2.3.1. TrustedTypePolicyFactory"},{"refs":[{"id":"ref-for-trustedtypepolicyfactory-default-policy\u2460"},{"id":"ref-for-trustedtypepolicyfactory-default-policy\u2461"}],"title":"3.1. Create a Trusted Type Policy"},{"refs":[{"id":"ref-for-trustedtypepolicyfactory-default-policy\u2462"}],"title":"3.5. Process value with a default policy"},{"refs":[{"id":"ref-for-trustedtypepolicyfactory-default-policy\u2463"}],"title":"4.3.2. trusted-types directive"},{"refs":[{"id":"ref-for-trustedtypepolicyfactory-default-policy\u2464"}],"title":"6. Privacy Considerations"},{"refs":[{"id":"ref-for-trustedtypepolicyfactory-default-policy\u2465"}],"title":"7.1. Vendor-specific Extensions and Addons"}],"url":"#trustedtypepolicyfactory-default-policy"},
-"tt-expression": {"dfnID":"tt-expression","dfnText":"tt-expression","external":false,"refSections":[{"refs":[{"id":"ref-for-tt-expression"},{"id":"ref-for-tt-expression\u2460"}],"title":"4.3.2. trusted-types directive"}],"url":"#tt-expression"},
-"tt-keyword": {"dfnID":"tt-keyword","dfnText":"tt-keyword","external":false,"refSections":[{"refs":[{"id":"ref-for-tt-keyword"}],"title":"4.3.2. trusted-types directive"},{"refs":[{"id":"ref-for-tt-keyword\u2460"},{"id":"ref-for-tt-keyword\u2461"}],"title":"4.3.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}],"url":"#tt-keyword"},
-"tt-policy-name": {"dfnID":"tt-policy-name","dfnText":"tt-policy-name","external":false,"refSections":[{"refs":[{"id":"ref-for-tt-policy-name"}],"title":"4.3.2. trusted-types directive"},{"refs":[{"id":"ref-for-tt-policy-name\u2460"}],"title":"4.3.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}],"url":"#tt-policy-name"},
-"tt-wildcard": {"dfnID":"tt-wildcard","dfnText":"tt-wildcard","external":false,"refSections":[{"refs":[{"id":"ref-for-tt-wildcard"}],"title":"4.3.2. trusted-types directive"},{"refs":[{"id":"ref-for-tt-wildcard\u2460"}],"title":"4.3.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}],"url":"#tt-wildcard"},
+"trustedtypepolicyfactory-default-policy": {"dfnID":"trustedtypepolicyfactory-default-policy","dfnText":"default policy","external":false,"refSections":[{"refs":[{"id":"ref-for-trustedtypepolicyfactory-default-policy"}],"title":"2.3.1. TrustedTypePolicyFactory"},{"refs":[{"id":"ref-for-trustedtypepolicyfactory-default-policy\u2460"},{"id":"ref-for-trustedtypepolicyfactory-default-policy\u2461"}],"title":"3.1. Create a Trusted Type Policy"},{"refs":[{"id":"ref-for-trustedtypepolicyfactory-default-policy\u2462"}],"title":"3.5. Process value with a default policy"},{"refs":[{"id":"ref-for-trustedtypepolicyfactory-default-policy\u2463"}],"title":"4.2.2. trusted-types directive"},{"refs":[{"id":"ref-for-trustedtypepolicyfactory-default-policy\u2464"}],"title":"6. Privacy Considerations"},{"refs":[{"id":"ref-for-trustedtypepolicyfactory-default-policy\u2465"}],"title":"7.1. Vendor-specific Extensions and Addons"}],"url":"#trustedtypepolicyfactory-default-policy"},
+"tt-expression": {"dfnID":"tt-expression","dfnText":"tt-expression","external":false,"refSections":[{"refs":[{"id":"ref-for-tt-expression"},{"id":"ref-for-tt-expression\u2460"}],"title":"4.2.2. trusted-types directive"}],"url":"#tt-expression"},
+"tt-keyword": {"dfnID":"tt-keyword","dfnText":"tt-keyword","external":false,"refSections":[{"refs":[{"id":"ref-for-tt-keyword"}],"title":"4.2.2. trusted-types directive"},{"refs":[{"id":"ref-for-tt-keyword\u2460"},{"id":"ref-for-tt-keyword\u2461"}],"title":"4.2.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}],"url":"#tt-keyword"},
+"tt-policy-name": {"dfnID":"tt-policy-name","dfnText":"tt-policy-name","external":false,"refSections":[{"refs":[{"id":"ref-for-tt-policy-name"}],"title":"4.2.2. trusted-types directive"},{"refs":[{"id":"ref-for-tt-policy-name\u2460"}],"title":"4.2.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}],"url":"#tt-policy-name"},
+"tt-wildcard": {"dfnID":"tt-wildcard","dfnText":"tt-wildcard","external":false,"refSections":[{"refs":[{"id":"ref-for-tt-wildcard"}],"title":"4.2.2. trusted-types directive"},{"refs":[{"id":"ref-for-tt-wildcard\u2460"}],"title":"4.2.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}],"url":"#tt-wildcard"},
 "typedefdef-trustedtype": {"dfnID":"typedefdef-trustedtype","dfnText":"TrustedType","external":false,"refSections":[{"refs":[{"id":"ref-for-typedefdef-trustedtype"},{"id":"ref-for-typedefdef-trustedtype\u2460"}],"title":"3.4. Get Trusted Type compliant string"},{"refs":[{"id":"ref-for-typedefdef-trustedtype\u2461"},{"id":"ref-for-typedefdef-trustedtype\u2462"}],"title":"3.5. Process value with a default policy"},{"refs":[{"id":"ref-for-typedefdef-trustedtype\u2463"}],"title":"3.7. Get Trusted Type compliant attribute value"}],"url":"#typedefdef-trustedtype"},
 "window-trusted-type-policy-factory": {"dfnID":"window-trusted-type-policy-factory","dfnText":"trusted type policy factory","external":false,"refSections":[{"refs":[{"id":"ref-for-window-trusted-type-policy-factory"}],"title":"3.5. Process value with a default policy"}],"url":"#window-trusted-type-policy-factory"},
 };
