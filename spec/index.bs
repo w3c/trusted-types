@@ -1413,10 +1413,6 @@ The first few steps of the [=prepare the script element=] algorithm are modified
 
 Issue: There's no proper definition for the processing of SVG script elements. However, implementations must apply a similar change to the processing of {{SVGScriptElement}}s.
 
-## Integration with DOM ## {#integration-with-dom}
-
-Note: See [https://github.com/whatwg/dom/pull/1268](https://github.com/whatwg/dom/pull/1268) which upstreams this integration.
-
 ## Integration with Content Security Policy ## {#integration-with-content-security-policy}
 
 ### <dfn export lt="require-trusted-types-for-directive">require-trusted-types-for</dfn> directive ### {#require-trusted-types-for-csp-directive}
