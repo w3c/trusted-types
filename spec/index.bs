@@ -234,6 +234,8 @@ spec: HTML; urlPrefix: https://html.spec.whatwg.org/
     type: dfn; text: set the inner text steps; url: set-the-inner-text-steps
     type: dfn; text: src; url: attr-script-src
     type: dfn; text: event handler content attribute; url: event-handler-content-attributes
+    type: dfn; text: configuration; for: Sanitizer; url: configuration
+    type: dfn; text: canonicalize the configuration; url: canonicalize-the-configuration
     type:dictionary; text:Sanitizer
     type:dictionary; text:SanitizerConfig
     type:dictionary; text:SanitizerPresets
@@ -1276,6 +1278,7 @@ To <dfn export>get Trusted Type compliant parser options</dfn> given a [=realm/g
         Note: This step assures that the default policy rejection will be reported, but ignored in a report-only mode.
     1. Throw a TypeError and abort further steps.
 1. Let |sanitizer| be |policyValue|["`sanitizer`"], [=with default|defaulting to=] a new {{SanitizerConfig}}.
+1. If |sanitizer| is a {{Sanitizer}}, then set |sanitizer| to a new {{Sanitizer}} whose [=Sanitizer/configuration=] is the result of [=canonicalize the configuration|canonicalizing=] |sanitizer|'s [=Sanitizer/configuration=].
 1. Let |runScripts| be true if |policyValue|["`runScripts`"] is true and |input| is a {{SetHTMLUnsafeOptions}} whose {{SetHTMLUnsafeOptions/runScripts}} is true.
 1. Return a new {{TrustedParserOptions}} in |input|'s [=relevant realm=]
     whose [=TrustedParserOptions/sanitizer=] is set to |sanitizer|,
