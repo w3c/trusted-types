@@ -1360,7 +1360,7 @@ To <dfn export>get Trusted Type compliant parser options</dfn> given a [=realm/g
 
         Note: This step assures that the default policy rejection will be reported, but ignored in a report-only mode.
 
-    1. Throw a TypeError and abort further steps.
+    1. Throw a {{TypeError}}.
 1. Let |sanitizer| be |policyValue|["`sanitizer`"], [=with default|defaulting to=] a new {{SanitizerConfig}}.
 1. If |sanitizer| is a {{Sanitizer}}, then set |sanitizer| to a new {{Sanitizer}} whose [=Sanitizer/configuration=] is the result of [=canonicalize the configuration|canonicalizing=] |sanitizer|'s [=Sanitizer/configuration=].
 
