@@ -697,7 +697,7 @@ that it's called only with no attacker-controlled values.
 
 While trusted types are built in a way that allows custom sanitizers to be used,
 the {{TrustedTypePolicy/createParserOptions(options)|createParserOptions}} also allows for using them as a way to enforce
-using the built-in sanitizer API. [[SANITIZER-API]]
+using the built-in sanitizer API.
 
 <div class="example" id="trusted-types-with-sanitizer-example">
 <xmp highlight=js>
