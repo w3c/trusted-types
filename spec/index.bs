@@ -1353,7 +1353,7 @@ To <dfn export>get Trusted Type compliant parser options</dfn> given a [=realm/g
 
 1. Let |policyValue| be the result of [=invoke|invoking=] |function| with « |argument| » and `"rethrow"`.
 1. If the algorithm threw an error, rethrow the error and abort the following steps.
-1. If |policyValue| is `null` or `undefined`, execute the following steps:
+1. If |policyValue| is `null` or `undefined`:
     1. Let |disposition| be the result of executing [=should sink type mismatch violation be blocked by content security policy?=] algorithm,
         passing |global|, |input|, |sinkGroup| and |sink|.
     1. If |disposition| is `“Allowed”`, return |input|.
