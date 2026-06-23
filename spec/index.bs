@@ -1291,18 +1291,18 @@ a string |value|, a list |arguments|, and a boolean |throwIfMissing|, perform th
 
 ## Get Trusted Type parser input ## {#get-trusted-type-parser-input-algorithm}
 
-To <dfn export>get Trusted Type compliant input</dfn> given a {{TrustedType}} |expectedType|, a [=realm/global object=] (|global|), string, or <code data-x="">Stream</code> |input|,
-a {{TrustedParserOptions}}, {{SetHTMLUnsafeOptions}} or <code data-x="">Legacy</code> |options|, and a string (|sink|), run these steps:
+To <dfn export>get Trusted Type compliant input</dfn> given a {{TrustedType}} |expectedType|, a [=realm/global object=] |global|, a string or <code data-x="">Stream</code> |input|,
+a {{TrustedParserOptions}}, {{SetHTMLUnsafeOptions}} or <code data-x="">Legacy</code> |options|, and a string |sink|:
 
 1. Let |sinkGroup| be 
 
 1. If |input| is not a <code data-x="">Stream</code>:
-  1. Set |input| to the result of calling get trusted type compliant string, passing |expectedType|, |global|, |input|, |sink| and |sinkGroup|.
-  1. If the algorithm threw an error, rethrow the error and abort the following steps.
+  1. Set |input| to the result of calling get trusted type compliant string, passing |expectedType|, |global|, |input|, |sink|, and |sinkGroup|.
+  1. If the algorithm threw an error, rethrow the error.
 1. If |options| is <code data-x="">Legacy</code>, set |options| to a new {{SetHTMLUnsafeOptions}} dictionary.
-1. Let |throwIfMissing| be true if |input| is not a <code data-x="">Stream</code>; Otherwise false.
+1. Let |throwIfMissing| be true if |input| is not a <code data-x="">Stream</code>; otherwise false.
 1. Set |options| to the result of calling [=get Trusted Type compliant parser options=], passing |global|, |options|, |throwIfMissing|, |sink|, and |sinkGroup|.
-1. If the algorithm threw an error, rethrow the error and abort the following steps.
+1. If the algorithm threw an error, rethrow the error.
 1. Return (|input|, |options|).
 
 ## Get Trusted Type compliant string ## {#get-trusted-type-compliant-string-algorithm}
@@ -1364,7 +1364,7 @@ To <dfn export>get Trusted Type compliant parser options</dfn> given a [=realm/g
 1. Let |sanitizer| be |policyValue|["`sanitizer`"], [=with default|defaulting to=] a new {{SanitizerConfig}}.
 1. If |sanitizer| is a {{Sanitizer}}, then set |sanitizer| to a new {{Sanitizer}} whose [=Sanitizer/configuration=] is the result of [=canonicalize the configuration|canonicalizing=] |sanitizer|'s [=Sanitizer/configuration=].
 
-  This step assures that the provided {{Sanitizer}} is not mutated by the policy.
+  Note: This step assures that the provided {{Sanitizer}} is not mutated by the policy.
 
 1. Let |runScripts| be true if |policyValue|["`runScripts`"] is true and |input| is a {{SetHTMLUnsafeOptions}} whose {{SetHTMLUnsafeOptions/runScripts}} is true.
 1. Return a new {{TrustedParserOptions}} in |input|'s [=relevant realm=]
