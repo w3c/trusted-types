@@ -1136,6 +1136,73 @@ via using the <a http-header>Content-Security-Policy-Report-Only</a> HTTP Respon
 Note: Most of the enforcement rules are defined as modifications of the
 algorithms in other specifications, see [[#integrations]].
 
+### Sanitization enforcement with {{TrustedTypePolicy/createParserOptions(options)|createParserOptions}} ### {#sanitization-enforcement-hdr}
+
+While {{TrustedTypePolicyOptions/createHTML|createHTML}} relies on sanitizing strings before they are injected to the parser using a JS sanitizer,
+the {{TrustedTypePolicy/createParserOptions(options)|createParserOptions}} allows the page's default policy to enforce HTML sanitization.
+
+A {{TrustedTypePolicy/createParserOptions(options)|createParserOptions}} callback in a required default policy would run for
+any attempt to inject HTML into a document using script.
+
+<div class="example" id="require-sanitizer-for-html-injection">
+Enforce Trusted Types at the DOM XSS injection sinks.
+
+<pre class="http">
+Content-Security-Policy: require-trusted-types-for 'script'
+</pre>
+
+Inject a sanitizer when using an HTML injection sink.
+
+<xmp highlight=js>
+(function renderFootnote() {
+  const defaultPolicy = trustedTypes.createPolicy('default', {
+    createParserOptions: options => {
+      const sanitizer = new Sanitizer(options.sanitizer)
+      sanitizer.removeUnsafe();
+      return { ...options, sanitizer };
+    }
+  });
+
+  const trustedOptions = trustedTypes.createPolicy('trusted', {
+    createParserOptions: options => options
+  }).createParserOptions({});
+  const untrustedFootnoteContent = await fetch('/footnote.html').then(r => r.text());
+
+  // This HTML will be sanitized with a "safe" HTML sanitizer, as the default policy injects
+  // a sanitizer with unsafe markup removed.
+  footNote.innerHTML = untrustedFootnoteContent;
+  // or:
+  footNote.setHTMLUnsafe(untrustedFootnoteContent, {});
+  const trustedMainContent = await fetch("main.html").then(r => r.text());
+  main.setHTMLUnsafe(trustedMainContent, trustedOptions);
+})();
+</xmp>
+
+Apart from sanizitation, the default policy can also prevent an HTML injection from running scripts.
+
+<xmp highlight=js>
+(function renderFootnote() {
+  const defaultPolicy = trustedTypes.createPolicy('default', {
+    createParserOptions: options => {
+      return { ...options, runScripts: false };
+    }
+  });
+
+  // The default policy would override the {{SetHTMLUnsafeOptions/runScripts}} value to false.
+  main.setHTMLUnsafe(someHTMLWithScripts, {runScripts: true});
+
+  // This applies to {{Range/createContextualFragment(string)}}
+  const fragment = new Range().createContextualFragment("<script>alert(1)</" + "script>");
+  const div = document.createElement('div');
+  // The scripts in the fragment would not be executed, as the default policy overrides {{SetHTMLUnsafeOptions/runScripts}}.
+  div.appendChild(fragment);
+})();
+</xmp>
+
+</div>
+
+
+
 # Algorithms # {#algorithms}
 
 ## Create a Trusted Type Policy ## {#create-trusted-type-policy-algorithm}
@@ -1225,7 +1292,9 @@ a string |value|, a list |arguments|, and a boolean |throwIfMissing|, perform th
 ## Get Trusted Type parser input ## {#get-trusted-type-parser-input-algorithm}
 
 To <dfn export>get Trusted Type compliant input</dfn> given a {{TrustedType}} |expectedType|, a [=realm/global object=] (|global|), string, or <code data-x="">Stream</code> |input|,
-a {{TrustedParserOptions}}, {{SetHTMLUnsafeOptions}} or <code data-x="">Legacy</code> |options|, a string (|sink|) and a string (|sinkGroup|), run these steps:
+a {{TrustedParserOptions}}, {{SetHTMLUnsafeOptions}} or <code data-x="">Legacy</code> |options|, and a string (|sink|), run these steps:
+
+1. Let |sinkGroup| be 
 
 1. If |input| is not a <code data-x="">Stream</code>:
   1. Set |input| to the result of calling get trusted type compliant string, passing |expectedType|, |global|, |input|, |sink| and |sinkGroup|.
