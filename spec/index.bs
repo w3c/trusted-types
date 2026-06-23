@@ -849,7 +849,7 @@ Its value is initially « ».
     1. If |elementNs| is null or an empty string, set |elementNs| to [=HTML namespace=].
     1. Let |interface| be the [=element interface=] for |localName| and |elementNs|.
     1. Let |expectedType| be null.
-    1. Find the row in the following table, where the first column is "*" or |interface|'s name, and |property| is in the second column.
+    1. Find the row in the following table, where the first column is "*" or |interface|'s name, and <var ignore="">property</var> is in the second column.
         If a matching row is found, set |expectedType| to the interface's name of the value of the third column.
 
         <table>
@@ -1362,7 +1362,7 @@ To <dfn export>get Trusted Type compliant parser options</dfn> given a [=realm/g
 
     1. Throw a TypeError and abort further steps.
 1. Let |sanitizer| be |policyValue|["`sanitizer`"], [=with default|defaulting to=] a new {{SanitizerConfig}}.
-1. If |sanitizer| is a {{Sanitizer}}, then set |sanitizer| to a new {{Sanitizer}} whose [=Sanitizer/configuration=] is the result of [=canonicali`ze the configuration|canonicalizing=] |sanitizer|'s [=Sanitizer/configuration=].
+1. If |sanitizer| is a {{Sanitizer}}, then set |sanitizer| to a new {{Sanitizer}} whose [=Sanitizer/configuration=] is the result of [=canonicalize the configuration|canonicalizing=] |sanitizer|'s [=Sanitizer/configuration=].
 
   This step assures that the provided {{Sanitizer}} is not mutated by the policy.
 
