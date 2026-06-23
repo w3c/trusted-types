@@ -13,7 +13,7 @@ jobs:
     name: Generate spec
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: w3c/spec-prod@v2
         with:
           TOOLCHAIN: bikeshed
