@@ -584,17 +584,27 @@ These objects are immutable wrappers around a
 
 [Exposed=(Window)]
 interface TrustedParserOptions {
-  readonly attribute Sanitizer sanitizer;
+  Sanitizer sanitizer();
   readonly attribute boolean runScripts;
 };
 </pre>
 
-{{TrustedParserOptions}} objects have an associated {{Sanitizer}} <dfn export for="TrustedParserOptions">sanitizer</dfn>
-and an associated boolean <dfn export for="TrustedParserOptions">runScripts</dfn>.
+{{TrustedParserOptions}} objects have an associated boolean <dfn export for="TrustedParserOptions">runScripts</dfn>.
 These values are set when the object is created, and will never change during its lifetime.
 
-A {{TrustedParserOptions}} also has an associated {{Sanitizer}} <dfn export for="TrustedParserOptions">effective sanitizer</dfn>,
-which remains unaffected if the object's {{TrustedParserOptions/sanitizer}} is mutated.
+The {{TrustedParserOptions/runScripts}} getter steps are to return [=this=]'s associated
+[=TrustedParserOptions/runScripts=].
+
+A {{TrustedParserOptions}} has an associated {{SanitizerConfig}}
+<dfn export for="TrustedParserOptions">sanitizer</dfn>.
+
+<div algorithm>
+The <dfn method for="TrustedParserOptions">sanitizer()</dfn> method steps are:
+
+1. Let |sanitizer| be a new {{Sanitizer}} in <span>this</span>'s [=relevant realm=].
+2. [=configure|Configure=] |sanitizer| with <span>this</span>'s [=TrustedParserOptions/sanitizer=] and true.
+3. Return |sanitizer|.
+</div>
 
 ## <dfn>Policies</dfn> ## {#policies-hdr}
 
@@ -1239,17 +1249,16 @@ a string |value| and a list |arguments|, perform the following steps:
 1.  Let |policyValue| be the result of executing [=get trusted type policy value=] with the same arguments as this algorithm and additionally true as |throwIfMissing|.
 1.  If the algorithm threw an error, rethrow the error and abort the following steps.
 1. If |trustedTypeName| is "TrustedParserOptions":
-  1. Let |sanitizer| be an empty {{SanitizerConfig}}.
-  1. Let |sanitizerClone| be an empty {{SanitizerConfig}}.
-
-    Note: setting both |sanitizer| and |sanitizerClone| ensures that in-place changes to {{TrustedParserOptions/sanitizer}} will not modify the underlying options.
-
+  1. Let |sanitizer| be a new {{SanitizerConfig}}.
   1. Let |runScripts| be false.
   1. If |policyValue| is a [=dictionary=]:
-    1. Set |sanitizer| to the result of [=get a new sanitizer from dictionary|getting a new sanitizer=] from |policyValue|.
-    1. Set |sanitizerClone| to the result of [=get a new sanitizer from dictionary|getting a new sanitizer=] from |policyValue|.
+    1. Set |sanitizer| to the result of
+        [=get a sanitizer configuration from dictionary|getting a sanitizer configuration=]
+        from |policyValue|.
     1. Set |runScripts| to |policyValue|["runScripts"] [=with default=] false.
-  1. Return a new instance of {{TrustedParserOptions}} with its [=TrustedParserOptions/sanitizer=] set to |sanitizer|, its [=TrustedParserOptions/effective sanitizer=] set to |sanitizerClone|, and its [=TrustedParserOptions/runScripts=] set to |runScripts|.
+  1. Return a new instance of {{TrustedParserOptions}} with its
+      [=TrustedParserOptions/sanitizer=] set to |sanitizer|, and its
+      [=TrustedParserOptions/runScripts=] set to |runScripts|.
 1.  Let |dataString| be the result of stringifying |policyValue|.
 1.  If |policyValue| is null or undefined, set |dataString| to the empty string.
 1.  Return a new instance of an interface with a type
@@ -1370,13 +1379,23 @@ a boolean |throwIfMissing|, a string |sink| and a string |sinkGroup|, run these 
     1. Throw a {{TypeError}}.
 1. Let |runScripts| be true if |policyValue|["`runScripts`"] is true and |input| is a {{SetHTMLUnsafeOptions}} whose {{SetHTMLUnsafeOptions/runScripts}} is true.
 1. Return a new {{TrustedParserOptions}} in |input|'s [=relevant realm=]
-    whose [=TrustedParserOptions/sanitizer=] is set to [=get a new sanitizer from dictionary|getting the sanitizer=] from |policyValue|,
+    whose [=TrustedParserOptions/sanitizer=] is set to the result of
+    [=get a sanitizer configuration from dictionary|getting a sanitizer configuration=] from
+    |policyValue|,
     and whose [=TrustedParserOptions/runScripts=] is set to |runScripts|.
 
-To <dfn>get a new sanitizer from dictionary</dfn>
-1. Let |sanitizerInput| be |policyValue|["`sanitizer`"], [=with default|defaulting to=] a new {{SanitizerConfig}}.
-1. If |sanitizerInput| is a {{Sanitizer}}, set it to |sanitizerInput|'s [=Sanitizer/configuration=].
-1. Let |sanitizer| be a new {{Sanitizer}} in |policyValue|'s [=realm=].
+To <dfn>get a sanitizer configuration from dictionary</dfn> given a dictionary |dictionary|:
+1. Let |sanitizerInput| be |dictionary|["`sanitizer`"], [=with default|defaulting to=] a new
+    {{SanitizerConfig}}.
+1. If |sanitizerInput| is a {{Sanitizer}}, set it to |sanitizerInput|'s
+    [=Sanitizer/configuration=].
+1. Return |sanitizerInput|.
+
+To <dfn>get a new sanitizer from dictionary</dfn> given a dictionary |dictionary|:
+1. Let |sanitizerInput| be the result of
+    [=get a sanitizer configuration from dictionary|getting a sanitizer configuration=] from
+    |dictionary|.
+1. Let |sanitizer| be a new {{Sanitizer}} in |dictionary|'s [=realm=].
 1. [=configure|Configure=] |sanitizer| with |sanitizerInput| and true.
 1. Return |sanitizer|.
 
