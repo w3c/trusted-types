@@ -601,9 +601,9 @@ A {{TrustedParserOptions}} has an associated {{SanitizerConfig}}
 <div algorithm>
 The <dfn method for="TrustedParserOptions">sanitizer()</dfn> method steps are:
 
-1. Let |sanitizer| be a new {{Sanitizer}} in <span>this</span>'s [=relevant realm=].
-2. [=configure|Configure=] |sanitizer| with <span>this</span>'s [=TrustedParserOptions/sanitizer=] and true.
-3. Return |sanitizer|.
+1. Let |sanitizer| be a new {{Sanitizer}} in <span>this</span>'s [=relevant realm=], whose [=Sanitizer/configuration=] is <span>this</span>'s [=TrustedParserOptions/sanitizer=].
+2. Return |sanitizer|.
+
 </div>
 
 ## <dfn>Policies</dfn> ## {#policies-hdr}
