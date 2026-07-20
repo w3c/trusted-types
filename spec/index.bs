@@ -1249,13 +1249,13 @@ a string |value| and a list |arguments|, perform the following steps:
 1.  Let |policyValue| be the result of executing [=get trusted type policy value=] with the same arguments as this algorithm and additionally true as |throwIfMissing|.
 1.  If the algorithm threw an error, rethrow the error and abort the following steps.
 1. If |trustedTypeName| is "TrustedParserOptions":
-  1. Let |sanitizer| be a new {{SanitizerConfig}}.
-  1. Let |runScripts| be false.
-  1. If |policyValue| is a [=dictionary=]:
-    1. Set |sanitizer| to the result of
-        [=get a sanitizer configuration from dictionary|getting a sanitizer configuration=]
-        from |policyValue|.
-    1. Set |runScripts| to |policyValue|["runScripts"] [=with default=] false.
+    1. Let |sanitizer| be a new {{SanitizerConfig}}.
+    1. Let |runScripts| be false.
+    1. If |policyValue| is a [=dictionary=]:
+        1. Set |sanitizer| to the result of
+            [=get a sanitizer configuration from dictionary|getting a sanitizer configuration=]
+            from |policyValue|.
+        1. Set |runScripts| to |policyValue|["runScripts"] [=with default=] false.
   1. Return a new instance of {{TrustedParserOptions}} with its
       [=TrustedParserOptions/sanitizer=] set to |sanitizer|, and its
       [=TrustedParserOptions/runScripts=] set to |runScripts|.
@@ -1310,14 +1310,12 @@ a string |value|, a list |arguments|, and a boolean |throwIfMissing|, perform th
 To <dfn export>get Trusted Type compliant input</dfn> given a {{TrustedType}} |expectedType|, a [=realm/global object=] |global|, a string or <code data-x="">Stream</code> |input|,
 a {{TrustedParserOptions}}, {{SetHTMLUnsafeOptions}} or <code data-x="">Legacy</code> |options|, and a string |sink|:
 
-1. Let |sinkGroup| be 
-
 1. If |input| is not a <code data-x="">Stream</code>:
-  1. Set |input| to the result of calling get trusted type compliant string, passing |expectedType|, |global|, |input|, |sink|, and |sinkGroup|.
-  1. If the algorithm threw an error, rethrow the error.
+    1. Set |input| to the result of calling get trusted type compliant string, passing |expectedType|, |global|, |input|, |sink|, and `"TrustedHTML"`.
+    1. If the algorithm threw an error, rethrow the error.
 1. If |options| is <code data-x="">Legacy</code>, set |options| to a new {{SetHTMLUnsafeOptions}} dictionary.
 1. Let |throwIfMissing| be true if |input| is not a <code data-x="">Stream</code>; otherwise false.
-1. Set |options| to the result of calling [=get Trusted Type compliant parser options=], passing |global|, |options|, |throwIfMissing|, |sink|, and |sinkGroup|.
+1. Set |options| to the result of calling [=get Trusted Type compliant parser options=], passing |global|, |options|, |throwIfMissing|, and |sink|.
 1. If the algorithm threw an error, rethrow the error.
 1. Return (|input|, |options|).
 
@@ -1352,11 +1350,11 @@ To <dfn export>get trusted type compliant string</dfn> a {{TrustedType}} type (|
 
 To <dfn export>get Trusted Type compliant parser options</dfn> given a [=realm/global object=] |global|,
 |input|, which is either a {{TrustedParserOptions}}, a {{SetHTMLUnsafeOptions}}, or a {{ParseHTMLUnsafeOptions}},
-a boolean |throwIfMissing|, a string |sink| and a string |sinkGroup|, run these steps:
+a boolean |throwIfMissing|, and a string |sink|, run these steps:
 
 1.  If |input| is an instance of {{TrustedParserOptions}}, return |input|.
 1.  Let |requireTrustedTypes| be the result of executing [=Does sink type require trusted types?=] algorithm,
-    passing |global|, |sinkGroup|, and true.
+    passing |global|, `"TrustedHTML"`, and true.
 1.  If |requireTrustedTypes| is `false`, return |input|.
 1.  Let |defaultPolicy| be the value of |global|'s [=Window/trusted type policy factory=]'s [=TrustedTypePolicyFactory/default policy=].
 1.  If |defaultPolicy| is null, throw a {{TypeError}}.
@@ -1371,7 +1369,7 @@ a boolean |throwIfMissing|, a string |sink| and a string |sinkGroup|, run these 
 1. If the algorithm threw an error, rethrow the error and abort the following steps.
 1. If |policyValue| is `null` or `undefined`:
     1. Let |disposition| be the result of executing [=should sink type mismatch violation be blocked by content security policy?=] algorithm,
-        passing |global|, |input|, |sinkGroup| and |sink|.
+        passing |global|, |input|, `"TrustedHTML"` and |sink|.
     1. If |disposition| is `“Allowed”`, return |input|.
 
         Note: This step assures that the default policy rejection will be reported, but ignored in a report-only mode.
