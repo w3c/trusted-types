@@ -1191,6 +1191,8 @@ Inject a sanitizer when using an HTML injection sink.
 </xmp>
 
 Apart from sanizitation, the default policy can also prevent an HTML injection from running scripts.
+HTML inserted with {{SetHTMLUnsafeOptions/runScripts}} set to false can still insert `script` elements into the document,
+but those scripts are not automatically executed.
 
 <xmp highlight=js>
 (function renderFootnote() {
