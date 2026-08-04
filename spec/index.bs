@@ -971,7 +971,7 @@ interface TrustedTypePolicy {
   TrustedHTML createHTML(DOMString input, any... arguments);
   TrustedScript createScript(DOMString input, any... arguments);
   TrustedScriptURL createScriptURL(DOMString input, any... arguments);
-  TrustedParserOptions createParserOptions(SetHTMLUnsafeOptions options, any... arguments);
+  [Exposed=Window] TrustedParserOptions createParserOptions(SetHTMLUnsafeOptions options, any... arguments);
 };
 </pre>
 
