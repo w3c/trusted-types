@@ -1313,11 +1313,11 @@ a string |value|, a list |arguments|, and a boolean |throwIfMissing|, perform th
 
 ## Get Trusted Type parser input ## {#get-trusted-type-parser-input-algorithm}
 
-To <dfn export>get Trusted Type compliant input</dfn> given a {{TrustedType}} |expectedType|, a [=realm/global object=] |global|, a string or <code data-x="">Stream</code> |input|,
+To <dfn export>get Trusted Type compliant input</dfn> given a [=realm/global object=] |global|, a string or <code data-x="">Stream</code> |input|,
 a {{TrustedParserOptions}} or {{SetHTMLUnsafeOptions}} |options|, and a string |sink|:
 
 1. If |input| is not a <code data-x="">Stream</code>:
-    1. Set |input| to the result of calling get trusted type compliant string, passing |expectedType|, |global|, |input|, |sink|, and `"TrustedHTML"`.
+    1. Set |input| to the result of calling [=get trusted type compliant string=], passing `"TrustedHTML"`, |global|, |input|, |sink|, and `"script"`.
     1. If the algorithm threw an error, rethrow the error.
 1. Let |throwIfMissing| be true if |input| is not a <code data-x="">Stream</code>; otherwise false.
 1. Set |options| to the result of calling [=get Trusted Type compliant parser options=], passing |global|, |options|, |throwIfMissing|, and |sink|.
