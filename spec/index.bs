@@ -731,6 +731,9 @@ using the built-in sanitizer API.
 Note: `createParserOptions` does not necessarily replace `createHTML`. If both exist in the policy, the `createHTML` function will be called first,
 and the result will be sanitized using the result of the `createParserOptions` function, if that exists.
 
+Note: The `"sanitizer"` value only works with HTML documents. Returning a non-null value for `"sanitizer"` for XML documents throws an exception.
+When protecting XML documents, authors are advised to use `createHTML` instead and perform sanitization using JavaScript.
+
 ### <dfn interface>TrustedTypePolicyFactory</dfn> ### {#trusted-type-policy-factory}
 
 TrustedTypePolicyFactory creates
@@ -1367,6 +1370,7 @@ a boolean |throwIfMissing|, and a string |sink|, run these steps:
 1. Let |runScriptsInput| be |input|["runScripts"], [=with default=] false.
 1. Let |sanitizerInputConfig| be the results of [=get a sanitizer config from dictionary|getting a sanitizer config=] from |input|.
 1. Let |sanitizerInput| be null if |sanitizerInputConfig| is null; otherwise a new {{Sanitizer}}, [=configure|configured=] withh |sanitizerInputConfig|.
+1. If |sanitizerInput| is not null and |global|'s [=associated Document=]'s [=Document/type=] is `"xml"`, throw a {{TypeError}}.
 1. Let |argument| be the [=ordered map=] «[ "runScripts" → |runScriptsInput|, "sanitizer" → |sanitizerInput| ]».
 1. Let |policyValue| be the result of [=invoke|invoking=] |function| with « |argument| » and `"rethrow"`.
 1. If the algorithm threw an error, rethrow the error and abort the following steps.
