@@ -731,8 +731,9 @@ using the built-in sanitizer API.
 Note: `createParserOptions` does not necessarily replace `createHTML`. If both exist in the policy, the `createHTML` function will be called first,
 and the result will be sanitized using the result of the `createParserOptions` function, if that exists.
 
-Note: The `"sanitizer"` value only works with HTML documents. Returning a non-null value for `"sanitizer"` for XML documents throws an exception.
-When protecting XML documents, authors are advised to use `createHTML` instead and perform sanitization using JavaScript.
+Note: The `sanitizer` option is only supported for HTML documents. If `createParserOptions`
+returns a dictionary with a non-null `sanitizer` value for an XML document, the sink throws
+an exception. When protecting XML documents, authors are advised to use `createHTML` instead.
 
 ### <dfn interface>TrustedTypePolicyFactory</dfn> ### {#trusted-type-policy-factory}
 
@@ -1313,16 +1314,14 @@ a string |value|, a list |arguments|, and a boolean |throwIfMissing|, perform th
 
 ## Get Trusted Type parser input ## {#get-trusted-type-parser-input-algorithm}
 
-To <dfn export>get Trusted Type compliant input</dfn> given a [=realm/global object=] |global|, a string or <code data-x="">Stream</code> |input|,
+To <dfn export>get Trusted Type compliant input</dfn> given a [=realm/global object=] |global|, a string |input|,
 a {{TrustedParserOptions}} or {{SetHTMLUnsafeOptions}} |options|, and a string |sink|:
 
-1. If |input| is not a <code data-x="">Stream</code>:
-    1. Set |input| to the result of calling [=get trusted type compliant string=], passing `"TrustedHTML"`, |global|, |input|, |sink|, and `"script"`.
-    1. If the algorithm threw an error, rethrow the error.
-1. Let |throwIfMissing| be true if |input| is a <code data-x="">Stream</code>; otherwise false.
-1. Set |options| to the result of calling [=get Trusted Type compliant parser options=], passing |global|, |options|, |throwIfMissing|, and |sink|.
+1. Let |compliantHTML| be the result of calling [=get trusted type compliant string=], passing `"TrustedHTML"`, |global|, |input|, |sink|, and `"script"`.
 1. If the algorithm threw an error, rethrow the error.
-1. Return (|input|, |options|).
+1. Let |compliantOptions| be the result of calling [=get Trusted Type compliant parser options=], passing |global|, |options|, false, and |sink|.
+1. If the algorithm threw an error, rethrow the error.
+1. Return (|compliantHTML|, |compliantOptions|).
 
 ## Get Trusted Type compliant string ## {#get-trusted-type-compliant-string-algorithm}
 
