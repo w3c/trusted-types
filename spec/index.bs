@@ -1319,7 +1319,7 @@ a {{TrustedParserOptions}} or {{SetHTMLUnsafeOptions}} |options|, and a string |
 1. If |input| is not a <code data-x="">Stream</code>:
     1. Set |input| to the result of calling [=get trusted type compliant string=], passing `"TrustedHTML"`, |global|, |input|, |sink|, and `"script"`.
     1. If the algorithm threw an error, rethrow the error.
-1. Let |throwIfMissing| be true if |input| is not a <code data-x="">Stream</code>; otherwise false.
+1. Let |throwIfMissing| be true if |input| is a <code data-x="">Stream</code>; otherwise false.
 1. Set |options| to the result of calling [=get Trusted Type compliant parser options=], passing |global|, |options|, |throwIfMissing|, and |sink|.
 1. If the algorithm threw an error, rethrow the error.
 1. Return (|input|, |options|).
@@ -1389,8 +1389,7 @@ a boolean |throwIfMissing|, and a string |sink|, run these steps:
     and whose [=TrustedParserOptions/runScripts=] is set to |runScripts|.
 
 To <dfn>get a sanitizer config from dictionary</dfn> given a dictionary |dictionary|:
-1. Let |sanitizerInput| be |dictionary|["`sanitizer`"], [=with default|defaulting to=] a new
-    {{SanitizerConfig}}.
+1. Let |sanitizerInput| be |dictionary|["`sanitizer`"], [=with default|defaulting to=] null.
 1. If |sanitizerInput| is a {{Sanitizer}}, set it to |sanitizerInput|'s
     [=Sanitizer/configuration=].
 1. Return |sanitizerInput|.
