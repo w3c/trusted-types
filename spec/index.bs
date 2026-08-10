@@ -1368,7 +1368,7 @@ a boolean |throwIfMissing|, and a string |sink|, run these steps:
     1. Return |input|.
 1. Let |runScriptsInput| be |input|["runScripts"], [=with default=] false.
 1. Let |sanitizerInputConfig| be the results of [=get a sanitizer config from dictionary|getting a sanitizer config=] from |input|.
-1. Let |sanitizerInput| be null if |sanitizerInputConfig| is null; otherwise a new {{Sanitizer}}, [=configure|configured=] withh |sanitizerInputConfig|.
+1. Let |sanitizerInput| be null if |sanitizerInputConfig| is null; otherwise a new {{Sanitizer}}, [=configure|configured=] with |sanitizerInputConfig|.
 1. Let |argument| be the [=ordered map=] «[ "runScripts" → |runScriptsInput|, "sanitizer" → |sanitizerInput| ]».
 1. Let |policyValue| be the result of [=invoke|invoking=] |function| with « |argument| » and `"rethrow"`.
 1. If the algorithm threw an error, rethrow the error and abort the following steps.
