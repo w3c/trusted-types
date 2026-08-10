@@ -1315,7 +1315,7 @@ a string |value|, a list |arguments|, and a boolean |throwIfMissing|, perform th
 ## Get Trusted Type parser input ## {#get-trusted-type-parser-input-algorithm}
 
 To <dfn export>get Trusted Type compliant input</dfn> given a [=realm/global object=] |global|, a string |input|,
-a {{TrustedParserOptions}} or {{SetHTMLUnsafeOptions}} |options|, and a string |sink|:
+a {{TrustedParserOptions}}, {{ParseHTMLUnsafeOptions}} or {{SetHTMLUnsafeOptions}} |options|, and a string |sink|:
 
 1. Let |compliantHTML| be the result of calling [=get trusted type compliant string=], passing `"TrustedHTML"`, |global|, |input|, |sink|, and `"script"`.
 1. If the algorithm threw an error, rethrow the error.
@@ -1381,7 +1381,7 @@ a boolean |throwIfMissing|, and a string |sink|, run these steps:
 
     1. Throw a {{TypeError}}.
 1. Let |runScripts| be true if |policyValue|["`runScripts`"] is true and |input| is a {{SetHTMLUnsafeOptions}} whose {{SetHTMLUnsafeOptions/runScripts}} is true.
-1. Return a new {{TrustedParserOptions}} in |input|'s [=relevant realm=]
+1. Return a new {{TrustedParserOptions}} in |global|'s [=relevant realm=]
     whose [=TrustedParserOptions/sanitizer config=] is set to the result of
     [=get a sanitizer config from dictionary|getting a sanitizer configuration=] from
     |policyValue|,
