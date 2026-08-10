@@ -573,7 +573,7 @@ TrustedScriptURL object are to return the associated [=TrustedScriptURL/data=] v
 
 ### <dfn interface>TrustedParserOptions</dfn> ### {#trused-parser-options}
 
-The TrustedParserOptions interface represents a dictionary that a developer
+The {{TrustedParserOptions}} interface represents a dictionary that a developer
 can confidently pass into an [=injection sink=] that will parse it as a URL of
 an external script resource.
 These objects are immutable wrappers around a
