@@ -573,12 +573,11 @@ TrustedScriptURL object are to return the associated [=TrustedScriptURL/data=] v
 
 ### <dfn interface>TrustedParserOptions</dfn> ### {#trused-parser-options}
 
-The {{TrustedParserOptions}} interface represents a dictionary that a developer
-can confidently pass into an [=injection sink=] that will parse it as a URL of
-an external script resource.
+The {{TrustedParserOptions}} interface represents options that a developer
+can confidently pass into an [=injection sink=] that will parse HTML.
 These objects are immutable wrappers around a
 {{SetHTMLUnsafeOptions}} dictionary, constructed via a {{TrustedTypePolicy}}'s
-{{TrustedTypePolicy/createParserOptions(options)|createParserOptions}} method.
+{{TrustedTypePolicy/createParserOptions(options, ...arguments)|createParserOptions}} method.
 
 <pre class="idl">
 
@@ -1032,7 +1031,7 @@ Each TrustedTypePolicy object has an associated {{TrustedTypePolicyOptions}} <df
       <dd>arguments</dd>
     </dl>
 
-: <dfn>createParserOptions(options)</dfn>
+: <dfn>createParserOptions(options, ...arguments)</dfn>
 ::  Returns the
     result of executing the [=Create a Trusted Type=] algorithm, with the
     following arguments:
@@ -1195,7 +1194,7 @@ Inject a sanitizer when using an HTML injection sink.
 })();
 </xmp>
 
-Apart from sanizitation, the default policy can also prevent an HTML injection from running scripts.
+Apart from sanitization, the default policy can also prevent an HTML injection from running scripts.
 HTML inserted with {{SetHTMLUnsafeOptions/runScripts}} set to false can still insert `script` elements into the document,
 but those scripts are not automatically executed.
 
@@ -1251,19 +1250,19 @@ a string (|policyName|), {{TrustedTypePolicyOptions}} dictionary (|options|), an
 ## Create a Trusted Type ## {#create-a-trusted-type-algorithm}
 
 To <dfn>create a trusted type</dfn> given a {{TrustedTypePolicy}} |policy|, a type name |trustedTypeName|,
-a string |value| and a list |arguments|, perform the following steps:
+a string or dictionary |value| and a list |arguments|, perform the following steps:
 
 1.  Let |policyValue| be the result of executing [=get trusted type policy value=] with the same arguments as this algorithm and additionally true as |throwIfMissing|.
 1.  If the algorithm threw an error, rethrow the error and abort the following steps.
 1.  If |trustedTypeName| is `"TrustedParserOptions"`:
-    1.  Let |sanitizer| be a new {{SanitizerConfig}}.
+    1.  Let |sanitizer| be null.
     1.  Let |runScripts| be false.
     1.  If |policyValue| is a [=dictionary=]:
         1.  Set |sanitizer| to the result of
             [=get a sanitizer config from dictionary|getting a sanitizer configuration=]
             from |policyValue|.
         1.  Set |runScripts| to |policyValue|["runScripts"] [=with default=] false.
-    1.  Return a new instance of {{TrustedParserOptions}} with its
+    1.  Return a new instance of {{TrustedParserOptions}} in |policy|'s [=relevant realm=] with its
         [=TrustedParserOptions/sanitizer config=] set to |sanitizer|, and its
         [=TrustedParserOptions/runScripts=] set to |runScripts|.
 1.  Let |dataString| be the result of stringifying |policyValue|.
@@ -1274,7 +1273,7 @@ a string |value| and a list |arguments|, perform the following steps:
 ## Get Trusted Type policy value ## {#get-trusted-type-policy-value-algorithm}
 
 To <dfn>get trusted type policy value</dfn> given a {{TrustedTypePolicy}} |policy|, a type name |trustedTypeName|,
-a string |value|, a list |arguments|, and a boolean |throwIfMissing|, perform the following steps:
+a string or dictionary |value|, a list |arguments|, and a boolean |throwIfMissing|, perform the following steps:
 
 1.  Let |functionName| be a function name for the given |trustedTypeName|,
     based on the following table:
@@ -1341,7 +1340,7 @@ To <dfn export>get trusted type compliant string</dfn> a {{TrustedType}} type (|
 1.  If the algorithm threw an error, rethrow the error and abort the following steps.
 1.  If |convertedInput| is `null` or `undefined`, execute the following steps:
     1.  Let |disposition| be the result of executing [=should sink type mismatch violation be blocked by content security policy?=] algorithm,
-        passing |global|, stringified |input| as |source|, |sinkGroup| and |sink|.
+        passing |global|, |sink|, |sinkGroup|, and stringified |input| as |source|.
     1.  If |disposition| is `“Allowed”`, return stringified |input| and abort further steps.
 
         Note: This step assures that the default policy rejection will be reported, but ignored in a report-only mode.
@@ -1358,7 +1357,7 @@ a boolean |throwIfMissing|, and a string |sink|, run these steps:
 
 1.  If |input| is an instance of {{TrustedParserOptions}}, return |input|.
 1.  Let |requireTrustedTypes| be the result of executing [=Does sink type require trusted types?=] algorithm,
-    passing |global|, `"TrustedHTML"`, and true.
+    passing |global|, `"script"`, and true.
 1.  If |requireTrustedTypes| is `false`, return |input|.
 1.  Let |defaultPolicy| be the value of |global|'s [=Window/trusted type policy factory=]'s [=TrustedTypePolicyFactory/default policy=].
 1.  If |defaultPolicy| is null, throw a {{TypeError}}.
@@ -1374,13 +1373,13 @@ a boolean |throwIfMissing|, and a string |sink|, run these steps:
 1. If the algorithm threw an error, rethrow the error and abort the following steps.
 1. If |policyValue| is `null` or `undefined`:
     1. Let |disposition| be the result of executing [=should sink type mismatch violation be blocked by content security policy?=] algorithm,
-        passing |global|, |input|, `"TrustedHTML"` and |sink|.
+        passing |global|, |sink|, `"script"`, and stringified |input| as |source|.
     1. If |disposition| is `“Allowed”`, return |input|.
 
         Note: This step assures that the default policy rejection will be reported, but ignored in a report-only mode.
 
     1. Throw a {{TypeError}}.
-1. Let |runScripts| be true if |policyValue|["`runScripts`"] is true and |input| is a {{SetHTMLUnsafeOptions}} whose {{SetHTMLUnsafeOptions/runScripts}} is true.
+1. Let |runScripts| be true if |policyValue|["runScripts"] is true and |input| is a {{SetHTMLUnsafeOptions}} whose {{SetHTMLUnsafeOptions/runScripts}} is true.
 1. Return a new {{TrustedParserOptions}} in |global|'s [=relevant realm=]
     whose [=TrustedParserOptions/sanitizer config=] is set to the result of
     [=get a sanitizer config from dictionary|getting a sanitizer configuration=] from
@@ -1388,7 +1387,7 @@ a boolean |throwIfMissing|, and a string |sink|, run these steps:
     and whose [=TrustedParserOptions/runScripts=] is set to |runScripts|.
 
 To <dfn>get a sanitizer config from dictionary</dfn> given a dictionary |dictionary|:
-1. Let |sanitizerInput| be |dictionary|["`sanitizer`"], [=with default|defaulting to=] null.
+1. Let |sanitizerInput| be |dictionary|["sanitizer"], [=with default|defaulting to=] null.
 1. If |sanitizerInput| is a {{Sanitizer}}, set it to |sanitizerInput|'s
     [=Sanitizer/configuration=].
 1. Return |sanitizerInput|.
