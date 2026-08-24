@@ -1317,7 +1317,7 @@ a string or dictionary |value|, a list |arguments|, and a boolean |throwIfMissin
 
 ## Get Trusted Type compliant input ## {#get-trusted-type-compliant-input-algorithm}
 
-To <dfn export>get trusted type compliant input</dfn> given a [=realm/global object=] |global|, a string |input|,
+To <dfn export>get trusted type compliant input</dfn> given a [=realm/global object=] |global|, a string or {{TrustedHTML}} |input|,
 a {{TrustedParserOptions}}, {{ParseHTMLUnsafeOptions}} or {{SetHTMLUnsafeOptions}} |options|, and a string |sink|:
 
 1. Let |compliantHTML| be the result of calling [=get trusted type compliant string=], passing {{TrustedHTML}}, |global|, |input|, |sink|, and `"script"`.
