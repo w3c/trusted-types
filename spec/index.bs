@@ -1320,14 +1320,8 @@ a {{TrustedParserOptions}}, {{ParseHTMLUnsafeOptions}} or {{SetHTMLUnsafeOptions
 1. If the algorithm threw an error, rethrow the error.
 1. If |input| is an instance of {{TrustedHTML}}:
     1. Return (stringified |input|, |compliantOptions|).
-1. Let |isSanitizedByParser| be true if |compliantOptions| is an instance of {{TrustedParserOptions}} and |compliantOptions|'s [=TrustedParserOptions/sanitizer config=] is not null; otherwise false.
-1. If |isSanitizedByParser| is true:
-    1. Let |defaultPolicy| be the value of |global|'s [=Window/trusted type policy factory=]'s [=TrustedTypePolicyFactory/default policy=].
-    2. If |defaultPolicy| is not null and |defaultPolicy|'s [=TrustedTypePolicy/options=]["createHTML"] is not null:
-        1. Let |transformedInput| be the result of calling [=get trusted type compliant string=], passing {{TrustedHTML}}, |global|, |input|, |sink|, and `"script"`.
-        2. If the algorithm threw an error, rethrow the error.
-        3. Return (|transformedInput|, |compliantOptions|).
-    3. Return (stringified |input|, |compliantOptions|).
+1. If |compliantOptions| is an instance of {{TrustedParserOptions}} and |compliantOptions|'s [=TrustedParserOptions/sanitizer config=] is not null:
+    1. Return (stringified |input|, |compliantOptions|).
 1. Let |compliantHTML| be the result of calling [=get trusted type compliant string=], passing {{TrustedHTML}}, |global|, |input|, |sink|, and `"script"`.
 1. If the algorithm threw an error, rethrow the error.
 1. Return (|compliantHTML|, |compliantOptions|).
