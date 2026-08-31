@@ -236,9 +236,9 @@ spec: HTML; urlPrefix: https://html.spec.whatwg.org/
     type: dfn; text: event handler content attribute; url: event-handler-content-attributes
     type: dfn; text: configuration; for: Sanitizer; url: configuration
     type: dfn; text: canonicalize the configuration; url: canonicalize-the-configuration
-    type:dictionary; text:Sanitizer
+    type:interface; text:Sanitizer
     type:dictionary; text:SanitizerConfig
-    type:dictionary; text:SanitizerPresets
+    type:enum; text:SanitizerPresets
     type:dictionary; text:SetHTMLOptions
     type:dictionary; text:SetHTMLUnsafeOptions
 spec:DOM; urlPrefix: https://dom.spec.whatwg.org/
@@ -731,9 +731,9 @@ Note: When enforcing Trusted Types on HTML injection sinks that parse markup (su
 without requiring {{TrustedTypePolicyOptions/createHTML}} or a {{TrustedHTML}} instance. For string-only injection sinks that do not support parser options
 (such as {{HTMLIFrameElement/srcdoc}} or `document.write()`), raw strings must still be converted via {{TrustedTypePolicyOptions/createHTML}}.
 
-Note: The `sanitizer` option is only supported for HTML documents. If `createParserOptions`
-returns a dictionary with a non-null `sanitizer` value for an XML document, the sink throws
-an exception. When protecting XML documents, authors are advised to use `createHTML` instead.
+Note: When used in legacy HTML injection sinks such as {{Element/innerHTML}}, the `sanitizer` option is only supported for HTML documents.
+If `createParserOptions` returns a dictionary with a non-null `sanitizer` value for a legacy sink in an XML document, the sink throws a {{TypeError}}.
+When protecting XML documents using legacy sinks, authors are advised to use `createHTML` instead.
 
 ### <dfn interface>TrustedTypePolicyFactory</dfn> ### {#trusted-type-policy-factory}
 
@@ -1319,7 +1319,9 @@ a {{TrustedParserOptions}}, {{ParseHTMLUnsafeOptions}} or {{SetHTMLUnsafeOptions
 1. Let |compliantOptions| be the result of calling [=get trusted type compliant parser options=], passing |global|, |options|, false, and |sink|.
 1. If the algorithm threw an error, rethrow the error.
 1. If |input| is an instance of {{TrustedHTML}}:
-    1. Return (stringified |input|, |compliantOptions|).
+    1. Let |runScripts| be true if |compliantOptions| is an instance of {{TrustedParserOptions}} and |compliantOptions|'s [=TrustedParserOptions/runScripts=] is true, or if |compliantOptions| is a dictionary and |compliantOptions|["runScripts"], [=with default=] false is true; otherwise false.
+    1. Let |trustedOptions| be a new {{TrustedParserOptions}} in |global|'s [=relevant realm=] whose [=TrustedParserOptions/sanitizer config=] is null and whose [=TrustedParserOptions/runScripts=] is |runScripts|.
+    1. Return (stringified |input|, |trustedOptions|).
 1. If |compliantOptions| is an instance of {{TrustedParserOptions}} and |compliantOptions|'s [=TrustedParserOptions/sanitizer config=] is not null:
     1. Return (stringified |input|, |compliantOptions|).
 1. Let |compliantHTML| be the result of calling [=get trusted type compliant string=], passing {{TrustedHTML}}, |global|, |input|, |sink|, and `"script"`.
@@ -1386,7 +1388,7 @@ When streaming or in contexts where the HTML string cannot be validated up front
 1. Let |argument| be the [=ordered map=] «[ "runScripts" → |runScriptsInput| ]».
 1. Let |sanitizerInputConfig| be the results of [=get a sanitizer config from dictionary|getting a sanitizer config=] from |input|.
 1. If |sanitizerInputConfig| is not null:
-    1. Let |sanitizerInput| be a new {{Sanitizer}}, [=configure|configured=] with |sanitizerInputConfig|.
+    1. Let |sanitizerInput| be a new {{Sanitizer}}, [=configure|configured=] with |sanitizerInputConfig| and true.
     1. Set |argument|["sanitizer"] to |sanitizerInput|.
 1. Let |policyValue| be the result of [=invoke|invoking=] |function| with « |argument| » and `"rethrow"`.
 1. If the algorithm threw an error, rethrow the error and abort the following steps.
@@ -1398,7 +1400,7 @@ When streaming or in contexts where the HTML string cannot be validated up front
         Note: This step assures that the default policy rejection will be reported, but ignored in a report-only mode.
 
     1. Throw a {{TypeError}}.
-1. Let |runScripts| be true if |policyValue|["runScripts"] is true and |input| is a {{SetHTMLUnsafeOptions}} whose {{SetHTMLUnsafeOptions/runScripts}} is true.
+1. Let |runScripts| be true if |policyValue|["runScripts"] is true and |runScriptsInput| is true; otherwise false.
 1. Return a new {{TrustedParserOptions}} in |global|'s [=relevant realm=]
     whose [=TrustedParserOptions/sanitizer config=] is set to the result of
     [=get a sanitizer config from dictionary|getting a sanitizer configuration=] from
@@ -1409,7 +1411,7 @@ To <dfn>get a sanitizer config from dictionary</dfn> given a dictionary |diction
 1. Let |sanitizerInput| be |dictionary|["sanitizer"], [=with default|defaulting to=] null.
 1. If |sanitizerInput| is a {{Sanitizer}}, return a [=map/clone=] of |sanitizerInput|'s [=Sanitizer/configuration=].
 1. If |sanitizerInput| is a {{SanitizerPresets}} or a {{SanitizerConfig}}:
-    1. Let |sanitizer| be a new {{Sanitizer}}, [=configure|configured=] with |sanitizerInput|.
+    1. Let |sanitizer| be a new {{Sanitizer}}, [=configure|configured=] with |sanitizerInput| and true.
     1. Return a [=map/clone=] of |sanitizer|'s [=Sanitizer/configuration=].
 1. Return null.
 
