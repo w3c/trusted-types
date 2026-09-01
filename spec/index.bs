@@ -599,6 +599,7 @@ The <dfn method for="TrustedParserOptions">sanitizer()</dfn> method steps are:
 1. If [=this=]'s [=TrustedParserOptions/sanitizer config=] is null, return null.
 1. Let |sanitizer| be a new {{Sanitizer}} in [=this=]'s [=relevant realm=], [=configure|configured=] with [=this=]'s [=TrustedParserOptions/sanitizer config=] and true.
 1. Return |sanitizer|.
+
 </div>
 
 ## <dfn>Policies</dfn> ## {#policies-hdr}
@@ -1478,7 +1479,7 @@ To <dfn export>get trusted type compliant attribute value</dfn> given a string |
 
    If the algorithm threw an error, rethrow the error.
 
-## Get Trusted Type data for attribute ## {#get-trusted-type-data-for-attribute}
+## Get Trusted Type data for attribute ## {#get-trusted-type-data-for-attribute-algo}
 
 To <dfn>get Trusted Type data for attribute</dfn> given |element|, |attribute|, |attributeNs|, perform the following steps:
 
