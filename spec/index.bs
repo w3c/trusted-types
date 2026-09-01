@@ -236,6 +236,8 @@ spec: HTML; urlPrefix: https://html.spec.whatwg.org/
     type: dfn; text: event handler content attribute; url: event-handler-content-attributes
     type: dfn; text: built-in safe default configuration; url: built-in-safe-default-configuration
     type: dfn; text: configuration; for: Sanitizer; url: configuration
+    type: dfn; text: canonicalize the configuration; url: canonicalize-the-configuration
+    type: dfn; text: valid; for: SanitizerConfig; url: dom-sanitizerconfig-valid
     type:interface; text:Sanitizer
     type:dictionary; text:SanitizerConfig
     type:enum; text:SanitizerPresets
@@ -597,7 +599,8 @@ The {{TrustedParserOptions/runScripts}} getter steps are to return [=this=]'s as
 The <dfn method for="TrustedParserOptions">sanitizer()</dfn> method steps are:
 
 1. If [=this=]'s [=TrustedParserOptions/sanitizer config=] is null, return null.
-1. Let |sanitizer| be a new {{Sanitizer}} in [=this=]'s [=relevant realm=], [=configure|configured=] with [=this=]'s [=TrustedParserOptions/sanitizer config=] and true.
+1. Let |config| be the result of [=map/clone|cloning=] [=this=]'s [=TrustedParserOptions/sanitizer config=].
+1. Let |sanitizer| be a new {{Sanitizer}} in [=this=]'s [=relevant realm=], [=configure|configured=] with |config| and true.
 1. Return |sanitizer|.
 
 </div>
@@ -1219,8 +1222,6 @@ but those scripts are not automatically executed.
 
 </div>
 
-
-
 # Algorithms # {#algorithms}
 
 ## Create a Trusted Type Policy ## {#create-trusted-type-policy-algorithm}
@@ -1321,7 +1322,9 @@ a {{TrustedParserOptions}}, {{ParseHTMLUnsafeOptions}} or {{SetHTMLUnsafeOptions
     1. Let |sanitizerConfig| be |options|'s [=TrustedParserOptions/sanitizer config=] if |options| is an instance of {{TrustedParserOptions}}; otherwise the result of [=get a sanitizer config from dictionary|getting a sanitizer configuration=] from |options|.
     1. Let |trustedOptions| be a new {{TrustedParserOptions}} in |global|'s [=relevant realm=] whose [=TrustedParserOptions/sanitizer config=] is |sanitizerConfig| and whose [=TrustedParserOptions/runScripts=] is |runScripts|.
     1. Return (stringified |input|, |trustedOptions|).
-1. If |compliantOptions| is an instance of {{TrustedParserOptions}}, return (stringified |input|, |compliantOptions|).
+1. If |options| is an instance of {{TrustedParserOptions}}, return (stringified |input|, |compliantOptions|).
+1. If |compliantOptions| is an instance of {{TrustedParserOptions}} and |compliantOptions|'s [=TrustedParserOptions/sanitizer config=] is not null:
+    1. Return (stringified |input|, |compliantOptions|).
 1. Let |compliantHTML| be the result of calling [=get trusted type compliant string=], passing {{TrustedHTML}}, |global|, |input|, |sink|, and `"script"`.
 1. If the algorithm threw an error, rethrow the error.
 1. Return (|compliantHTML|, |compliantOptions|).
@@ -1416,8 +1419,13 @@ To <dfn>get a sanitizer config from dictionary</dfn> given a dictionary |diction
     1. Set |config| to |sanitizerInput|.
 1. Otherwise:
     1. Return null.
-1. Let |sanitizer| be a new {{Sanitizer}}, [=configure|configured=] with |config| and true.
-1. Return |sanitizer|'s [=Sanitizer/configuration=].
+1. Set |config| to a [=map/clone=] of |config|.
+1. [=canonicalize the configuration|Canonicalize the configuration=] |config| with true.
+1. If |config| is not [=SanitizerConfig/valid=], then throw a {{TypeError}}.
+
+    Note: This creates a fresh copy of each list, leaving the original |config| immutable.
+
+1. Return |config|.
 
 ## Process value with a default policy ## {#process-value-with-a-default-policy-algorithm}
 
