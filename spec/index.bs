@@ -1317,7 +1317,7 @@ a {{TrustedParserOptions}}, {{ParseHTMLUnsafeOptions}} or {{SetHTMLUnsafeOptions
 1. Let |compliantOptions| be the result of calling [=get trusted type compliant parser options=], passing |global|, |options|, false, and |sink|.
 1. If the algorithm threw an error, rethrow the error.
 1. If |input| is an instance of {{TrustedHTML}}:
-    1. Let |runScripts| be true if |compliantOptions| is an instance of {{TrustedParserOptions}} and |compliantOptions|'s [=TrustedParserOptions/runScripts=] is true; otherwise |compliantOptions| |compliantOptions|["runScripts"] [=with default=] false.
+    1. Let |runScripts| be |compliantOptions|'s [=TrustedParserOptions/runScripts=] if |compliantOptions| is an instance of {{TrustedParserOptions}}; otherwise |compliantOptions|["runScripts"], [=with default=] false.
     1. Let |sanitizerConfig| be |options|'s [=TrustedParserOptions/sanitizer config=] if |options| is an instance of {{TrustedParserOptions}}; otherwise the result of [=get a sanitizer config from dictionary|getting a sanitizer configuration=] from |options|.
     1. Let |trustedOptions| be a new {{TrustedParserOptions}} in |global|'s [=relevant realm=] whose [=TrustedParserOptions/sanitizer config=] is |sanitizerConfig| and whose [=TrustedParserOptions/runScripts=] is |runScripts|.
     1. Return (stringified |input|, |trustedOptions|).
