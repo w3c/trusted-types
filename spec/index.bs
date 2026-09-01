@@ -234,6 +234,7 @@ spec: HTML; urlPrefix: https://html.spec.whatwg.org/
     type: dfn; text: set the inner text steps; url: set-the-inner-text-steps
     type: dfn; text: src; url: attr-script-src
     type: dfn; text: event handler content attribute; url: event-handler-content-attributes
+    type: dfn; text: built-in safe default configuration; url: built-in-safe-default-configuration
     type: dfn; text: configuration; for: Sanitizer; url: configuration
     type: dfn; text: canonicalize the configuration; url: canonicalize-the-configuration
     type:interface; text:Sanitizer
@@ -1409,8 +1410,11 @@ When streaming or in contexts where the HTML string cannot be validated up front
 
 To <dfn>get a sanitizer config from dictionary</dfn> given a dictionary |dictionary|:
 1. Let |sanitizerInput| be |dictionary|["sanitizer"], [=with default|defaulting to=] null.
+1. If |sanitizerInput| is a {{SanitizerPresets}}:
+  1. [=Assert=]: |sanitizerInput| is `"default"`.
+  1. Return the [=built-in safe default configuration=].
 1. If |sanitizerInput| is a {{Sanitizer}}, return a [=map/clone=] of |sanitizerInput|'s [=Sanitizer/configuration=].
-1. If |sanitizerInput| is a {{SanitizerPresets}} or a {{SanitizerConfig}}:
+1. If |sanitizerInput| is a {{SanitizerConfig}}:
     1. Let |sanitizer| be a new {{Sanitizer}}, [=configure|configured=] with |sanitizerInput| and true.
     1. Return a [=map/clone=] of |sanitizer|'s [=Sanitizer/configuration=].
 1. Return null.
