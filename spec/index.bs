@@ -1322,6 +1322,9 @@ a {{TrustedParserOptions}}, {{ParseHTMLUnsafeOptions}} or {{SetHTMLUnsafeOptions
     1. Let |sanitizerConfig| be |options|'s [=TrustedParserOptions/sanitizer config=] if |options| is an instance of {{TrustedParserOptions}}; otherwise the result of [=get a sanitizer config copy from dictionary|getting a sanitizer configuration=] from |options|.
     1. Let |trustedOptions| be a new {{TrustedParserOptions}} in |global|'s [=relevant realm=] whose [=TrustedParserOptions/sanitizer config=] is |sanitizerConfig| and whose [=TrustedParserOptions/runScripts=] is |runScripts|.
     1. Return (stringified |input|, |trustedOptions|).
+
+    Note: this means that when given {{TrustedHTML}} by the caller, the policy's {{TrustedTypePolicyOptions/createParserOptions}} callback can only be used to disable script execution.
+
 1. If |options| is an instance of {{TrustedParserOptions}}, return (stringified |input|, |compliantOptions|).
 1. If |compliantOptions| is an instance of {{TrustedParserOptions}} and |compliantOptions|'s [=TrustedParserOptions/sanitizer config=] is not null:
     1. Return (stringified |input|, |compliantOptions|).
@@ -1401,6 +1404,10 @@ a boolean |throwIfMissing|, and a string |sink|, run these steps:
 
     1. Throw a {{TypeError}}.
 1. Let |runScripts| be true if |policyValue|["runScripts"] is true and |runScriptsInput| is true; otherwise false.
+
+  Note: The {{TrustedTypePolicyOptions/createParserOptions}} method can only disable script execution.
+  It cannot enable script execution when the caller did not request scripts to be executed in the first place.
+
 1. Return a new {{TrustedParserOptions}} in |global|'s [=relevant realm=]
     whose [=TrustedParserOptions/sanitizer config=] is set to the result of
     [=get a sanitizer config copy from dictionary|getting a sanitizer configuration=] from
