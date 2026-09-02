@@ -236,7 +236,6 @@ spec: HTML; urlPrefix: https://html.spec.whatwg.org/
     type: dfn; text: event handler content attribute; url: event-handler-content-attributes
     type: dfn; text: built-in safe default configuration; url: built-in-safe-default-configuration
     type: dfn; text: configuration; for: Sanitizer; url: configuration
-    type: dfn; text: configure; for: Sanitizer; url: configure-a-sanitizer
     type: dfn; text: configure a sanitizer; url: configure-a-sanitizer
     type: dfn; text: canonicalize the configuration; url: canonicalize-the-configuration
     type: dfn; text: valid; for: SanitizerConfig; url: dom-sanitizerconfig-valid
@@ -1315,7 +1314,7 @@ a string or dictionary |value|, a list |arguments|, and a boolean |throwIfMissin
 ## Get Trusted Type compliant input ## {#get-trusted-type-compliant-input-algorithm}
 
 To <dfn export>get trusted type compliant input</dfn> given a [=realm/global object=] |global|, a string or {{TrustedHTML}} |input|,
-a {{TrustedParserOptions}}, {{ParseHTMLUnsafeOptions}} or {{SetHTMLUnsafeOptions}} |options|, and a string |sink|, and an optional boolean |isXMLDocument| (default false):
+a {{TrustedParserOptions}}, {{ParseHTMLUnsafeOptions}} or {{SetHTMLUnsafeOptions}} |options|, a string |sink|, and an optional `"html"` or `"xml"` |documentType| (default `"html"`):
 
 1. Let |compliantOptions| be the result of calling [=get trusted type compliant parser options=], passing |global|, |options|, false, and |sink|.
 1. If the algorithm threw an error, rethrow the error.
@@ -1326,7 +1325,7 @@ a {{TrustedParserOptions}}, {{ParseHTMLUnsafeOptions}} or {{SetHTMLUnsafeOptions
     1. Return (stringified |input|, |trustedOptions|).
 1. If |options| is an instance of {{TrustedParserOptions}}, return (stringified |input|, |compliantOptions|).
 1. If |compliantOptions| is an instance of {{TrustedParserOptions}} and |compliantOptions|'s [=TrustedParserOptions/sanitizer config=] is not null:
-    1. If |isXMLDocument| is true:
+    1. If |documentType| is `"xml"`:
         1. Let |disposition| be the result of executing [=should sink type mismatch violation be blocked by content security policy?=] algorithm,
             passing |global|, |sink|, `"script"`, and stringified |input| as |source|.
         1. If |disposition| is "Blocked", throw a {{TypeError}}.
