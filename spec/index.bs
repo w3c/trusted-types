@@ -1523,7 +1523,7 @@ Issue: The [=event handler content attribute=] concept used below is ambiguous. 
 # Integrations # {#integrations}
 
 <pre class="idl">
-typedef (TrustedHTML or TrustedScript or TrustedScriptURL or TrustedParserOptions) TrustedType;
+typedef (TrustedHTML or TrustedScript or TrustedScriptURL) TrustedType;
 </pre>
 
 ## Integration with HTML ## {#integration-with-html}
