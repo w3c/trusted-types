@@ -1068,7 +1068,7 @@ dictionary TrustedTypePolicyOptions {
 callback CreateHTMLCallback = DOMString? (DOMString input, any... arguments);
 callback CreateScriptCallback = DOMString? (DOMString input, any... arguments);
 callback CreateScriptURLCallback = USVString? (DOMString input, any... arguments);
-callback CreateParserOptionsCallback = SetHTMLUnsafeOptions? (optional SetHTMLUnsafeOptions options, any... arguments);
+callback CreateParserOptionsCallback = SetHTMLUnsafeOptions? (SetHTMLUnsafeOptions options, any... arguments);
 </pre>
 
 ### <dfn data-lt="default-policy-explanation">Default policy</dfn> ### {#default-policy-hdr}
@@ -1260,7 +1260,7 @@ a string or dictionary |value| and a list |arguments|, perform the following ste
     1.  If |policyValue| is not a [=dictionary=], throw a {{TypeError}}.
     1.  Let |sanitizerConfig| be the result of
         [=get a sanitizer config copy from dictionary|getting a sanitizer configuration=]
-        from |policyValue|.
+        from |policy|'s [=relevant realm=] and |policyValue|.
     1.  Let |runScripts| be |policyValue|["runScripts"] [=with default=] false.
     1.  Return a new instance of {{TrustedParserOptions}} in |policy|'s [=relevant realm=] with its
         [=TrustedParserOptions/sanitizer config=] set to |sanitizerConfig|, and its
@@ -1320,16 +1320,13 @@ a {{TrustedParserOptions}}, {{ParseHTMLUnsafeOptions}} or {{SetHTMLUnsafeOptions
 1. If the algorithm threw an error, rethrow the error.
 1. If |input| is an instance of {{TrustedHTML}}:
     1. Let |runScripts| be |compliantOptions|'s [=TrustedParserOptions/runScripts=] if |compliantOptions| is an instance of {{TrustedParserOptions}}; otherwise |compliantOptions|["runScripts"], [=with default=] false.
-    1. Let |sanitizerConfig| be |options|'s [=TrustedParserOptions/sanitizer config=] if |options| is an instance of {{TrustedParserOptions}}; otherwise the result of [=get a sanitizer config copy from dictionary|getting a sanitizer configuration=] from |options|.
+    1. Let |sanitizerConfig| be |options|'s [=TrustedParserOptions/sanitizer config=] if |options| is an instance of {{TrustedParserOptions}}; otherwise the result of [=get a sanitizer config copy from dictionary|getting a sanitizer configuration=] from |global|'s [=relevant realm=] and |options|.
     1. Let |trustedOptions| be a new {{TrustedParserOptions}} in |global|'s [=relevant realm=] whose [=TrustedParserOptions/sanitizer config=] is |sanitizerConfig| and whose [=TrustedParserOptions/runScripts=] is |runScripts|.
     1. Return (stringified |input|, |trustedOptions|).
-1. If |options| is an instance of {{TrustedParserOptions}}, return (stringified |input|, |compliantOptions|).
-1. If |compliantOptions| is an instance of {{TrustedParserOptions}} and |compliantOptions|'s [=TrustedParserOptions/sanitizer config=] is not null:
-    1. If |documentType| is `"xml"`:
-        1. Let |disposition| be the result of executing [=should sink type mismatch violation be blocked by content security policy?=] algorithm,
-            passing |global|, |sink|, `"script"`, and stringified |input| as |source|.
-        1. If |disposition| is "Blocked", throw a {{TypeError}}.
-    1. Return (stringified |input|, |compliantOptions|).
+1. If |documentType| is `"html"`:
+    1. If |options| is an instance of {{TrustedParserOptions}}, return (stringified |input|, |compliantOptions|).
+    1. If |compliantOptions| is an instance of {{TrustedParserOptions}} and |compliantOptions|'s [=TrustedParserOptions/sanitizer config=] is not null:
+        1. Return (stringified |input|, |compliantOptions|).
 1. Let |compliantHTML| be the result of calling [=get trusted type compliant string=], passing {{TrustedHTML}}, |global|, |input|, |sink|, and `"script"`.
 1. If the algorithm threw an error, rethrow the error.
 1. Return (|compliantHTML|, |compliantOptions|).
@@ -1391,7 +1388,7 @@ a boolean |throwIfMissing|, and a string |sink|, run these steps:
     1. Return |input|.
 1. Let |runScriptsInput| be |input|["runScripts"], [=with default=] false.
 1. Let |argument| be the [=ordered map=] «[ "runScripts" → |runScriptsInput| ]».
-1. Let |sanitizerInputConfig| be the results of [=get a sanitizer config copy from dictionary|getting a sanitizer config=] from |input|.
+1. Let |sanitizerInputConfig| be the results of [=get a sanitizer config copy from dictionary|getting a sanitizer config=] from |global|'s [=relevant realm=] and |input|.
 1. If |sanitizerInputConfig| is not null:
     1. Let |sanitizerInput| be a new {{Sanitizer}} in |global|'s [=relevant realm=].
     1. [=configure a sanitizer|Configure=] |sanitizerInput| given |sanitizerInputConfig| and true.
@@ -1414,21 +1411,23 @@ a boolean |throwIfMissing|, and a string |sink|, run these steps:
 1. Return a new {{TrustedParserOptions}} in |global|'s [=relevant realm=]
     whose [=TrustedParserOptions/sanitizer config=] is set to the result of
     [=get a sanitizer config copy from dictionary|getting a sanitizer configuration=] from
-    |policyValue|,
+    |global|'s [=relevant realm=] and |policyValue|,
     and whose [=TrustedParserOptions/runScripts=] is set to |runScripts|.
 
-To <dfn>get a sanitizer config copy from dictionary</dfn> given a dictionary |dictionary|:
+To <dfn>get a sanitizer config copy from dictionary</dfn> given a [=realm=] |realm| and a dictionary |dictionary|:
 1. Let |sanitizerInput| be |dictionary|["sanitizer"], [=with default|defaulting to=] null.
+1. If |sanitizerInput| is null, return null.
+1. Let |configuration| be null.
 1. If |sanitizerInput| is a {{SanitizerPresets}}:
     1. [=Assert=]: |sanitizerInput| is `"default"`.
-    1. Return the [=built-in safe default configuration=].
-1. If |sanitizerInput| is a {{Sanitizer}}:
-    1. Return |sanitizerInput|'s [=Sanitizer/configuration=].
-1. If |sanitizerInput| is a {{SanitizerConfig}}:
-    1. Let |sanitizer| be a new {{Sanitizer}}.
-    1. [=configure a sanitizer|Configure=] |sanitizer| given |sanitizerInput| and true.
-    1. Return |sanitizer|'s [=Sanitizer/configuration=].
-1. Return null.
+    1. Set |configuration| to the [=built-in safe default configuration=].
+1. Otherwise, if |sanitizerInput| is a {{Sanitizer}}:
+    1. Set |configuration| to |sanitizerInput|'s [=Sanitizer/configuration=].
+1. Otherwise, if |sanitizerInput| is a {{SanitizerConfig}}:
+    1. Set |configuration| to |sanitizerInput|.
+1. Let |sanitizer| be a new {{Sanitizer}} in |realm|.
+1. [=configure a sanitizer|Configure=] |sanitizer| given |configuration| and true.
+1. Return |sanitizer|'s [=Sanitizer/configuration=].
 
 ## Process value with a default policy ## {#process-value-with-a-default-policy-algorithm}
 
@@ -1953,6 +1952,8 @@ depends on a global state. We advise against this. The policies should
 be self-contained as much as possible. All objects that may alter security decisions
 a policy makes effectively *become* the policy, and should be guarded & reviewed
 together.
+
+A {{TrustedTypePolicyOptions/createParserOptions}} callback that returns a configuration that does not remove unsafe markup (e.g., scripts or event handlers) provides no protection against DOM XSS.
 
 Issue: Refer to the external document on secure policy design.
 
