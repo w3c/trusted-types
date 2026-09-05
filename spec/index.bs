@@ -733,8 +733,6 @@ without requiring {{TrustedTypePolicyOptions/createHTML}} or a {{TrustedHTML}} i
 (such as {{HTMLIFrameElement/srcdoc}} or `document.write()`), raw strings must still be converted via {{TrustedTypePolicyOptions/createHTML}}.
 
 Note: When used in legacy HTML injection sinks such as {{Element/innerHTML}}, the `sanitizer` option is only supported for HTML documents.
-If `createParserOptions` returns a dictionary with a non-null `sanitizer` value for a legacy sink in an XML document, the sink throws a {{TypeError}}
-(unless Content Security Policy is configured in report-only mode, in which case the violation is reported without throwing).
 When protecting XML documents using legacy sinks, authors are advised to use `createHTML` instead.
 
 ### <dfn interface>TrustedTypePolicyFactory</dfn> ### {#trusted-type-policy-factory}
@@ -1425,6 +1423,7 @@ To <dfn>get a sanitizer config copy from dictionary</dfn> given a [=realm=] |rea
     1. Set |configuration| to |sanitizerInput|'s [=Sanitizer/configuration=].
 1. Otherwise, if |sanitizerInput| is a {{SanitizerConfig}}:
     1. Set |configuration| to |sanitizerInput|.
+1. [=Assert=]: |configuration| is not null.
 1. Let |sanitizer| be a new {{Sanitizer}} in |realm|.
 1. [=configure a sanitizer|Configure=] |sanitizer| given |configuration| and true.
 1. Return |sanitizer|'s [=Sanitizer/configuration=].
