@@ -732,9 +732,6 @@ Note: When enforcing Trusted Types on HTML injection sinks that parse markup (su
 without requiring {{TrustedTypePolicyOptions/createHTML}} or a {{TrustedHTML}} instance. For string-only injection sinks that do not support parser options
 (such as {{HTMLIFrameElement/srcdoc}} or `document.write()`), raw strings must still be converted via {{TrustedTypePolicyOptions/createHTML}}.
 
-Note: When used in legacy HTML injection sinks such as {{Element/innerHTML}}, the `sanitizer` option is only supported for HTML documents.
-When protecting XML documents using legacy sinks, authors are advised to use `createHTML` instead.
-
 ### <dfn interface>TrustedTypePolicyFactory</dfn> ### {#trusted-type-policy-factory}
 
 TrustedTypePolicyFactory creates
@@ -1034,7 +1031,7 @@ Each TrustedTypePolicy object has an associated {{TrustedTypePolicyOptions}} <df
 
 : <dfn>createParserOptions(options, ...arguments)</dfn>
 ::  Returns the
-    result of executing the [=Create a Trusted Type=] algorithm, with the
+    result of executing the [=create a trusted type=] algorithm, with the
     following arguments:
     <dl>
       <dt>policy</dt>
@@ -1315,7 +1312,6 @@ To <dfn export>get trusted type compliant input</dfn> given a [=realm/global obj
 a {{TrustedParserOptions}}, {{ParseHTMLUnsafeOptions}} or {{SetHTMLUnsafeOptions}} |options|, a string |sink|, and an optional `"html"` or `"xml"` |documentType| (default `"html"`):
 
 1. Let |compliantOptions| be the result of calling [=get trusted type compliant parser options=], passing |global|, |options|, false, and |sink|.
-1. If the algorithm threw an error, rethrow the error.
 1. If |input| is an instance of {{TrustedHTML}}:
     1. Let |runScripts| be |compliantOptions|'s [=TrustedParserOptions/runScripts=] if |compliantOptions| is an instance of {{TrustedParserOptions}}; otherwise |compliantOptions|["runScripts"], [=with default=] false.
     1. Let |sanitizerConfig| be |options|'s [=TrustedParserOptions/sanitizer config=] if |options| is an instance of {{TrustedParserOptions}}; otherwise the result of [=get a sanitizer config copy from dictionary|getting a sanitizer configuration=] from |global|'s [=relevant realm=] and |options|.
