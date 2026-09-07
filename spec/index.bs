@@ -1299,7 +1299,7 @@ a {{TrustedHTMLParserOptions}}, {{ParseHTMLUnsafeOptions}} or {{SetHTMLUnsafeOpt
 1. Let |compliantOptions| be the result of calling [=get trusted type compliant parser options=], passing |global|, |options|, false, and |sink|.
 1. If |input| is an instance of {{TrustedHTML}}:
     1. Let |runScripts| be |compliantOptions|'s [=TrustedHTMLParserOptions/runScripts=] if |compliantOptions| is an instance of {{TrustedHTMLParserOptions}}; otherwise |compliantOptions|["runScripts"], [=with default=] false.
-    1. Let |sanitizerConfig| be |options|'s [=TrustedHTMLParserOptions/sanitizer configuration=] if |options| is an instance of {{TrustedHTMLParserOptions}}; otherwise the result of [=get a sanitizer config copy from dictionary|getting a sanitizer configuration=] from |global|'s [=relevant realm=] and |options|.
+    1. Let |sanitizerConfig| be |compliantOptions|'s [=TrustedHTMLParserOptions/sanitizer configuration=] if |compliantOptions| is an instance of {{TrustedHTMLParserOptions}}; otherwise the result of [=get a sanitizer config copy from dictionary|getting a sanitizer configuration=] from |global|'s [=relevant realm=] and |compliantOptions|.
     1. Let |trustedOptions| be a new {{TrustedHTMLParserOptions}} in |global|'s [=relevant realm=] whose [=TrustedHTMLParserOptions/sanitizer configuration=] is |sanitizerConfig| and whose [=TrustedHTMLParserOptions/runScripts=] is |runScripts|.
     1. Return (stringified |input|, |trustedOptions|).
 1. If |documentType| is `"html"`:
