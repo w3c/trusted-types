@@ -1362,7 +1362,7 @@ When streaming or in contexts where the HTML string cannot be validated up front
 
 To <dfn export>get trusted type compliant parser options</dfn> given a [=realm/global object=] |global|,
 |input|, which is either a {{TrustedParserOptions}}, a {{SetHTMLUnsafeOptions}}, or a {{ParseHTMLUnsafeOptions}},
-a boolean |throwIfMissing|, and a string |sink|, run these steps:
+a boolean |throwIfMissing|, and a string |sink|:
 
 1.  If |input| is an instance of {{TrustedParserOptions}}, return |input|.
 1.  Let |requireTrustedTypes| be the result of executing [=Does sink type require trusted types?=] algorithm,
