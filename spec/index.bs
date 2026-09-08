@@ -1204,108 +1204,11 @@ but those scripts are not automatically executed.
 
 </div>
 
-# Algorithms # {#algorithms}
+### Summary of input enforcement ### {#summary-of-input-enforcement}
 
-## Create a Trusted Type Policy ## {#create-trusted-type-policy-algorithm}
+*This section is not normative.*
 
-To <dfn>create a trusted type policy</dfn>, given a {{TrustedTypePolicyFactory}} (|factory|),
-a string (|policyName|), {{TrustedTypePolicyOptions}} dictionary (|options|), and a
-[=realm/global object=] (|global|) run these steps:
-
-1.  Let |allowedByCSP| be the result of executing [=should Trusted Type policy
-    creation be blocked by content security policy?=] algorithm with |global|,
-    |policyName| and |factory|'s [=created policy names=] value.
-1.  If |allowedByCSP| is `"Blocked"`, throw a TypeError and abort further steps.
-1.  If |policyName| is `default` and the |factory|'s [=TrustedTypePolicyFactory/default policy=]
-    value is not null, throw a TypeError and abort further steps.
-1.  Let |policy| be a new {{TrustedTypePolicy}} object.
-1.  Set |policy|'s `name` property value to |policyName|.
-1.  Set |policy|'s [=TrustedTypePolicy/options=] value to «[
-      "createHTML" -> |options|["{{TrustedTypePolicyOptions/createHTML|createHTML}}"],
-      "createScript" -> |options|["{{TrustedTypePolicyOptions/createScript|createScript}}"],
-      "createScriptURL" -> |options|["{{TrustedTypePolicyOptions/createScriptURL|createScriptURL}}"],
-      "createParserOptions" -> |options|["{{TrustedTypePolicyOptions/createParserOptions|createParserOptions}}"]
-    ]».
-1.  If the |policyName| is `default`, set the |factory|'s [=TrustedTypePolicyFactory/default policy=] value to |policy|.
-1.  [=set/append|Append=] |policyName| to |factory|'s [=created policy names=].
-1.  Return |policy|.
-
-## Create a Trusted Type ## {#create-a-trusted-type-algorithm}
-
-To <dfn>create a trusted type</dfn> given a {{TrustedTypePolicy}} |policy|, a type name |trustedTypeName|,
-a string or dictionary |value| and a list |arguments|, perform the following steps:
-
-1.  Let |policyValue| be the result of executing [=get trusted type policy value=] with the same arguments as this algorithm and additionally true as |throwIfMissing|.
-1.  If the algorithm threw an error, rethrow the error and abort the following steps.
-1.  If |trustedTypeName| is `"TrustedHTMLParserOptions"`:
-    1.  If |policyValue| is not a [=dictionary=], throw a {{TypeError}}.
-    1.  Let |sanitizerConfig| be the result of
-        [=get a sanitizer config copy from dictionary|getting a sanitizer configuration=]
-        from |policy|'s [=relevant realm=] and |policyValue|.
-    1.  Let |runScripts| be |policyValue|["runScripts"] [=with default=] false.
-    1.  Return a new instance of {{TrustedHTMLParserOptions}} in |policy|'s [=relevant realm=] with its
-        [=TrustedHTMLParserOptions/sanitizer configuration=] set to |sanitizerConfig|, and its
-        [=TrustedHTMLParserOptions/runScripts=] set to |runScripts|.
-1.  Let |dataString| be the result of stringifying |policyValue|.
-1.  If |policyValue| is null or undefined, set |dataString| to the empty string.
-1.  Return a new instance of an interface with a type
-    name |trustedTypeName|, with its associated data value set to |dataString|.
-
-## Get Trusted Type policy value ## {#get-trusted-type-policy-value-algorithm}
-
-To <dfn>get trusted type policy value</dfn> given a {{TrustedTypePolicy}} |policy|, a type name |trustedTypeName|,
-a string or dictionary |value|, a list |arguments|, and a boolean |throwIfMissing|, perform the following steps:
-
-1.  Let |functionName| be a function name for the given |trustedTypeName|,
-    based on the following table:
-
-    <table>
-      <tr>
-        <th>Function name</th>
-        <th>Trusted Type name </th>
-      </tr>
-      <tr>
-        <td>"createHTML"</td>
-        <td>"TrustedHTML"</td>
-      </tr>
-      <tr>
-        <td>"createScript"</td>
-        <td>"TrustedScript"</td>
-      </tr>
-      <tr>
-        <td>"createScriptURL"</td>
-        <td>"TrustedScriptURL"</td>
-      </tr>
-      <tr>
-        <td>"createParserOptions"</td>
-        <td>"TrustedHTMLParserOptions"</td>
-      </tr>
-    </table>
-
-1.  Let |function| be |policy|'s [=options=][|functionName|].
-1.  If |function| is `null`, then:
-    1. If |throwIfMissing| throw a TypeError.
-    1. Else return `null`.
-1.  Let |args| be « |value| ».
-1.  [=set/append|Append=] each item in |arguments| to |args|.
-1.  Let |policyValue| be the result of [=invoke|invoking=] |function| with
-    |args| and `"rethrow"`.
-1.  Return |policyValue|.
-
-## Get Trusted Type compliant input ## {#get-trusted-type-compliant-input-algorithm}
-
-To <dfn export>get trusted type compliant input</dfn> given a [=realm/global object=] |global|, a string or {{TrustedHTML}} |input|,
-a {{TrustedHTMLParserOptions}}, {{ParseHTMLUnsafeOptions}} or {{SetHTMLUnsafeOptions}} |options|, a string |sink|, and an optional `"html"` or `"xml"` |documentType| (default `"html"`):
-
-1. Let |compliantOptions| be the result of calling [=get trusted type compliant parser options=], passing |global|, |options|, false, and |sink|.
-1. If |documentType| is `"html"`:
-    1. If |compliantOptions| is an instance of {{TrustedHTMLParserOptions}}, return (stringified |input|, |compliantOptions|).
-1. Let |compliantHTML| be the result of calling [=get trusted type compliant string=], passing {{TrustedHTML}}, |global|, |input|, |sink|, and `"script"`.
-1. If the algorithm threw an error, rethrow the error.
-1. Return (|compliantHTML|, |compliantOptions|).
-
-<div class="note">
-<p>The following table summarizes the behavior of [=get trusted type compliant input=] for various combinations of arguments and default policy callbacks under enforcing Content Security Policy:</p>
+The following table summarizes the behavior of [=get trusted type compliant input=] for various combinations of arguments and default policy callbacks under enforcing Content Security Policy:
 
 <table class="data">
   <thead>
@@ -1442,7 +1345,108 @@ a {{TrustedHTMLParserOptions}}, {{ParseHTMLUnsafeOptions}} or {{SetHTMLUnsafeOpt
   <li>In report-only mode or when Trusted Types enforcement is not required for the sink, a {{TypeError}} is not thrown on violation; instead, the original stringified |input| and |options| are returned.</li>
   <li>For streaming HTML fragment parsing, [=get trusted type compliant parser options=] is invoked directly with |throwIfMissing| set to true. In that context, if {{TrustedTypePolicyOptions/createParserOptions}} is missing, throws, or returns `null` or `undefined`, a {{TypeError}} is thrown (or rethrown) immediately.</li>
 </ul>
-</div>
+
+# Algorithms # {#algorithms}
+
+## Create a Trusted Type Policy ## {#create-trusted-type-policy-algorithm}
+
+To <dfn>create a trusted type policy</dfn>, given a {{TrustedTypePolicyFactory}} (|factory|),
+a string (|policyName|), {{TrustedTypePolicyOptions}} dictionary (|options|), and a
+[=realm/global object=] (|global|) run these steps:
+
+1.  Let |allowedByCSP| be the result of executing [=should Trusted Type policy
+    creation be blocked by content security policy?=] algorithm with |global|,
+    |policyName| and |factory|'s [=created policy names=] value.
+1.  If |allowedByCSP| is `"Blocked"`, throw a TypeError and abort further steps.
+1.  If |policyName| is `default` and the |factory|'s [=TrustedTypePolicyFactory/default policy=]
+    value is not null, throw a TypeError and abort further steps.
+1.  Let |policy| be a new {{TrustedTypePolicy}} object.
+1.  Set |policy|'s `name` property value to |policyName|.
+1.  Set |policy|'s [=TrustedTypePolicy/options=] value to «[
+      "createHTML" -> |options|["{{TrustedTypePolicyOptions/createHTML|createHTML}}"],
+      "createScript" -> |options|["{{TrustedTypePolicyOptions/createScript|createScript}}"],
+      "createScriptURL" -> |options|["{{TrustedTypePolicyOptions/createScriptURL|createScriptURL}}"],
+      "createParserOptions" -> |options|["{{TrustedTypePolicyOptions/createParserOptions|createParserOptions}}"]
+    ]».
+1.  If the |policyName| is `default`, set the |factory|'s [=TrustedTypePolicyFactory/default policy=] value to |policy|.
+1.  [=set/append|Append=] |policyName| to |factory|'s [=created policy names=].
+1.  Return |policy|.
+
+## Create a Trusted Type ## {#create-a-trusted-type-algorithm}
+
+To <dfn>create a trusted type</dfn> given a {{TrustedTypePolicy}} |policy|, a type name |trustedTypeName|,
+a string or dictionary |value| and a list |arguments|, perform the following steps:
+
+1.  Let |policyValue| be the result of executing [=get trusted type policy value=] with the same arguments as this algorithm and additionally true as |throwIfMissing|.
+1.  If the algorithm threw an error, rethrow the error and abort the following steps.
+1.  If |trustedTypeName| is `"TrustedHTMLParserOptions"`:
+    1.  If |policyValue| is not a [=dictionary=], throw a {{TypeError}}.
+    1.  Let |sanitizerConfig| be the result of
+        [=get a sanitizer config copy from dictionary|getting a sanitizer configuration=]
+        from |policy|'s [=relevant realm=] and |policyValue|.
+    1.  Let |runScripts| be |policyValue|["runScripts"] [=with default=] false.
+    1.  Return a new instance of {{TrustedHTMLParserOptions}} in |policy|'s [=relevant realm=] with its
+        [=TrustedHTMLParserOptions/sanitizer configuration=] set to |sanitizerConfig|, and its
+        [=TrustedHTMLParserOptions/runScripts=] set to |runScripts|.
+1.  Let |dataString| be the result of stringifying |policyValue|.
+1.  If |policyValue| is null or undefined, set |dataString| to the empty string.
+1.  Return a new instance of an interface with a type
+    name |trustedTypeName|, with its associated data value set to |dataString|.
+
+## Get Trusted Type policy value ## {#get-trusted-type-policy-value-algorithm}
+
+To <dfn>get trusted type policy value</dfn> given a {{TrustedTypePolicy}} |policy|, a type name |trustedTypeName|,
+a string or dictionary |value|, a list |arguments|, and a boolean |throwIfMissing|, perform the following steps:
+
+1.  Let |functionName| be a function name for the given |trustedTypeName|,
+    based on the following table:
+
+    <table>
+      <tr>
+        <th>Function name</th>
+        <th>Trusted Type name </th>
+      </tr>
+      <tr>
+        <td>"createHTML"</td>
+        <td>"TrustedHTML"</td>
+      </tr>
+      <tr>
+        <td>"createScript"</td>
+        <td>"TrustedScript"</td>
+      </tr>
+      <tr>
+        <td>"createScriptURL"</td>
+        <td>"TrustedScriptURL"</td>
+      </tr>
+      <tr>
+        <td>"createParserOptions"</td>
+        <td>"TrustedHTMLParserOptions"</td>
+      </tr>
+    </table>
+
+1.  Let |function| be |policy|'s [=options=][|functionName|].
+1.  If |function| is `null`, then:
+    1. If |throwIfMissing| throw a TypeError.
+    1. Else return `null`.
+1.  Let |args| be « |value| ».
+1.  [=set/append|Append=] each item in |arguments| to |args|.
+1.  Let |policyValue| be the result of [=invoke|invoking=] |function| with
+    |args| and `"rethrow"`.
+1.  Return |policyValue|.
+
+## Get Trusted Type compliant input ## {#get-trusted-type-compliant-input-algorithm}
+
+Note: See [[#summary-of-input-enforcement]] for a summary of this algorithm's behavior for various combinations of arguments and default policy callbacks.
+
+To <dfn export>get trusted type compliant input</dfn> given a [=realm/global object=] |global|, a string or {{TrustedHTML}} |input|,
+a {{TrustedHTMLParserOptions}}, {{ParseHTMLUnsafeOptions}} or {{SetHTMLUnsafeOptions}} |options|, a string |sink|, and an optional `"html"` or `"xml"` |documentType| (default `"html"`):
+
+1. Let |compliantOptions| be the result of calling [=get trusted type compliant parser options=], passing |global|, |options|, false, and |sink|.
+1. If |documentType| is `"html"`:
+    1. If |compliantOptions| is an instance of {{TrustedHTMLParserOptions}}, return (stringified |input|, |compliantOptions|).
+1. Let |compliantHTML| be the result of calling [=get trusted type compliant string=], passing {{TrustedHTML}}, |global|, |input|, |sink|, and `"script"`.
+1. If the algorithm threw an error, rethrow the error.
+1. Return (|compliantHTML|, |compliantOptions|).
 
 ## Get Trusted Type compliant string ## {#get-trusted-type-compliant-string-algorithm}
 
