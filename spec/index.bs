@@ -713,9 +713,9 @@ using the built-in sanitizer API.
 </div>
 
 Note: When enforcing Trusted Types on HTML injection sinks that parse markup (such as {{Element/setHTMLUnsafe()}} or {{Element/innerHTML}}),
-{{TrustedTypePolicyOptions/createParserOptions}} returning a non-null sanitizer configuration allows raw strings to be parsed and sanitized directly,
-without requiring {{TrustedTypePolicyOptions/createHTML}} or a {{TrustedHTML}} instance. For string-only injection sinks that do not support parser options
-(such as {{HTMLIFrameElement/srcdoc}} or `document.write()`), raw strings must still be converted via {{TrustedTypePolicyOptions/createHTML}}.
+a {{TrustedHTMLParserOptions}} object (obtained from {{TrustedTypePolicyOptions/createParserOptions}} or provided by a default policy) allows raw strings to be parsed directly,
+without requiring {{TrustedTypePolicyOptions/createHTML}} or a {{TrustedHTML}} instance. Policy authors typically configure a sanitizer in {{TrustedTypePolicyOptions/createParserOptions}} so that untrusted markup is sanitized during parsing. For string-only injection sinks that do not support parser options
+(such as {{HTMLIFrameElement/srcdoc}} or `document.write()`), or for XML documents, raw strings must still be converted via {{TrustedTypePolicyOptions/createHTML}}.
 
 ### <dfn interface>TrustedTypePolicyFactory</dfn> ### {#trusted-type-policy-factory}
 
@@ -1298,9 +1298,7 @@ a {{TrustedHTMLParserOptions}}, {{ParseHTMLUnsafeOptions}} or {{SetHTMLUnsafeOpt
 
 1. Let |compliantOptions| be the result of calling [=get trusted type compliant parser options=], passing |global|, |options|, false, and |sink|.
 1. If |documentType| is `"html"`:
-    1. If |options| is an instance of {{TrustedHTMLParserOptions}}, return (stringified |input|, |compliantOptions|).
-    1. If |compliantOptions| is an instance of {{TrustedHTMLParserOptions}} and |compliantOptions|'s [=TrustedHTMLParserOptions/sanitizer configuration=] is not null:
-        1. Return (stringified |input|, |compliantOptions|).
+    1. If |compliantOptions| is an instance of {{TrustedHTMLParserOptions}}, return (stringified |input|, |compliantOptions|).
 1. Let |compliantHTML| be the result of calling [=get trusted type compliant string=], passing {{TrustedHTML}}, |global|, |input|, |sink|, and `"script"`.
 1. If the algorithm threw an error, rethrow the error.
 1. Return (|compliantHTML|, |compliantOptions|).
@@ -1333,8 +1331,9 @@ To <dfn export>get trusted type compliant string</dfn> a {{TrustedType}} type (|
 
 ## Get Trusted Type compliant parser options ## {#get-trusted-type-compliant-parser-options-algorithm}
 
-Note: |throwIfMissing| is false when called from [=get trusted type compliant input=]. For synchronous fragment injection sinks, a valid sanitizer configuration in the resulting options can satisfy Trusted Types enforcement without requiring {{TrustedTypePolicyOptions/createHTML}} on the input string.
+Note: |throwIfMissing| is false when called from [=get trusted type compliant input=]. For synchronous HTML fragment injection sinks, a {{TrustedHTMLParserOptions}} in the resulting options can satisfy Trusted Types enforcement without requiring {{TrustedTypePolicyOptions/createHTML}} on the input string.
 When streaming or in contexts where the HTML string cannot be validated up front, callers pass true for |throwIfMissing| to ensure a default policy with {{TrustedTypePolicyOptions/createParserOptions}} is required.
+For XML documents, parser options cannot satisfy Trusted Types enforcement; XML fragment sinks always require compliant string input via [=get trusted type compliant string=].
 
 To <dfn export>get trusted type compliant parser options</dfn> given a [=realm/global object=] |global|,
 |input|, which is either a {{TrustedHTMLParserOptions}}, a {{SetHTMLUnsafeOptions}}, or a {{ParseHTMLUnsafeOptions}},
