@@ -1304,7 +1304,8 @@ a {{TrustedHTMLParserOptions}}, {{ParseHTMLUnsafeOptions}} or {{SetHTMLUnsafeOpt
 1. If the algorithm threw an error, rethrow the error.
 1. Return (|compliantHTML|, |compliantOptions|).
 
-<p class="note">The following table summarizes the behavior of [=get trusted type compliant input=] for various combinations of arguments and default policy callbacks under enforcing Content Security Policy:</p>
+<div class="note">
+<p>The following table summarizes the behavior of [=get trusted type compliant input=] for various combinations of arguments and default policy callbacks under enforcing Content Security Policy:</p>
 
 <table class="data">
   <thead>
@@ -1348,7 +1349,7 @@ a {{TrustedHTMLParserOptions}}, {{ParseHTMLUnsafeOptions}} or {{SetHTMLUnsafeOpt
       <td>Dictionary (with optional `sanitizer`)</td>
       <td>No {{TrustedTypePolicyOptions/createParserOptions}} (or no default policy)</td>
       <td>Returns `(stringified |input|, |options|)`.</td>
-      <td>|options|["sanitizer"] (if sink accepts dictionary options; null otherwise)</td>
+      <td>|options|["sanitizer"] (defaulting to null)</td>
       <td><strong>Unvetted pass-through when no parser policy:</strong> When no policy defines {{TrustedTypePolicyOptions/createParserOptions}}, an existing {{TrustedHTML}} instance satisfies Trusted Types directly (bypassing {{TrustedTypePolicyOptions/createHTML}}). Any caller-supplied dictionary options (including `sanitizer` and `runScripts`) pass through unvetted to the sink.</td>
     </tr>
     <tr>
@@ -1379,7 +1380,7 @@ a {{TrustedHTMLParserOptions}}, {{ParseHTMLUnsafeOptions}} or {{SetHTMLUnsafeOpt
       <td rowspan="4">String</td>
       <td>No {{TrustedTypePolicyOptions/createParserOptions}}; {{TrustedTypePolicyOptions/createHTML}} returns {{TrustedHTML}}</td>
       <td>Returns `(stringified |convertedInput|, |options|)`.</td>
-      <td>|options|["sanitizer"] (if sink accepts dictionary options; null otherwise)</td>
+      <td>|options|["sanitizer"] (defaulting to null)</td>
       <td>Provides backwards compatibility: when no policy manages parser options, the sink falls back to vetting or sanitizing the markup string via {{TrustedTypePolicyOptions/createHTML}}. Once converted to {{TrustedHTML}}, scripts and caller-supplied sanitizer options apply if requested.</td>
     </tr>
     <tr>
@@ -1433,7 +1434,6 @@ a {{TrustedHTMLParserOptions}}, {{ParseHTMLUnsafeOptions}} or {{SetHTMLUnsafeOpt
   </tbody>
 </table>
 
-<div class="note">
 <p><strong>TrustedHTML, runScripts, and sanitization:</strong> Sinks enforcing Trusted Types handle options and scripts as follows:</p>
 <ul>
   <li>When |input| is a {{TrustedHTML}} instance, a default policy's {{TrustedTypePolicyOptions/createParserOptions}} still vets any caller-supplied options dictionary, allowing the policy to inspect, configure, or override the sanitizer configuration (as well as control script execution) despite the input already being {{TrustedHTML}}. If {{TrustedTypePolicyOptions/createParserOptions}} throws or returns `null` or `undefined`, the operation is rejected. Only when {{TrustedTypePolicyOptions/createParserOptions}} is absent do the caller's dictionary options pass through unvetted.</li>
