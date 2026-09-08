@@ -1313,6 +1313,7 @@ a {{TrustedHTMLParserOptions}}, {{ParseHTMLUnsafeOptions}} or {{SetHTMLUnsafeOpt
       <th>|input|</th>
       <th>Default policy state / callback</th>
       <th>Result</th>
+      <th>Effective <code>runScripts</code></th>
       <th>Rationale</th>
     </tr>
   </thead>
@@ -1323,33 +1324,53 @@ a {{TrustedHTMLParserOptions}}, {{ParseHTMLUnsafeOptions}} or {{SetHTMLUnsafeOpt
       <td>String or {{TrustedHTML}}</td>
       <td>(Ignored)</td>
       <td>Returns `(stringified |input|, |options|)`.</td>
-      <td>Caller-supplied {{TrustedHTMLParserOptions}} explicitly authorizes the parse operation, satisfying Trusted Types for the sink.</td>
+      <td>|options|'s [=TrustedHTMLParserOptions/runScripts=]</td>
+      <td>Caller-supplied {{TrustedHTMLParserOptions}} explicitly authorizes the parse operation, with script execution dictated by the policy that minted it.</td>
     </tr>
     <tr>
-      <td rowspan="3">`"html"`</td>
-      <td rowspan="3">Dictionary</td>
-      <td rowspan="3">String or {{TrustedHTML}}</td>
-      <td>{{TrustedTypePolicyOptions/createParserOptions}} returns a dictionary</td>
+      <td rowspan="5">`"html"`</td>
+      <td>Dictionary (`runScripts: false` or omitted)</td>
+      <td rowspan="5">String or {{TrustedHTML}}</td>
+      <td>{{TrustedTypePolicyOptions/createParserOptions}} returns `{ runScripts: true }`</td>
       <td>Returns `(stringified |input|, |compliantOptions|)`.</td>
-      <td>The default policy creates a {{TrustedHTMLParserOptions}} to configure the parser (such as setting a sanitizer or disable script execution), authorizing the sink.</td>
+      <td>`false`</td>
+      <td><strong>Default policy cannot enable scripts:</strong> Even if the default policy returns `runScripts: true`, script execution remains `false` because the caller did not request it (`runScriptsInput` is `false`).</td>
     </tr>
     <tr>
+      <td>Dictionary (`runScripts: true`)</td>
+      <td>{{TrustedTypePolicyOptions/createParserOptions}} returns `{ runScripts: false }`</td>
+      <td>Returns `(stringified |input|, |compliantOptions|)`.</td>
+      <td>`false`</td>
+      <td><strong>Default policy disables scripts:</strong> The default policy overrides the caller's request, disallowing script execution.</td>
+    </tr>
+    <tr>
+      <td>Dictionary (`runScripts: true`)</td>
+      <td>{{TrustedTypePolicyOptions/createParserOptions}} returns `{ runScripts: true }`</td>
+      <td>Returns `(stringified |input|, |compliantOptions|)`.</td>
+      <td>`true`</td>
+      <td>Scripts are permitted to execute because both the caller requested it and the default policy allowed it.</td>
+    </tr>
+    <tr>
+      <td rowspan="2">Dictionary</td>
       <td>{{TrustedTypePolicyOptions/createParserOptions}} throws an exception</td>
       <td>Rethrows the exception.</td>
+      <td>N/A</td>
       <td>Exceptions in policy callbacks propagate immediately to the caller.</td>
     </tr>
     <tr>
       <td>{{TrustedTypePolicyOptions/createParserOptions}} returns `null` or `undefined`</td>
       <td>Throws a {{TypeError}}.</td>
+      <td>N/A</td>
       <td>Returning null or undefined from a policy callback rejects the value, triggering a CSP violation error.</td>
     </tr>
-    <tr>
+    <tr class="highlight">
       <td>`"html"`</td>
       <td>Dictionary</td>
       <td>{{TrustedHTML}}</td>
       <td>No {{TrustedTypePolicyOptions/createParserOptions}} (or no default policy)</td>
       <td>Returns `(stringified |input|, |options|)`.</td>
-      <td>When options are not vetted by a policy, the sink checks the markup; an existing {{TrustedHTML}} instance satisfies this check.</td>
+      <td>|options|["runScripts"] (allows `true`)</td>
+      <td><strong>TrustedHTML + runScripts:</strong> Because |input| is an attested {{TrustedHTML}} instance, scripts are permitted to execute if requested by the caller (e.g. in {{Range/createContextualFragment()}} or {{Element/setHTMLUnsafe()}} with `runScripts: true`).</td>
     </tr>
     <tr>
       <td rowspan="4">`"html"`</td>
@@ -1357,21 +1378,25 @@ a {{TrustedHTMLParserOptions}}, {{ParseHTMLUnsafeOptions}} or {{SetHTMLUnsafeOpt
       <td rowspan="4">String</td>
       <td>No {{TrustedTypePolicyOptions/createParserOptions}}; {{TrustedTypePolicyOptions/createHTML}} returns {{TrustedHTML}}</td>
       <td>Returns `(stringified |convertedInput|, |options|)`.</td>
-      <td>Provides backwards compatibility: when no policy manages parser options, the sink falls back to vetting or sanitizing the markup string via {{TrustedTypePolicyOptions/createHTML}}.</td>
+      <td>|options|["runScripts"]</td>
+      <td>Provides backwards compatibility: when no policy manages parser options, the sink falls back to vetting or sanitizing the markup string via {{TrustedTypePolicyOptions/createHTML}}. Once converted to {{TrustedHTML}}, scripts execute if requested.</td>
     </tr>
     <tr>
       <td>No {{TrustedTypePolicyOptions/createParserOptions}}; {{TrustedTypePolicyOptions/createHTML}} throws an exception</td>
       <td>Rethrows the exception.</td>
+      <td>N/A</td>
       <td>Exceptions in policy callbacks propagate immediately to the caller.</td>
     </tr>
     <tr>
       <td>No {{TrustedTypePolicyOptions/createParserOptions}}; {{TrustedTypePolicyOptions/createHTML}} returns `null` or `undefined`</td>
       <td>Throws a {{TypeError}}.</td>
+      <td>N/A</td>
       <td>Rejection by {{TrustedTypePolicyOptions/createHTML}} triggers a CSP violation error.</td>
     </tr>
     <tr>
       <td>No default policy (or neither callback defined)</td>
       <td>Throws a {{TypeError}}.</td>
+      <td>N/A</td>
       <td>Under enforcing CSP, a raw string cannot be parsed without a policy authorizing either the parser options or the markup string.</td>
     </tr>
     <tr>
@@ -1380,7 +1405,8 @@ a {{TrustedHTMLParserOptions}}, {{ParseHTMLUnsafeOptions}} or {{SetHTMLUnsafeOpt
       <td>{{TrustedHTML}}</td>
       <td>(Any)</td>
       <td>Returns `(stringified |input|, |options|)`.</td>
-      <td>XML sinks require trusted markup; a {{TrustedHTML}} instance satisfies this requirement directly.</td>
+      <td>`false`</td>
+      <td>XML sinks require trusted markup; a {{TrustedHTML}} instance satisfies this requirement directly. XML fragment parsing never executes scripts.</td>
     </tr>
     <tr>
       <td rowspan="3">`"xml"`</td>
@@ -1388,23 +1414,33 @@ a {{TrustedHTMLParserOptions}}, {{ParseHTMLUnsafeOptions}} or {{SetHTMLUnsafeOpt
       <td rowspan="3">String</td>
       <td>{{TrustedTypePolicyOptions/createHTML}} returns {{TrustedHTML}}</td>
       <td>Returns `(stringified |convertedInput|, |options|)`.</td>
-      <td>XML fragment sinks do not support parser options bypass or sanitization; markup strings must always be converted via {{TrustedTypePolicyOptions/createHTML}}.</td>
+      <td>`false`</td>
+      <td>XML fragment sinks do not support parser options bypass or sanitization; markup strings must always be converted via {{TrustedTypePolicyOptions/createHTML}}. XML fragment parsing never executes scripts.</td>
     </tr>
     <tr>
       <td>{{TrustedTypePolicyOptions/createHTML}} throws an exception</td>
       <td>Rethrows the exception.</td>
+      <td>N/A</td>
       <td>Exceptions in policy callbacks propagate immediately to the caller.</td>
     </tr>
     <tr>
       <td>No {{TrustedTypePolicyOptions/createHTML}} or no default policy (or returns `null`/`undefined`)</td>
       <td>Throws a {{TypeError}}.</td>
+      <td>N/A</td>
       <td>Untrusted strings cannot be injected into XML sinks without {{TrustedTypePolicyOptions/createHTML}}, regardless of parser options.</td>
     </tr>
   </tbody>
 </table>
 
-<p class="note">In report-only mode or when Trusted Types enforcement is not required for the sink, a {{TypeError}} is not thrown on violation; instead, the original stringified |input| and |options| are returned.<br>
-For streaming HTML fragment parsing, [=get trusted type compliant parser options=] is invoked directly with |throwIfMissing| set to true. In that context, if {{TrustedTypePolicyOptions/createParserOptions}} is missing, throws, or returns `null` or `undefined`, a {{TypeError}} is thrown (or rethrown) immediately.</p>
+<div class="note">
+<p><strong>TrustedHTML + runScripts:</strong> Script execution is permitted only when the markup is attested as safe by a policy. Specifically:</p>
+<ul>
+  <li>When |input| is a {{TrustedHTML}} instance (or converted into one by {{TrustedTypePolicyOptions/createHTML}}), scripts are allowed to execute if requested by the caller (such as {{Element/setHTMLUnsafe()}} with `runScripts: true`).</li>
+  <li>When |options| is a {{TrustedHTMLParserOptions}}, script execution is governed by the policy that created the options object. A default policy's {{TrustedTypePolicyOptions/createParserOptions}} can only clamp script execution to `false`; it can never enable scripts if the caller did not request them (`runScriptsInput` is `false`).</li>
+  <li>In report-only mode or when Trusted Types enforcement is not required for the sink, a {{TypeError}} is not thrown on violation; instead, the original stringified |input| and |options| are returned.</li>
+  <li>For streaming HTML fragment parsing, [=get trusted type compliant parser options=] is invoked directly with |throwIfMissing| set to true. In that context, if {{TrustedTypePolicyOptions/createParserOptions}} is missing, throws, or returns `null` or `undefined`, a {{TypeError}} is thrown (or rethrown) immediately.</li>
+</ul>
+</div>
 
 ## Get Trusted Type compliant string ## {#get-trusted-type-compliant-string-algorithm}
 
