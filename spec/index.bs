@@ -1341,8 +1341,7 @@ The following table summarizes the behavior of [=get trusted type compliant inpu
 <ul>
   <li>When |input| is a {{TrustedHTML}} instance, a default policy's {{TrustedTypePolicyOptions/createParserOptions}} still vets any caller-supplied options dictionary, allowing the policy to inspect, configure, or override the sanitizer configuration (as well as control script execution) despite the input already being {{TrustedHTML}}. If {{TrustedTypePolicyOptions/createParserOptions}} throws or returns `null` or `undefined`, the operation is rejected. Only when {{TrustedTypePolicyOptions/createParserOptions}} is absent do the caller's dictionary options pass through unvetted.</li>
   <li>When |options| is a {{TrustedHTMLParserOptions}}, script execution and sanitization are governed by the policy that created the options object. When options are passed as a dictionary, a default policy's {{TrustedTypePolicyOptions/createParserOptions}} determines the final script execution behavior, overriding the caller's requested `runScripts` setting.</li>
-  <li>XML fragment parsing does not support sanitization and never executes scripts; any sanitizer configuration or `runScripts` flag is ignored for XML sinks.</li>
-  <li>In report-only mode or when Trusted Types enforcement is not required for the sink, a {{TypeError}} is not thrown on violation; instead, the original stringified |input| and |options| are returned.</li>
+  <li>XML fragment parsing does not support sanitization; any sanitizer configuration is ignored for XML sinks.</li>
   <li>For streaming HTML fragment parsing, [=get trusted type compliant parser options=] is invoked directly with |throwIfMissing| set to true. In that context, if {{TrustedTypePolicyOptions/createParserOptions}} is missing, throws, or returns `null` or `undefined`, a {{TypeError}} is thrown (or rethrown) immediately.</li>
 </ul>
 
