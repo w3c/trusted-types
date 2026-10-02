@@ -701,7 +701,7 @@ using the built-in sanitizer API.
   const policy = trustedTypes.createPolicy('html', {
     createParserOptions: options => {
       const sanitizer = new Sanitizer(options.sanitizer?.get() ?? {});
-      sanitizer.removeElement("script");
+      sanitizer.removeUnsafe();
       return {
         sanitizer,
       };
@@ -1252,7 +1252,7 @@ The following table summarizes the behavior of [=get trusted type compliant inpu
       <td>Dictionary that is not author-supplied or does not [=parser options need vetting|need vetting=]</td>
       <td rowspan="2">No {{TrustedTypePolicyOptions/createParserOptions}} (or no default policy)</td>
       <td>Returns `(stringified |input|, |options|)`.</td>
-      <td>`null`</td>
+      <td>`null` (or `"default"`)</td>
       <td><strong>TrustedHTML without parser policy:</strong> When no policy defines {{TrustedTypePolicyOptions/createParserOptions}}, an existing {{TrustedHTML}} instance satisfies Trusted Types directly (bypassing {{TrustedTypePolicyOptions/createHTML}}), as long as author-supplied options do not need vetting.</td>
     </tr>
     <tr>
@@ -1297,7 +1297,7 @@ The following table summarizes the behavior of [=get trusted type compliant inpu
       <td rowspan="4">String</td>
       <td>No {{TrustedTypePolicyOptions/createParserOptions}}; {{TrustedTypePolicyOptions/createHTML}} returns {{TrustedHTML}}</td>
       <td>Returns `(stringified |convertedInput|, |options|)`.</td>
-      <td>`null`</td>
+      <td>`null` (or `"default"`)</td>
       <td>Provides backwards compatibility: when no policy manages parser options, the sink falls back to vetting or sanitizing the markup string via {{TrustedTypePolicyOptions/createHTML}}.</td>
     </tr>
     <tr>
@@ -1441,6 +1441,12 @@ a string or dictionary |value|, a list |arguments|, and a boolean |throwIfMissin
 1.  If |function| is `null`, then:
     1. If |throwIfMissing| throw a TypeError.
     1. Else return `null`.
+1.  If |trustedTypeName| is `"TrustedHTMLParserOptions"`:
+    1. Let |runScriptsInput| be |value|["runScripts"], [=with default=] false.
+    1. Let |argument| be the [=ordered map=] «[ "runScripts" → |runScriptsInput| ]».
+    1. Let |sanitizerInput| be the result of [=get a sanitizer from dictionary|getting a sanitizer=] from |policy|'s [=relevant realm=] and |value|.
+    1. If |sanitizerInput| is not null, set |argument|["sanitizer"] to |sanitizerInput|.
+    1. Set |value| to |argument|.
 1.  Let |args| be « |value| ».
 1.  [=set/append|Append=] each item in |arguments| to |args|.
 1.  Let |policyValue| be the result of [=invoke|invoking=] |function| with
@@ -1454,11 +1460,12 @@ Note: See [[#summary-of-input-enforcement]] for a summary of this algorithm's be
 To <dfn export>get trusted type compliant input</dfn> given a [=realm/global object=] |global|, a string or {{TrustedHTML}} |input|,
 a {{TrustedHTMLParserOptions}}, {{ParseHTMLUnsafeOptions}} or {{SetHTMLUnsafeOptions}} |options|, a string |sink|, an optional `"html"` or `"xml"` |documentType| (default `"html"`), and an optional boolean |optionsFromAuthor| (default true):
 
-1. Let |compliantOptions| be the result of calling [=get trusted type compliant parser options=], passing |global|, |options|, false, |sink|, and |optionsFromAuthor|.
-
-    Note: Sinks that construct |options| themselves, rather than taking them from the author, pass false for |optionsFromAuthor|.
-    For example, {{Range/createContextualFragment()}} sets `runScripts` to true.
+1. Let |compliantOptions| be |options|.
 1. If |documentType| is `"html"`:
+    1. Set |compliantOptions| to the result of calling [=get trusted type compliant parser options=], passing |global|, |options|, false, |sink|, and |optionsFromAuthor|.
+
+        Note: Sinks that construct |options| themselves, rather than taking them from the author, pass false for |optionsFromAuthor|.
+        For example, {{Range/createContextualFragment()}} sets `runScripts` to true.
     1. If |compliantOptions| is an instance of {{TrustedHTMLParserOptions}}, return (stringified |input|, |compliantOptions|).
 1. Let |compliantHTML| be the result of calling [=get trusted type compliant string=], passing {{TrustedHTML}}, |global|, |input|, |sink|, and `"script"`.
 1. If the algorithm threw an error, rethrow the error.
@@ -1528,11 +1535,8 @@ a boolean |throwIfMissing|, a string |sink|, and an optional boolean |optionsFro
     1. Return |input|.
 1. Let |runScriptsInput| be |input|["runScripts"], [=with default=] false.
 1. Let |argument| be the [=ordered map=] «[ "runScripts" → |runScriptsInput| ]».
-1. Let |sanitizerInputConfig| be the results of [=get a sanitizer config copy from dictionary|getting a sanitizer config=] from |global|'s [=relevant realm=] and |input|.
-1. If |sanitizerInputConfig| is not null:
-    1. Let |sanitizerInput| be a new {{Sanitizer}} in |global|'s [=relevant realm=].
-    1. [=configure a sanitizer|Configure=] |sanitizerInput| given |sanitizerInputConfig| and true.
-    1. Set |argument|["sanitizer"] to |sanitizerInput|.
+1. Let |sanitizerInput| be the result of [=get a sanitizer from dictionary|getting a sanitizer=] from |global|'s [=relevant realm=] and |input|.
+1. If |sanitizerInput| is not null, set |argument|["sanitizer"] to |sanitizerInput|.
 1. Let |policyValue| be the result of [=invoke|invoking=] |function| with « |argument|, "TrustedHTMLParserOptions", |sink| » and `"rethrow"`.
 1. If the algorithm threw an error, rethrow the error and abort the following steps.
 1. If |policyValue| is `null` or `undefined`:
@@ -1554,11 +1558,11 @@ a boolean |throwIfMissing|, a string |sink|, and an optional boolean |optionsFro
     and whose [=TrustedHTMLParserOptions/runScripts=] is set to |runScripts|.
 
 A {{SetHTMLUnsafeOptions}} or {{ParseHTMLUnsafeOptions}} |options| <dfn lt="parser options need vetting">needs vetting</dfn> if
-|options|["runScripts"] [=map/exists=] and is true, or if |options|["sanitizer"] [=map/exists=] and is not an [=map/is empty|empty=] {{SanitizerConfig}}.
+|options|["runScripts"] [=map/exists=] and is true, or if |options|["sanitizer"] [=map/exists=] and is neither `"default"` nor an [=map/is empty|empty=] {{SanitizerConfig}}.
 
-Note: An empty {{SanitizerConfig}} is the default value of {{SetHTMLUnsafeOptions/sanitizer}}, and does not change the parsed markup.
+Note: The `"default"` preset only removes unsafe markup, and an empty {{SanitizerConfig}} does not change the parsed markup.
 
-To <dfn>get a sanitizer config copy from dictionary</dfn> given a [=realm=] |realm| and a dictionary |dictionary|:
+To <dfn>get a sanitizer from dictionary</dfn> given a [=realm=] |realm| and a dictionary |dictionary|:
 1. Let |sanitizerInput| be |dictionary|["sanitizer"], [=with default|defaulting to=] null.
 1. If |sanitizerInput| is null, return null.
 1. Let |configuration| be null.
@@ -1572,6 +1576,11 @@ To <dfn>get a sanitizer config copy from dictionary</dfn> given a [=realm=] |rea
 1. [=Assert=]: |configuration| is not null.
 1. Let |sanitizer| be a new {{Sanitizer}} in |realm|.
 1. [=configure a sanitizer|Configure=] |sanitizer| given |configuration| and true.
+1. Return |sanitizer|.
+
+To <dfn>get a sanitizer config copy from dictionary</dfn> given a [=realm=] |realm| and a dictionary |dictionary|:
+1. Let |sanitizer| be the result of [=get a sanitizer from dictionary|getting a sanitizer=] from |realm| and |dictionary|.
+1. If |sanitizer| is null, return null.
 1. Return |sanitizer|'s [=Sanitizer/configuration=].
 
 ## Process value with a default policy ## {#process-value-with-a-default-policy-algorithm}
@@ -2103,7 +2112,7 @@ Policy authors should also carefully inspect any caller-supplied sanitizer in th
 Blindly trusting or passing through a caller's sanitizer allows unvetted configurations to govern parsing.
 Because {{TrustedTypePolicyOptions/createParserOptions}} executes even when the input markup is an existing {{TrustedHTML}} instance,
 the default policy ensures that unvetted caller options cannot bypass application-wide sanitization or script execution constraints.
-Without such a callback, {{TrustedHTML}} cannot be combined with a caller-supplied non-empty sanitizer or `runScripts` set to true, since those could make vetted markup unsafe.
+Without such a callback, {{TrustedHTML}} cannot be combined with a caller-supplied custom sanitizer or `runScripts` set to true, since those could make vetted markup unsafe.
 
 Issue: Refer to the external document on secure policy design.
 
