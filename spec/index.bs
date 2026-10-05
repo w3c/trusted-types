@@ -1283,9 +1283,9 @@ An {{HTMLScriptElement}} and {{SVGScriptElement}} have:
 
 #### Update script trustedness algorithm
 
-To <dfn export="HTMLScriptElement">update script trustedness</dfn> for {{HTMLScriptElement}} |script| given string |value|:
+To <dfn export>update script trustedness</dfn> for {{HTMLScriptElement}} |script| given string |value|:
 
-1.  Set [=this=]'s [=script text=] value to |value|.
+1.  Set |script|'s [=script text=] value to |value|.
 
 #### Setting slot values from parser #### {#setting-slot-values-from-parser}
 
