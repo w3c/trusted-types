@@ -1393,7 +1393,9 @@ a string or dictionary |value| and a list |arguments|, perform the following ste
 1.  Let |policyValue| be the result of executing [=get trusted type policy value=] with the same arguments as this algorithm and additionally true as |throwIfMissing|.
 1.  If the algorithm threw an error, rethrow the error and abort the following steps.
 1.  If |trustedTypeName| is `"TrustedHTMLParserOptions"`:
-    1.  If |policyValue| is not a [=dictionary=], throw a {{TypeError}}.
+    1.  If |policyValue| is null, throw a {{TypeError}}.
+
+        Note: Returning `null` from a named policy's {{TrustedTypePolicyOptions/createParserOptions}} callback throws a {{TypeError}} here, whereas returning `null` or `undefined` from {{TrustedTypePolicyOptions/createHTML}}, {{TrustedTypePolicyOptions/createScript}}, or {{TrustedTypePolicyOptions/createScriptURL}} yields the empty string.
     1.  Let |sanitizerConfig| be the result of
         [=get a sanitizer config copy from dictionary|getting a sanitizer configuration=]
         from |policy|'s [=relevant realm=] and |policyValue|.
@@ -1442,11 +1444,7 @@ a string or dictionary |value|, a list |arguments|, and a boolean |throwIfMissin
     1. If |throwIfMissing| throw a TypeError.
     1. Else return `null`.
 1.  If |trustedTypeName| is `"TrustedHTMLParserOptions"`:
-    1. Let |runScriptsInput| be |value|["runScripts"], [=with default=] false.
-    1. Let |argument| be the [=ordered map=] «[ "runScripts" → |runScriptsInput| ]».
-    1. Let |sanitizerInput| be the result of [=get a sanitizer from dictionary|getting a sanitizer=] from |policy|'s [=relevant realm=] and |value|.
-    1. If |sanitizerInput| is not null, set |argument|["sanitizer"] to |sanitizerInput|.
-    1. Set |value| to |argument|.
+    1. Set |value| to the result of [=create a parser options callback argument|creating a parser options callback argument=] given |policy|'s [=relevant realm=] and |value|.
 1.  Let |args| be « |value| ».
 1.  [=set/append|Append=] each item in |arguments| to |args|.
 1.  Let |policyValue| be the result of [=invoke|invoking=] |function| with
@@ -1533,10 +1531,7 @@ a boolean |throwIfMissing|, a string |sink|, and an optional boolean |optionsFro
         1. If |disposition| is `“Allowed”`, return |input|.
         1. Throw a {{TypeError}}.
     1. Return |input|.
-1. Let |runScriptsInput| be |input|["runScripts"], [=with default=] false.
-1. Let |argument| be the [=ordered map=] «[ "runScripts" → |runScriptsInput| ]».
-1. Let |sanitizerInput| be the result of [=get a sanitizer from dictionary|getting a sanitizer=] from |global|'s [=relevant realm=] and |input|.
-1. If |sanitizerInput| is not null, set |argument|["sanitizer"] to |sanitizerInput|.
+1. Let |argument| be the result of [=create a parser options callback argument|creating a parser options callback argument=] given |global|'s [=relevant realm=] and |input|.
 1. Let |policyValue| be the result of [=invoke|invoking=] |function| with « |argument|, "TrustedHTMLParserOptions", |sink| » and `"rethrow"`.
 1. If the algorithm threw an error, rethrow the error and abort the following steps.
 1. If |policyValue| is `null` or `undefined`:
@@ -1561,6 +1556,13 @@ A {{SetHTMLUnsafeOptions}} or {{ParseHTMLUnsafeOptions}} |options| <dfn lt="pars
 |options|["runScripts"] [=map/exists=] and is true, or if |options|["sanitizer"] [=map/exists=] and is not an [=map/is empty|empty=] {{SanitizerConfig}}.
 
 Note: An empty {{SanitizerConfig}} does not change the parsed markup.
+
+To <dfn>create a parser options callback argument</dfn> given a [=realm=] |realm| and a dictionary |dictionary|:
+1. Let |runScriptsInput| be |dictionary|["runScripts"], [=with default=] false.
+1. Let |argument| be the [=ordered map=] «[ "runScripts" → |runScriptsInput| ]».
+1. Let |sanitizerInput| be the result of [=get a sanitizer from dictionary|getting a sanitizer=] from |realm| and |dictionary|.
+1. If |sanitizerInput| is not null, set |argument|["sanitizer"] to |sanitizerInput|.
+1. Return |argument|.
 
 To <dfn>get a sanitizer from dictionary</dfn> given a [=realm=] |realm| and a dictionary |dictionary|:
 1. Let |sanitizerInput| be |dictionary|["sanitizer"], [=with default|defaulting to=] null.
