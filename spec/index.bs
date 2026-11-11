@@ -795,7 +795,7 @@ Its value is initially « ».
       // a flaw in this code could cause DOM XSS.
       createHTML(input) { return aSanitizer.sanitize(input) },
       createScriptURL(input) {
-        const u = new URL(dirty, document.baseURI);
+        const u = new URL(input, document.baseURI);
         if (APPLICATION_CONFIG.scriptOrigins.includes(u.origin)) {
           return u.href;
         }
