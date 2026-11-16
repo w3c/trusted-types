@@ -5,9 +5,9 @@
   <title>Trusted Types</title>
   <meta content="ED" name="w3c-status">
   <link href="https://www.w3.org/StyleSheets/TR/2021/W3C-ED" rel="stylesheet">
-  <meta content="Bikeshed version ea4009a02, updated Thu Sep 17 15:24:44 2026 -0700" name="generator">
+  <meta content="Bikeshed version e0b165ae4, updated Mon Nov 2 15:16:49 2026 -0800" name="generator">
   <link href="https://www.w3.org/TR/trusted-types/" rel="canonical">
-  <meta content="3cd79cb094d7d4e5bdaf6f516a8af40eca3d3faf" name="revision">
+  <meta content="a280ec2245a461bd81ecefdc75da9cc02315ab2f" name="revision">
   <meta content="dark light" name="color-scheme">
   <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
 <style>/* Boilerplate: style-autolinks */
@@ -360,14 +360,17 @@ figure.table figcaption:not(.no-marker)::before {
     height: auto;
     max-height: 500px;
     overflow: auto;
+    margin: 0;
     padding: 0.5em 0.75em;
     font: small Helvetica Neue, sans-serif, Droid Sans Fallback;
     background: var(--dfnpanel-bg);
     color: var(--dfnpanel-text);
     border: outset 0.2em;
     white-space: normal; /* in case it's moved into a pre */
+    inset: auto;
+    position-area: bottom span-right;
+    position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;
 }
-.dfn-panel:not(.on) { display: none; }
 .dfn-panel * { margin: 0; padding: 0; text-indent: 0; }
 .dfn-panel > b { display: block; }
 .dfn-panel a { color: var(--dfnpanel-text); }
@@ -387,6 +390,9 @@ figure.table figcaption:not(.no-marker)::before {
 .dfn-panel.activated {
     display: inline-block;
     position: fixed;
+    position-area: none;
+    top: auto;
+    right: auto;
     left: 8px;
     bottom: 2em;
     margin: 0 auto;
@@ -443,7 +449,8 @@ figure.table figcaption:not(.no-marker)::before {
     opacity: 1;
 }
 
-.dfn-paneled[role="button"] { cursor: help; }
+.dfn-paneled { cursor: help; }
+.dfn-paneled > .dfn-panelbutton { all: unset; }
 
 .highlighted {
     animation: target-fade 3s;
@@ -559,11 +566,10 @@ a[href].issue-return {
 	vertical-align: top;
 }
 .mdn-anno > .feature {
-	margin-top: 20px;
+	margin-top: 6px;
 }
 .mdn-anno > .feature:not(:first-of-type) {
 	border-top: 1px solid #999;
-	margin-top: 6px;
 	padding-top: 2px;
 }
 .mdn-anno > .feature > .less-than-two-engines-text {
@@ -1091,7 +1097,7 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
 </p>
    <h1 class="no-ref p-name" id="title">Trusted Types</h1>
    <p id="w3c-state"><a href="https://www.w3.org/standards/types/#ED">Editor’s Draft</a>,
-    <time class="dt-updated" datetime="2026-10-07">7 October 2026</time></p>
+    <time class="dt-updated" datetime="2026-11-16">16 November 2026</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -2864,7 +2870,7 @@ and whose <a data-link-type="dfn" href="#trustedhtmlparseroptions-runscripts" id
 name <var>trustedTypeName</var>, with its associated data value set to <var>dataString</var>.</p>
    </ol>
    <h3 class="heading settled" data-level="3.8" id="prepare-script-text"><span class="secno">3.8. </span><span class="content">Prepare the script text</span><a class="self-link" href="#prepare-script-text"></a></h3>
-   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="prepare-the-script-text">prepare the script text</dfn> given an <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement" id="ref-for-htmlscriptelement④">HTMLScriptElement</a></code> or <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/svgwg/svg2-draft/interact.html#InterfaceSVGScriptElement" id="ref-for-InterfaceSVGScriptElement">SVGScriptElement</a></code> (<var>script</var>), perform the following steps:</p>
+   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="prepare-the-script-text">prepare the script text</dfn> given an <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement" id="ref-for-htmlscriptelement④">HTMLScriptElement</a></code> or <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/svgwg/svg2-draft/interact.html#svgscriptelement" id="ref-for-svgscriptelement">SVGScriptElement</a></code> (<var>script</var>), perform the following steps:</p>
    <ol>
     <li data-md>
      <p>Let <var>sink</var> be "<code>HTMLScriptElement text</code>" if <var>script</var> is an <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement" id="ref-for-htmlscriptelement⑤">HTMLScriptElement</a></code>; otherwise "<code>SVGScriptElement text</code>".</p>
@@ -2908,7 +2914,7 @@ set <var>script</var>’s <a data-link-type="dfn" href="#htmlscriptelement-scrip
       <li data-md>
        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert②">Assert</a>: <var>newValue</var> is <code class="idl"><a data-link-type="idl" href="#trustedhtml" id="ref-for-trustedhtml③⓪">TrustedHTML</a></code> or <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript⑨">TrustedScript</a></code> or <code class="idl"><a data-link-type="idl" href="#trustedscripturl" id="ref-for-trustedscripturl⑤">TrustedScriptURL</a></code>.</p>
       <li data-md>
-       <p>Return <var>value</var>’s associated data.</p>
+       <p>Return <var>newValue</var>’s associated data.</p>
      </ol>
     <li data-md>
      <p>Let <var>expectedType</var> be the value of the fourth member of <var>attributeData</var>.</p>
@@ -2971,14 +2977,14 @@ If a matching row is found, set <var>data</var> to that row.</p>
         <td>"HTMLScriptElement src"
     
        <tr>
-        <td><code class="idl"><a data-link-type="idl" href="https://w3c.github.io/svgwg/svg2-draft/interact.html#InterfaceSVGScriptElement" id="ref-for-InterfaceSVGScriptElement①">SVGScriptElement</a></code>
+        <td><code class="idl"><a data-link-type="idl" href="https://w3c.github.io/svgwg/svg2-draft/interact.html#svgscriptelement" id="ref-for-svgscriptelement①">SVGScriptElement</a></code>
         <td>null
         <td>"href"
         <td><code class="idl"><a data-link-type="idl" href="#trustedscripturl" id="ref-for-trustedscripturl⑦">TrustedScriptURL</a></code>
         <td>"SVGScriptElement href"
     
        <tr>
-        <td><code class="idl"><a data-link-type="idl" href="https://w3c.github.io/svgwg/svg2-draft/interact.html#InterfaceSVGScriptElement" id="ref-for-InterfaceSVGScriptElement②">SVGScriptElement</a></code>
+        <td><code class="idl"><a data-link-type="idl" href="https://w3c.github.io/svgwg/svg2-draft/interact.html#svgscriptelement" id="ref-for-svgscriptelement②">SVGScriptElement</a></code>
         <td><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#xlink-namespace" id="ref-for-xlink-namespace">XLink namespace</a>
         <td>"href"
         <td><code class="idl"><a data-link-type="idl" href="#trustedscripturl" id="ref-for-trustedscripturl⑧">TrustedScriptURL</a></code>
@@ -3004,7 +3010,7 @@ which is a <code class="idl"><a data-link-type="idl" href="#trustedtypepolicyfac
 type policy factory</a>.</p>
    <h4 class="heading settled" data-level="4.1.2" id="enforcement-in-scripts"><span class="secno">4.1.2. </span><span class="content">Enforcement for scripts</span><a class="self-link" href="#enforcement-in-scripts"></a></h4>
    <h5 class="heading settled" data-level="4.1.2.1" id="slots-with-trusted-values"><span class="secno">4.1.2.1. </span><span class="content">Slots with trusted values</span><a class="self-link" href="#slots-with-trusted-values"></a></h5>
-   <p>An <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement" id="ref-for-htmlscriptelement⑦">HTMLScriptElement</a></code> and <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/svgwg/svg2-draft/interact.html#InterfaceSVGScriptElement" id="ref-for-InterfaceSVGScriptElement③">SVGScriptElement</a></code> have:</p>
+   <p>An <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement" id="ref-for-htmlscriptelement⑦">HTMLScriptElement</a></code> and <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/svgwg/svg2-draft/interact.html#svgscriptelement" id="ref-for-svgscriptelement③">SVGScriptElement</a></code> have:</p>
    <dl>
     <dt data-md>an associated string <dfn class="dfn-paneled" data-dfn-for="HTMLScriptElement,SVGScriptElement" data-dfn-type="dfn" data-export id="htmlscriptelement-script-text">script text</dfn>.
     <dd data-md>
@@ -3035,7 +3041,7 @@ through a compliant sink. Equivalent to script’s
      <p>...</p>
    </dl>
    <p class="issue" id="issue-d6e90040"><a class="self-link" href="#issue-d6e90040"></a> The above algorithm doesn’t account for the case when the script element’s content is changed mid-parse. Implementors must ensure they protect against this case. See <a href="https://github.com/w3c/trusted-types/issues/507">https://github.com/w3c/trusted-types/issues/507</a>.</p>
-   <p class="issue" id="issue-c38e8ff0"><a class="self-link" href="#issue-c38e8ff0"></a> There’s no proper definition for the processing of SVG script elements. However, implementations must apply a similar change to the processing of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/svgwg/svg2-draft/interact.html#InterfaceSVGScriptElement" id="ref-for-InterfaceSVGScriptElement④">SVGScriptElement</a></code>s.</p>
+   <p class="issue" id="issue-c38e8ff0"><a class="self-link" href="#issue-c38e8ff0"></a> There’s no proper definition for the processing of SVG script elements. However, implementations must apply a similar change to the processing of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/svgwg/svg2-draft/interact.html#svgscriptelement" id="ref-for-svgscriptelement④">SVGScriptElement</a></code>s.</p>
    <h5 class="heading settled" data-level="4.1.2.4" id="slot-value-verification"><span class="secno">4.1.2.4. </span><span class="content">Slot value verification</span><a class="self-link" href="#slot-value-verification"></a></h5>
    <p>The first few steps of the <a data-link-type="dfn" href="https://html.spec.whatwg.org/#prepare-the-script-element" id="ref-for-prepare-the-script-element">prepare the script element</a> algorithm are modified as follows:</p>
    <ol>
@@ -3068,7 +3074,7 @@ through a compliant sink. Equivalent to script’s
     <li>...
   
    </ol>
-   <p class="issue" id="issue-c38e8ff0①"><a class="self-link" href="#issue-c38e8ff0①"></a> There’s no proper definition for the processing of SVG script elements. However, implementations must apply a similar change to the processing of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/svgwg/svg2-draft/interact.html#InterfaceSVGScriptElement" id="ref-for-InterfaceSVGScriptElement⑤">SVGScriptElement</a></code>s.</p>
+   <p class="issue" id="issue-c38e8ff0①"><a class="self-link" href="#issue-c38e8ff0①"></a> There’s no proper definition for the processing of SVG script elements. However, implementations must apply a similar change to the processing of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/svgwg/svg2-draft/interact.html#svgscriptelement" id="ref-for-svgscriptelement⑤">SVGScriptElement</a></code>s.</p>
    <h3 class="heading settled" data-level="4.2" id="integration-with-content-security-policy"><span class="secno">4.2. </span><span class="content">Integration with Content Security Policy</span><a class="self-link" href="#integration-with-content-security-policy"></a></h3>
    <h4 class="heading settled" data-level="4.2.1" id="require-trusted-types-for-csp-directive"><span class="secno">4.2.1. </span><span class="content"><dfn class="dfn-paneled" data-dfn-type="dfn" data-export data-lt="require-trusted-types-for-directive" id="require-trusted-types-for-directive">require-trusted-types-for</dfn> directive</span><a class="self-link" href="#require-trusted-types-for-csp-directive"></a></h4>
    <p>This document defines <em>require-trusted-types-for</em> - a new <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#directives" id="ref-for-directives">Content Security Policy directive</a>.</p>
@@ -3662,7 +3668,7 @@ execution, violation generation, or the rejection of the value.</p>
    <li>
     <a data-link-type="biblio">[SVG2]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="722f37fd">SVGScriptElement</span>
+     <li><span class="dfn-paneled" id="5590e887">SVGScriptElement</span>
     </ul>
    <li>
     <a data-link-type="biblio">[URL]</a> defines the following terms:
@@ -3721,422 +3727,84 @@ execution, violation generation, or the rejection of the value.</p>
   <div style="counter-reset:issue">
    <div class="issue"> The <a data-link-type="dfn" href="https://html.spec.whatwg.org/#event-handler-content-attributes">event handler content attribute</a> concept used below is ambiguous. This spec needs a better mechanism to identify event handler attributes. See <a href="https://github.com/w3c/trusted-types/issues/520">https://github.com/w3c/trusted-types/issues/520</a>. <a class="issue-return" href="#issue-15b3006c" title="Jump to section">↵</a></div>
    <div class="issue"> The above algorithm doesn’t account for the case when the script element’s content is changed mid-parse. Implementors must ensure they protect against this case. See <a href="https://github.com/w3c/trusted-types/issues/507">https://github.com/w3c/trusted-types/issues/507</a>. <a class="issue-return" href="#issue-d6e90040" title="Jump to section">↵</a></div>
-   <div class="issue"> There’s no proper definition for the processing of SVG script elements. However, implementations must apply a similar change to the processing of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/svgwg/svg2-draft/interact.html#InterfaceSVGScriptElement">SVGScriptElement</a></code>s. <a class="issue-return" href="#issue-c38e8ff0" title="Jump to section">↵</a></div>
-   <div class="issue"> There’s no proper definition for the processing of SVG script elements. However, implementations must apply a similar change to the processing of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/svgwg/svg2-draft/interact.html#InterfaceSVGScriptElement">SVGScriptElement</a></code>s. <a class="issue-return" href="#issue-c38e8ff0①" title="Jump to section">↵</a></div>
+   <div class="issue"> There’s no proper definition for the processing of SVG script elements. However, implementations must apply a similar change to the processing of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/svgwg/svg2-draft/interact.html#svgscriptelement">SVGScriptElement</a></code>s. <a class="issue-return" href="#issue-c38e8ff0" title="Jump to section">↵</a></div>
+   <div class="issue"> There’s no proper definition for the processing of SVG script elements. However, implementations must apply a similar change to the processing of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/svgwg/svg2-draft/interact.html#svgscriptelement">SVGScriptElement</a></code>s. <a class="issue-return" href="#issue-c38e8ff0①" title="Jump to section">↵</a></div>
    <div class="issue"> Refer to the external document on secure policy design. <a class="issue-return" href="#issue-2eb927d2" title="Jump to section">↵</a></div>
   </div>
-  <details class="mdn-anno unpositioned" data-anno-for="dom-trustedhtml-tojson">
+  <details class="mdn-anno unpositioned" data-anno-for="dom-trustedhtml-tojson" data-mdn="v1|API/TrustedHTML/toJSON|1|-,-,90,@!,90,@?,-,@-,@-,@!,@!,@!,@!,">
    <summary><b class="less-than-two-engines-flag" title="This feature is in less than two current engines.">⚠</b><span>MDN</span></summary>
-   <div class="feature">
-    <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedHTML/toJSON" title="The toJSON() method of the TrustedHTML interface returns a JSON representation of the stored data.">TrustedHTML/toJSON</a></p>
-    <p class="less-than-two-engines-text">In only one current engine.</p>
-    <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>90+</span></span>
-     <hr>
-     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>90+</span></span>
-     <hr>
-     <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
-     <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
-    </div>
-   </div>
   </details>
-  <details class="mdn-anno unpositioned" data-anno-for="trustedhtml-stringification-behavior">
+  <details class="mdn-anno unpositioned" data-anno-for="trustedhtml-stringification-behavior" data-mdn="v1|API/TrustedHTML/toString|1|-,-,83,@!,83,@?,-,@-,@-,@!,@!,@!,@!,">
    <summary><b class="less-than-two-engines-flag" title="This feature is in less than two current engines.">⚠</b><span>MDN</span></summary>
-   <div class="feature">
-    <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedHTML/toString" title="The toString() method of the TrustedHTML interface returns a string which may safely inserted into an injection sink.">TrustedHTML/toString</a></p>
-    <p class="less-than-two-engines-text">In only one current engine.</p>
-    <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
-     <hr>
-     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
-     <hr>
-     <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
-     <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
-    </div>
-   </div>
   </details>
-  <details class="mdn-anno unpositioned" data-anno-for="trusted-html">
+  <details class="mdn-anno unpositioned" data-anno-for="trusted-html" data-mdn="v1|API/TrustedHTML|1|-,-,83,@!,83,@?,-,@-,@-,@!,@!,@!,@!,">
    <summary><b class="less-than-two-engines-flag" title="This feature is in less than two current engines.">⚠</b><span>MDN</span></summary>
-   <div class="feature">
-    <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedHTML" title="The TrustedHTML interface of the Trusted Types API represents a string that a developer can insert into an injection sink that will render it as HTML. These objects are created via TrustedTypePolicy.createHTML() and therefore have no constructor.">TrustedHTML</a></p>
-    <p class="less-than-two-engines-text">In only one current engine.</p>
-    <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
-     <hr>
-     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
-     <hr>
-     <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
-     <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
-    </div>
-   </div>
   </details>
-  <details class="mdn-anno unpositioned" data-anno-for="dom-trustedscript-tojson">
+  <details class="mdn-anno unpositioned" data-anno-for="dom-trustedscript-tojson" data-mdn="v1|API/TrustedScript/toJSON|1|-,-,90,@!,90,@?,-,@-,@-,@!,@!,@!,@!,">
    <summary><b class="less-than-two-engines-flag" title="This feature is in less than two current engines.">⚠</b><span>MDN</span></summary>
-   <div class="feature">
-    <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedScript/toJSON" title="The toJSON() method of the TrustedScript interface returns a JSON representation of the stored data.">TrustedScript/toJSON</a></p>
-    <p class="less-than-two-engines-text">In only one current engine.</p>
-    <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>90+</span></span>
-     <hr>
-     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>90+</span></span>
-     <hr>
-     <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
-     <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
-    </div>
-   </div>
   </details>
-  <details class="mdn-anno unpositioned" data-anno-for="trustedscripturl-stringification-behavior">
+  <details class="mdn-anno unpositioned" data-anno-for="trustedscripturl-stringification-behavior" data-mdn="v1|API/TrustedScript/toString|1|-,-,83,@!,83,@?,-,@-,@-,@!,@!,@!,@!,~API/TrustedScriptURL/toString|1|-,-,83,@!,83,@?,-,@-,@-,@!,@!,@!,@!,">
    <summary><b class="less-than-two-engines-flag" title="This feature is in less than two current engines.">⚠</b><span>MDN</span></summary>
-   <div class="feature">
-    <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedScript/toString" title="The toString() method of the TrustedScript interface returns a string which may safely inserted into an injection sink.">TrustedScript/toString</a></p>
-    <p class="less-than-two-engines-text">In only one current engine.</p>
-    <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
-     <hr>
-     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
-     <hr>
-     <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
-     <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
-    </div>
-   </div>
-   <div class="feature">
-    <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedScriptURL/toString" title="The toString() method of the TrustedScriptURL interface returns a string which may safely inserted into an injection sink.">TrustedScriptURL/toString</a></p>
-    <p class="less-than-two-engines-text">In only one current engine.</p>
-    <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
-     <hr>
-     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
-     <hr>
-     <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
-     <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
-    </div>
-   </div>
   </details>
-  <details class="mdn-anno unpositioned" data-anno-for="trusted-script">
+  <details class="mdn-anno unpositioned" data-anno-for="trusted-script" data-mdn="v1|API/TrustedScript|1|-,-,83,@!,83,@?,-,@-,@-,@!,@!,@!,@!,">
    <summary><b class="less-than-two-engines-flag" title="This feature is in less than two current engines.">⚠</b><span>MDN</span></summary>
-   <div class="feature">
-    <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedScript" title="The TrustedScript interface of the Trusted Types API represents a string with an uncompiled script body that a developer can insert into an injection sink that might execute the script. These objects are created via TrustedTypePolicy.createScript() and therefore have no constructor.">TrustedScript</a></p>
-    <p class="less-than-two-engines-text">In only one current engine.</p>
-    <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
-     <hr>
-     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
-     <hr>
-     <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
-     <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
-    </div>
-   </div>
   </details>
-  <details class="mdn-anno unpositioned" data-anno-for="dom-trustedscripturl-tojson">
+  <details class="mdn-anno unpositioned" data-anno-for="dom-trustedscripturl-tojson" data-mdn="v1|API/TrustedScriptURL/toJSON|1|-,-,90,@!,90,@?,-,@-,@-,@!,@!,@!,@!,">
    <summary><b class="less-than-two-engines-flag" title="This feature is in less than two current engines.">⚠</b><span>MDN</span></summary>
-   <div class="feature">
-    <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedScriptURL/toJSON" title="The toJSON() method of the TrustedScriptURL interface returns a JSON representation of the stored data.">TrustedScriptURL/toJSON</a></p>
-    <p class="less-than-two-engines-text">In only one current engine.</p>
-    <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>90+</span></span>
-     <hr>
-     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>90+</span></span>
-     <hr>
-     <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
-     <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
-    </div>
-   </div>
   </details>
-  <details class="mdn-anno unpositioned" data-anno-for="trused-script-url">
+  <details class="mdn-anno unpositioned" data-anno-for="trused-script-url" data-mdn="v1|API/TrustedScriptURL|1|-,-,83,@!,83,@?,-,@-,@-,@!,@!,@!,@!,">
    <summary><b class="less-than-two-engines-flag" title="This feature is in less than two current engines.">⚠</b><span>MDN</span></summary>
-   <div class="feature">
-    <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedScriptURL" title="The TrustedScriptURL interface of the Trusted Types API represents a string that a developer can insert into an injection sink that will parse it as a URL of an external script. These objects are created via TrustedTypePolicy.createScriptURL() and therefore have no constructor.">TrustedScriptURL</a></p>
-    <p class="less-than-two-engines-text">In only one current engine.</p>
-    <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
-     <hr>
-     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
-     <hr>
-     <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
-     <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
-    </div>
-   </div>
   </details>
-  <details class="mdn-anno unpositioned" data-anno-for="dom-trustedtypepolicy-createhtml">
+  <details class="mdn-anno unpositioned" data-anno-for="dom-trustedtypepolicy-createhtml" data-mdn="v1|API/TrustedTypePolicy/createHTML|1|-,-,83,@!,83,@?,-,@-,@-,@!,@!,@!,@!,">
    <summary><b class="less-than-two-engines-flag" title="This feature is in less than two current engines.">⚠</b><span>MDN</span></summary>
-   <div class="feature">
-    <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedTypePolicy/createHTML" title="The createHTML() method of the TrustedTypePolicy interface creates a TrustedHTML object using a policy created by TrustedTypePolicyFactory.createPolicy().">TrustedTypePolicy/createHTML</a></p>
-    <p class="less-than-two-engines-text">In only one current engine.</p>
-    <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
-     <hr>
-     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
-     <hr>
-     <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
-     <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
-    </div>
-   </div>
   </details>
-  <details class="mdn-anno unpositioned" data-anno-for="dom-trustedtypepolicy-createscript">
+  <details class="mdn-anno unpositioned" data-anno-for="dom-trustedtypepolicy-createscript" data-mdn="v1|API/TrustedTypePolicy/createScript|1|-,-,83,@!,83,@?,-,@-,@-,@!,@!,@!,@!,">
    <summary><b class="less-than-two-engines-flag" title="This feature is in less than two current engines.">⚠</b><span>MDN</span></summary>
-   <div class="feature">
-    <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedTypePolicy/createScript" title="The createScript() method of the TrustedTypePolicy interface creates a TrustedScript object using a policy created by TrustedTypePolicyFactory.createPolicy().">TrustedTypePolicy/createScript</a></p>
-    <p class="less-than-two-engines-text">In only one current engine.</p>
-    <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
-     <hr>
-     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
-     <hr>
-     <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
-     <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
-    </div>
-   </div>
   </details>
-  <details class="mdn-anno unpositioned" data-anno-for="dom-trustedtypepolicy-createscripturl">
+  <details class="mdn-anno unpositioned" data-anno-for="dom-trustedtypepolicy-createscripturl" data-mdn="v1|API/TrustedTypePolicy/createScriptURL|1|-,-,83,@!,83,@?,-,@-,@-,@!,@!,@!,@!,">
    <summary><b class="less-than-two-engines-flag" title="This feature is in less than two current engines.">⚠</b><span>MDN</span></summary>
-   <div class="feature">
-    <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedTypePolicy/createScriptURL" title="The createScriptURL() method of the TrustedTypePolicy interface creates a TrustedScriptURL object using a policy created by TrustedTypePolicyFactory.createPolicy().">TrustedTypePolicy/createScriptURL</a></p>
-    <p class="less-than-two-engines-text">In only one current engine.</p>
-    <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
-     <hr>
-     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
-     <hr>
-     <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
-     <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
-    </div>
-   </div>
   </details>
-  <details class="mdn-anno unpositioned" data-anno-for="dom-trustedtypepolicy-name">
+  <details class="mdn-anno unpositioned" data-anno-for="dom-trustedtypepolicy-name" data-mdn="v1|API/TrustedTypePolicy/name|1|-,-,83,@!,83,@?,-,@-,@-,@!,@!,@!,@!,">
    <summary><b class="less-than-two-engines-flag" title="This feature is in less than two current engines.">⚠</b><span>MDN</span></summary>
-   <div class="feature">
-    <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedTypePolicy/name" title="The name read-only property of the TrustedTypePolicy interface returns the name of the policy.">TrustedTypePolicy/name</a></p>
-    <p class="less-than-two-engines-text">In only one current engine.</p>
-    <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
-     <hr>
-     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
-     <hr>
-     <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
-     <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
-    </div>
-   </div>
   </details>
-  <details class="mdn-anno unpositioned" data-anno-for="trusted-type-policy">
+  <details class="mdn-anno unpositioned" data-anno-for="trusted-type-policy" data-mdn="v1|API/TrustedTypePolicy|1|-,-,83,@!,83,@?,-,@-,@-,@!,@!,@!,@!,">
    <summary><b class="less-than-two-engines-flag" title="This feature is in less than two current engines.">⚠</b><span>MDN</span></summary>
-   <div class="feature">
-    <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedTypePolicy" title="The TrustedTypePolicy interface of the Trusted Types API defines a group of functions which create TrustedType objects.">TrustedTypePolicy</a></p>
-    <p class="less-than-two-engines-text">In only one current engine.</p>
-    <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
-     <hr>
-     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
-     <hr>
-     <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
-     <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
-    </div>
-   </div>
   </details>
-  <details class="mdn-anno unpositioned" data-anno-for="dom-trustedtypepolicyfactory-createpolicy">
+  <details class="mdn-anno unpositioned" data-anno-for="dom-trustedtypepolicyfactory-createpolicy" data-mdn="v1|API/TrustedTypePolicyFactory/createPolicy|1|-,-,83,@!,83,@?,-,@-,@-,@!,@!,@!,@!,">
    <summary><b class="less-than-two-engines-flag" title="This feature is in less than two current engines.">⚠</b><span>MDN</span></summary>
-   <div class="feature">
-    <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedTypePolicyFactory/createPolicy" title="The createPolicy() method of the TrustedTypePolicyFactory interface creates a TrustedTypePolicy object that implements the rules passed as policyOptions.">TrustedTypePolicyFactory/createPolicy</a></p>
-    <p class="less-than-two-engines-text">In only one current engine.</p>
-    <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
-     <hr>
-     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
-     <hr>
-     <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
-     <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
-    </div>
-   </div>
   </details>
-  <details class="mdn-anno unpositioned" data-anno-for="dom-trustedtypepolicyfactory-defaultpolicy">
+  <details class="mdn-anno unpositioned" data-anno-for="dom-trustedtypepolicyfactory-defaultpolicy" data-mdn="v1|API/TrustedTypePolicyFactory/defaultPolicy|1|-,-,83,@!,83,@?,-,@-,@-,@!,@!,@!,@!,">
    <summary><b class="less-than-two-engines-flag" title="This feature is in less than two current engines.">⚠</b><span>MDN</span></summary>
-   <div class="feature">
-    <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedTypePolicyFactory/defaultPolicy" title="The defaultPolicy read-only property of the TrustedTypePolicyFactory interface returns the default TrustedTypePolicy or null if this is empty.">TrustedTypePolicyFactory/defaultPolicy</a></p>
-    <p class="less-than-two-engines-text">In only one current engine.</p>
-    <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
-     <hr>
-     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
-     <hr>
-     <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
-     <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
-    </div>
-   </div>
   </details>
-  <details class="mdn-anno unpositioned" data-anno-for="dom-trustedtypepolicyfactory-emptyhtml">
+  <details class="mdn-anno unpositioned" data-anno-for="dom-trustedtypepolicyfactory-emptyhtml" data-mdn="v1|API/TrustedTypePolicyFactory/emptyHTML|1|-,-,83,@!,83,@?,-,@-,@-,@!,@!,@!,@!,">
    <summary><b class="less-than-two-engines-flag" title="This feature is in less than two current engines.">⚠</b><span>MDN</span></summary>
-   <div class="feature">
-    <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedTypePolicyFactory/emptyHTML" title="The emptyHTML read-only property of the TrustedTypePolicyFactory interface returns a TrustedHTML object containing an empty string.">TrustedTypePolicyFactory/emptyHTML</a></p>
-    <p class="less-than-two-engines-text">In only one current engine.</p>
-    <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
-     <hr>
-     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
-     <hr>
-     <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
-     <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
-    </div>
-   </div>
   </details>
-  <details class="mdn-anno unpositioned" data-anno-for="dom-trustedtypepolicyfactory-emptyscript">
+  <details class="mdn-anno unpositioned" data-anno-for="dom-trustedtypepolicyfactory-emptyscript" data-mdn="v1|API/TrustedTypePolicyFactory/emptyScript|1|-,-,83,@!,83,@?,-,@-,@-,@!,@!,@!,@!,">
    <summary><b class="less-than-two-engines-flag" title="This feature is in less than two current engines.">⚠</b><span>MDN</span></summary>
-   <div class="feature">
-    <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedTypePolicyFactory/emptyScript" title="The emptyScript read-only property of the TrustedTypePolicyFactory interface returns a TrustedScript object containing an empty string.">TrustedTypePolicyFactory/emptyScript</a></p>
-    <p class="less-than-two-engines-text">In only one current engine.</p>
-    <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
-     <hr>
-     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
-     <hr>
-     <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
-     <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
-    </div>
-   </div>
   </details>
-  <details class="mdn-anno unpositioned" data-anno-for="dom-trustedtypepolicyfactory-getattributetype">
+  <details class="mdn-anno unpositioned" data-anno-for="dom-trustedtypepolicyfactory-getattributetype" data-mdn="v1|API/TrustedTypePolicyFactory/getAttributeType|1|-,-,83,@!,83,@?,-,@-,@-,@!,@!,@!,@!,">
    <summary><b class="less-than-two-engines-flag" title="This feature is in less than two current engines.">⚠</b><span>MDN</span></summary>
-   <div class="feature">
-    <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedTypePolicyFactory/getAttributeType" title="The getAttributeType() method of the TrustedTypePolicyFactory interface allows web developers to check if a Trusted Type is required for an element, and if so which Trusted Type is used.">TrustedTypePolicyFactory/getAttributeType</a></p>
-    <p class="less-than-two-engines-text">In only one current engine.</p>
-    <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
-     <hr>
-     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
-     <hr>
-     <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
-     <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
-    </div>
-   </div>
   </details>
-  <details class="mdn-anno unpositioned" data-anno-for="dom-trustedtypepolicyfactory-getpropertytype">
+  <details class="mdn-anno unpositioned" data-anno-for="dom-trustedtypepolicyfactory-getpropertytype" data-mdn="v1|API/TrustedTypePolicyFactory/getPropertyType|1|-,-,83,@!,83,@?,-,@-,@-,@!,@!,@!,@!,">
    <summary><b class="less-than-two-engines-flag" title="This feature is in less than two current engines.">⚠</b><span>MDN</span></summary>
-   <div class="feature">
-    <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedTypePolicyFactory/getPropertyType" title="The getPropertyType() method of the TrustedTypePolicyFactory interface allows web developers to check if a Trusted Type is required for an element&apos;s property.">TrustedTypePolicyFactory/getPropertyType</a></p>
-    <p class="less-than-two-engines-text">In only one current engine.</p>
-    <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
-     <hr>
-     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
-     <hr>
-     <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
-     <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
-    </div>
-   </div>
   </details>
-  <details class="mdn-anno unpositioned" data-anno-for="dom-trustedtypepolicyfactory-ishtml">
+  <details class="mdn-anno unpositioned" data-anno-for="dom-trustedtypepolicyfactory-ishtml" data-mdn="v1|API/TrustedTypePolicyFactory/isHTML|1|-,-,83,@!,83,@?,-,@-,@-,@!,@!,@!,@!,">
    <summary><b class="less-than-two-engines-flag" title="This feature is in less than two current engines.">⚠</b><span>MDN</span></summary>
-   <div class="feature">
-    <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedTypePolicyFactory/isHTML" title="The isHTML() method of the TrustedTypePolicyFactory interface returns true if it is passed a valid TrustedHTML object.">TrustedTypePolicyFactory/isHTML</a></p>
-    <p class="less-than-two-engines-text">In only one current engine.</p>
-    <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
-     <hr>
-     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
-     <hr>
-     <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
-     <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
-    </div>
-   </div>
   </details>
-  <details class="mdn-anno unpositioned" data-anno-for="dom-trustedtypepolicyfactory-isscript">
+  <details class="mdn-anno unpositioned" data-anno-for="dom-trustedtypepolicyfactory-isscript" data-mdn="v1|API/TrustedTypePolicyFactory/isScript|1|-,-,83,@!,83,@?,-,@-,@-,@!,@!,@!,@!,">
    <summary><b class="less-than-two-engines-flag" title="This feature is in less than two current engines.">⚠</b><span>MDN</span></summary>
-   <div class="feature">
-    <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedTypePolicyFactory/isScript" title="The isScript() method of the TrustedTypePolicyFactory interface returns true if it is passed a valid TrustedScript object.">TrustedTypePolicyFactory/isScript</a></p>
-    <p class="less-than-two-engines-text">In only one current engine.</p>
-    <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
-     <hr>
-     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
-     <hr>
-     <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
-     <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
-    </div>
-   </div>
   </details>
-  <details class="mdn-anno unpositioned" data-anno-for="dom-trustedtypepolicyfactory-isscripturl">
+  <details class="mdn-anno unpositioned" data-anno-for="dom-trustedtypepolicyfactory-isscripturl" data-mdn="v1|API/TrustedTypePolicyFactory/isScriptURL|1|-,-,83,@!,83,@?,-,@-,@-,@!,@!,@!,@!,">
    <summary><b class="less-than-two-engines-flag" title="This feature is in less than two current engines.">⚠</b><span>MDN</span></summary>
-   <div class="feature">
-    <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedTypePolicyFactory/isScriptURL" title="The isScriptURL() method of the TrustedTypePolicyFactory interface returns true if it is passed a valid TrustedScriptURL object.">TrustedTypePolicyFactory/isScriptURL</a></p>
-    <p class="less-than-two-engines-text">In only one current engine.</p>
-    <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
-     <hr>
-     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
-     <hr>
-     <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
-     <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
-    </div>
-   </div>
   </details>
-  <details class="mdn-anno unpositioned" data-anno-for="trusted-type-policy-factory">
+  <details class="mdn-anno unpositioned" data-anno-for="trusted-type-policy-factory" data-mdn="v1|API/TrustedTypePolicyFactory|1|-,-,83,@!,83,@?,-,@-,@-,@!,@!,@!,@!,">
    <summary><b class="less-than-two-engines-flag" title="This feature is in less than two current engines.">⚠</b><span>MDN</span></summary>
-   <div class="feature">
-    <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/TrustedTypePolicyFactory" title="The TrustedTypePolicyFactory interface of the Trusted Types API creates policies and allows the verification of Trusted Type objects against created policies.">TrustedTypePolicyFactory</a></p>
-    <p class="less-than-two-engines-text">In only one current engine.</p>
-    <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
-     <hr>
-     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
-     <hr>
-     <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
-     <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
-    </div>
-   </div>
   </details>
-  <details class="mdn-anno unpositioned" data-anno-for="require-trusted-types-for-csp-directive">
+  <details class="mdn-anno unpositioned" data-anno-for="require-trusted-types-for-csp-directive" data-mdn="v1|HTTP/Headers/Content-Security-Policy/require-trusted-types-for|1|-,-,83,@!,83,@?,-,@-,@-,@!,@!,@!,@!,">
    <summary><b class="less-than-two-engines-flag" title="This feature is in less than two current engines.">⚠</b><span>MDN</span></summary>
-   <div class="feature">
-    <p><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/require-trusted-types-for" title="The HTTP Content-Security-Policy (CSP) require-trusted-types-for Experimental directive instructs user agents to control the data passed to DOM XSS sink functions, like Element.innerHTML setter.">Headers/Content-Security-Policy/require-trusted-types-for</a></p>
-    <p class="less-than-two-engines-text">In only one current engine.</p>
-    <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
-     <hr>
-     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
-     <hr>
-     <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
-     <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>?</span></span>
-    </div>
-   </div>
   </details>
-  <details class="mdn-anno unpositioned" data-anno-for="trusted-types-csp-directive">
+  <details class="mdn-anno unpositioned" data-anno-for="trusted-types-csp-directive" data-mdn="v1|HTTP/Headers/Content-Security-Policy/trusted-types|1|-,-,83,@!,83,@?,-,@-,@-,@!,@!,@!,-,">
    <summary><b class="less-than-two-engines-flag" title="This feature is in less than two current engines.">⚠</b><span>MDN</span></summary>
-   <div class="feature">
-    <p><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/trusted-types" title="The HTTP Content-Security-Policy (CSP) trusted-types Experimental directive instructs user agents to restrict the creation of Trusted Types policies - functions that build non-spoofable, typed values intended to be passed to DOM XSS sinks in place of strings.">Headers/Content-Security-Policy/trusted-types</a></p>
-    <p class="less-than-two-engines-text">In only one current engine.</p>
-    <div class="support">
-     <span class="firefox no"><span>Firefox</span><span>None</span></span><span class="no safari"><span>Safari</span><span>None</span></span><span class="chrome yes"><span>Chrome</span><span>83+</span></span>
-     <hr>
-     <span class="no opera"><span>Opera</span><span>?</span></span><span class="edge_blink yes"><span>Edge</span><span>83+</span></span>
-     <hr>
-     <span class="edge no"><span>Edge (Legacy)</span><span>?</span></span><span class="ie no"><span>IE</span><span>None</span></span>
-     <hr>
-     <span class="firefox_android no"><span>Firefox for Android</span><span>?</span></span><span class="no safari_ios"><span>iOS Safari</span><span>?</span></span><span class="chrome_android no"><span>Chrome for Android</span><span>?</span></span><span class="no webview_android"><span>Android WebView</span><span>?</span></span><span class="no samsunginternet_android"><span>Samsung Internet</span><span>?</span></span><span class="no opera_android"><span>Opera Mobile</span><span>None</span></span>
-    </div>
-   </div>
   </details>
 <script>/* Boilerplate: script-dom-helper */
 "use strict";
@@ -4364,6 +4032,7 @@ let dfnPanelData = {
 "5372cca8": {"dfnID":"5372cca8","dfnText":"boolean","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-boolean"},{"id":"ref-for-idl-boolean\u2460"},{"id":"ref-for-idl-boolean\u2461"}],"title":"2.3.2. TrustedTypePolicyFactory"}],"url":"https://webidl.spec.whatwg.org/#idl-boolean"},
 "5442ea33": {"dfnID":"5442ea33","dfnText":"URL serializer","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-url-serializer"}],"title":"4.2.1.1. require-trusted-types-for Pre-Navigation check"}],"url":"https://url.spec.whatwg.org/#concept-url-serializer"},
 "55213b5b": {"dfnID":"55213b5b","dfnText":"request","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-request"}],"title":"4.2.1.1. require-trusted-types-for Pre-Navigation check"}],"url":"https://fetch.spec.whatwg.org/#concept-request"},
+"5590e887": {"dfnID":"5590e887","dfnText":"SVGScriptElement","external":true,"refSections":[{"refs":[{"id":"ref-for-svgscriptelement"}],"title":"3.8. Prepare the script text"},{"refs":[{"id":"ref-for-svgscriptelement\u2460"},{"id":"ref-for-svgscriptelement\u2461"}],"title":"3.10. Get Trusted Type data for attribute"},{"refs":[{"id":"ref-for-svgscriptelement\u2462"}],"title":"4.1.2.1. Slots with trusted values"},{"refs":[{"id":"ref-for-svgscriptelement\u2463"}],"title":"4.1.2.3. Setting slot values from parser"},{"refs":[{"id":"ref-for-svgscriptelement\u2464"}],"title":"4.1.2.4. Slot value verification"}],"url":"https://w3c.github.io/svgwg/svg2-draft/interact.html#svgscriptelement"},
 "579a2f63": {"dfnID":"579a2f63","dfnText":"content security policy object","external":true,"refSections":[{"refs":[{"id":"ref-for-content-security-policy-object"}],"title":"4.2.1.1. require-trusted-types-for Pre-Navigation check"}],"url":"https://w3c.github.io/webappsec-csp/#content-security-policy-object"},
 "5991ccfb": {"dfnID":"5991ccfb","dfnText":"relevant realm","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-relevant-realm"},{"id":"ref-for-concept-relevant-realm\u2460"}],"title":"3.2. Create a Trusted Type"},{"refs":[{"id":"ref-for-concept-relevant-realm\u2461"}],"title":"3.3. Get Trusted Type policy value"},{"refs":[{"id":"ref-for-concept-relevant-realm\u2462"},{"id":"ref-for-concept-relevant-realm\u2463"},{"id":"ref-for-concept-relevant-realm\u2464"}],"title":"3.6. Get Trusted Type compliant parser options"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-realm"},
 "5c117fdd": {"dfnID":"5c117fdd","dfnText":"pre-navigation check","external":true,"refSections":[{"refs":[{"id":"ref-for-directive-pre-navigation-check"}],"title":"4.2.1.1. require-trusted-types-for Pre-Navigation check"}],"url":"https://w3c.github.io/webappsec-csp/#directive-pre-navigation-check"},
@@ -4374,7 +4043,6 @@ let dfnPanelData = {
 "692595fe": {"dfnID":"692595fe","dfnText":"ordered set","external":true,"refSections":[{"refs":[{"id":"ref-for-ordered-set"}],"title":"2.3.2. TrustedTypePolicyFactory"}],"url":"https://infra.spec.whatwg.org/#ordered-set"},
 "6c6b1005": {"dfnID":"6c6b1005","dfnText":"any","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-any"},{"id":"ref-for-idl-any\u2460"},{"id":"ref-for-idl-any\u2461"}],"title":"2.3.2. TrustedTypePolicyFactory"},{"refs":[{"id":"ref-for-idl-any\u2462"},{"id":"ref-for-idl-any\u2463"},{"id":"ref-for-idl-any\u2464"},{"id":"ref-for-idl-any\u2465"}],"title":"2.3.3. TrustedTypePolicy"},{"refs":[{"id":"ref-for-idl-any\u2466"},{"id":"ref-for-idl-any\u2467"},{"id":"ref-for-idl-any\u2468"},{"id":"ref-for-idl-any\u2460\u24ea"}],"title":"2.3.4. TrustedTypePolicyOptions"}],"url":"https://webidl.spec.whatwg.org/#idl-any"},
 "6f2dfa22": {"dfnID":"6f2dfa22","dfnText":"ASCII lowercase","external":true,"refSections":[{"refs":[{"id":"ref-for-ascii-lowercase"},{"id":"ref-for-ascii-lowercase\u2460"},{"id":"ref-for-ascii-lowercase\u2461"}],"title":"2.3.2. TrustedTypePolicyFactory"}],"url":"https://infra.spec.whatwg.org/#ascii-lowercase"},
-"722f37fd": {"dfnID":"722f37fd","dfnText":"SVGScriptElement","external":true,"refSections":[{"refs":[{"id":"ref-for-InterfaceSVGScriptElement"}],"title":"3.8. Prepare the script text"},{"refs":[{"id":"ref-for-InterfaceSVGScriptElement\u2460"},{"id":"ref-for-InterfaceSVGScriptElement\u2461"}],"title":"3.10. Get Trusted Type data for attribute"},{"refs":[{"id":"ref-for-InterfaceSVGScriptElement\u2462"}],"title":"4.1.2.1. Slots with trusted values"},{"refs":[{"id":"ref-for-InterfaceSVGScriptElement\u2463"}],"title":"4.1.2.3. Setting slot values from parser"},{"refs":[{"id":"ref-for-InterfaceSVGScriptElement\u2464"}],"title":"4.1.2.4. Slot value verification"}],"url":"https://w3c.github.io/svgwg/svg2-draft/interact.html#InterfaceSVGScriptElement"},
 "77b4c09a": {"dfnID":"77b4c09a","dfnText":"assert","external":true,"refSections":[{"refs":[{"id":"ref-for-assert"},{"id":"ref-for-assert\u2460"}],"title":"3.6. Get Trusted Type compliant parser options"},{"refs":[{"id":"ref-for-assert\u2461"}],"title":"3.9. Get Trusted Type compliant attribute value"}],"url":"https://infra.spec.whatwg.org/#assert"},
 "7b3e6a23": {"dfnID":"7b3e6a23","dfnText":"configure a sanitizer","external":true,"refSections":[{"refs":[{"id":"ref-for-configure-a-sanitizer"}],"title":"3.6. Get Trusted Type compliant parser options"}],"url":"https://html.spec.whatwg.org/#configure-a-sanitizer"},
 "822da716": {"dfnID":"822da716","dfnText":"createContextualFragment(string)","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-range-createcontextualfragment"}],"title":"2.4.3. Summary of input enforcement"},{"refs":[{"id":"ref-for-dom-range-createcontextualfragment\u2460"}],"title":"3.4. Get Trusted Type compliant input"}],"url":"https://html.spec.whatwg.org/multipage/dynamic-markup-insertion.html#dom-range-createcontextualfragment"},
@@ -4532,16 +4200,6 @@ let dfnPanelData = {
 
 document.addEventListener("DOMContentLoaded", ()=>{
     genAllDfnPanels();
-
-    document.body.addEventListener("click", (e) => {
-        // If not handled already, just hide all dfn panels.
-        hideAllDfnPanels();
-    });
-});
-
-window.addEventListener("resize", () => {
-    // Pin any visible dfn panel
-    queryAll(".dfn-panel.on, .dfn-panel.activated").forEach(el=>positionDfnPanel(el));
 });
 
 function genAllDfnPanels() {
@@ -4553,16 +4211,17 @@ function genAllDfnPanels() {
             continue;
         }
         dfn.panelData = panelData;
-        insertDfnPopupAction(dfn);
+        genDfnPanel(dfn, panelData);
     }
 }
 
 function genDfnPanel(dfn, { dfnID, url, dfnText, refSections, external }) {
-    const dfnPanel = mk.aside({
-        class: "dfn-panel on",
+    const dfnPanel = mk.dialog({
+        class: "dfn-panel",
         id: `infopanel-for-${dfnID}`,
+        popover: "hint",
         "data-for": dfnID,
-        "aria-labelled-by":`infopaneltitle-for-${dfnID}`,
+        "aria-labelledby": `infopaneltitle-for-${dfnID}`,
         },
         mk.span({id:`infopaneltitle-for-${dfnID}`, style:"display:none"},
             `Info about the '${dfnText}' ${external?"external":""} reference.`),
@@ -4594,106 +4253,34 @@ function genDfnPanel(dfn, { dfnID, url, dfnText, refSections, external }) {
         event.stopPropagation();
         refocusOnTarget(event);
     });
-    dfnPanel.addEventListener('keydown', (event) => {
-        if(event.keyCode == 27) { // Escape key
-            hideDfnPanel({dfnPanel});
-            event.stopPropagation();
-            event.preventDefault();
+
+    dfnPanel.addEventListener('toggle', event=>{
+        if(event.newState == "closed") {
+            unpinDfnPanel(dfnPanel);
         }
     });
 
     dfnPanel.dfn = dfn;
     dfn.dfnPanel = dfnPanel;
+    dfn.after(dfnPanel);
+    const button = mk.button(
+        {
+            class:"dfn-panelbutton",
+            "popovertarget":dfnPanel.id
+        },
+        ...dfn.childNodes
+    );
+    dfn.append(button);
     return dfnPanel;
-}
-
-
-
-function hideAllDfnPanels() {
-    // Delete the currently-active dfn panel.
-    queryAll(".dfn-panel").forEach(dfnPanel=>hideDfnPanel({dfnPanel}));
-}
-
-function showDfnPanel(dfn) {
-    hideAllDfnPanels(); // Only display one at a time.
-
-    dfn.setAttribute("aria-expanded", "true");
-
-    const dfnPanel = genDfnPanel(dfn, dfn.panelData);
-
-    // Give the dfn a unique tabindex, and then
-    // give all the tabbable panel bits successive indexes.
-    let tabIndex = 100;
-    dfn.tabIndex = tabIndex++;
-    const tabbable = dfnPanel.querySelectorAll(":is(a, button)");
-    for (const el of tabbable) {
-        el.tabIndex = tabIndex++;
-    }
-
-    append(document.body, dfnPanel);
-    positionDfnPanel(dfnPanel);
-}
-
-function positionDfnPanel(dfnPanel) {
-    const dfn = dfnPanel.dfn;
-    const dfnPos = getBounds(dfn);
-    dfnPanel.style.top = dfnPos.bottom + "px";
-    dfnPanel.style.left = dfnPos.left + "px";
-
-    const panelPos = dfnPanel.getBoundingClientRect();
-    const panelMargin = 8;
-    const maxRight = document.body.parentNode.clientWidth - panelMargin;
-    if (panelPos.right > maxRight) {
-        const overflowAmount = panelPos.right - maxRight;
-        const newLeft = Math.max(panelMargin, dfnPos.left - overflowAmount);
-        dfnPanel.style.left = newLeft + "px";
-    }
 }
 
 function pinDfnPanel(dfnPanel) {
     // Switch it to "activated" state, which pins it.
     dfnPanel.classList.add("activated");
-    dfnPanel.style.position = "fixed";
-    dfnPanel.style.left = null;
-    dfnPanel.style.top = null;
 }
 
-function hideDfnPanel({dfn, dfnPanel}) {
-    if(!dfnPanel) dfnPanel = dfn.dfnPanel;
-    if(!dfn) dfn = dfnPanel.dfn;
-    dfn.dfnPanel = undefined;
-    dfnPanel.dfn = undefined;
-    dfn.setAttribute("aria-expanded", "false");
-    dfn.tabIndex = undefined;
-    dfnPanel.remove()
-}
-
-function toggleDfnPanel(dfn) {
-    if(dfn.dfnPanel) {
-        hideDfnPanel(dfn);
-    } else {
-        showDfnPanel(dfn);
-    }
-}
-
-function insertDfnPopupAction(dfn) {
-    dfn.setAttribute('role', 'button');
-    dfn.setAttribute('aria-expanded', 'false')
-    dfn.tabIndex = 0;
-    dfn.classList.add('has-dfn-panel');
-    dfn.addEventListener('click', (event) => {
-        toggleDfnPanel(dfn);
-        event.stopPropagation();
-    });
-    dfn.addEventListener('keypress', (event) => {
-        const kc = event.keyCode;
-        // 32->Space, 13->Enter
-        if(kc == 32 || kc == 13) {
-            toggleDfnPanel(dfn);
-            event.stopPropagation();
-            event.preventDefault();
-        }
-    });
+function unpinDfnPanel(dfnPanel) {
+    dfnPanel.classList.remove("activated");
 }
 
 function refocusOnTarget(event) {
@@ -4703,21 +4290,6 @@ function refocusOnTarget(event) {
         // This is needed after browser scrolls to the destination.
         target.focus();
     });
-}
-
-// TODO: shared util
-// Returns the root-level absolute position {left and top} of element.
-function getBounds(el, relativeTo=document.body) {
-    const relativeRect = relativeTo.getBoundingClientRect();
-    const elRect = el.getBoundingClientRect();
-    const top = elRect.top - relativeRect.top;
-    const left = elRect.left - relativeRect.left;
-    return {
-        top,
-        left,
-        bottom: top + elRect.height,
-        right: left + elRect.width,
-    }
 }
 
 function scrollToTargetAndHighlight(event) {
@@ -4910,6 +4482,213 @@ function genLinkingSyntaxes(dfn) {
         )
     ];
 }
+}
+</script>
+<script>/* Boilerplate: script-mdn-anno */
+"use strict";
+{
+'use strict';
+// File copied from https://github.com/whatwg/whatwg.org/blob/main/resources.whatwg.org/standard-mdn-annos.js
+
+// Builds MDN annotation panels on demand from the compact `data-mdn` attribute written by
+// the spec generator (wattsi's EncodeMDNAnnotations; Bikeshed's mdnspeclinks.py builds its
+// panels eagerly for now). Only the wire format is shared: the browser labels, the
+// engine-support strings and the render grouping all live here.
+//
+// Archived commit snapshots load this file forever, so every format version this script
+// has ever understood has to keep working. Evolve the format by adding a branch in
+// `hydrate`, never by redefining a version that has already shipped.
+
+const MDN_URL = 'https://developer.mozilla.org/en-US/docs/Web/';
+const CANIUSE_URL = 'https://caniuse.com/#feat=';
+
+// Render groups, in the order they appear in a panel, separated by <hr>.
+const CURRENT_ENGINES = 0;
+const BORROWED_ENGINES = 1;
+const RETIRED_ENGINES = 2;
+const MOBILE = 3;
+const NON_BROWSER = 4;
+const GROUP_COUNT = 5;
+
+// Cell slots, in the order they appear in `data-mdn`. APPEND-ONLY: a new browser goes at
+// the end and is never inserted, so that old data still lines up and old copies of this
+// script can keep ignoring the cells they don't know about. `group` is what decides where
+// a row is rendered, so appending to this list doesn't constrain where the row shows up.
+const SLOTS = [
+  { id: 'firefox', label: 'Firefox', group: CURRENT_ENGINES },
+  { id: 'safari', label: 'Safari', group: CURRENT_ENGINES },
+  { id: 'chrome', label: 'Chrome', group: CURRENT_ENGINES },
+  { id: 'opera', label: 'Opera', group: BORROWED_ENGINES, mirrors: 'Chrome' },
+  { id: 'edge_blink', label: 'Edge', group: BORROWED_ENGINES },
+  { id: 'edge', label: 'Edge (Legacy)', group: RETIRED_ENGINES },
+  { id: 'ie', label: 'IE', group: RETIRED_ENGINES },
+  { id: 'firefox_android', label: 'Firefox for Android', group: MOBILE, mirrors: 'Firefox' },
+  { id: 'safari_ios', label: 'iOS Safari', group: MOBILE, mirrors: 'Safari' },
+  { id: 'chrome_android', label: 'Chrome for Android', group: MOBILE, mirrors: 'Chrome' },
+  { id: 'webview_android', label: 'Android WebView', group: MOBILE, mirrors: 'Chrome' },
+  { id: 'samsunginternet_android', label: 'Samsung Internet', group: MOBILE, mirrors: 'Chrome' },
+  { id: 'opera_android', label: 'Opera Mobile', group: MOBILE, mirrors: 'Chrome' },
+  { id: 'nodejs', label: 'Node.js', group: NON_BROWSER },
+];
+
+// One mnemonic character per engine-support note.
+const LEVELS = {
+  '0': { class: 'less-than-two-engines-text', text: 'In no current engines.' },
+  '1': { class: 'less-than-two-engines-text', text: 'In only one current engine.' },
+  '9': { class: 'all-engines-text', text: 'In all current engines.' },
+  's': { class: 'less-than-two-engines-text', text: 'Support in one engine under other name.' },
+  'S': { class: 'less-than-two-engines-text', text: 'Support in some engines under other name.' },
+  'v': { class: 'less-than-two-engines-text', text: 'Prefixed support in one engine.' },
+  'V': { class: 'less-than-two-engines-text', text: 'Prefixed support in some engines.' },
+  'p': { class: 'less-than-two-engines-text', text: 'Partial support in one engine.' },
+  'P': { class: 'less-than-two-engines-text', text: 'Partial support in some engines.' },
+};
+
+// Leading character of a cell, qualifying how the version after it should be read. `flag`
+// is whether to mark the version with 🔰 as well as explaining it in a tooltip.
+const CAVEATS = {
+  '*': { flag: true, title: () => 'Partial implementation.' },
+  '^': { flag: true, title: () => 'Requires setting a user preference or runtime flag.' },
+  '$': { flag: true, title: () => 'Requires a prefix or alternative name.' },
+  // Mirrored support is far too common to flag every occurrence; the tooltip is enough.
+  '@': { flag: false, title: (slot) => `Support is mirrored from ${slot.mirrors ?? 'the upstream browser'}.` },
+};
+
+const FLAG = '\u{1F530}'; // 🔰, marks a version that comes with a caveat
+const EN_DASH = '–';
+
+function element(name, attributes, ...children) {
+  const node = document.createElement(name);
+  for (const [attribute, value] of Object.entries(attributes)) {
+    if (value !== undefined) {
+      node.setAttribute(attribute, value);
+    }
+  }
+  node.append(...children);
+  return node;
+}
+
+function splitOnce(string, separator) {
+  const at = string.indexOf(separator);
+  return at === -1 ? [string, undefined] : [string.slice(0, at), string.slice(at + 1)];
+}
+
+// A version body says both whether the browser supports the feature and since when.
+function readVersion(body) {
+  if (body === '?') {
+    return { state: 'unknown', version: '?' };
+  }
+  if (body === '-') {
+    return { state: 'no', version: 'None' };
+  }
+  if (body === '!') {
+    return { state: 'yes', version: 'Yes' };
+  }
+  if (body.startsWith('=')) {
+    // A version that will never be superseded, so no trailing "+".
+    return { state: 'yes', version: body.slice(1) };
+  }
+  const [added, removed] = body.split('-');
+  if (removed !== undefined) {
+    return { state: 'no', version: added + EN_DASH + removed };
+  }
+  return { state: 'yes', version: added + '+' };
+}
+
+function readCell(cell, slot) {
+  const caveat = CAVEATS[cell[0]];
+  const { state, version } = readVersion(caveat ? cell.slice(1) : cell);
+  return {
+    state,
+    version: caveat?.flag ? `${FLAG} ${version}` : version,
+    title: caveat?.title(slot),
+  };
+}
+
+// A browser row is the browser's name in one cell and its version in the next. The logo
+// comes from CSS, keyed off the browser id in the row's class.
+function browserRow(slot, cell) {
+  const { state, version, title } = readCell(cell, slot);
+  return element('span', { class: `${slot.id} ${state}` },
+    element('span', {}, slot.label),
+    element('span', { title }, version));
+}
+
+// The caniuse row has a single cell instead, since its logo needs no label beside it.
+function caniuseRow(field) {
+  const [feature, title] = splitOnce(field, ',');
+  const link = element('a', { href: CANIUSE_URL + feature, title }, 'caniuse.com table');
+  return element('span', { class: 'caniuse' }, element('span', {}, link));
+}
+
+function supportTable(cells, caniuse) {
+  const groups = Array.from({ length: GROUP_COUNT }, () => []);
+  SLOTS.forEach((slot, slotIndex) => {
+    // An empty cell means this browser gets no row at all. Cells beyond SLOTS are
+    // browsers added after this copy of the script was written; ignore them.
+    if (cells[slotIndex]) {
+      groups[slot.group].push(browserRow(slot, cells[slotIndex]));
+    }
+  });
+  if (caniuse !== undefined) {
+    groups.push([caniuseRow(caniuse)]);
+  }
+
+  const table = element('div', { class: 'support' });
+  for (const rows of groups.filter((rows) => rows.length > 0)) {
+    if (table.hasChildNodes()) {
+      table.append(element('hr', {}));
+    }
+    table.append(...rows);
+  }
+  return table;
+}
+
+function featurePanel(record) {
+  const [slug, level, cells, caniuse] = record.split('|');
+
+  const article = element('a', { href: MDN_URL + slug }, slug.slice(slug.indexOf('/') + 1));
+  const panel = element('div', { class: 'feature' }, element('p', {}, article));
+
+  if (level in LEVELS) {
+    panel.append(element('p', { class: LEVELS[level].class }, LEVELS[level].text));
+  }
+  if (cells) {
+    panel.append(supportTable(cells.split(','), caniuse));
+  }
+  return panel;
+}
+
+function hydrate(anno) {
+  const [version, features] = splitOnce(anno.dataset.mdn, '|');
+  delete anno.dataset.mdn; // Only ever hydrate a panel once.
+
+  if (version !== 'v1') {
+    console.warn(`Unsupported MDN annotation data version "${version}".`, anno);
+    return;
+  }
+  anno.append(...features.split('~').map(featurePanel));
+}
+
+function hydrateIfNeeded(node) {
+  if (node instanceof Element && node.matches('.mdn-anno[data-mdn]')) {
+    hydrate(node);
+  }
+}
+
+// A click on the summary arrives before the browser opens the <details>, so hydrating
+// from it means the panel never flashes empty. That covers pointers and the keyboard,
+// since activating a summary dispatches a click either way.
+document.addEventListener('click', (event) => {
+  if (event.target instanceof Element) {
+    hydrateIfNeeded(event.target.closest('summary')?.parentElement);
+  }
+}, true);
+
+// And `toggle` is the catch-all for a panel opened some other way, such as find-in-page
+// or a fragment navigation into it. It fires a task after the state has already changed,
+// and it doesn't bubble, so it has to be a capture listener.
+document.addEventListener('toggle', (event) => hydrateIfNeeded(event.target), true);
 }
 </script>
 <script>/* Boilerplate: script-position-annos */
@@ -5110,7 +4889,7 @@ let refsData = {
 "https://url.spec.whatwg.org/#concept-url-scheme": {"displayText":"scheme","export":true,"for_":["url"],"level":"1","normative":true,"shortname":"url","spec":"url","status":"current","text":"scheme","type":"dfn","url":"https://url.spec.whatwg.org/#concept-url-scheme"},
 "https://url.spec.whatwg.org/#concept-url-serializer": {"displayText":"URL serializer","export":true,"for_":[],"level":"1","normative":true,"shortname":"url","spec":"url","status":"current","text":"url serializer","type":"dfn","url":"https://url.spec.whatwg.org/#concept-url-serializer"},
 "https://w3c.github.io/FileAPI/#dfn-Blob": {"displayText":"Blob","export":true,"for_":[],"level":"1","normative":true,"shortname":"fileapi","spec":"fileapi","status":"current","text":"Blob","type":"interface","url":"https://w3c.github.io/FileAPI/#dfn-Blob"},
-"https://w3c.github.io/svgwg/svg2-draft/interact.html#InterfaceSVGScriptElement": {"displayText":"SVGScriptElement","export":true,"for_":[],"level":"2","normative":true,"shortname":"svg","spec":"svg2","status":"current","text":"SVGScriptElement","type":"interface","url":"https://w3c.github.io/svgwg/svg2-draft/interact.html#InterfaceSVGScriptElement"},
+"https://w3c.github.io/svgwg/svg2-draft/interact.html#svgscriptelement": {"displayText":"SVGScriptElement","export":true,"for_":[],"level":"2","normative":true,"shortname":"svg","spec":"svg2","status":"current","text":"SVGScriptElement","type":"interface","url":"https://w3c.github.io/svgwg/svg2-draft/interact.html#svgscriptelement"},
 "https://w3c.github.io/webappsec-csp/#content-security-policy-object": {"displayText":"content security policy object","export":true,"for_":[],"level":"3","normative":true,"shortname":"csp","spec":"csp3","status":"current","text":"content security policy object","type":"dfn","url":"https://w3c.github.io/webappsec-csp/#content-security-policy-object"},
 "https://w3c.github.io/webappsec-csp/#content-security-policy-object-directive-set": {"displayText":"directive set","export":true,"for_":["content security policy object"],"level":"3","normative":true,"shortname":"csp","spec":"csp3","status":"current","text":"directive set","type":"dfn","url":"https://w3c.github.io/webappsec-csp/#content-security-policy-object-directive-set"},
 "https://w3c.github.io/webappsec-csp/#content-security-policy-object-disposition": {"displayText":"disposition","export":true,"for_":["content security policy object"],"level":"3","normative":true,"shortname":"csp","spec":"csp3","status":"current","text":"disposition","type":"dfn","url":"https://w3c.github.io/webappsec-csp/#content-security-policy-object-disposition"},
