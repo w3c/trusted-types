@@ -1613,7 +1613,7 @@ To <dfn>prepare the script text</dfn> given an {{HTMLScriptElement}} or {{SVGScr
 
 1.  If |script|'s [=script text=] value is not equal to its [=child text content=],
     set |script|'s [=script text=] to the result of executing [=get Trusted Type compliant string=], with the following arguments:
-      * {{TrustedScriptURL}} as |expectedType|,
+      * {{TrustedScript}} as |expectedType|,
       * |script|'s {{Document}}'s [=relevant global object=] as |global|,
       * |script|'s [=child text content=] attribute value as |input|,
       * |sink|,
