@@ -7,7 +7,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/W3C-ED" rel="stylesheet">
   <meta content="Bikeshed version e0b165ae4, updated Mon Nov 2 15:16:49 2026 -0800" name="generator">
   <link href="https://www.w3.org/TR/trusted-types/" rel="canonical">
-  <meta content="e2e70fb955baf64b9bb703ea38a54fbdbde978e1" name="revision">
+  <meta content="cee34659f67b853141dcb93b62b433a7285a3aae" name="revision">
   <meta content="dark light" name="color-scheme">
   <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
 <style>/* Boilerplate: style-autolinks */
@@ -1964,7 +1964,7 @@ with the following arguments:</p>
   <c- c1>// a flaw in this code could cause DOM XSS.</c->
   createHTML<c- p>(</c->input<c- p>)</c-> <c- p>{</c-> <c- k>return</c-> aSanitizer<c- p>.</c->sanitize<c- p>(</c->input<c- p>)</c-> <c- p>},</c->
   createScriptURL<c- p>(</c->input<c- p>)</c-> <c- p>{</c->
-    <c- a>const</c-> u <c- o>=</c-> <c- ow>new</c-> URL<c- p>(</c->dirty<c- p>,</c-> document<c- p>.</c->baseURI<c- p>);</c->
+    <c- a>const</c-> u <c- o>=</c-> <c- ow>new</c-> URL<c- p>(</c->input<c- p>,</c-> document<c- p>.</c->baseURI<c- p>);</c->
     <c- k>if</c-> <c- p>(</c->APPLICATION_CONFIG<c- p>.</c->scriptOrigins<c- p>.</c->includes<c- p>(</c->u<c- p>.</c->origin<c- p>))</c-> <c- p>{</c->
       <c- k>return</c-> u<c- p>.</c->href<c- p>;</c->
     <c- p>}</c->
