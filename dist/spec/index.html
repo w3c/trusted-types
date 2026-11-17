@@ -7,7 +7,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/W3C-ED" rel="stylesheet">
   <meta content="Bikeshed version e0b165ae4, updated Mon Nov 2 15:16:49 2026 -0800" name="generator">
   <link href="https://www.w3.org/TR/trusted-types/" rel="canonical">
-  <meta content="a280ec2245a461bd81ecefdc75da9cc02315ab2f" name="revision">
+  <meta content="e2e70fb955baf64b9bb703ea38a54fbdbde978e1" name="revision">
   <meta content="dark light" name="color-scheme">
   <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
 <style>/* Boilerplate: style-autolinks */
@@ -1097,7 +1097,7 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
 </p>
    <h1 class="no-ref p-name" id="title">Trusted Types</h1>
    <p id="w3c-state"><a href="https://www.w3.org/standards/types/#ED">Editor’s Draft</a>,
-    <time class="dt-updated" datetime="2026-11-16">16 November 2026</time></p>
+    <time class="dt-updated" datetime="2026-11-17">17 November 2026</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -2879,7 +2879,7 @@ name <var>trustedTypeName</var>, with its associated data value set to <var>data
 set <var>script</var>’s <a data-link-type="dfn" href="#htmlscriptelement-script-text" id="ref-for-htmlscriptelement-script-text①">script text</a> to the result of executing <a data-link-type="dfn" href="#get-trusted-type-compliant-string" id="ref-for-get-trusted-type-compliant-string②">get Trusted Type compliant string</a>, with the following arguments:</p>
      <ul>
       <li data-md>
-       <p><code class="idl"><a data-link-type="idl" href="#trustedscripturl" id="ref-for-trustedscripturl④">TrustedScriptURL</a></code> as <var>expectedType</var>,</p>
+       <p><code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript⑨">TrustedScript</a></code> as <var>expectedType</var>,</p>
       <li data-md>
        <p><var>script</var>’s <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document①">Document</a></code>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①">relevant global object</a> as <var>global</var>,</p>
       <li data-md>
@@ -2912,7 +2912,7 @@ set <var>script</var>’s <a data-link-type="dfn" href="#htmlscriptelement-scrip
       <li data-md>
        <p>If <var>newValue</var> is a string, return <var>newValue</var>.</p>
       <li data-md>
-       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert②">Assert</a>: <var>newValue</var> is <code class="idl"><a data-link-type="idl" href="#trustedhtml" id="ref-for-trustedhtml③⓪">TrustedHTML</a></code> or <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript⑨">TrustedScript</a></code> or <code class="idl"><a data-link-type="idl" href="#trustedscripturl" id="ref-for-trustedscripturl⑤">TrustedScriptURL</a></code>.</p>
+       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert②">Assert</a>: <var>newValue</var> is <code class="idl"><a data-link-type="idl" href="#trustedhtml" id="ref-for-trustedhtml③⓪">TrustedHTML</a></code> or <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①⓪">TrustedScript</a></code> or <code class="idl"><a data-link-type="idl" href="#trustedscripturl" id="ref-for-trustedscripturl④">TrustedScriptURL</a></code>.</p>
       <li data-md>
        <p>Return <var>newValue</var>’s associated data.</p>
      </ol>
@@ -2946,7 +2946,7 @@ set <var>script</var>’s <a data-link-type="dfn" href="#htmlscriptelement-scrip
      <p>If <var>attributeNs</var> is null, « <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#html-namespace" id="ref-for-html-namespace②">HTML namespace</a>, <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#svg-namespace" id="ref-for-svg-namespace">SVG namespace</a>, <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#mathml-namespace" id="ref-for-mathml-namespace">MathML namespace</a> » <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain">contains</a> <var>element</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-namespace" id="ref-for-concept-element-namespace">namespace</a>, and <var>attribute</var> is the name of an <a data-link-type="dfn" href="https://html.spec.whatwg.org/#event-handler-content-attributes" id="ref-for-event-handler-content-attributes①">event handler content attribute</a>:</p>
      <ol>
       <li data-md>
-       <p>Return (<code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#element" id="ref-for-element⑤">Element</a></code>, null, <var>attribute</var>, <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①⓪">TrustedScript</a></code>, "Element " + <var>attribute</var>).</p>
+       <p>Return (<code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#element" id="ref-for-element⑤">Element</a></code>, null, <var>attribute</var>, <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①①">TrustedScript</a></code>, "Element " + <var>attribute</var>).</p>
      </ol>
     <li data-md>
      <p>Find the row in the following table, where <var>element</var> is in the first column, <var>attributeNs</var> is in the second column,
@@ -2973,21 +2973,21 @@ If a matching row is found, set <var>data</var> to that row.</p>
         <td><code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement" id="ref-for-htmlscriptelement⑥">HTMLScriptElement</a></code>
         <td>null
         <td>"src"
-        <td><code class="idl"><a data-link-type="idl" href="#trustedscripturl" id="ref-for-trustedscripturl⑥">TrustedScriptURL</a></code>
+        <td><code class="idl"><a data-link-type="idl" href="#trustedscripturl" id="ref-for-trustedscripturl⑤">TrustedScriptURL</a></code>
         <td>"HTMLScriptElement src"
     
        <tr>
         <td><code class="idl"><a data-link-type="idl" href="https://w3c.github.io/svgwg/svg2-draft/interact.html#svgscriptelement" id="ref-for-svgscriptelement①">SVGScriptElement</a></code>
         <td>null
         <td>"href"
-        <td><code class="idl"><a data-link-type="idl" href="#trustedscripturl" id="ref-for-trustedscripturl⑦">TrustedScriptURL</a></code>
+        <td><code class="idl"><a data-link-type="idl" href="#trustedscripturl" id="ref-for-trustedscripturl⑥">TrustedScriptURL</a></code>
         <td>"SVGScriptElement href"
     
        <tr>
         <td><code class="idl"><a data-link-type="idl" href="https://w3c.github.io/svgwg/svg2-draft/interact.html#svgscriptelement" id="ref-for-svgscriptelement②">SVGScriptElement</a></code>
         <td><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#xlink-namespace" id="ref-for-xlink-namespace">XLink namespace</a>
         <td>"href"
-        <td><code class="idl"><a data-link-type="idl" href="#trustedscripturl" id="ref-for-trustedscripturl⑧">TrustedScriptURL</a></code>
+        <td><code class="idl"><a data-link-type="idl" href="#trustedscripturl" id="ref-for-trustedscripturl⑦">TrustedScriptURL</a></code>
         <td>"SVGScriptElement href"
   
      </table>
@@ -2995,7 +2995,7 @@ If a matching row is found, set <var>data</var> to that row.</p>
      <p>Return <var>data</var>.</p>
    </ol>
    <h2 class="heading settled" data-level="4" id="integrations"><span class="secno">4. </span><span class="content">Integrations</span><a class="self-link" href="#integrations"></a></h2>
-<pre class="def highlight idl"><c- b>typedef</c-> (<a data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml③②"><c- n>TrustedHTML</c-></a> <c- b>or</c-> <a data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript①①"><c- n>TrustedScript</c-></a> <c- b>or</c-> <a data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl⑨"><c- n>TrustedScriptURL</c-></a>) <dfn class="dfn-paneled idl-code" data-dfn-type="typedef" data-export id="typedefdef-trustedtype"><code><c- g>TrustedType</c-></code></dfn>;
+<pre class="def highlight idl"><c- b>typedef</c-> (<a data-link-type="idl-name" href="#trustedhtml" id="ref-for-trustedhtml③②"><c- n>TrustedHTML</c-></a> <c- b>or</c-> <a data-link-type="idl-name" href="#trustedscript" id="ref-for-trustedscript①②"><c- n>TrustedScript</c-></a> <c- b>or</c-> <a data-link-type="idl-name" href="#trustedscripturl" id="ref-for-trustedscripturl⑧"><c- n>TrustedScriptURL</c-></a>) <dfn class="dfn-paneled idl-code" data-dfn-type="typedef" data-export id="typedefdef-trustedtype"><code><c- g>TrustedType</c-></code></dfn>;
 </pre>
    <h3 class="heading settled" data-level="4.1" id="integration-with-html"><span class="secno">4.1. </span><span class="content">Integration with HTML</span><a class="self-link" href="#integration-with-html"></a></h3>
    <p><code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window" id="ref-for-window">Window</a></code> and <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/workers.html#worker" id="ref-for-worker">Worker</a></code> objects have a <dfn class="dfn-paneled" data-dfn-for="Window" data-dfn-type="dfn" data-noexport id="window-trusted-type-policy-factory">trusted type policy factory</dfn>,
@@ -3115,7 +3115,7 @@ otherwise. This constitutes the <a data-link-type="dfn" href="#require-trusted-t
      <p>Let <var>convertedScriptSource</var> be the result of executing <a data-link-type="dfn" href="#process-value-with-a-default-policy" id="ref-for-process-value-with-a-default-policy①">Process value with a default policy</a> algorithm, with the following arguments:</p>
      <ul>
       <li data-md>
-       <p><code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①②">TrustedScript</a></code> as <var>expectedType</var></p>
+       <p><code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①③">TrustedScript</a></code> as <var>expectedType</var></p>
       <li data-md>
        <p><var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-client" id="ref-for-concept-request-client">clients</a>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-global" id="ref-for-concept-settings-object-global">global object</a> as <var>global</var></p>
       <li data-md>
@@ -3123,7 +3123,7 @@ otherwise. This constitutes the <a data-link-type="dfn" href="#require-trusted-t
       <li data-md>
        <p><code>"Location href"</code> as <var>sink</var></p>
      </ul>
-     <p>If that algorithm threw an error or <var>convertedScriptSource</var> is not a <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①③">TrustedScript</a></code> object, return "Blocked" and abort further steps.</p>
+     <p>If that algorithm threw an error or <var>convertedScriptSource</var> is not a <code class="idl"><a data-link-type="idl" href="#trustedscript" id="ref-for-trustedscript①④">TrustedScript</a></code> object, return "Blocked" and abort further steps.</p>
     <li data-md>
      <p>Set <var>urlString</var> to be the result of prepending <code>"javascript:"</code> to stringified <var>convertedScriptSource</var>.</p>
     <li data-md>
@@ -4177,10 +4177,10 @@ let dfnPanelData = {
 "trustedhtmlparseroptions": {"dfnID":"trustedhtmlparseroptions","dfnText":"TrustedHTMLParserOptions","external":false,"refSections":[{"refs":[{"id":"ref-for-trustedhtmlparseroptions"},{"id":"ref-for-trustedhtmlparseroptions\u2460"},{"id":"ref-for-trustedhtmlparseroptions\u2461"}],"title":"2.2.4. TrustedHTMLParserOptions"},{"refs":[{"id":"ref-for-trustedhtmlparseroptions\u2462"}],"title":"2.3.1. Using together with a sanitizer"},{"refs":[{"id":"ref-for-trustedhtmlparseroptions\u2463"}],"title":"2.3.3. TrustedTypePolicy"},{"refs":[{"id":"ref-for-trustedhtmlparseroptions\u2464"},{"id":"ref-for-trustedhtmlparseroptions\u2465"},{"id":"ref-for-trustedhtmlparseroptions\u2466"},{"id":"ref-for-trustedhtmlparseroptions\u2467"}],"title":"2.4.3. Summary of input enforcement"},{"refs":[{"id":"ref-for-trustedhtmlparseroptions\u2468"}],"title":"3.2. Create a Trusted Type"},{"refs":[{"id":"ref-for-trustedhtmlparseroptions\u2460\u24ea"},{"id":"ref-for-trustedhtmlparseroptions\u2460\u2460"}],"title":"3.4. Get Trusted Type compliant input"},{"refs":[{"id":"ref-for-trustedhtmlparseroptions\u2460\u2461"},{"id":"ref-for-trustedhtmlparseroptions\u2460\u2462"},{"id":"ref-for-trustedhtmlparseroptions\u2460\u2463"},{"id":"ref-for-trustedhtmlparseroptions\u2460\u2464"},{"id":"ref-for-trustedhtmlparseroptions\u2460\u2465"}],"title":"3.6. Get Trusted Type compliant parser options"}],"url":"#trustedhtmlparseroptions"},
 "trustedhtmlparseroptions-runscripts": {"dfnID":"trustedhtmlparseroptions-runscripts","dfnText":"runScripts","external":false,"refSections":[{"refs":[{"id":"ref-for-trustedhtmlparseroptions-runscripts"}],"title":"3.2. Create a Trusted Type"},{"refs":[{"id":"ref-for-trustedhtmlparseroptions-runscripts\u2460"}],"title":"3.6. Get Trusted Type compliant parser options"}],"url":"#trustedhtmlparseroptions-runscripts"},
 "trustedhtmlparseroptions-sanitizer-configuration": {"dfnID":"trustedhtmlparseroptions-sanitizer-configuration","dfnText":"sanitizer configuration","external":false,"refSections":[{"refs":[{"id":"ref-for-trustedhtmlparseroptions-sanitizer-configuration"}],"title":"2.4.3. Summary of input enforcement"},{"refs":[{"id":"ref-for-trustedhtmlparseroptions-sanitizer-configuration\u2460"}],"title":"3.2. Create a Trusted Type"},{"refs":[{"id":"ref-for-trustedhtmlparseroptions-sanitizer-configuration\u2461"}],"title":"3.6. Get Trusted Type compliant parser options"}],"url":"#trustedhtmlparseroptions-sanitizer-configuration"},
-"trustedscript": {"dfnID":"trustedscript","dfnText":"TrustedScript","external":false,"refSections":[{"refs":[{"id":"ref-for-trustedscript"}],"title":"2.2.2. TrustedScript"},{"refs":[{"id":"ref-for-trustedscript\u2460"},{"id":"ref-for-trustedscript\u2461"},{"id":"ref-for-trustedscript\u2462"},{"id":"ref-for-trustedscript\u2463"},{"id":"ref-for-trustedscript\u2464"},{"id":"ref-for-trustedscript\u2465"},{"id":"ref-for-trustedscript\u2466"}],"title":"2.3.2. TrustedTypePolicyFactory"},{"refs":[{"id":"ref-for-trustedscript\u2467"}],"title":"2.3.3. TrustedTypePolicy"},{"refs":[{"id":"ref-for-trustedscript\u2468"}],"title":"3.9. Get Trusted Type compliant attribute value"},{"refs":[{"id":"ref-for-trustedscript\u2460\u24ea"}],"title":"3.10. Get Trusted Type data for attribute"},{"refs":[{"id":"ref-for-trustedscript\u2460\u2460"}],"title":"4. Integrations"},{"refs":[{"id":"ref-for-trustedscript\u2460\u2461"},{"id":"ref-for-trustedscript\u2460\u2462"}],"title":"4.2.1.1. require-trusted-types-for Pre-Navigation check"}],"url":"#trustedscript"},
+"trustedscript": {"dfnID":"trustedscript","dfnText":"TrustedScript","external":false,"refSections":[{"refs":[{"id":"ref-for-trustedscript"}],"title":"2.2.2. TrustedScript"},{"refs":[{"id":"ref-for-trustedscript\u2460"},{"id":"ref-for-trustedscript\u2461"},{"id":"ref-for-trustedscript\u2462"},{"id":"ref-for-trustedscript\u2463"},{"id":"ref-for-trustedscript\u2464"},{"id":"ref-for-trustedscript\u2465"},{"id":"ref-for-trustedscript\u2466"}],"title":"2.3.2. TrustedTypePolicyFactory"},{"refs":[{"id":"ref-for-trustedscript\u2467"}],"title":"2.3.3. TrustedTypePolicy"},{"refs":[{"id":"ref-for-trustedscript\u2468"}],"title":"3.8. Prepare the script text"},{"refs":[{"id":"ref-for-trustedscript\u2460\u24ea"}],"title":"3.9. Get Trusted Type compliant attribute value"},{"refs":[{"id":"ref-for-trustedscript\u2460\u2460"}],"title":"3.10. Get Trusted Type data for attribute"},{"refs":[{"id":"ref-for-trustedscript\u2460\u2461"}],"title":"4. Integrations"},{"refs":[{"id":"ref-for-trustedscript\u2460\u2462"},{"id":"ref-for-trustedscript\u2460\u2463"}],"title":"4.2.1.1. require-trusted-types-for Pre-Navigation check"}],"url":"#trustedscript"},
 "trustedscript-data": {"dfnID":"trustedscript-data","dfnText":"data","external":false,"refSections":[{"refs":[{"id":"ref-for-trustedscript-data"}],"title":"2.2.2. TrustedScript"},{"refs":[{"id":"ref-for-trustedscript-data\u2460"},{"id":"ref-for-trustedscript-data\u2461"}],"title":"2.3.2. TrustedTypePolicyFactory"}],"url":"#trustedscript-data"},
 "trustedscript-stringification-behavior": {"dfnID":"trustedscript-stringification-behavior","dfnText":"stringification behavior","external":false,"refSections":[{"refs":[{"id":"ref-for-trustedscript-stringification-behavior"}],"title":"2.2.2. TrustedScript"}],"url":"#trustedscript-stringification-behavior"},
-"trustedscripturl": {"dfnID":"trustedscripturl","dfnText":"TrustedScriptURL","external":false,"refSections":[{"refs":[{"id":"ref-for-trustedscripturl"}],"title":"2.2.3. TrustedScriptURL"},{"refs":[{"id":"ref-for-trustedscripturl\u2460"},{"id":"ref-for-trustedscripturl\u2461"}],"title":"2.3.2. TrustedTypePolicyFactory"},{"refs":[{"id":"ref-for-trustedscripturl\u2462"}],"title":"2.3.3. TrustedTypePolicy"},{"refs":[{"id":"ref-for-trustedscripturl\u2463"}],"title":"3.8. Prepare the script text"},{"refs":[{"id":"ref-for-trustedscripturl\u2464"}],"title":"3.9. Get Trusted Type compliant attribute value"},{"refs":[{"id":"ref-for-trustedscripturl\u2465"},{"id":"ref-for-trustedscripturl\u2466"},{"id":"ref-for-trustedscripturl\u2467"}],"title":"3.10. Get Trusted Type data for attribute"},{"refs":[{"id":"ref-for-trustedscripturl\u2468"}],"title":"4. Integrations"}],"url":"#trustedscripturl"},
+"trustedscripturl": {"dfnID":"trustedscripturl","dfnText":"TrustedScriptURL","external":false,"refSections":[{"refs":[{"id":"ref-for-trustedscripturl"}],"title":"2.2.3. TrustedScriptURL"},{"refs":[{"id":"ref-for-trustedscripturl\u2460"},{"id":"ref-for-trustedscripturl\u2461"}],"title":"2.3.2. TrustedTypePolicyFactory"},{"refs":[{"id":"ref-for-trustedscripturl\u2462"}],"title":"2.3.3. TrustedTypePolicy"},{"refs":[{"id":"ref-for-trustedscripturl\u2463"}],"title":"3.9. Get Trusted Type compliant attribute value"},{"refs":[{"id":"ref-for-trustedscripturl\u2464"},{"id":"ref-for-trustedscripturl\u2465"},{"id":"ref-for-trustedscripturl\u2466"}],"title":"3.10. Get Trusted Type data for attribute"},{"refs":[{"id":"ref-for-trustedscripturl\u2467"}],"title":"4. Integrations"}],"url":"#trustedscripturl"},
 "trustedscripturl-data": {"dfnID":"trustedscripturl-data","dfnText":"data","external":false,"refSections":[{"refs":[{"id":"ref-for-trustedscripturl-data"}],"title":"2.2.3. TrustedScriptURL"},{"refs":[{"id":"ref-for-trustedscripturl-data\u2460"}],"title":"2.3.2. TrustedTypePolicyFactory"}],"url":"#trustedscripturl-data"},
 "trustedscripturl-stringification-behavior": {"dfnID":"trustedscripturl-stringification-behavior","dfnText":"stringification behavior","external":false,"refSections":[{"refs":[{"id":"ref-for-trustedscripturl-stringification-behavior"}],"title":"2.2.3. TrustedScriptURL"}],"url":"#trustedscripturl-stringification-behavior"},
 "trustedtypepolicy": {"dfnID":"trustedtypepolicy","dfnText":"TrustedTypePolicy","external":false,"refSections":[{"refs":[{"id":"ref-for-trustedtypepolicy"}],"title":"2.2.1. TrustedHTML"},{"refs":[{"id":"ref-for-trustedtypepolicy\u2460"}],"title":"2.2.2. TrustedScript"},{"refs":[{"id":"ref-for-trustedtypepolicy\u2461"}],"title":"2.2.3. TrustedScriptURL"},{"refs":[{"id":"ref-for-trustedtypepolicy\u2462"}],"title":"2.2.4. TrustedHTMLParserOptions"},{"refs":[{"id":"ref-for-trustedtypepolicy\u2463"},{"id":"ref-for-trustedtypepolicy\u2464"},{"id":"ref-for-trustedtypepolicy\u2465"},{"id":"ref-for-trustedtypepolicy\u2466"},{"id":"ref-for-trustedtypepolicy\u2467"}],"title":"2.3.2. TrustedTypePolicyFactory"},{"refs":[{"id":"ref-for-trustedtypepolicy\u2468"}],"title":"2.3.3. TrustedTypePolicy"},{"refs":[{"id":"ref-for-trustedtypepolicy\u2460\u24ea"}],"title":"2.3.4. TrustedTypePolicyOptions"},{"refs":[{"id":"ref-for-trustedtypepolicy\u2460\u2460"}],"title":"3.1. Create a Trusted Type Policy"},{"refs":[{"id":"ref-for-trustedtypepolicy\u2460\u2461"}],"title":"3.2. Create a Trusted Type"},{"refs":[{"id":"ref-for-trustedtypepolicy\u2460\u2462"}],"title":"3.3. Get Trusted Type policy value"},{"refs":[{"id":"ref-for-trustedtypepolicy\u2460\u2463"}],"title":"4.2.5. Should Trusted Type policy creation be blocked by Content Security Policy?"}],"url":"#trustedtypepolicy"},
