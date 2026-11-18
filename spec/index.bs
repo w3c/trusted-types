@@ -1593,10 +1593,11 @@ To <dfn>process value with a default policy</dfn> given a {{TrustedType}} type (
 {{TrustedType}} or a string (|input|), and a string (|sink|), run these steps:
 
 1.  Let |defaultPolicy| be the value of |global|'s [=Window/trusted type policy factory=]'s [=TrustedTypePolicyFactory/default policy=].
+1.  Let |trustedTypeName| be |expectedType|’s type name.
 1.  Let |policyValue| be the result of executing [=get trusted type policy value=], with the following arguments:
      *  |defaultPolicy| as |policy|
+     *  |trustedTypeName|
      *  stringified |input| as |value|
-     *  |expectedType|’s type name as |trustedTypeName|
      *  &laquo; |trustedTypeName|, |sink| &raquo; as |arguments|
      *  false as |throwIfMissing|
 1.  If the algorithm threw an error, rethrow the error and abort the following steps.
